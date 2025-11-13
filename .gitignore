@@ -1,10 +1,8 @@
-# keep only Assignment, ignore everything else
-/*
+# Track Assignment and Wk folders
 !/Assignment/
-!/.gitignore
-!/README.md
-!/LICENSE
-# inside Assignment: avoid redistributing large binaries
+!/Wk*/
+!/Wk */
+# Ignore common large binaries only in Assignment
 /Assignment/**/*.pdf
 /Assignment/**/*.pptx
 /Assignment/**/*.docx
@@ -12,5 +10,3 @@
 # OS/editor noise
 .DS_Store
 *.log
-
-Assignment/My Dissertaion/**
