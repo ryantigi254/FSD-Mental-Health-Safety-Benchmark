@@ -10,3 +10,5 @@
 # OS/editor noise
 .DS_Store
 *.log
+
+Assignment/Samples/**
