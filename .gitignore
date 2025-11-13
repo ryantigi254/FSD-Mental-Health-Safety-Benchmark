@@ -11,6 +11,13 @@
 .DS_Store
 *.log
 
-Assignment/Samples/**
+# Python/Jupyter caches (should never be committed)
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
 
-/Assignment/Samples/Good Aria/tdcs for depression Aria Dissertaion.pdf
+# Ignore all Samples by default, but allow a specific file path
+Assignment/Samples/**
+!/Assignment/Samples/
+!/Assignment/Samples/Good Aria/
+!/Assignment/Samples/Good Aria/tdcs for depression Aria Dissertaion.pdf
