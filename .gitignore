@@ -14,6 +14,5 @@ __pycache__/
 
 # Ignore all Samples by default, but allow a specific file path
 Assignment/Samples/**
-!/Assignment/Samples/
 !/Assignment/Samples/Good Aria/
 !/Assignment/Samples/Good Aria/tdcs for depression Aria Dissertaion.pdf
