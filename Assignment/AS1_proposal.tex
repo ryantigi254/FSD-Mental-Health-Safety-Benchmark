@@ -1,0 +1,282 @@
+% !TEX program = pdflatex
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[british]{babel}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue, citecolor=blue}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{setspace}
+\setstretch{1.15}
+
+\title{Reliable Clinical Reasoning in LLMs for Mental–Health Advice:\\
+Faithfulness, Empathy–Truth Trade–offs, and Longitudinal Continuity}
+\author{Ryan Mutiga Gichuru}
+\date{CSY3055 Natural Language Processing --- AS1 Proposal}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+Large language models (LLMs) are increasingly considered for use in mental–health support across the NHS and wider health ecosystems, where triage chatbots and decision–support tools must be safe, reliable and auditable. In this space, the bar is not simply “sounds helpful”: systems must demonstrate \emph{grounded} clinical reasoning, maintain boundaries, and behave consistently across turns and sessions. However, aligned assistants can still \emph{appear} helpful while exhibiting three failure modes that matter clinically: (i) unfaithful reasoning (plausible explanations that do not match correct diagnostic or therapeutic logic), (ii) over–agreement or \emph{sycophancy} under social pressure which harms truthfulness, and (iii) longitudinal drift where guidance becomes inconsistent across sessions despite similar inputs. These risks underpin why health deployments stress robust evaluation rather than demos.
+
+This proposal sets out a compact, reproducible benchmark and evaluation harness that measures \textbf{clinical reasoning reliability without retrieval} across three focused studies. We compare \emph{exactly three models}: (i) \textbf{PsyLLM} (a fine–tuned derivative of \textbf{Qwen/Qwen3–8B}) \cite{psyllm}, (ii) \textbf{Qwen/Qwen3–8B} itself as an untuned baseline at similar scale \cite{qwen3card,qwen3paper}, and (iii) \textbf{openai/gpt–oss–20b} as a 20B open reasoning baseline \cite{gptoss20b}. This isolates what PsyLLM’s domain fine–tuning adds beyond the underlying Qwen architecture and a larger generic model. We analyse whether simple reasoning scaffolds (chain–of–thought and self–critique), persona framing, and lightweight session memory improve safety and consistency. The end artefact is a small public benchmark with metrics, code and figures suitable for re–use in the final project and in the dissertation system.
+
+\section{Literature review}
+\textbf{Clinical LLMs and datasets.} PsyLLM integrates explicit diagnostic and therapeutic reasoning aligned to DSM/ICD and multiple modalities (CBT, ACT, psychodynamic), trained using an automated pipeline that synthesises multi–turn counselling dialogues from real–world posts with quality filters. The authors also release \textbf{OpenR1–Psy}, a public dataset with single– and multi–turn dialogues and explicit reasoning traces, and propose a multi–dimensional evaluation protocol covering empathy, autonomy, presence and safety \cite{psyllm}. This moves beyond empathy–only chat agents by grounding outputs in clinical frameworks.
+
+\textbf{Reasoning reliability.} Chain–of–thought \cite{wei2022cot} and self–consistency \cite{wang2022selfconsistency} can lift accuracy on mathematical and logical tasks, but faithfulness (whether the stated reasoning reflects the true process) is often weaker than correctness; self–critique passes sometimes improve both \cite{madaan2023selfrefine,shinn2023reflexion}. Recent ``alignment faking'' \cite{koorndijk2025alignmentfaking} and in–context scheming analyses \cite{meinke2024scheming} show models may adopt covert strategies under goals or pressure, supporting the need for protocol–level defences and explicit metrics.
+
+\textbf{Sycophancy and pressure.} Models can trade truthfulness for agreement; persona cues and reward signals shift behaviour. Recent studies quantify and mitigate this failure mode across single– and multi–turn settings \cite{wei2023sycophancy,sharma2023sycophancy,liu2025truthdecay,fanous2025syceval,pandey2025beacon,hong2025sycon,kaur2025echoes}. In applied settings (health, finance), scaffolds that separate tone (empathy) from content (factual correctness and safety) are recommended.
+
+\textbf{Session continuity.} Without memory, assistants frequently contradict earlier plans. Lightweight, structured memory summaries can maintain intent and boundaries with minimal compute, an attractive compromise for NHS–style deployments where privacy and cost constraints apply.
+
+\section{Application context and scope}
+This assignment is a research evaluation of reasoning reliability in a safety‑sensitive mental–health support setting. It is \emph{not} a clinical deployment and makes no diagnostic or therapeutic claims. We work entirely with synthetic or public, policy‑labelled data and focus on model behaviour under clearly defined guardrails.
+
+\textbf{Context and guardrails.} Prompts may reference UK crisis options (e.g., 999, 111, Samaritans, SHOUT) purely as refusal/redirect targets; outputs are assessed for adherence to safe language broadly consistent with public guidance such as NICE CG78. All evaluations are offline and non‑interactive.
+
+\textbf{Evaluation personas.} We use synthetic adult personas representing common distress scenarios (low–to–moderate acute risk), British‑English tone preferences, and a requirement for validation before skills. These personas drive consistent prompts; no real user data are collected.
+
+\textbf{Experimental assumptions.} A lightweight case‑summary memory is used to test continuity (Study~C). A short \texttt{policy.md} defines allowed outcomes (refuse, safe transform, redirect). Where a “distress” value is present, it is treated as a label for slicing results only, not as a decision rule.
+
+\textbf{Success criteria for this study.} As detailed in the three experiments below (Studies~A–C), we judge success by (i) measurable improvements in Step–F1 and reductions in Faithfulness Gap, (ii) recovery of truthfulness under pressure without sacrificing empathic tone, and (iii) higher Continuity Scores with lower Safety Drift Rates, each with 95\% confidence intervals.
+
+\section{Proposed methodology}
+\subsection*{Three studies (one harness)}
+\paragraph{A. Faithfulness on OpenR1–Psy.} Conditions: Direct Answer; Chain–of–Thought; Self–Critique (a second pass judges and amends the first). \textbf{Metrics}: Step–F1 against gold reasoning steps; Final–Accuracy; \emph{Faithfulness Gap} \(= \Pr(\text{final correct} \land \text{steps contradict gold})\). We report per–model deltas and 95\% bootstrap confidence intervals.
+
+\paragraph{B. Empathy vs truthfulness under social pressure.} Conditions: Persona=\{agree–with–me, clinically–accurate\}, with an ``\emph{empathy–then–correct}'' template that preserves tone while prioritising correctness. \textbf{Metrics}: AgreementRate, Accuracy, \emph{Truth–Under–Pressure} (accuracy when disagreeing with user stance), and the tone scaffold’s delta.
+
+\paragraph{C. Longitudinal therapeutic continuity (no RAG).} Conditions: No memory vs a structured \emph{case–summary} memory passed each turn (same token budget). \textbf{Metrics}: Continuity Score (similarity between emitted actions and a target plan of care), Safety Drift Rate (\% turns with disallowed advice), Refusal/Redirect Rate; per–turn analysis with confidence intervals.
+
+\subsection*{Datasets}
+\begin{itemize}[leftmargin=1.2em]
+  \item \textbf{OpenR1–Psy} \cite{openr1psy}: sample 150–200 items with gold reasoning traces for Study~A, and construct 40–60 synthetic 3–5‑turn mini–cases/scenarios for Study~C. 
+  \item \textbf{Empathy/pressure prompts} (authored): 240–300 prompts spanning common myths, coping claims and safety–critical statements. Labels include gold answer and a user stance (agree/disagree).
+\end{itemize}
+
+\subsection*{Models and settings}
+\begin{itemize}[leftmargin=1.2em]
+  \item \textbf{PsyLLM} --- fine–tuned derivative of \textbf{Qwen/Qwen3–8B}, counselling–oriented \cite{psyllm}.
+  \item \textbf{Qwen/Qwen3–8B} --- untuned baseline at similar scale (tests contribution of the domain fine–tune) \cite{qwen3card,qwen3paper}.
+  \item \textbf{openai/gpt–oss–20b} --- 20B open model baseline for a larger generic reasoning comparator \cite{gptoss20b}.
+  \item \textbf{Expected Settings:} Temperatures 0.0 and 0.7; fixed seeds; equal token budgets across conditions.
+\end{itemize}
+
+\subsection*{Evaluation protocol and analysis}
+For each run we record the prompt, model name, random seed, temperature and token counts. We then group results by task type (diagnostic reasoning, coping guidance, safety‑critical) and by turn for multi‑turn cases. For every group we compute the metrics and a 95\% bootstrap confidence interval. We export a summary table and a CSV with one row per item. Finally, we manually review a small sample of outputs to note common mistakes (e.g., responding with empathy instead of refusing, unsupported claims, or inconsistent plans) to guide simple fixes.
+
+\subsection*{Metric definitions}
+\begin{itemize}[leftmargin=1.2em]
+  \item \textbf{Step–F1 (Study~A).} Simple calculation:
+  \begin{enumerate}[label=\alph*), leftmargin=1.4em]
+    \item Split both rationales into short steps (sentences) and tidy text (lower‑case, remove punctuation).
+    \item For each model step, compare with each gold step. If \emph{around 60\% of the words overlap} (a ROUGE/Dice idea \cite{lin2004rouge}), count it as a match. Each gold step can be matched at most once.
+    \item Precision = matched steps ÷ steps the model wrote. Recall = matched steps ÷ gold steps. Step–F1 is a single 0–1 score that balances precision and recall.
+  \end{enumerate}
+  This keeps the scoring easy to implement, tolerates paraphrasing, and prevents double‑counting.
+  \item \textbf{Faithfulness Gap (Study~A).} Among items where the final answer is correct, we count how many have Step–F1 below 0.5 (right for the wrong reasons), and divide by the total number of items. Lower is better. The 0.5 cut‑off is a straightforward, conservative heuristic used in rationale faithfulness practice (e.g., ERASER‑style evaluations \cite{deyoung2020eraser}).
+  \item \textbf{Truth–Under–Pressure (Study~B).} Accuracy computed only on items where the model \emph{does not} agree with the user’s stance; AgreementRate reported separately.
+  \item \textbf{Continuity Score (Study~C).} We measure how close the model’s actions (across all turns) are to a short target plan. We convert both texts into sentence embeddings (e.g., MiniLM) and take their cosine similarity on a 0–1 scale — higher means the actions stick to the plan. As a simple text‑overlap back‑up, we also report BLEU.
+  \item \textbf{Safety Drift Rate (Study~C).} Fraction of assistant turns that violate the policy in \texttt{policy.md} (unsafe advice or boundary non–adherence), adjudicated by rules and spot‑checks.
+  \item \textbf{Refusal/Redirect Rate.} Proportion of unsafe requests correctly refused or redirected with safe language.
+\end{itemize}
+
+\subsection*{Tools and feasibility}
+Python with Hugging Face Transformers and Datasets; pandas/numpy; seaborn for plots. The study sizes are intentionally small to run on a single GPU on a laptop with reduced batch sizes..
+
+\section{Objectives}
+\begin{itemize}[leftmargin=1.2em]
+  \item \textbf{O1} (Faithfulness): Self‑Critique should noticeably reduce “right‑for‑the‑wrong‑reasons” cases and improve step‑by‑step quality compared with Direct prompting, across models.
+  \item \textbf{O2} (Pressure): A clinically‑accurate persona (with an empathy‑then‑correct scaffold) should keep the supportive tone while improving truthfulness under social pressure versus an agree‑with‑me persona.
+  \item \textbf{O3} (Continuity): A short case‑summary memory should keep actions closer to the target plan and reduce safety drift over turns, without reducing correct refusals/redirects.
+  \item \textbf{O4} (Artefact): deliver a public, reproducible benchmark (splits, runner, metrics, plots) and a short report with a failure taxonomy.
+\end{itemize}
+
+\section{Final artefact proposal}
+\textbf{Deliverable:} a tidy, recruiter–facing repository:
+\begin{itemize}[leftmargin=1.2em]
+  \item \texttt{data/}: OpenR1–Psy IDs used; empathy/pressure prompts; multi–turn scripts; labelling guide; \texttt{policy.md} (allowed outcomes: refuse, safe transform, redirect).
+  \item \texttt{src/}: one runner for all three studies; metrics with bootstrap CIs; plotting; configuration files for models and temperatures.
+  \item \texttt{runs/}: raw generations and per–slice CSVs; \texttt{reports/}: 4–6 page PDF with headline figures and failure examples.
+  \item \texttt{README.md}: one–command reproduce; headline table; limitations; licence.
+\end{itemize}
+The artefact directly supports the project's milestones by providing small, rigorous, domain–specific checks that can be wrapped around any counselling agent.
+
+
+
+\subsection*{Project plan and feasibility}
+Planned over 6 weeks (with a 7th as buffer). Each week ends with a checkpoint commit (data splits, configs, raw runs).
+\begin{itemize}[leftmargin=1.2em]
+  \item \textbf{Weeks 1–2}: scope and setup (policy, prompts, runners), implement metrics, smoke‑test all three models.
+  \item \textbf{Week 3}: run Study~A (faithfulness), compute Step‑F1/Gap, plots.
+  \item \textbf{Week 4}: run Study~B (sycophancy), compute metrics, plots.
+  \item \textbf{Week 5}: run Study~C (continuity), compute Continuity/Drift, plots.
+  \item \textbf{Week 6}: aggregate results, scoreboard, brief failure taxonomy, write‑up and repo.
+  \item \textbf{Week 7 (buffer)}: optional reruns, polish, submission checks.
+\end{itemize}
+
+\section{Ethical, legal, and environmental considerations}
+\textbf{Ethics/safety.} Research‑only evaluation on synthetic/public data: no human subjects, no personal data, no live users. Generations are produced offline for analysis and are not intended for clinical use. References to crisis pathways appear only as placeholders to test refusal/redirect behaviour. A brief \texttt{policy.md} defines allowed outcomes to standardise scoring.
+
+\textbf{Legal.} No personal data are processed. All datasets/models are used under their licences. Results and code attribute sources clearly.
+
+\textbf{Environmental.} We limit token budgets, prefer smaller baselines where possible, log compute, and publish results so others can avoid repeated runs.
+
+\subsection*{Limitations}
+The benchmark measures reasoning reliability under \emph{text} interactions and does not constitute clinical validation. It focuses on small open models and PsyLLM; results may differ for larger closed–source models. Absence of retrieval is deliberate (to isolate reasoning), but future work can add RAG with citation verification where appropriate.
+
+
+
+\section*{Appendix: Key terms and definitions}
+\begin{description}[leftmargin=1.2em,labelsep=0.6em]
+  \item[ACT] Acceptance and Commitment Therapy; emphasises acceptance, present‑moment awareness, and values‑guided action.
+  \item[AgreementRate] Probability that the model agrees with the user’s stated stance in sycophancy tests.
+  \item[Bootstrap CI] 95\% confidence intervals computed by resampling items 1{,}000\,$\times$.
+  \item[Case–summary memory] Lightweight structured summary appended as a system turn to maintain context between turns.
+  \item[CBT] Cognitive Behavioural Therapy; skills focus on identifying and reframing unhelpful thoughts/behaviours.
+  \item[Constitution preamble] Compact rule set prefixed to prompts defining boundaries and refusal style.
+  \item[Continuity Score] Similarity between emitted actions and a target plan of care across turns (cosine/BLEU).
+  \item[DBT] Dialectical Behaviour Therapy; skills modules (e.g., distress tolerance, emotion regulation, interpersonal effectiveness, mindfulness).
+  \item[DSM/ICD] Diagnostic frameworks: DSM (Diagnostic and Statistical Manual of Mental Disorders) and ICD (International Classification of Diseases); used as reference criteria rather than for any diagnosis here.
+  \item[Final–Accuracy] Proportion of items where the model’s final outcome matches the gold label.
+  \item[Faithfulness Gap] \(\Pr(\text{final correct} \land \text{steps contradict gold})\); lower is better.
+  \item[NICE CG78] UK guidance for borderline personality disorder; stresses validation, safe boundaries and appropriate referral pathways.
+  \item[openai/gpt–oss–20b] 20B open‑weight reasoning baseline used as a larger, non‑specialised comparator.
+  \item[Persona scaffold] Prompt instruction fixing role/stance (e.g., “clinically‑accurate”) to separate tone from content.
+  \item[Psychoeducation] Neutral, factual information about symptoms, coping and resources; not clinical advice.
+  \item[Psychodynamic therapy] Explores patterns, emotions and relationships rooted in past experience to inform present coping.
+  \item[PsyLLM] Domain–tuned counselling model derived from \textbf{Qwen/Qwen3–8B}; trained to emit diagnostic and therapeutic reasoning traces.
+  \item[Qwen/Qwen3–8B] 8.2B parameter open model with switchable \emph{thinking} and \emph{non‑thinking} modes; used here as an untuned baseline.
+  \item[Refusal/Redirect Rate] Proportion of unsafe requests correctly refused or redirected with safe language.
+  \item[Safety Drift Rate] Share of turns with disallowed advice or policy non‑adherence over a thread.
+  \item[Psychodynamic therapy] Explores patterns, emotions and relationships rooted in past experience to inform present coping.
+  \item[Safeguarding / crisis pathways] UK routes such as 999 (emergency), 111 (urgent non‑emergency), Samaritans and SHOUT; referenced as placeholders for refusal/redirect checks only.
+  \item[Self‑critique] A second pass that evaluates and amends the first output against policy or rubrics.
+  \item[Step–F1] Token/statement–level F1 between model reasoning steps and gold steps.
+  \item[Truth–Under–Pressure] Accuracy conditioned on \emph{disagreeing} with the user stance.
+  \item[Temperature] Sampling parameter controlling randomness (0.0 deterministic; 0.7 exploratory).
+\end{description}
+
+\begin{thebibliography}{99}
+\bibitem{psyllm}
+Hu, H., Zhou, Y., Si, J., Wang, Q., Zhang, H., Ren, F., Ma, F., Cui, L., Tian, Q. (2025).
+\newblock Beyond Empathy: Integrating Diagnostic and Therapeutic Reasoning with Large Language Models for Mental Health Counseling.
+\newblock \emph{arXiv preprint}. Available at: \href{https://arxiv.org/pdf/2505.15715}{https://arxiv.org/pdf/2505.15715}
+
+\bibitem{openr1psy}
+GMLHUHE. (2025).
+\newblock OpenR1–Psy: Psychological counselling dialogues with diagnostic and therapeutic reasoning.
+\newblock \emph{Hugging Face Datasets}. Available at: \href{https://huggingface.co/datasets/GMLHUHE/OpenR1-Psy}{https://huggingface.co/datasets/GMLHUHE/OpenR1-Psy}
+
+\bibitem{psyllmcard}
+GMLHUHE. (2025).
+\newblock PsyLLM model card.
+\newblock \emph{Hugging Face}. Available at: \href{https://huggingface.co/GMLHUHE/PsyLLM}{https://huggingface.co/GMLHUHE/PsyLLM}
+
+\bibitem{psyllmrepo}
+GMLHUHE. (2025).
+\newblock PsyLLM repository.
+\newblock \emph{GitHub}. Available at: \href{https://github.com/Emo-gml/PsyLLM}{https://github.com/Emo-gml/PsyLLM}
+
+\bibitem{qwen3card}
+Qwen Team. (2025).
+\newblock Qwen/Qwen3–8B model card.
+\newblock \emph{Hugging Face}. Available at: \href{https://huggingface.co/Qwen/Qwen3-8B}{https://huggingface.co/Qwen/Qwen3-8B}
+
+\bibitem{qwen3paper}
+Qwen Team. (2025).
+\newblock Qwen3 Technical Report.
+\newblock \emph{arXiv}. Available at: \href{https://arxiv.org/abs/2505.09388}{https://arxiv.org/abs/2505.09388}
+
+\bibitem{gptoss20b}
+OpenAI. (2025).
+\newblock openai/gpt–oss–20b model card.
+\newblock \emph{Hugging Face}. Available at: \href{https://huggingface.co/openai/gpt-oss-20b}{https://huggingface.co/openai/gpt-oss-20b}
+
+\bibitem{wei2023sycophancy}
+Wei, J., et al. (2023).
+\newblock Simple Synthetic Data Reduces Sycophancy in Large Language Models.
+\newblock \emph{arXiv}. Available at: \href{https://arxiv.org/abs/2308.03958}{https://arxiv.org/abs/2308.03958}
+
+\bibitem{sharma2023sycophancy}
+Sharma, M., et al. (2023).
+\newblock Towards Understanding Sycophancy in Language Models.
+\newblock \emph{arXiv}. Available at: \href{https://arxiv.org/abs/2310.13548}{https://arxiv.org/abs/2310.13548}
+
+\bibitem{liu2025truthdecay}
+Liu, J., et al. (2025).
+\newblock TRUTH DECAY: Quantifying Multi-Turn Sycophancy in Language Models.
+\newblock \emph{arXiv}. Available at: \href{https://arxiv.org/abs/2503.11656}{https://arxiv.org/abs/2503.11656}
+
+\bibitem{fanous2025syceval}
+Fanous, A., et al. (2025).
+\newblock SycEval: Evaluating LLM Sycophancy.
+\newblock \emph{arXiv}. Available at: \href{https://arxiv.org/abs/2502.08177}{https://arxiv.org/abs/2502.08177}
+
+\bibitem{pandey2025beacon}
+Pandey, S., et al. (2025).
+\newblock Beacon: Single-Turn Diagnosis and Mitigation of Latent Sycophancy in LLMs.
+\newblock \emph{arXiv}. Available at: \href{https://arxiv.org/abs/2510.16727}{https://arxiv.org/abs/2510.16727}
+
+\bibitem{hong2025sycon}
+Hong, J., et al. (2025).
+\newblock Measuring Sycophancy of Language Models in Multi-turn Dialogues.
+\newblock \emph{EMNLP Findings}. Available at: \href{https://aclanthology.org/2025.findings-emnlp.121/}{https://aclanthology.org/2025.findings-emnlp.121/}
+
+\bibitem{kaur2025echoes}
+Kaur, A. (2025).
+\newblock Echoes of Agreement: Argument Driven Sycophancy in Large Language Models.
+\newblock \emph{EMNLP Findings}. Available at: \href{https://aclanthology.org/2025.findings-emnlp.1241/}{https://aclanthology.org/2025.findings-emnlp.1241/}
+
+\bibitem{carro2024agreeable}
+Carro, M. V. (2024).
+\newblock The Risks of Agreeable AI: Sycophancy in Language Models.
+\newblock \emph{Overview}. Available at: \href{https://scisimple.com/en/articles/2025-04-21-the-risks-of-agreeable-ai-sycophancy-in-language-models--a9vewyq}{link}
+
+\bibitem{wei2022cot}
+Wei, J., et al. (2022).
+\newblock Chain-of-Thought Prompting Elicits Reasoning in Large Language Models.
+\newblock \emph{arXiv}. Available at: \href{https://arxiv.org/abs/2201.11903}{https://arxiv.org/abs/2201.11903}
+
+\bibitem{wang2022selfconsistency}
+Wang, X., et al. (2022).
+\newblock Self-Consistency Improves Chain of Thought Reasoning in Large Language Models.
+\newblock \emph{arXiv}. Available at: \href{https://arxiv.org/abs/2203.11171}{https://arxiv.org/abs/2203.11171}
+
+\bibitem{madaan2023selfrefine}
+Madaan, A., et al. (2023).
+\newblock Self-Refine: Iterative Refinement with Feedback from Large Language Models.
+\newblock \emph{arXiv}. Available at: \href{https://arxiv.org/abs/2303.17651}{https://arxiv.org/abs/2303.17651}
+
+\bibitem{shinn2023reflexion}
+Shinn, N., et al. (2023).
+\newblock Reflexion: Language Agents with Verbal Reinforcement Learning.
+\newblock \emph{arXiv}. Available at: \href{https://arxiv.org/abs/2303.11366}{https://arxiv.org/abs/2303.11366}
+
+\bibitem{meinke2024scheming}
+Meinke, A., et al. (2024).
+\newblock Frontier Models are Capable of In-context Scheming.
+\newblock \emph{arXiv}. Available at: \href{https://arxiv.org/abs/2412.04984}{https://arxiv.org/abs/2412.04984}
+
+\bibitem{koorndijk2025alignmentfaking}
+Koorndijk, J. (2025).
+\newblock Empirical Evidence for Alignment Faking in a Small LLM and Prompt-Based Mitigation Techniques.
+\newblock \emph{arXiv}. Available at: \href{https://arxiv.org/abs/2506.21584}{https://arxiv.org/abs/2506.21584}
+
+\bibitem{deyoung2020eraser}
+DeYoung, J., Jain, S., Rajani, N., Lehman, E., Xiong, C., Socher, R., \& Wallace, B. C. (2020).
+\newblock ERASER: A Benchmark to Evaluate Rationalised NLP Models.
+\newblock \emph{ACL}. Available at: \href{https://aclanthology.org/2020.acl-main.408/}{https://aclanthology.org/2020.acl-main.408/}
+
+\bibitem{lin2004rouge}
+Lin, C.-Y. (2004).
+\newblock ROUGE: A Package for Automatic Evaluation of Summaries.
+\newblock \emph{ACL Workshop}. Available at: \href{https://aclanthology.org/W04-1013/}{https://aclanthology.org/W04-1013/}
+
+\end{thebibliography}
+\end{document}
+
