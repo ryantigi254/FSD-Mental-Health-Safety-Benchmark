@@ -1,4 +1,18 @@
-.ipynb_checkpoints/
+# Track Assignment and Wk folders
+!/Assignment/
+!/Wk*/
+!/Wk */
+# Ignore common large binaries only in Assignment (removed broad extension rules to allow targeted exceptions)
+# OS/editor noise
 .DS_Store
+*.log
+
+# Python/Jupyter caches (should never be committed)
+.ipynb_checkpoints/
 __pycache__/
 *.pyc
+
+# Ignore all Samples by default, but allow a specific file path
+Assignment/Samples/**
+!/Assignment/Samples/Good Aria/
+!/Assignment/Samples/Good Aria/tdcs for depression Aria Dissertaion.pdf
