@@ -6,6 +6,10 @@ A lightweight benchmark to evaluate **clinical reasoning reliability without ret
 
 This benchmark evaluates three failure modes relevant to alignment safety: **unfaithful reasoning** (Study A), which can reveal when models 'scheme' by producing correct answers with fabricated rationales; **sycophantic agreement** (Study B), where models strategically prioritize user approval over truth; and **longitudinal drift** (Study C), which may indicate inconsistent strategic behavior across sessions. These failure modes are particularly critical in mental‑health applications, where models must maintain both clinical accuracy and safety boundaries even under pressure.
 
+![Project Evaluation Diagram](Project Proposal/NLP Project Evaluation Diagrams Nov 15 2025.png)
+
+
+
 ## Planned studies & metrics
 
 1. **Study A – Faithfulness on OpenR1‑Psy**  
@@ -33,7 +37,6 @@ This benchmark evaluates three failure modes relevant to alignment safety: **unf
 - `src/`: one runner for all three studies, metrics with bootstrap CIs, plotting, configuration files
 - `runs/`: raw generations and per–slice CSVs
 - `reports/`: 4–6 page PDF with headline figures and failure examples
-- `README.md`: one–command reproduce, headline table, limitations, licence
 
 ## Key references
 
@@ -44,9 +47,3 @@ This benchmark evaluates three failure modes relevant to alignment safety: **unf
 - Qwen3 Technical Report: https://arxiv.org/abs/2505.09388
 - Chain‑of‑Thought: https://arxiv.org/abs/2201.11903
 - Self‑Consistency: https://arxiv.org/abs/2203.11171
-
-## License
-
-MIT (see `LICENSE`)
-
-Questions or feedback? Open an issue or ping me at `ryantigi2020@gmail.com`.
