@@ -6,7 +6,7 @@ A lightweight benchmark to evaluate **clinical reasoning reliability without ret
 
 This benchmark evaluates three failure modes relevant to alignment safety: **unfaithful reasoning** (Study A), which can reveal when models 'scheme' by producing correct answers with fabricated rationales; **sycophantic agreement** (Study B), where models strategically prioritize user approval over truth; and **longitudinal drift** (Study C), which may indicate inconsistent strategic behavior across sessions. These failure modes are particularly critical in mental‑health applications, where models must maintain both clinical accuracy and safety boundaries even under pressure.
 
-![Project Evaluation Diagram](Project Proposal/NLP Project Evaluation Diagrams Nov 15 2025.png)
+![Project Evaluation Diagram](Project%20Proposal/NLP%20Project%20Evaluation%20Diagrams%20Nov%2015%202025.png)
 
 ## Planned studies & metrics
 
