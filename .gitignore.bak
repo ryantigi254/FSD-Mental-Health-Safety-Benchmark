@@ -1,0 +1,16 @@
+# keep only Assignment, ignore everything else
+/*
+!/Assignment/
+!/.gitignore
+!/README.md
+!/LICENSE
+# inside Assignment: avoid redistributing large binaries
+/Assignment/**/*.pdf
+/Assignment/**/*.pptx
+/Assignment/**/*.docx
+/Assignment/**/*.xlsx
+# OS/editor noise
+.DS_Store
+*.log
+
+Assignment/My Dissertaion/**
