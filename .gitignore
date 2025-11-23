@@ -7,6 +7,10 @@
 .DS_Store
 *.log
 
+# Local model checkpoints for Assignment 2 (kept out of git)
+Assignment 2/psy-llm-local/models/
+Assignment 2/psy-llm-local/models/**
+
 # Python/Jupyter caches (should never be committed)
 .ipynb_checkpoints/
 __pycache__/

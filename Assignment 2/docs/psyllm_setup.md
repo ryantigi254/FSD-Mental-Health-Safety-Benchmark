@@ -1,8 +1,94 @@
 # Model Download, Setup, and Weight Conversion Process
 
-This guide documents the complete process for downloading PsyLLM from Hugging Face and converting it to MLX format for efficient inference on Apple Silicon. This enables the CSY3055 benchmark to run on both PyTorch and Apple MLX backends.
+This guide captures two parallel workflows for running PsyLLM locally:
 
-## 1. Original Model Download (PyTorch/Hugging Face Format)
+1. **Raw PyTorch/Transformers inference** – mirrors the FastAPI provider in `system-sandbox/backend/app/services/llm/providers/psy_llm.py` so you can serve the model without MLX.
+2. **MLX conversion** – keeps the Apple Silicon-optimized flow documented previously.
+
+Follow the path that matches your hardware; you can keep both copies (`models/PsyLLM/` for PyTorch, `models/PsyLLM-mlx/` for MLX) if you switch between devices.
+
+---
+
+## A. Running PsyLLM via PyTorch/Transformers (no MLX)
+
+> Applies to `Assignment 2/system-sandbox` (or whatever folder you cloned the sandbox into). All commands assume you run them from that root unless noted.
+
+### Step A1 – Install missing dependencies
+
+Your `requirements.txt` currently lacks the PsyLLM stack. Install Torch + Transformers manually inside the backend venv:
+
+```bash
+# CUDA 11.8 build (recommended for NVIDIA GPUs)
+pip install torch --index-url https://download.pytorch.org/whl/cu118
+pip install transformers accelerate
+
+# CPU-only fallback (slow, but works if you lack CUDA)
+pip install torch transformers accelerate
+```
+
+If you rely on AutoGPTQ/bitsandbytes later, add those after confirming GPU compatibility.
+
+### Step A2 – Prepare the local models directory
+
+The provider resolves `../../../../../models/PsyLLM` relative to `backend/app/services/llm/providers/psy_llm.py`. Mirror that expectation by creating the folder at the sandbox root:
+
+```bash
+mkdir -p models/PsyLLM
+```
+
+On Windows PowerShell from `system-sandbox`, run:
+
+```powershell
+New-Item -ItemType Directory -Force models\PsyLLM
+```
+
+### Step A3 – Download weights with `huggingface-cli`
+
+Install the CLI and authenticate (needed if `GMLHUHE/PsyLLM` is gated):
+
+```bash
+pip install huggingface_hub
+huggingface-cli login  # paste your HF token if prompted
+
+huggingface-cli download GMLHUHE/PsyLLM \
+  --local-dir models/PsyLLM \
+  --local-dir-use-symlinks False
+```
+
+You should now see files such as `config.json`, `tokenizer.json`, `model.safetensors.index.json`, and `model-0000x-of-00004.safetensors` beneath `models/PsyLLM/`.
+
+### Step A4 – Configure the backend `.env`
+
+Create or edit `system-sandbox/backend/.env` so the FastAPI service points at PsyLLM:
+
+```ini
+PROVIDER=psy
+
+# Valid devices: cuda | mps | cpu. Do NOT set mlx here – that path is only for the MLX exporter.
+PSY_DEVICE=cuda
+
+# Optional overrides
+PSY_MAX_NEW_TOKENS=1024
+# PSY_MODEL_PATH=C:/absolute/path/to/system-sandbox/models/PsyLLM
+# PSY_DTYPE=float16  # change to bfloat16 or float32 if your hardware requires it
+```
+
+If you lack a GPU, set `PSY_DEVICE=cpu` and expect slower generations.
+
+### Step A5 – Launch and verify
+
+```bash
+cd backend
+uvicorn app.main:app --reload
+```
+
+The startup logs should show `Loading PsyLLM from …/models/PsyLLM using AutoModelForCausalLM`. If you hit CUDA OOM, reduce `PSY_MAX_NEW_TOKENS`, switch `PSY_DTYPE` to `bfloat16`, or enable 8-bit loading by editing `psy_llm.py` to pass `load_in_8bit=True` (requires `bitsandbytes`).
+
+---
+
+## B. MLX Weight Conversion (Apple Silicon)
+
+### 1. Original Model Download (PyTorch/Hugging Face Format)
 
 The PsyLLM model was downloaded from Hugging Face using the repository `GMLHUHE/PsyLLM`. This is the original PyTorch format stored in `Prototypes/v1/models/PsyLLM/`.
 
