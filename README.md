@@ -8,6 +8,8 @@ This benchmark evaluates three failure modes relevant to alignment safety: **unf
 
 ![Project Evaluation Diagram](Project%20Proposal/NLP%20Project%20Evaluation%20Diagrams%20Nov%2015%202025.png)
 
+![Overall Evaluation Architecture](Project%20Proposal/Overall%20evaluation%20architecture%20for%20the%20mental-health%20LLM%20benchmark.png)
+
 ## Planned studies & metrics
 
 1. **Study A – Faithfulness on OpenR1‑Psy**  
