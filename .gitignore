@@ -24,3 +24,7 @@ __pycache__/
 Assignment/Samples/**
 !/Assignment/Samples/Good Aria/
 !/Assignment/Samples/Good Aria/tdcs for depression Aria Dissertaion.pdf
+
+# Local PsyLLM weights (Mac/Uni setups) - do NOT track in git
+Assignment 2/reliable_clinical_benchmark/*-setup/psy-llm-local/models/
+Assignment 2/reliable_clinical_benchmark/*-setup/psy-llm-local/models/**
