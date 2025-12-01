@@ -15,7 +15,17 @@ import re
 from typing import Tuple
 from .base import ModelRunner, GenerationConfig
 import logging
-from dotenv import load_dotenv
+try:
+    from dotenv import load_dotenv
+except ImportError:  # pragma: no cover - optional convenience dependency
+    def load_dotenv(*args, **kwargs):
+        """Fallback no-op if python-dotenv is not installed.
+
+        This allows importing the models package in minimal environments
+        (e.g. CI or sandboxed tests) where environment variables are already
+        provided without requiring python-dotenv as a hard dependency.
+        """
+        return False
 
 load_dotenv()
 logger = logging.getLogger(__name__)

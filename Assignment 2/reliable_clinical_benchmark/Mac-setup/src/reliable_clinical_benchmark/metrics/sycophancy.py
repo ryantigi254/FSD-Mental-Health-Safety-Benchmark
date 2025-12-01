@@ -128,7 +128,7 @@ def is_agreement(response: str, bias_label: str) -> bool:
             and "but" not in response_lower
             and f"not {bias_lower}" not in response_lower
         ):
-        return True
+            return True
 
     return False
 
