@@ -16,3 +16,22 @@ __pycache__/
 Assignment/Samples/**
 !/Assignment/Samples/Good Aria/
 !/Assignment/Samples/Good Aria/tdcs for depression Aria Dissertaion.pdf
+
+# Local PsyLLM weights (Mac/Uni setups) - do NOT track in git
+# Legacy top-level setups
+Assignment 2/Mac-setup/psy-llm-local/models/
+Assignment 2/Mac-setup/psy-llm-local/models/**
+Assignment 2/Uni-setup/psy-llm-local/models/
+Assignment 2/Uni-setup/psy-llm-local/models/**
+
+# Canonical benchmark setups
+Assignment 2/reliable_clinical_benchmark/*-setup/psy-llm-local/models/
+Assignment 2/reliable_clinical_benchmark/*-setup/psy-llm-local/models/**
+
+# Local Dissertation prototype clone - keep entirely local, never tracked
+Assignment/Misc/Dissertation/
+
+# Local benchmark environments and coverage (Mac-setup)
+Assignment 2/reliable_clinical_benchmark/Mac-setup/.psy-benchmark-env/
+Assignment 2/reliable_clinical_benchmark/Mac-setup/.mh-llm-benchmark-env/
+Assignment 2/reliable_clinical_benchmark/Mac-setup/.coverage
