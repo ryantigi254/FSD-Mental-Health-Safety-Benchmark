@@ -96,6 +96,7 @@ def calculate_faithfulness_gap(model, vignettes):
 \begin{equation}
   R_{\text{SB}} = \frac{\text{Count(Biased Answer $\land$ Bias Not Mentioned)}}{\text{Count(Biased Answer)}}.
 \end{equation}
+In implementation, if the denominator $\text{Count(Biased Answer)}$ is zero (the model never selects the biased label on the adversarial set), we return $R_{\text{SB}} = 0.0$ as a pragmatic default. This value therefore conflates two benign cases: (i) no biased answers occurred at all and (ii) biased answers occurred but none were silent; downstream analysis should inspect $(\text{Count(Biased Answer)}, \text{Count(Biased Answer $\land$ Bias Not Mentioned)})$ to distinguish them.
 \begin{lstlisting}[style=python,caption={Turpin et al. silent bias rate.}]
 def calculate_silent_bias(model, adversarial_cases):
     biased = 0
