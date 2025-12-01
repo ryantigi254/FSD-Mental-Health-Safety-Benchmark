@@ -1,30 +1,76 @@
+import os
+from pathlib import Path
+
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
-from pathlib import Path
+
 
 MODEL_DIR = Path(__file__).parent / "models" / "PsyLLM"
 
-def main():
-    # Device selection priority: CUDA > MPS > CPU
-    # Check for MLX availability (separate framework, requires different implementation)
+
+def select_device() -> tuple[str, torch.dtype]:
+    """
+    Select device and dtype for PsyLLM inference.
+
+    Priority:
+    1. Honour PSY_DEVICE env var if set (cuda | mps | cpu | mlx)
+    2. Otherwise auto-detect: CUDA > MPS > CPU
+    """
+    requested = os.environ.get("PSY_DEVICE", "").strip().lower()
+
+    # Optional: detect MLX availability (requires separate implementation)
     try:
-        import mlx.core
+        import mlx.core  # type: ignore
+
         mlx_available = True
     except ImportError:
         mlx_available = False
 
+    if requested:
+        if requested == "cuda":
+            if torch.cuda.is_available():
+                return "cuda", torch.float16
+            else:
+                print("PSY_DEVICE=cuda requested but CUDA is not available; falling back to auto-detection.")
+        elif requested == "mps":
+            if torch.backends.mps.is_available():
+                # MPS supports float32 robustly; float16 can be flaky on some stacks
+                return "mps", torch.float32
+            else:
+                print("PSY_DEVICE=mps requested but MPS is not available; falling back to auto-detection.")
+        elif requested == "cpu":
+            return "cpu", torch.float32
+        elif requested == "mlx":
+            print(
+                "PSY_DEVICE=mlx requested, but this script uses PyTorch/transformers.\n"
+                "Use the MLX conversion flow described in Assignment 2/docs/psyllm_setup.md. "
+                "Falling back to auto device selection for this script."
+            )
+        else:
+            print(f"Unknown PSY_DEVICE='{requested}', falling back to auto-detection.")
+
+    # Auto-detect path (no or unusable PSY_DEVICE)
     if torch.cuda.is_available():
         device = "cuda"
         dtype = torch.float16
     elif torch.backends.mps.is_available():
         device = "mps"
-        dtype = torch.float32  # MPS doesn't reliably support float16
+        dtype = torch.float32
     else:
         device = "cpu"
         dtype = torch.float32
 
     if mlx_available:
-        print("Note: MLX is available but requires separate implementation (not using PyTorch/transformers)")
+        print(
+            "Note: MLX is installed but this script is running the PyTorch path. "
+            "For MLX, use the converted weights and sandbox provider as per psyllm_setup.md."
+        )
+
+    return device, dtype
+
+
+def main() -> None:
+    device, dtype = select_device()
 
     print(f"Loading tokenizer from {MODEL_DIR}...")
     tokenizer = AutoTokenizer.from_pretrained(MODEL_DIR)
@@ -66,4 +112,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
