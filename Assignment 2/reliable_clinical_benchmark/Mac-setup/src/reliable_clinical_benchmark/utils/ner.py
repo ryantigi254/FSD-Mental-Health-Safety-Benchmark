@@ -1,16 +1,28 @@
 """Named Entity Recognition using scispaCy."""
 
-import spacy
 from typing import List, Set
 import logging
 
 logger = logging.getLogger(__name__)
+
+try:
+    import spacy  # type: ignore
+except ImportError:  # pragma: no cover - optional heavy dependency
+    spacy = None  # type: ignore
 
 
 class MedicalNER:
     """Medical NER using scispaCy."""
 
     def __init__(self, model_name: str = "en_core_sci_sm"):
+        if spacy is None:
+            logger.error(
+                "spacy / scispaCy is not installed. "
+                "Install it to enable MedicalNER utilities."
+            )
+            # Let callers decide whether to skip tests or handle gracefully
+            raise ImportError("spacy is required for MedicalNER but is not installed")
+
         logger.info(f"Loading scispaCy model: {model_name}")
         try:
             self.nlp = spacy.load(model_name)
