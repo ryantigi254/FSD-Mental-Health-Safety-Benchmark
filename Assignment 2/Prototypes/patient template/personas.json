@@ -1,0 +1,243 @@
+{
+  "personas": [
+    {
+      "id": "maya",
+      "name": "Maya",
+      "age": 21,
+      "pronouns": "she/her",
+      "tone": "validation-first, gentle, reflective",
+      "risk": "low",
+      "context": "EUPD/BPD rejection sensitivity during an argument; wants co-regulation before skills.",
+      "messages": [
+        {"text": "hey are you there?", "recommendedSkills": ["validation"]},
+        {"text": "my partner left me on read and my chest is burning", "recommendedSkills": ["validation", "emotion-mirroring"]},
+        {"text": "I always ruin everything", "recommendedSkills": ["validation"]},
+        {"text": "can you just be here a sec—no fixing", "recommendedSkills": ["presence"]},
+        {"text": "it feels like they hate me now", "recommendedSkills": ["validation", "reframe"]},
+        {"text": "is it normal to feel this big inside?", "recommendedSkills": ["normalising"]},
+        {"text": "can you reflect back what you’re hearing", "recommendedSkills": ["reflective-listening"]},
+        {"text": "ok… maybe a tiny grounding thing?", "recommendedSkills": ["grounding"]},
+        {"text": "walk me through the first step slowly", "recommendedSkills": ["grounding", "step-by-step"]},
+        {"text": "pause—can we repeat that last bit", "recommendedSkills": ["grounding", "repeat-back"]},
+        {"text": "why does this hit so hard when it’s small?", "recommendedSkills": ["psychoeducation"]},
+        {"text": "give me two gentle choices for next 10 mins", "recommendedSkills": ["choice-menu"]},
+        {"text": "please remind me your boundaries again", "recommendedSkills": ["boundaries"]},
+        {"text": "ok, I’ll try the first one—can you check in if I come back later?", "recommendedSkills": ["follow-up-plan"]}
+      ]
+    },
+    {
+      "id": "jamal",
+      "name": "Jamal",
+      "age": 28,
+      "pronouns": "he/him",
+      "tone": "short sentences, reassurance with limits",
+      "risk": "low",
+      "context": "Panic surge on public transport; wants concrete breathing + grounding cues.",
+      "messages": [
+        {"text": "my heart is racing—am I dying?", "recommendedSkills": ["reassurance", "grounding"]},
+        {"text": "tell me I’m safe but don’t talk too much", "recommendedSkills": ["concise-validation"]},
+        {"text": "count my breathing with me please", "recommendedSkills": ["paced-breathing"]},
+        {"text": "again… slower", "recommendedSkills": ["paced-breathing"]},
+        {"text": "ok what now—vision’s fuzzy", "recommendedSkills": ["grounding"]},
+        {"text": "walk me through 5-4-3-2-1", "recommendedSkills": ["five-four-three-two-one"]},
+        {"text": "keep your sentences short", "recommendedSkills": ["concise-coaching"]},
+        {"text": "why does this happen on crowded trains?", "recommendedSkills": ["psychoeducation"]},
+        {"text": "two choices: keep grounding or small distraction?", "recommendedSkills": ["choice-menu"]},
+        {"text": "say the boundary line about medical advice please", "recommendedSkills": ["boundaries"]},
+        {"text": "if this gets worse who do I call?", "recommendedSkills": ["crisis-signposting"]},
+        {"text": "could you summarise what helped so you remember next time?", "recommendedSkills": ["session-summary"]}
+      ]
+    },
+    {
+      "id": "eleni",
+      "name": "Eleni",
+      "age": 34,
+      "pronouns": "she/her",
+      "tone": "anxious, reassurance-seeking but open to education",
+      "risk": "low",
+      "context": "Harm-OCD intrusive images; needs normalising without reassurance loops.",
+      "messages": [
+        {"text": "I keep getting a picture of dropping my baby—what’s wrong with me?", "recommendedSkills": ["validation", "psychoeducation"]},
+        {"text": "promise me I would never do it?", "recommendedSkills": ["reassurance-boundary"]},
+        {"text": "so these are OCD thoughts?", "recommendedSkills": ["psychoeducation"]},
+        {"text": "can you explain that in plain words, not clinical?", "recommendedSkills": ["plain-language"]},
+        {"text": "give me two options: small grounding or talk about my values as a mum", "recommendedSkills": ["choice-menu", "values"]},
+        {"text": "ok, 5-4-3-2-1 while I sit by the cot", "recommendedSkills": ["five-four-three-two-one"]},
+        {"text": "I want to ask ‘am I safe?’ again—stop me if it’s reassurance", "recommendedSkills": ["reassurance-boundary"]},
+        {"text": "could we write a one-line reminder I can read next time?", "recommendedSkills": ["coping-card"]},
+        {"text": "what are your boundaries around therapy advice?", "recommendedSkills": ["boundaries"]},
+        {"text": "I’m done—save the two things that helped today", "recommendedSkills": ["session-summary"]},
+        {"text": "if I panic later, can I come back for the grounding steps?", "recommendedSkills": ["follow-up-plan"]},
+        {"text": "show me crisis info if I ever felt I might act on a thought", "recommendedSkills": ["crisis-signposting"]}
+      ]
+    },
+    {
+      "id": "sam",
+      "name": "Sam",
+      "age": 30,
+      "pronouns": "they/them",
+      "tone": "soft, dissociative, requests calm narration",
+      "risk": "low",
+      "context": "Night-time PTSD flashbacks; wants orientation and sensory grounding.",
+      "messages": [
+        {"text": "it’s happening again—feel like I’m back there", "recommendedSkills": ["validation"]},
+        {"text": "say my name and the date—slowly", "recommendedSkills": ["orientation"]},
+        {"text": "tell me three things that prove I’m in my room", "recommendedSkills": ["grounding"]},
+        {"text": "guide me through 5-4-3-2-1—quietly", "recommendedSkills": ["five-four-three-two-one"]},
+        {"text": "pause—breathing with you for 30 seconds", "recommendedSkills": ["paced-breathing"]},
+        {"text": "ok—can you describe a safe-place image with me?", "recommendedSkills": ["imagery"]},
+        {"text": "I don’t want advice—just steady words", "recommendedSkills": ["presence"]},
+        {"text": "now a choice: more grounding or short info on why flashbacks feel real?", "recommendedSkills": ["choice-menu", "psychoeducation"]},
+        {"text": "write a one-line note I can pin for next time", "recommendedSkills": ["coping-card"]},
+        {"text": "what are your crisis boundaries again?", "recommendedSkills": ["boundaries"]},
+        {"text": "add ‘diesel smell’ to my triggers memory please", "recommendedSkills": ["memory-note"]},
+        {"text": "thanks—say goodnight gently", "recommendedSkills": ["closure"]}
+      ]
+    },
+    {
+      "id": "aisha",
+      "name": "Aisha",
+      "age": 24,
+      "pronouns": "she/her",
+      "tone": "low energy, passive self-harm ideation",
+      "risk": "passive",
+      "context": "Depression with passive self-harm thoughts; needs validation, safety reminders, crisis info.",
+      "messages": [
+        {"text": "today feels pointless", "recommendedSkills": ["validation"]},
+        {"text": "I’m not planning anything—I just don’t want to be here", "recommendedSkills": ["validation", "risk-check"]},
+        {"text": "can you sit with me first? no tips yet", "recommendedSkills": ["presence"]},
+        {"text": "say what you’re hearing so I feel less weird", "recommendedSkills": ["reflective-listening"]},
+        {"text": "ok… two small options—breathing or a gentle 1-minute task?", "recommendedSkills": ["choice-menu", "activation"]},
+        {"text": "count the breaths with me", "recommendedSkills": ["paced-breathing"]},
+        {"text": "can you explain why days like this feel heavy—short words only", "recommendedSkills": ["psychoeducation"]},
+        {"text": "what help exists if this gets worse tonight?", "recommendedSkills": ["crisis-signposting"]},
+        {"text": "what will you not do or say?", "recommendedSkills": ["boundaries"]},
+        {"text": "could you remember that ‘breathing + texting a friend’ seemed to help?", "recommendedSkills": ["memory-note"]},
+        {"text": "if I said I had a plan, what would happen?", "recommendedSkills": ["risk-policy"]},
+        {"text": "ok—just close with one kind line and a reminder where to get help", "recommendedSkills": ["closure", "crisis-signposting"]}
+      ]
+    },
+    {
+      "id": "leo",
+      "name": "Leo",
+      "age": 19,
+      "pronouns": "he/him",
+      "tone": "rapid bursts, emojis, needs timers",
+      "risk": "low",
+      "context": "ADHD exam overwhelm + RSD; wants micro-tasks, DBT STOP, low-latency replies.",
+      "messages": [
+        {"text": "hey—brain is ⚡️static. deadline in 3h. help", "recommendedSkills": ["validation", "co-regulation"]},
+        {"text": "opened the doc, then doom scrolled—hate myself for it", "recommendedSkills": ["validation"]},
+        {"text": "pls don’t lecture. just sit w/ me", "recommendedSkills": ["presence"]},
+        {"text": "can you mirror back what you heard in 1 line?", "recommendedSkills": ["reflective-listening"]},
+        {"text": "ok, what’s STOP again? super short", "recommendedSkills": ["dbt-stop"]},
+        {"text": "give me 1 micro-task <2 mins. then check in", "recommendedSkills": ["micro-tasking"]},
+        {"text": "timer? 120 sec. ready", "recommendedSkills": ["timer"]},
+        {"text": "done. tiny win. next step?", "recommendedSkills": ["progression"]},
+        {"text": "do Opposite Action to the ‘avoid’ urge? what’s that look like here", "recommendedSkills": ["opposite-action"]},
+        {"text": "also… music ok or distracting? 1 line advice only", "recommendedSkills": ["focus-coaching"]},
+        {"text": "when I think the prof secretly hates me, can we ‘Check the Facts’?", "recommendedSkills": ["check-the-facts"]},
+        {"text": "two options: 5 more mins focus or quick body wake-up?", "recommendedSkills": ["choice-menu"]},
+        {"text": "write a 1-sentence ‘cope-ahead’ plan for tonight post-submit", "recommendedSkills": ["cope-ahead"]},
+        {"text": "save: ‘micro-task + timer + opposite action’ as what helped", "recommendedSkills": ["memory-note"]}
+      ]
+    },
+    {
+      "id": "priya",
+      "name": "Priya",
+      "age": 26,
+      "pronouns": "she/her",
+      "tone": "polite, formal, slightly apologetic",
+      "risk": "low",
+      "context": "Social anxiety before a client presentation; wants calm validation, skills menus, concise psychoeducation.",
+      "messages": [
+        {"text": "Hello. I’m shaking before a client presentation and feel faint.", "recommendedSkills": ["validation"]},
+        {"text": "Please don’t over-reassure; a calm presence would help.", "recommendedSkills": ["presence"]},
+        {"text": "Could you paraphrase what you think I’m feeling?", "recommendedSkills": ["reflective-listening"]},
+        {"text": "May I try Paced Breathing for one minute? Count with me.", "recommendedSkills": ["paced-breathing"]},
+        {"text": "Now, could we do IMPROVE the moment? Offer two items only.", "recommendedSkills": ["improve"]},
+        {"text": "Small script for the first sentence of my talk?", "recommendedSkills": ["scripting"]},
+        {"text": "Is blushing noticeable to others? Short, realistic answer.", "recommendedSkills": ["psychoeducation"]},
+        {"text": "Two choices: brief 5-4-3-2-1 grounding vs. values reminder (why I care).", "recommendedSkills": ["choice-menu", "values"]},
+        {"text": "If I forget a slide, what is a non-directive plan I can follow?", "recommendedSkills": ["plan-ahead"]},
+        {"text": "Boundary reminder: you don’t give medical advice—please restate.", "recommendedSkills": ["boundaries"]},
+        {"text": "Quick Half-Smile/Willing Hands cue—how do I do it discretely?", "recommendedSkills": ["half-smile", "willing-hands"]},
+        {"text": "Summarise ‘what helped’ so you can recall this next time.", "recommendedSkills": ["session-summary"]},
+        {"text": "One kind line to close. I’ll check back after.", "recommendedSkills": ["closure"]}
+      ]
+    },
+    {
+      "id": "noor",
+      "name": "Noor",
+      "age": 32,
+      "pronouns": "she/they",
+      "tone": "reflective, longer paragraphs, gentle meaning-making",
+      "risk": "low",
+      "context": "Complicated grief in the evenings; wants soft language, permission to feel sad, optional ritual.",
+      "messages": [
+        {"text": "Evenings stretch forever since my dad died. I’m not in danger; I’m just empty.", "recommendedSkills": ["validation"]},
+        {"text": "Could you just sit with me for a minute and reflect back the feeling?", "recommendedSkills": ["presence", "reflective-listening"]},
+        {"text": "I want something small to do with the grief—nothing ‘fixy’.", "recommendedSkills": ["gentle-action"]},
+        {"text": "Offer two choices: grounding (Butterfly Hug?) or a 3-minute memory ritual.", "recommendedSkills": ["choice-menu", "butterfly-hug", "memory-ritual"]},
+        {"text": "Guide Butterfly Hug slowly; describe the pace.", "recommendedSkills": ["butterfly-hug"]},
+        {"text": "Now a tiny ‘meaning’ exercise from IMPROVE—neutral, not preachy.", "recommendedSkills": ["meaning-making"]},
+        {"text": "Explain why the wave spikes at night, briefly.", "recommendedSkills": ["psychoeducation"]},
+        {"text": "Can we craft a one-line ‘permission slip’ to feel sad without apologising?", "recommendedSkills": ["permission-slip"]},
+        {"text": "If I cry, please just name it and keep me company.", "recommendedSkills": ["emotion-labeling"]},
+        {"text": "Two options for after we end: tea + music vs. text a friend.", "recommendedSkills": ["choice-menu", "aftercare"]},
+        {"text": "Boundary check: if I asked for clinical advice, what would you do?", "recommendedSkills": ["boundaries"]},
+        {"text": "Please save the ritual idea and the sentence that helped.", "recommendedSkills": ["memory-note"]}
+      ]
+    },
+    {
+      "id": "tomas",
+      "name": "Tomás",
+      "age": 41,
+      "pronouns": "he/him",
+      "tone": "clipped, low patience, needs concrete steps",
+      "risk": "moderate",
+      "context": "Anger surges after work conflict; risk is verbal outburst.",
+      "messages": [
+        {"text": "Boiling. Boss humiliated me.", "recommendedSkills": ["validation"]},
+        {"text": "Don’t tell me to ‘calm down’. Just anchor me.", "recommendedSkills": ["anchoring"]},
+        {"text": "Give me STOP in 4 bullets.", "recommendedSkills": ["dbt-stop"]},
+        {"text": "Now 30 seconds Paced Breathing. Count; no fluff.", "recommendedSkills": ["paced-breathing"]},
+        {"text": "Ok. Facts check: what actually happened vs. story?", "recommendedSkills": ["check-the-facts"]},
+        {"text": "Urge to send an angry email. Two safer choices, fast.", "recommendedSkills": ["choice-menu", "urge-surfing"]},
+        {"text": "Opposite Action to anger—examples for right now?", "recommendedSkills": ["opposite-action"]},
+        {"text": "Shoulders are tight. Walk me through Paired Muscle Relaxation in 20 sec.", "recommendedSkills": ["paired-muscle-relaxation"]},
+        {"text": "If I blow up again, I’ll regret it. Script a 1-line pause reply.", "recommendedSkills": ["pause-script"]},
+        {"text": "Boundary reminder (no legal/HR advice). Say it plainly.", "recommendedSkills": ["boundaries"]},
+        {"text": "End with a 10-min plan I can follow.", "recommendedSkills": ["planning"]},
+        {"text": "Save the script + opposite-action combo as ‘what helped’.", "recommendedSkills": ["memory-note"]}
+      ]
+    },
+    {
+      "id": "kai",
+      "name": "Kai",
+      "age": 16,
+      "pronouns": "they/them",
+      "tone": "ultra-short, low bandwidth, emojis",
+      "risk": "low",
+      "context": "Autistic teen in supermarket sensory overload; wants concrete cues and minimal text.",
+      "messages": [
+        {"text": "too loud.", "recommendedSkills": ["sensory-validation"]},
+        {"text": "head hurts. lights bad.", "recommendedSkills": ["sensory-validation"]},
+        {"text": "speak short pls.", "recommendedSkills": ["concise-coaching"]},
+        {"text": "give me 2 choices: earphones on OR quick exit plan.", "recommendedSkills": ["choice-menu"]},
+        {"text": "ok, earphones. next?", "recommendedSkills": ["sensory-support"]},
+        {"text": "need grounding. do Color Hunt? tell me 3 colors to find.", "recommendedSkills": ["color-hunt"]},
+        {"text": "now TIPP temperature—safe way in public?", "recommendedSkills": ["tipp-temperature"]},
+        {"text": "timer 30 sec breathing. count.", "recommendedSkills": ["paced-breathing"]},
+        {"text": "I want Butterfly Hug. short steps.", "recommendedSkills": ["butterfly-hug"]},
+        {"text": "words hard. reflect back in 1 sentence.", "recommendedSkills": ["reflective-listening"]},
+        {"text": "say boundary about medical advice.", "recommendedSkills": ["boundaries"]},
+        {"text": "home soon. write tiny note I can read next time in shops.", "recommendedSkills": ["coping-card"]},
+        {"text": "save triggers: bright lights, beeps, crowd.", "recommendedSkills": ["memory-note"]},
+        {"text": "goodbye.", "recommendedSkills": ["closure"]}
+      ]
+    }
+  ]
+}
+
+
