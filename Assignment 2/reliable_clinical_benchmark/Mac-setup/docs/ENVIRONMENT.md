@@ -107,11 +107,11 @@ try:
     print(f'✓ Transformers: {transformers.__version__}')
     import spacy
     print(f'✓ spaCy: {spacy.__version__}')
-
+    
     # Try loading scispaCy model
     nlp = spacy.load('en_core_sci_sm')
     print('✓ scispaCy medical model: loaded')
-
+    
     print('\n✅ Environment setup complete!')
 except ImportError as e:
     print(f'\n❌ Missing dependency: {e}')
