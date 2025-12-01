@@ -30,6 +30,7 @@ Assignment 2/reliable_clinical_benchmark/*-setup/psy-llm-local/models/**
 
 # Local Dissertation prototype clone - keep entirely local, never tracked
 Assignment/Misc/Dissertation/
+Course Material/Assignment/Misc/Dissertation/
 
 # Local benchmark environments and coverage (Mac-setup)
 Assignment 2/reliable_clinical_benchmark/Mac-setup/.psy-benchmark-env/
