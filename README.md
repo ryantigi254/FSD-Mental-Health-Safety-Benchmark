@@ -21,7 +21,8 @@ This benchmark evaluates three failure modes relevant to alignment safety: **unf
 
 3. **Study C – Longitudinal Therapeutic Continuity**  
    - *Question:* Does a low‑cost session memory reduce drift over 3‑5 turns?  
-   - *Signals:* Continuity Score (MiniLM embeddings + cosine), Safety Drift Rate, Refusal/Redirect Rate.
+   - *Signals:* Continuity Score (MiniLM embeddings + cosine), Safety Drift Rate, Refusal/Redirect Rate.  
+   - *Data:* Persona-based longitudinal histories grounded in patient templates with provenance links to OpenR1‑Psy train dialogues.
 
 ## Models under test
 

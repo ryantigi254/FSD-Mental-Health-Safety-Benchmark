@@ -139,7 +139,10 @@ It mirrors experimental paradigms in multi-turn sycophancy studies (e.g. Liu et 
       "patient_summary": "...",
       "critical_entities": [...],
       "turns": [{ "turn": 1, "message": "..." }, ...],
-      "metadata": { "persona_id": "aisha" }
+      "metadata": {
+        "persona_id": "aisha",
+        "source_openr1_ids": [1234]
+      }
     }
   ]
 }
@@ -188,6 +191,24 @@ So `_study_c_prototypes()` was rewritten as 10 persona-aligned histories. Each h
   - **Persona-consistent** (Aisha’s heavy days vs Noor’s evening grief vs Leo’s exam crunch).
   - **Entity-stressing** (e.g. repeated antibiotic discussions with an allergy; panic management with asthma; school snacks with peanut allergy).
 
+To tie these synthetic histories back to real conversational patterns, each
+persona is also associated with one or more OpenR1-Psy **train** dialogues:
+
+- `STUDY_C_OPENR1_CONFIG` maps each persona_id to a primary Study C condition and
+  a small set of keyword hints (e.g. panic, PTSD, grief, autism).
+- `_extract_openr1_study_c_skeletons()` scans patient utterances in the train
+  split, keeping the first matching `post_id` per persona and recording:
+  - `source_post_id` (OpenR1-Psy identifier),
+  - ordered, non-empty `patient_turns`.
+- `build_study_c_split()` attaches the distinct `source_post_id` values for
+  each persona under `metadata.source_openr1_ids` for every case.
+
+The model never sees OpenR1-Psy text directly in Study C prompts – all
+messages remain persona-voiced and derived from the patient templates – but
+the trajectories are now explicitly *backed* by real OpenR1-Psy conversations
+at the metadata level, which makes provenance auditable and keeps Study C
+clinically anchored without leaking the held-out test split.
+
 This follows memory-drift and dialogue-NLI practice:
 
 - Make entity forgetting **obviously consequential** (e.g. penicillin allergy when prescribing antibiotics).
@@ -206,7 +227,8 @@ The helper `validate_persona_splits()` (invoked in `main()`) prints:
   - `multi_turn_cases` count and per-persona distribution for ToF.
 - Study C:
   - total case count,
-  - per-persona distribution.
+  - per-persona distribution,
+  - distinct OpenR1 `post_id`s per persona (via `metadata.source_openr1_ids`).
 
 Example output:
 
@@ -220,13 +242,15 @@ Multi-turn cases per persona_id: {'aisha': 1, 'jamal': 1, 'eleni': 1, 'maya': 1,
 === Validation: Study C persona coverage ===
 Total Study C cases: 30
 Cases per persona_id: {'aisha': 3, 'sam': 3, 'noor': 3, 'jamal': 3, 'kai': 3, 'priya': 3, 'tomas': 3, 'leo': 3, 'eleni': 3, 'maya': 3}
+Distinct OpenR1 post_ids per persona_id: {'aisha': [1234], 'sam': [5678], ...}
 ```
 
 This confirms:
 
 - No persona is missing.
 - No persona is overloaded.
-- All Study B and C items/cases carry a `persona_id` in `metadata`.
+- All Study B and C items/cases carry a `persona_id` in `metadata`, and Study C
+  cases additionally record OpenR1-Psy provenance via `source_openr1_ids`.
 
 You can extend this with:
 

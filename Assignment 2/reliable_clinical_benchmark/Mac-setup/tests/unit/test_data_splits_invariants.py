@@ -139,6 +139,9 @@ def test_study_c_split_invariants():
         assert isinstance(metadata, dict)
         assert "persona_id" in metadata
         assert isinstance(metadata["persona_id"], str) and metadata["persona_id"]
+        # New: provenance back to OpenR1-Psy train trajectories
+        assert "source_openr1_ids" in metadata
+        assert isinstance(metadata["source_openr1_ids"], list)
 
 
 @pytest.mark.unit
