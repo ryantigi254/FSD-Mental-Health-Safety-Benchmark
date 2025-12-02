@@ -71,31 +71,14 @@ def split_rationale_to_steps(text: str) -> List[str]:
 
 def _load_personas() -> Dict[str, Dict[str, Any]]:
     """
-    Load persona definitions from the Assignment 2 patient template folder.
+    Load persona definitions from the top-level Assignment 2 prototypes folder.
 
-    New canonical path (relative to this script):
-      ../../docs/patient template/personas.json
-
-    For robustness, we also fall back to the legacy:
+    Expected path (relative to this script):
       ../../Prototypes/patient template/personas.json
     """
     # scripts/ -> Mac-setup/ -> reliable_clinical_benchmark/ -> Assignment 2/
     assignment2_root = Path(__file__).resolve().parents[3]
-    candidate_paths = [
-        assignment2_root / "docs" / "patient template" / "personas.json",
-        assignment2_root / "Prototypes" / "patient template" / "personas.json",
-    ]
-
-    personas_path: Path | None = None
-    for path in candidate_paths:
-        if path.exists():
-            personas_path = path
-            break
-
-    if personas_path is None:
-        searched = ", ".join(str(p) for p in candidate_paths)
-        raise FileNotFoundError(f"personas.json not found in any of: {searched}")
-
+    personas_path = assignment2_root / "Prototypes" / "patient template" / "personas.json"
     with personas_path.open("r", encoding="utf-8") as f:
         data = json.load(f)
     personas_list = data.get("personas", [])
@@ -106,15 +89,15 @@ def _load_personas() -> Dict[str, Dict[str, Any]]:
 PERSONA_CONDITIONS: Dict[str, Dict[str, Any]] = {
     "maya": {
         "study_b_condition": "emotionally unstable (borderline) personality disorder",
-        "study_c_condition": "emotionally unstable (borderline) personality disorder",
+        "study_c_condition": None,
     },
     "jamal": {
         "study_b_condition": "panic disorder",
-        "study_c_condition": "panic disorder",
+        "study_c_condition": None,
     },
     "eleni": {
         "study_b_condition": "obsessive-compulsive disorder (harm subtype)",
-        "study_c_condition": "obsessive-compulsive disorder (harm subtype)",
+        "study_c_condition": None,
     },
     "sam": {
         "study_b_condition": "post-traumatic stress disorder",
@@ -126,11 +109,11 @@ PERSONA_CONDITIONS: Dict[str, Dict[str, Any]] = {
     },
     "leo": {
         "study_b_condition": "attention-deficit/hyperactivity disorder",
-        "study_c_condition": "attention-deficit/hyperactivity disorder",
+        "study_c_condition": None,
     },
     "priya": {
         "study_b_condition": "social anxiety disorder",
-        "study_c_condition": "social anxiety disorder",
+        "study_c_condition": None,
     },
     "noor": {
         "study_b_condition": "complicated grief / prolonged grief",
@@ -138,70 +121,11 @@ PERSONA_CONDITIONS: Dict[str, Dict[str, Any]] = {
     },
     "tomas": {
         "study_b_condition": "anger dysregulation in emotionally unstable personality structure",
-        "study_c_condition": "anger dysregulation in emotionally unstable personality structure",
+        "study_c_condition": None,
     },
     "kai": {
         "study_b_condition": "autism spectrum condition with sensory overload",
         "study_c_condition": "autism spectrum condition with sensory overload",
-    },
-}
-
-
-# Study C specific configuration for mapping personas to OpenR1-Psy train
-# dialogues. This is intentionally simple: each persona is associated with a
-# primary condition string (aligned with PERSONA_CONDITIONS) plus a small set
-# of keyword hints used to locate relevant patient conversations in the
-# OpenR1-Psy train split.
-STUDY_C_OPENR1_CONFIG: Dict[str, Dict[str, Any]] = {
-    "aisha": {
-        "condition": PERSONA_CONDITIONS["aisha"]["study_c_condition"],
-        "keywords": ["depression", "depressed", "sertraline"],
-        "max_dialogues": 1,
-    },
-    "sam": {
-        "condition": PERSONA_CONDITIONS["sam"]["study_c_condition"],
-        "keywords": ["ptsd", "trauma", "nightmare", "flashback"],
-        "max_dialogues": 1,
-    },
-    "noor": {
-        "condition": PERSONA_CONDITIONS["noor"]["study_c_condition"],
-        "keywords": ["grief", "bereavement", "lost my father", "lost my dad"],
-        "max_dialogues": 1,
-    },
-    "jamal": {
-        "condition": PERSONA_CONDITIONS["jamal"]["study_c_condition"],
-        "keywords": ["panic attack", "panic", "anxiety attack", "heart racing"],
-        "max_dialogues": 1,
-    },
-    "kai": {
-        "condition": PERSONA_CONDITIONS["kai"]["study_c_condition"],
-        "keywords": ["autism", "autistic", "sensory", "overwhelmed"],
-        "max_dialogues": 1,
-    },
-    "priya": {
-        "condition": PERSONA_CONDITIONS["priya"]["study_c_condition"],
-        "keywords": ["social anxiety", "presentation", "public speaking", "shy"],
-        "max_dialogues": 1,
-    },
-    "tomas": {
-        "condition": PERSONA_CONDITIONS["tomas"]["study_c_condition"],
-        "keywords": ["anger", "angry", "rage", "explode", "irritable"],
-        "max_dialogues": 1,
-    },
-    "leo": {
-        "condition": PERSONA_CONDITIONS["leo"]["study_c_condition"],
-        "keywords": ["adhd", "attention", "concentrate", "focus"],
-        "max_dialogues": 1,
-    },
-    "eleni": {
-        "condition": PERSONA_CONDITIONS["eleni"]["study_c_condition"],
-        "keywords": ["ocd", "obsessive", "compulsion", "intrusive thoughts"],
-        "max_dialogues": 1,
-    },
-    "maya": {
-        "condition": PERSONA_CONDITIONS["maya"]["study_c_condition"],
-        "keywords": ["borderline", "bpd", "unstable relationships", "self-harm"],
-        "max_dialogues": 1,
     },
 }
 
@@ -972,74 +896,6 @@ def add_study_b_multi_turn(
     print(f"Updated Study B split with {len(multi_turn_cases)} multi-turn cases at {path}")
 
 
-def _extract_openr1_study_c_skeletons() -> Dict[str, List[Dict[str, Any]]]:
-    """
-    Extract simple trajectory skeletons for Study C from the OpenR1-Psy train split.
-
-    For each persona in STUDY_C_OPENR1_CONFIG, we scan patient utterances in the
-    train split for a small set of keyword hints. The first `max_dialogues`
-    matching dialogues per persona are kept, and we record:
-
-      - source_post_id: original OpenR1-Psy post_id (or row index if missing)
-      - patient_turns: ordered, non-empty patient messages in that dialogue
-
-    This is intentionally lightweight and deterministic: no randomness, and we
-    stop collecting once the per-persona quota is met.
-    """
-    ds = load_dataset("GMLHUHE/OpenR1-Psy", split="train")
-
-    skeletons: Dict[str, List[Dict[str, Any]]] = {
-        persona_id: [] for persona_id in STUDY_C_OPENR1_CONFIG.keys()
-    }
-    seen_ids: Dict[str, set[int]] = {persona_id: set() for persona_id in STUDY_C_OPENR1_CONFIG.keys()}
-
-    for row_idx, example in enumerate(ds):
-        conversation = example.get("conversation") or []
-        patient_text = " ".join(
-            str(turn.get("patient", "") or "") for turn in conversation
-        ).strip()
-        if not patient_text:
-            continue
-
-        lower_text = patient_text.lower()
-        for persona_id, cfg in STUDY_C_OPENR1_CONFIG.items():
-            bucket = skeletons[persona_id]
-            if len(bucket) >= int(cfg.get("max_dialogues", 1)):
-                continue
-
-            keywords = [kw.lower() for kw in cfg.get("keywords", [])]
-            if keywords and not any(kw in lower_text for kw in keywords):
-                continue
-
-            raw_post_id = example.get("post_id")
-            try:
-                source_post_id = int(raw_post_id)
-            except Exception:
-                source_post_id = int(row_idx)
-
-            if source_post_id in seen_ids[persona_id]:
-                continue
-            seen_ids[persona_id].add(source_post_id)
-
-            patient_turns: List[str] = []
-            for turn in conversation:
-                msg = str(turn.get("patient", "") or "").strip()
-                if msg:
-                    patient_turns.append(msg)
-
-            if not patient_turns:
-                continue
-
-            bucket.append(
-                {
-                    "source_post_id": source_post_id,
-                    "patient_turns": patient_turns,
-                }
-            )
-
-    return skeletons
-
-
 def _study_c_prototypes() -> List[Dict[str, Any]]:
     """Base prototypes for Study C longitudinal cases (persona-aligned)."""
     return [
@@ -1337,14 +1193,8 @@ def build_study_c_split(
 
     Creates:
       - cases: ~30 longitudinal cases with 10 turns each (prototypes replicated).
-
-    Study C cases are persona-based longitudinal histories whose clinical
-    scaffolding is informed by OpenR1-Psy train dialogues. We keep the hand
-    crafted persona summaries and critical entities, but attach provenance to
-    real OpenR1-Psy conversations via `source_openr1_ids` in the metadata.
     """
     prototypes = _study_c_prototypes()
-    openr1_skeletons = _extract_openr1_study_c_skeletons()
     cases: List[Dict[str, Any]] = []
 
     idx = 1
@@ -1352,16 +1202,6 @@ def build_study_c_split(
         for proto in prototypes:
             if len(cases) >= target_cases:
                 break
-            persona_id = proto.get("persona_id")
-            persona_skeletons = openr1_skeletons.get(str(persona_id), [])
-            source_ids = sorted(
-                {
-                    int(skel.get("source_post_id"))
-                    for skel in persona_skeletons
-                    if skel.get("source_post_id") is not None
-                }
-            )
-
             cases.append(
                 {
                     "id": f"c_{idx:03d}",
@@ -1371,10 +1211,7 @@ def build_study_c_split(
                         {"turn": i + 1, "message": msg}
                         for i, msg in enumerate(proto["turns"])
                     ],
-                    "metadata": {
-                        "persona_id": persona_id,
-                        "source_openr1_ids": source_ids,
-                    },
+                    "metadata": {"persona_id": proto.get("persona_id")},
                 }
             )
             idx += 1
@@ -1428,25 +1265,12 @@ def validate_persona_splits() -> None:
             c_data = json.load(f)
         cases = c_data.get("cases", [])
         case_counts: Dict[str, int] = {}
-        openr1_ids_by_persona: Dict[str, set[int]] = {}
         for c in cases:
-            meta = c.get("metadata") or {}
-            pid = meta.get("persona_id", "UNKNOWN")
+            pid = (c.get("metadata") or {}).get("persona_id", "UNKNOWN")
             case_counts[pid] = case_counts.get(pid, 0) + 1
-            ids_raw = meta.get("source_openr1_ids") or []
-            bucket = openr1_ids_by_persona.setdefault(pid, set())
-            for raw_id in ids_raw:
-                try:
-                    bucket.add(int(raw_id))
-                except Exception:
-                    continue
 
         print(f"Total Study C cases: {len(cases)}")
         print("Cases per persona_id:", case_counts)
-        print(
-            "Distinct OpenR1 post_ids per persona_id:",
-            {pid: sorted(list(ids)) for pid, ids in openr1_ids_by_persona.items()},
-        )
     else:
         print("Study C file not found.")
 
@@ -1469,5 +1293,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
 
