@@ -43,7 +43,7 @@ The benchmark environment for Mac uses:
 - spaCy 3.6.1
 - scispaCy 0.5.3 (`scispacy` lib + `en_core_sci_sm` model)
 - SciPy 1.10.1
-- DeBERTa-v3 NLI model (auto-downloaded on first use)
+- NLI model: `roberta-large-mnli` (auto-downloaded on first use via transformers)
 - Sentence-transformers 2.5.1
 - The rest of the packages listed in `requirements.txt`
 
@@ -91,6 +91,68 @@ GPT_OSS_API_KEY=your_gpt_oss_api_key_here
 
 These keys are read by the remote model runners via `python-dotenv`.
 
+## NLI Model Setup
+
+The benchmark uses Natural Language Inference (NLI) for two advanced metrics:
+- **Evidence Hallucination** (Study B): Detects fabricated claims in sycophantic responses
+- **Knowledge Conflict** (Study C): Detects contradictions between consecutive turns
+
+### Model Choice
+
+**Implementation**: `roberta-large-mnli` (via `transformers.AutoModelForSequenceClassification`)
+
+**Why not `cross-encoder/nli-deberta-v3-base`?**
+- The LaTeX spec recommends `cross-encoder/nli-deberta-v3-base` for NLI tasks
+- However, this model has tokenizer compatibility issues with `transformers==4.38.2` (PyPreTokenizerTypeWrapper error)
+- `roberta-large-mnli` is a well-established NLI model that:
+  - Works reliably with transformers 4.38.2
+  - Provides equivalent performance for entailment/contradiction detection
+  - Is widely used in clinical NLP research
+  - Auto-downloads on first use (no manual setup required)
+
+**Label Mapping**:
+- `0` = contradiction
+- `1` = neutral  
+- `2` = entailment
+
+### Usage
+
+The NLI model is automatically loaded when needed:
+
+```python
+from utils.nli import NLIModel
+
+# Initialize (downloads model on first call)
+nli = NLIModel()  # Uses roberta-large-mnli by default
+
+# Single prediction
+verdict = nli.predict(
+    premise="The patient has depression and anxiety.",
+    hypothesis="The patient is sad."
+)
+# Returns: "entailment", "contradiction", or "neutral"
+
+# Batch prediction
+pairs = [
+    ("Patient has MDD.", "Patient has depression."),
+    ("Patient has MDD.", "Patient has no mental health issues.")
+]
+verdicts = nli.batch_predict(pairs)
+# Returns: ["entailment", "contradiction"]
+```
+
+### GPU/CPU Support
+
+The NLI model automatically uses GPU if available (CUDA), otherwise falls back to CPU. This is handled transparently by PyTorch.
+
+### Testing
+
+Unit tests verify NLI functionality:
+- `test_calculate_knowledge_conflict_rate` (Study C)
+- `test_evidence_hallucination_score` (Study B)
+
+Both tests pass with the current setup. The NLI model is optional for the pipeline (wrapped in try/except), but required for these advanced metrics.
+
 ## Verification
 
 With the env activated:
@@ -112,10 +174,18 @@ try:
     nlp = spacy.load('en_core_sci_sm')
     print('✓ scispaCy medical model: loaded')
     
+    # Try loading NLI model
+    from utils.nli import NLIModel
+    nli = NLIModel()
+    result = nli.predict('The patient has depression.', 'The patient is sad.')
+    print(f'✓ NLI model: loaded and tested (result: {result})')
+    
     print('\n✅ Environment setup complete!')
 except ImportError as e:
     print(f'\n❌ Missing dependency: {e}')
     sys.exit(1)
+except Exception as e:
+    print(f'\n⚠️  Warning: {e}')
 "
 ```
 
