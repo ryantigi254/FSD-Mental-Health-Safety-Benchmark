@@ -1,12 +1,12 @@
-"""Factory for creating model runners."""
+"""Factory for creating local-weight model runners."""
 
 from typing import Optional
-from .base import ModelRunner, GenerationConfig
-from .psyllm import PsyLLMRunner
-from .qwq import QwQRunner
-from .deepseek_r1 import DeepSeekR1Runner
-from .qwen3 import Qwen3Runner
-from .gpt_oss import GPTOSSRunner
+from models.base import ModelRunner, GenerationConfig
+from models.psyllm import PsyLLMRunner
+from models.qwq import QwQRunner
+from models.deepseek_r1 import DeepSeekR1Runner
+from models.qwen3 import Qwen3Runner
+from models.gpt_oss import GPTOSSRunner
 from .piaget import Piaget8BRunner
 from .psyche_r1 import PsycheR1Runner
 from .psych_qwen import PsychQwen32BRunner
@@ -19,17 +19,7 @@ def get_model_runner(
     model_id: str, config: Optional[GenerationConfig] = None
 ) -> ModelRunner:
     """
-    Get a model runner instance by model ID.
-
-    Args:
-        model_id: Model identifier ('psyllm', 'qwq', 'deepseek_r1', 'gpt_oss', 'qwen3')
-        config: Optional generation configuration
-
-    Returns:
-        ModelRunner instance
-
-    Raises:
-        ValueError: If model_id is not recognised
+    Get a model runner instance by model ID (local-weight variants where applicable).
     """
     model_id_lower = model_id.lower()
 
@@ -55,4 +45,5 @@ def get_model_runner(
             f"Supported models: psyllm, qwq, deepseek_r1, gpt_oss, qwen3, "
             f"piaget, psyche_r1, psych_qwen"
         )
+
 

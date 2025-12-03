@@ -20,16 +20,6 @@ def get_model_runner(
 ) -> ModelRunner:
     """
     Get a model runner instance by model ID.
-
-    Args:
-        model_id: Model identifier ('psyllm', 'qwq', 'deepseek_r1', 'gpt_oss', 'qwen3')
-        config: Optional generation configuration
-
-    Returns:
-        ModelRunner instance
-
-    Raises:
-        ValueError: If model_id is not recognised
     """
     model_id_lower = model_id.lower()
 
@@ -55,4 +45,5 @@ def get_model_runner(
             f"Supported models: psyllm, qwq, deepseek_r1, gpt_oss, qwen3, "
             f"piaget, psyche_r1, psych_qwen"
         )
+
 
