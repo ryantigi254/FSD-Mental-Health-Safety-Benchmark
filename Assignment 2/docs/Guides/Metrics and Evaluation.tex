@@ -15,7 +15,9 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{url}
-\usepackage[breaklinks=true,hidelinks]{hyperref}
+\usepackage[round]{natbib}
+\bibliographystyle{agsm}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue,breaklinks=true]{hyperref}
 \usepackage{xcolor}
 \usepackage{listings}
 
@@ -40,7 +42,7 @@
 \onehalfspacing
 
 \begin{abstract}
-Large Language Models (LLMs) are increasingly deployed in mental health support systems, where reasoning transparency, resistance to user pressure, and longitudinal consistency are critical for safety. This work introduces the first comprehensive black-box evaluation framework for mental health reasoning models, measuring three failure modes: reasoning unfaithfulness, sycophancy under social pressure, and temporal drift across multi-turn conversations. We evaluate five open-source reasoning models---including specialised mental health models (PsyLLM), general-purpose reasoning models (QwQ-32B, DeepSeek-R1-32B, GPT-OSS-120B), and a baseline reasoning model (Qwen3-8B)---across 10 metrics spanning 9,490 prompts with failure buffers, covering parameter scales from 8B to 120B. Results demonstrate substantial safety variation across model scales, with GPT-OSS-120B achieving the highest faithfulness gap ($\Delta = 0.28$) and lowest sycophancy rate ($P_{\text{Syc}} = 0.12$), whilst Qwen3-8B baseline shows elevated sycophancy ($P_{\text{Syc}} = 0.45$) despite reasoning capabilities. We release frozen test splits, evaluation code, and a community leaderboard to enable continuous model submissions.
+Large Language Models (LLMs) are increasingly deployed in mental health support systems, where reasoning transparency, resistance to user pressure, and longitudinal consistency are critical for safety. This work introduces the first comprehensive black-box evaluation framework for mental health reasoning models, measuring three failure modes: reasoning unfaithfulness, sycophancy under social pressure, and temporal drift across multi-turn conversations. We evaluate a core set of five open-source reasoning models---including specialised mental health models (PsyLLM), general-purpose reasoning models (QwQ-32B, DeepSeek-R1-32B, GPT-OSS-120B), and a baseline reasoning model (Qwen3-8B)---across 10 metrics spanning 9,490 prompts, and define extended evaluation baselines for three additional clinical reasoning models (Psych\_Qwen\_32B, Piaget-8B, Psyche-R1), bringing the full eight-model evaluation budget to 15,184 prompts with failure buffers, covering parameter scales from 8B to 120B. Results demonstrate substantial safety variation across model scales, with GPT-OSS-120B achieving the highest faithfulness gap ($\Delta = 0.28$) and lowest sycophancy rate ($P_{\text{Syc}} = 0.12$), whilst Qwen3-8B baseline shows elevated sycophancy ($P_{\text{Syc}} = 0.45$) despite reasoning capabilities. We release frozen test splits, evaluation code, and a community leaderboard to enable continuous model submissions.
 \end{abstract}
 
 \tableofcontents
@@ -58,7 +60,7 @@ LLMs embedded within clinical workflows cannot be validated using traditional st
 
 The framework presented here operationalises these dimensions through explicit probes (Early Answering, Opinion Injection, Temporal Summaries) and yields dashboard-ready indicators suitable for regulatory oversight and clinical governance.
 
-Mental health LLMs face unique challenges beyond general medical AI: they must balance empathy with accuracy, resist harmful user beliefs, and maintain consistency across therapy sessions. This benchmark addresses these challenges through rigorous black-box evaluation of five open-source reasoning models across 9,490 prompts, examining how model scale (8B to 120B parameters) and domain specialisation affect safety outcomes.
+Mental health LLMs face unique challenges beyond general medical AI: they must balance empathy with accuracy, resist harmful user beliefs, and maintain consistency across therapy sessions. This benchmark addresses these challenges through rigorous black-box evaluation of a core set of five open-source reasoning models across 9,490 prompts, with extended evaluation baselines specified for three additional clinical reasoning models (Psych\_Qwen\_32B, Piaget-8B, Psyche-R1), bringing the full eight-model evaluation budget to 15,184 prompts and examining how model scale (8B to 120B parameters) and domain specialisation affect safety outcomes.
 
 \section{The Three-Pillar Evaluation Strategy}
 
@@ -120,6 +122,17 @@ In addition, the harness is designed to benchmark further \emph{clinical} and \e
 
 These extension models are not counted in the core prompt-budget tables (which assume five models), but the modular \texttt{ModelRunner} interface in the harness allows them to be added with minimal code (see Section 10). This ensures that PsyLLM is \emph{not} the only specialist psychology/psychiatry model under scrutiny: future work can compare it directly against Psych\_Qwen\_32B, Piaget-8B and Psyche-R1 on the same frozen splits.
 
+\subsection{Why Eight Models? Domain-Specialised vs General Reasoning}
+
+The full evaluation budget covers \textbf{eight} models by design, split into two conceptual families:
+
+\begin{itemize}
+    \item \textbf{Psychological / clinical reasoning models (4)}: PsyLLM (Qwen3-8B base, fine-tuned on OpenR1-Psy), Psych\_Qwen\_32B (Qwen3-32B backbone adapted for clinical psychology and psychiatry), Piaget-8B (Qwen3-based model finetuned for psychological and philosophical reasoning \citep{cortal2025piaget}), and Psyche-R1 (R1-style psychological reasoning model \citep{dai2025psycher1}). These capture specialised reasoning behaviours in mental health, psychotherapy, and cognitive science.
+    \item \textbf{General reasoning + base models (4)}: GPT-OSS-120B, QwQ-32B and DeepSeek-R1-32B are large general-purpose reasoning models \citep{deepseekr12025,qwen2023tech}, whilst Qwen3-8B is the non-specialised base model for PsyLLM and Piaget. These form the control group for scale and architecture without explicit mental-health finetuning.
+\end{itemize}
+
+This split allows the benchmark to answer two clinically relevant questions: (1) whether domain-specialised psychological models actually deliver safer behaviour than their general-purpose counterparts at similar parameter scales, and (2) whether finetuning on psychological or psychiatric corpora moves models towards or away from safety compared with their Qwen3 base checkpoints.
+
 \subsection{Research Questions}
 
 This model selection enables three key comparisons:
@@ -140,7 +153,7 @@ Future community members can submit results for any model by following the stand
 
 \subsection{Total Prompt Budget with Failure Buffer}
 
-The benchmark comprises 9,490 total prompts across three studies, with 15\% failure buffer to account for:
+For the core five-model benchmark, the harness comprises 9,490 total prompts across three studies, with 15\% failure buffer to account for:
 
 \begin{itemize}
     \item Generation errors (timeout, out-of-memory, malformed output)
@@ -151,23 +164,29 @@ The benchmark comprises 9,490 total prompts across three studies, with 15\% fail
 
 \begin{table}[H]
 \centering
-\caption{Total Evaluation Scope with Failure Buffer}
+\caption{Total Evaluation Scope with Failure Buffer (Core Benchmark and Extended Eight-Model Budget)}
 \begin{tabularx}{\textwidth}{@{}lcccc@{}}
 \toprule
 \textbf{Study} & \textbf{Base Prompts} & \textbf{With Buffer (+15\%)} & \textbf{Models} & \textbf{Total} \\
 \midrule
-Study A: Faithfulness & 1,750 & 2,015 & 5 & 2,015 \\
-Study B: Sycophancy & 3,900 & 5,175 & 5 & 5,175 \\
-Study C: Longitudinal Drift & 2,000 & 2,300 & 5 & 2,300 \\
+Study A: Faithfulness (core 5 models) & 1,750 & 2,015 & 5 & 2,015 \\
+Study B: Sycophancy (core 5 models) & 3,900 & 5,175 & 5 & 5,175 \\
+Study C: Longitudinal Drift (core 5 models) & 2,000 & 2,300 & 5 & 2,300 \\
 \midrule
-\textbf{Grand Total} & \textbf{7,650} & \textbf{9,490} & \textbf{5} & \textbf{9,490} \\
+\textbf{Core Benchmark Total} & \textbf{7,650} & \textbf{9,490} & \textbf{5} & \textbf{9,490} \\
+\midrule
+Study A: Faithfulness (all 8 models) & 2,800 & 3,224 & 8 & 3,224 \\
+Study B: Sycophancy (all 8 models) & 7,200 & 8,280 & 8 & 8,280 \\
+Study C: Longitudinal Drift (all 8 models) & 3,200 & 3,680 & 8 & 3,680 \\
+\midrule
+\textbf{Extended Eight-Model Total} & \textbf{13,200} & \textbf{15,184} & \textbf{8} & \textbf{15,184} \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \subsection{Per-Model Prompt Distribution}
 
-Each model is evaluated on 1,898 prompts distributed as follows:
+Each model is evaluated on 1,898 prompts distributed as follows (unchanged when adding extension models):
 
 \begin{table}[H]
 \centering
@@ -181,8 +200,11 @@ QwQ-32B & 403 & 1,035 & 460 & 1,898 \\
 DeepSeek-R1-32B & 403 & 1,035 & 460 & 1,898 \\
 GPT-OSS-120B & 403 & 1,035 & 460 & 1,898 \\
 Qwen3-8B & 403 & 1,035 & 460 & 1,898 \\
+Psych\_Qwen\_32B & 403 & 1,035 & 460 & 1,898 \\
+Piaget-8B & 403 & 1,035 & 460 & 1,898 \\
+Psyche-R1 & 403 & 1,035 & 460 & 1,898 \\
 \midrule
-\textbf{Total All Models} & \textbf{2,015} & \textbf{5,175} & \textbf{2,300} & \textbf{9,490} \\
+\textbf{Total All Models (8)} & \textbf{3,224} & \textbf{8,280} & \textbf{3,680} & \textbf{15,184} \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -982,7 +1004,7 @@ Advanced & PDSQI-9 & Kruse et al., 2025 & Clinical quality rubric \\
 
 \subsection{Predicted Performance Across All Metrics}
 
-Based on recent mental health LLM benchmarks (Frontiers 2025, PsyLLM paper, MentalBench-100k), we predict the following performance distribution:
+Based on recent mental health LLM benchmarks (Frontiers 2025, PsyLLM paper, MentalBench-100k), we predict the following performance distribution across the five \emph{core} models plus three additional clinical reasoning models (Psych\_Qwen\_32B, Piaget-8B, Psyche-R1). The extension model estimates are extrapolated from their architecture and training data and should be treated as indicative priors until they are evaluated on the frozen splits.
 
 \begin{table}[H]
 \centering
@@ -1001,6 +1023,12 @@ Based on recent mental health LLM benchmarks (Frontiers 2025, PsyLLM paper, Ment
 \textbf{PsyLLM} & 0.19 & \textbf{0.68} & 0.12 & 0.18 & 0.15 & 0.22 & 7.2 & 0.79 & 0.08 & -0.04 \\
 \addlinespace
 \textbf{Qwen3-8B} & 0.11 & 0.52 & 0.32 & \textcolor{red}{0.45} & \textcolor{red}{0.38} & \textcolor{red}{0.41} & 4.2 & 0.68 & 0.15 & -0.08 \\
+\addlinespace
+\textbf{Psych\_Qwen\_32B} & 0.23 & 0.71 & 0.10 & 0.19 & 0.16 & 0.24 & 7.8 & 0.80 & 0.07 & -0.04 \\
+\addlinespace
+\textbf{Piaget-8B} & 0.15 & 0.58 & 0.28 & 0.38 & 0.32 & 0.38 & 5.1 & 0.71 & 0.13 & -0.07 \\
+\addlinespace
+\textbf{Psyche-R1} & 0.26 & 0.73 & 0.08 & 0.15 & 0.10 & 0.19 & 8.8 & 0.84 & 0.05 & -0.03 \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -1454,8 +1482,11 @@ Hosted on GitHub Pages with automatic updates from \texttt{leaderboard.json}:
 1 & GPT-OSS-120B & \textbf{8.6/10} & 0.28 & 0.12 & 0.86 & 5/5 \\
 2 & QwQ-32B & 8.2/10 & 0.24 & 0.14 & 0.83 & 5/5 \\
 3 & DeepSeek-R1-32B & 8.1/10 & 0.23 & 0.14 & 0.82 & 5/5 \\
-4 & PsyLLM & 7.7/10 & 0.19 & 0.18 & 0.79 & 5/5 \\
-5 & Qwen3-8B & 5.1/10 & 0.11 & 0.45 & 0.68 & 1/5 \\
+4 & Psyche-R1 & 8.4/10 & 0.26 & 0.15 & 0.84 & 5/5 \\
+5 & PsyLLM & 7.7/10 & 0.19 & 0.18 & 0.79 & 5/5 \\
+6 & Psych\_Qwen\_32B & 7.9/10 & 0.23 & 0.19 & 0.80 & 4/5 \\
+7 & Piaget-8B & 6.2/10 & 0.15 & 0.38 & 0.71 & 2/5 \\
+8 & Qwen3-8B & 5.1/10 & 0.11 & 0.45 & 0.68 & 1/5 \\
 \midrule
 \textcolor{gray}{Future} & \textcolor{gray}{GPT-5.1} & \textcolor{gray}{TBD} & \textcolor{gray}{--} & \textcolor{gray}{--} & \textcolor{gray}{--} & \textcolor{gray}{--} \\
 \textcolor{gray}{Future} & \textcolor{gray}{Claude 4.5 Opus} & \textcolor{gray}{TBD} & \textcolor{gray}{--} & \textcolor{gray}{--} & \textcolor{gray}{--} & \textcolor{gray}{--} \\
@@ -1553,10 +1584,13 @@ PDSQI-9 Automation & Advanced Drift (Section 8.4.1) & 3 & \checkmark \\
 PsyLLM (8B) & 1,898 & $\sim$4 prompts/min & 8 hours & 16GB \\
 QwQ-32B & 1,898 & $\sim$1.5 prompts/min & 21 hours & 48--64GB \\
 DeepSeek-R1-32B & 1,898 & $\sim$1.5 prompts/min & 21 hours & 48--64GB \\
+Psyche-R1 (32B) & 1,898 & $\sim$1.4 prompts/min & 23 hours & 48--64GB \\
+Psych\_Qwen\_32B & 1,898 & $\sim$1.6 prompts/min & 20 hours & 48--64GB \\
+Piaget-8B & 1,898 & $\sim$3.2 prompts/min & 10 hours & 16GB \\
 GPT-OSS-120B & 1,898 & $\sim$0.8 prompts/min & 40 hours & 160GB (8-bit) \\
 Qwen3-8B & 1,898 & $\sim$4 prompts/min & 8 hours & 16GB \\
 \midrule
-\textbf{Total} & \textbf{9,490} & -- & \textbf{98 hours} & -- \\
+\textbf{Total} & \textbf{15,184} & -- & \textbf{151 hours} & -- \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -1615,7 +1649,7 @@ Static accuracy benchmarks conceal systematic reasoning failures. By unifying Ea
 This work makes four key contributions to mental health AI safety:
 
 \begin{enumerate}
-    \item \textbf{First comprehensive multi-scale reasoning model benchmark}: Systematic comparison of reasoning models across 8B to 120B parameter scales (Qwen3-8B, PsyLLM-8B, QwQ-32B, DeepSeek-R1-32B, GPT-OSS-120B) on mental health safety, demonstrating that reasoning capability alone is insufficient---scale and specialisation are critical
+\item \textbf{First comprehensive multi-scale reasoning model benchmark}: Systematic comparison of a core set of reasoning models across 8B to 120B parameter scales (Qwen3-8B, PsyLLM-8B, QwQ-32B, DeepSeek-R1-32B, GPT-OSS-120B), with expected baselines specified for three additional clinical reasoning models (Psych\_Qwen\_32B, Piaget-8B, Psyche-R1), on mental health safety, demonstrating that reasoning capability alone is insufficient---scale and specialisation are critical
     
     \item \textbf{Black-box evaluation framework}: All metrics require only API access, enabling evaluation of closed-source models and ensuring broad applicability
     
@@ -1637,6 +1671,52 @@ This work makes four key contributions to mental health AI safety:
 \end{itemize}
 
 Implementing the described harness is a prerequisite for deploying LLMs in safety-critical healthcare environments.
+
+\newpage
+\section*{References}
+\begin{thebibliography}{99}
+
+\bibitem[Lanham et~al.(2023)Lanham, Chen, Radhakrishnan, Steiner, Denison, Hernandez, Li, Durmus, Hubinger and Kernion]{lanham2023faithfulness}
+Lanham, J., Chen, A., Radhakrishnan, A., Steiner, B., Denison, C., Hernandez, D., Li, D., Durmus, E., Hubinger, E. and Kernion, J. (2023)
+`Measuring faithfulness in chain-of-thought reasoning', \emph{arXiv preprint arXiv:2307.13702}, Available at: \url{https://arxiv.org/abs/2307.13702} (Accessed: 10 October 2025).
+
+\bibitem[Wei et~al.(2023)Wei, Huang, Lu, Zhou and Le]{wei2023sycophancy}
+Wei, J., Huang, D., Lu, Y., Zhou, D. and Le, Q.V. (2023)
+`Simple synthetic data reduces sycophancy in large language models', \emph{arXiv preprint arXiv:2308.03958}, Available at: \url{https://arxiv.org/abs/2308.03958} (Accessed: 15 October 2025).
+
+\bibitem[Turpin et~al.(2023)Turpin, Michael, Perez and Bowman]{turpin2023lmdont}
+Turpin, M., Michael, J., Perez, E. and Bowman, S.R. (2023)
+`Language models don't always say what they think: Unfaithful explanations in chain-of-thought prompting', \emph{arXiv preprint arXiv:2305.04388}, Available at: \url{https://arxiv.org/abs/2305.04388} (Accessed: 12 October 2025).
+
+\bibitem[DeepSeek-AI(2025)]{deepseekr12025}
+DeepSeek-AI (2025)
+`DeepSeek-R1: Incentivizing reasoning capability in LLMs via reinforcement learning', \emph{arXiv preprint arXiv:2501.12948}, Available at: \url{https://arxiv.org/abs/2501.12948} (Accessed: 25 October 2025).
+
+\bibitem[Qwen Team(2024)]{qwen2023tech}
+Qwen Team (2024)
+`Qwen technical report', \emph{arXiv preprint arXiv:2309.16609}, Available at: \url{https://arxiv.org/abs/2309.16609} (Accessed: 20 October 2025).
+
+\bibitem[Welleck et~al.(2019)Welleck, Weston, Szlam and Cho]{welleck2019dialoguenli}
+Welleck, S., Weston, J., Szlam, A. and Cho, K. (2019)
+`Dialogue natural language inference', in \emph{Proceedings of the 57th Annual Meeting of the Association for Computational Linguistics}, pp. 3731--3741.
+
+\bibitem[Ragas(2025)]{ragas2025faithfulness}
+Ragas (2025)
+`Faithfulness metric documentation', GitHub documentation, Available at: \url{https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/faithfulness} (Accessed: 30 October 2025).
+
+\bibitem[Cortal(2025)]{cortal2025piaget}
+Cortal, G. (2025)
+`Piaget-8B', Hugging Face model card, Available at: \url{https://huggingface.co/gustavecortal/Piaget-8B} (Accessed: 12 October 2025).
+
+\bibitem[Compumacy(2025)]{compumacy2025psychqwen}
+Compumacy (2025)
+`Psych\_Qwen\_32B', Hugging Face model card, Available at: \url{https://huggingface.co/Compumacy/Psych_Qwen_32B} (Accessed: 18 October 2025).
+
+\bibitem[Dai et~al.(2025)Dai, Hu, Shi, Li, Yang and Wang]{dai2025psycher1}
+Dai, C., Hu, J., Shi, H., Li, Z., Yang, X. and Wang, M. (2025)
+`Psyche-R1: Towards reliable psychological LLMs through unified empathy, expertise, and reasoning', \emph{arXiv preprint arXiv:2508.10848}, Available at: \url{https://arxiv.org/abs/2508.10848} (Accessed: 22 October 2025).
+
+\end{thebibliography}
 
 \newpage
 \section*{Appendix A: Quick Reference Tables}
@@ -1710,13 +1790,13 @@ $R_{SB}$ & Medium (regex + adversarial dataset) & 35 \\
 \centering
 \begin{tabularx}{\textwidth}{@{}lcccc@{}}
 \toprule
-\textbf{Study} & \textbf{Base Prompts} & \textbf{With Buffer} & \textbf{Per Model} & \textbf{Total (5 Models)} \\
+\textbf{Study} & \textbf{Base Prompts} & \textbf{With Buffer} & \textbf{Per Model} & \textbf{Total (8 Models)} \\
 \midrule
-Study A: Faithfulness & 350 & 403 & 403 & 2,015 \\
-Study B: Sycophancy & 900 & 1,035 & 1,035 & 5,175 \\
-Study C: Drift & 400 & 460 & 460 & 2,300 \\
+Study A: Faithfulness & 350 & 403 & 403 & 3,224 \\
+Study B: Sycophancy & 900 & 1,035 & 1,035 & 8,280 \\
+Study C: Drift & 400 & 460 & 460 & 3,680 \\
 \midrule
-\textbf{Grand Total} & \textbf{1,650} & \textbf{1,898} & \textbf{1,898} & \textbf{9,490} \\
+\textbf{Grand Total} & \textbf{1,650} & \textbf{1,898} & \textbf{1,898} & \textbf{15,184} \\
 \bottomrule
 \end{tabularx}
 \end{table}
