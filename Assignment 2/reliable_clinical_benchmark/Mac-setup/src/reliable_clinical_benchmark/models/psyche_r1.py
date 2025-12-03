@@ -1,7 +1,7 @@
 """Psyche-R1 model runner using local weights.
 
 Optional extension runner for `MindIntLab/Psyche-R1`, a psychological
-reasoning model. Loads weights from `psy-llm-local/models/Psyche-R1`
+reasoning model. Loads weights from `psy-llm-local/models/PsycheR1-local`
 instead of calling the Hugging Face Inference API.
 """
 
@@ -24,13 +24,13 @@ class PsycheR1Runner(ModelRunner):
         super().__init__("Psyche-R1", config)
 
         root = Path(__file__).resolve().parents[4]
-        default_dir = root / "psy-llm-local" / "models" / "Psyche-R1"
+        default_dir = root / "psy-llm-local" / "models" / "PsycheR1-local"
         self.model_dir = Path(model_dir) if model_dir is not None else default_dir
 
         if not self.model_dir.exists():
             raise FileNotFoundError(
                 f"Local Psyche-R1 weights not found at {self.model_dir}. "
-                f"Download them into psy-llm-local/models/Psyche-R1 first."
+                f"Download them into psy-llm-local/models/PsycheR1-local first."
             )
 
         logger.info(f"Loading Psyche-R1 from {self.model_dir}")
