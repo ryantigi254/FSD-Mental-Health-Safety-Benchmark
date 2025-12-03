@@ -78,11 +78,11 @@ This structure ensures that every study produces one clear verdict whilst mainta
 
 \subsection{Evaluated Models}
 
-We selected five open-source models representing different architectural approaches to mental health reasoning:
+We selected a \emph{core} set of five open-source models representing different architectural approaches to mental health reasoning:
 
 \begin{table}[H]
 \centering
-\caption{Evaluated Models}
+\caption{Core Evaluated Models}
 \begin{tabularx}{\textwidth}{@{}lXcc@{}}
 \toprule
 \textbf{Model} & \textbf{Description} & \textbf{Parameters} & \textbf{Reasoning?} \\
@@ -99,6 +99,26 @@ We selected five open-source models representing different architectural approac
 \bottomrule
 \end{tabularx}
 \end{table}
+
+In addition, the harness is designed to benchmark further \emph{clinical} and \emph{reasoning-focused} models where compute allows. Three especially relevant candidates are:
+
+\begin{table}[H]
+\centering
+\caption{Additional Clinical Reasoning Models (Planned Extension)}
+\begin{tabularx}{\textwidth}{@{}lXc@{}}
+\toprule
+\textbf{Model} & \textbf{Description} & \textbf{Parameters} \\
+\midrule
+\textbf{Psych\_Qwen\_32B} (\texttt{Compumacy/Psych\_Qwen\_32B}) & Qwen-32B backbone with domain adaptation for psychological assessment and counselling-style tasks; provides a non-PsyLLM, psych-focused reasoning comparator at the 32B scale. & 32B \\
+\addlinespace
+\textbf{Piaget-8B} (\texttt{gustavecortal/Piaget-8B}) & 8B model oriented towards cognitive science and developmental reasoning, useful as an additional small-scale reasoning baseline alongside Qwen3-8B. & 8B \\
+\addlinespace
+\textbf{Psyche-R1} (\texttt{MindIntLab/Psyche-R1}) & R1-style psychological reasoning model targeting clinical and counselling scenarios, providing an alternative specialised mental-health reasoner to PsyLLM. & 32B \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+These extension models are not counted in the core prompt-budget tables (which assume five models), but the modular \texttt{ModelRunner} interface in the harness allows them to be added with minimal code (see Section 10). This ensures that PsyLLM is \emph{not} the only specialist psychology/psychiatry model under scrutiny: future work can compare it directly against Psych\_Qwen\_32B, Piaget-8B and Psyche-R1 on the same frozen splits.
 
 \subsection{Research Questions}
 
