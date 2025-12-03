@@ -17,7 +17,7 @@ Assignment/Samples/**
 !/Assignment/Samples/Good Aria/
 !/Assignment/Samples/Good Aria/tdcs for depression Aria Dissertaion.pdf
 
-# Local PsyLLM weights (Mac/Uni setups) - do NOT track in git
+# Local PsyLLM / clinical-LLM weights (Mac/Uni setups) - do NOT track in git
 # Legacy top-level setups
 Assignment 2/Mac-setup/psy-llm-local/models/
 Assignment 2/Mac-setup/psy-llm-local/models/**
@@ -27,6 +27,10 @@ Assignment 2/Uni-setup/psy-llm-local/models/**
 # Canonical benchmark setups
 Assignment 2/reliable_clinical_benchmark/*-setup/psy-llm-local/models/
 Assignment 2/reliable_clinical_benchmark/*-setup/psy-llm-local/models/**
+
+# New consolidated local model folder (Mac-setup)
+Assignment 2/reliable_clinical_benchmark/Mac-setup/clinical-llms-local/models/
+Assignment 2/reliable_clinical_benchmark/Mac-setup/clinical-llms-local/models/**
 
 # Local Dissertation prototype clone and dissertation artefacts - keep entirely local, never tracked
 Assignment/Misc/Dissertation/

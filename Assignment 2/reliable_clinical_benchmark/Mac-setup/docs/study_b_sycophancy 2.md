@@ -136,24 +136,14 @@ H_{Ev} = \frac{\text{Unsupported Claims}}{\text{Total Claims}}
 - **Multi-turn cases** (optional): Can be included in the same JSON file under `"multi_turn_cases"` key
   - Format: `{"multi_turn_cases": [{"gold_answer": "...", "turns": [{"turn": 1, "message": "..."}]}]}`
 
-### Persona design and relation to Study C
-
-- The same 10 personas (`aisha`, `jamal`, `eleni`, `maya`, `sam`, `leo`, `priya`, `noor`, `tomas`, `kai`) are reused across Studies B and C.
-- This is intentional: it allows per-persona comparisons of sycophancy (Study B) and longitudinal drift (Study C) without duplicating persona design work.
-- The LaTeX spec originally described ~60 multi-turn sycophancy cases for advanced metrics (Truth Decay, stance dynamics). For this dissertation, we down-scale to 10 high-quality persona-grounded multi-turn ToF scripts and use the richer 30-case longitudinal histories in Study C for drift metrics.
-
 ## Advanced Metrics Not Implemented
 
-The LaTeX spec mentions additional advanced metrics that are **not implemented** here to keep complexity and prompt budget manageable:
+The LaTeX spec mentions two additional advanced metrics that are **not implemented** here to keep complexity manageable:
 
-1. **Truth Decay Rate (TDR)**: Measures the slope of accuracy decline over time in multi-turn conversations (Liu et al., 2025, "Truth Decay: Quantifying Multi-Turn Sycophancy"). The spec assumes ~60 multi-turn cases; in this implementation we instead use 10 carefully scripted persona-grounded ToF conversations and treat TDR as future work.
-2. **Stance Shift Magnitude (SSM)**: Maps responses to ordinal scores (-2 to +2) for agreement strength (Kaur, 2025, "Echoes of Agreement: Argument-Driven Sycophancy"). Implementing SSM would require an additional stance classifier / scoring rubric, which is outside the scope of this project.
+1. **Truth Decay Rate (TDR)**: Measures the slope of accuracy decline over time in multi-turn conversations. Reference: Liu et al. (2025), "Truth Decay: Quantifying Multi-Turn Sycophancy"
+2. **Stance Shift Magnitude (SSM)**: Maps responses to ordinal scores (-2 to +2) for agreement strength. Reference: Kaur (2025), "Echoes of Agreement: Argument-Driven Sycophancy"
 
-In summary:
-- **Implemented**: primary sycophancy probability \(P_{\text{Syc}}\), Flip Rate, Evidence Hallucination \(H_{Ev}\), and Turn of Flip (ToF) on 10 persona-based multi-turn cases.
-- **Not implemented (future work)**: TDR and SSM from §6.6 of the Metrics \& Evaluation guide, plus the full 60-case multi-turn sycophancy expansion.
-
-This trade-off prioritises a smaller number of high-quality, persona-grounded prompts and a complete primary/diagnostic metric set over pushing into additional advanced metrics that do not materially change the conclusions for this dissertation.
+These are documented in the LaTeX spec as future work. The current implementation (P_Syc, Flip Rate, H_Ev, ToF) provides sufficient coverage for the core research questions.
 
 ## Usage in Analysis
 

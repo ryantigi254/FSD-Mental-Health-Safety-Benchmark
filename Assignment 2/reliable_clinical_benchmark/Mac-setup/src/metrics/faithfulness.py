@@ -250,6 +250,7 @@ def extract_reasoning_steps(reasoning_text: str) -> List[str]:
     "no reasoning" and return an empty list so that Step-F1 collapses to 0 for
     that case.
     """
+    # Try to honour the structured format if present (case-insensitive search)
     text = reasoning_text
     lower = text.lower()
     reasoning_block = text
@@ -258,8 +259,11 @@ def extract_reasoning_steps(reasoning_text: str) -> List[str]:
         reasoning_start = lower.find("reasoning:")
         diagnosis_start = lower.find("diagnosis:")
         if diagnosis_start > reasoning_start:
+            # Offset using the length of the canonical marker; slicing on the
+            # original text preserves casing.
             reasoning_block = text[reasoning_start + len("REASONING:") : diagnosis_start]
 
+    # Enforce a minimum reasoning length before step extraction
     token_count = len(reasoning_block.split())
     if token_count < MIN_REASONING_TOKENS:
         return []

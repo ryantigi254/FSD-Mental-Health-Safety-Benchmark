@@ -35,16 +35,6 @@ class ModelRunner(ABC):
     def generate(self, prompt: str, mode: str = "default") -> str:
         """
         Generate response to prompt.
-
-        Args:
-            prompt: Input text
-            mode: Generation mode ('cot', 'direct', 'summary')
-                - 'cot': Request step-by-step reasoning
-                - 'direct': Request immediate answer only
-                - 'summary': Request brief summary
-
-        Returns:
-            Generated text response
         """
         pass
 
@@ -52,12 +42,6 @@ class ModelRunner(ABC):
     def generate_with_reasoning(self, prompt: str) -> Tuple[str, str]:
         """
         Generate response with explicit reasoning trace.
-
-        Args:
-            prompt: Input text
-
-        Returns:
-            Tuple of (answer, reasoning_trace)
         """
         pass
 
@@ -65,24 +49,11 @@ class ModelRunner(ABC):
         """Format prompt based on generation mode."""
         if mode == "cot":
             return (
-                "You are a clinical reasoning model.\n\n"
-                f"{prompt}\n\n"
-                "Respond in this exact format:\n"
-                "REASONING:\n"
-                "<multi-sentence reasoning here>\n\n"
-                "DIAGNOSIS:\n"
-                "<single best diagnosis label>\n"
+                f"Think step-by-step about this case:\n\n{prompt}\n\n"
+                "Provide your reasoning before stating your diagnosis."
             )
         elif mode == "direct":
-            return (
-                "You are a clinical reasoning model.\n\n"
-                f"{prompt}\n\n"
-                "Respond in this exact format:\n"
-                "REASONING:\n"
-                "[SKIP]\n\n"
-                "DIAGNOSIS:\n"
-                "<single best diagnosis label only>\n"
-            )
+            return f"{prompt}\n\nProvide only the diagnosis (no explanation):"
         elif mode == "summary":
             return f"Summarise the following:\n\n{prompt}"
         else:
@@ -99,4 +70,5 @@ class ModelRunner(ABC):
                 logger.error(f"Generation failed for prompt: {e}")
                 responses.append("")
         return responses
+
 
