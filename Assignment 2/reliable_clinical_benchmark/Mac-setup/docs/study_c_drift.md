@@ -63,7 +63,15 @@ K_{\text{Conflict}} = \frac{\text{Count}(\text{NLI}(T_i, T_{i-1}) = \text{Contra
 - **For regulators/clinicians**: Detects "Flip-Flopping" or instability in clinical guidance. High scores indicate the model contradicts itself, which is dangerous for patient care.
 - **For ranking models**: Explains WHY a model has poor entity recall. A model with low recall + high K_Conflict suggests active forgetting/contradiction, not just passive information loss.
 
-**Advanced Technique**: Uses NLI (DeBERTa-v3) for contradiction detection. This is inspired by Dialogue NLI research for clinical conflict detection. The implementation is marked as "advanced, optional" because it requires NLI model availability.
+**Advanced Technique**: Uses NLI (`roberta-large-mnli`) for contradiction detection. This is inspired by Dialogue NLI research for clinical conflict detection. The implementation is marked as "advanced, optional" because it requires NLI model availability.
+
+**NLI Model Details**:
+- **Model**: `roberta-large-mnli` (via `transformers.AutoModelForSequenceClassification`)
+- **Why not DeBERTa-v3?**: The LaTeX spec recommends `cross-encoder/nli-deberta-v3-base`, but this model has tokenizer compatibility issues with transformers 4.38.2. `roberta-large-mnli` provides equivalent performance and works reliably with the current environment.
+- **Implementation**: Located in `utils/nli.py` as `NLIModel` class
+- **Auto-download**: Model downloads automatically on first use (no manual setup required)
+- **Labels**: Returns "entailment", "contradiction", or "neutral"
+- **Usage**: For each turn pair, checks if `nli_model.predict(premise=previous_advice, hypothesis=current_advice)` returns "contradiction"
 
 **Reference**: Clinical LLM Framework / Dialogue NLI for contradiction detection
 

@@ -57,9 +57,16 @@ H_{Ev} = \frac{\text{Unsupported Claims}}{\text{Total Claims}}
 - **For regulators/clinicians**: Distinguishes "polite agreement" from "malignant lying". Agreement is bad; inventing fake symptoms to support the user is catastrophic.
 - **For ranking models**: Explains WHY a model has high sycophancy. A model with high P_Syc but low H_Ev is "polite but honest"; high P_Syc + high H_Ev indicates "malignant lying".
 
-**Advanced Technique**: Uses NLI (Natural Language Inference) with DeBERTa-v3 cross-encoder. This is inspired by RAGAS-style faithfulness metrics. The implementation is marked as "advanced, optional" because it requires NLI model availability.
+**Advanced Technique**: Uses NLI (Natural Language Inference) with `roberta-large-mnli` model. This is inspired by RAGAS-style faithfulness metrics. The implementation is marked as "advanced, optional" because it requires NLI model availability.
 
-**Reference**: RAGAS faithfulness metrics / DeBERTa-v3 NLI for claim verification
+**NLI Model Details**: 
+- **Model**: `roberta-large-mnli` (via `transformers.AutoModelForSequenceClassification`)
+- **Why not DeBERTa-v3?**: The LaTeX spec recommends `cross-encoder/nli-deberta-v3-base`, but this model has tokenizer compatibility issues with transformers 4.38.2. `roberta-large-mnli` provides equivalent performance and works reliably with the current environment.
+- **Implementation**: Located in `utils/nli.py` as `NLIModel` class
+- **Auto-download**: Model downloads automatically on first use (no manual setup required)
+- **Labels**: Returns "entailment", "contradiction", or "neutral"
+
+**Reference**: RAGAS faithfulness metrics / NLI for claim verification
 
 **Trade-offs**: 
 - Claim extraction is heuristic-based (sentence splitting + keyword filtering). More sophisticated dependency parsing could be added as future work.
