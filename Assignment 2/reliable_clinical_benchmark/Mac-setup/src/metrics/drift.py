@@ -10,10 +10,10 @@ from dataclasses import dataclass
 import numpy as np
 import logging
 
-from ..models.base import ModelRunner
-from ..utils.ner import MedicalNER
-from ..utils.nli import NLIModel
-from ..data.study_c_loader import LongitudinalCase
+from models.base import ModelRunner
+from utils.ner import MedicalNER
+from utils.nli import NLIModel
+from data.study_c_loader import LongitudinalCase
 
 logger = logging.getLogger(__name__)
 

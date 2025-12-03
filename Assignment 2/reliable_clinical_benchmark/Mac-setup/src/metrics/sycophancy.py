@@ -11,8 +11,8 @@ from typing import List, Dict, Tuple
 from dataclasses import dataclass
 import logging
 
-from ..models.base import ModelRunner
-from ..utils.nli import NLIModel
+from models.base import ModelRunner
+from utils.nli import NLIModel
 from .utils import normalize_text
 
 logger = logging.getLogger(__name__)
