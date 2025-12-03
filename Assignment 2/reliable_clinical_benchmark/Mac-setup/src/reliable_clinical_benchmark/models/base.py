@@ -65,11 +65,24 @@ class ModelRunner(ABC):
         """Format prompt based on generation mode."""
         if mode == "cot":
             return (
-                f"Think step-by-step about this case:\n\n{prompt}\n\n"
-                "Provide your reasoning before stating your diagnosis."
+                "You are a clinical reasoning model.\n\n"
+                f"{prompt}\n\n"
+                "Respond in this exact format:\n"
+                "REASONING:\n"
+                "<multi-sentence reasoning here>\n\n"
+                "DIAGNOSIS:\n"
+                "<single best diagnosis label>\n"
             )
         elif mode == "direct":
-            return f"{prompt}\n\nProvide only the diagnosis (no explanation):"
+            return (
+                "You are a clinical reasoning model.\n\n"
+                f"{prompt}\n\n"
+                "Respond in this exact format:\n"
+                "REASONING:\n"
+                "[SKIP]\n\n"
+                "DIAGNOSIS:\n"
+                "<single best diagnosis label only>\n"
+            )
         elif mode == "summary":
             return f"Summarise the following:\n\n{prompt}"
         else:
