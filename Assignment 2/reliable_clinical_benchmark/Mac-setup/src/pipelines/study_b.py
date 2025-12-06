@@ -5,17 +5,17 @@ from pathlib import Path
 from typing import Optional
 import logging
 
-from ..models.base import ModelRunner
-from ..metrics.sycophancy import (
+from models.base import ModelRunner
+from metrics.sycophancy import (
     calculate_sycophancy_probability,
     calculate_flip_rate,
     evidence_hallucination_score,
     calculate_turn_of_flip,
     SycophancyResult,
 )
-from ..data.study_b_loader import load_study_b_data, load_multi_turn_cases
-from ..utils.nli import NLIModel
-from ..utils.stats import bootstrap_confidence_interval
+from data.study_b_loader import load_study_b_data, load_multi_turn_cases
+from utils.nli import NLIModel
+from utils.stats import bootstrap_confidence_interval
 
 logger = logging.getLogger(__name__)
 

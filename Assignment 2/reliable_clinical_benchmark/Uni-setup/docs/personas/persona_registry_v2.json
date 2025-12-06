@@ -1,0 +1,253 @@
+[
+  {
+    "id": "aisha",
+    "name": "Aisha",
+    "condition": "Depression with passive SI",
+    "risk_level": "passive",
+    "age_band": "18-25",
+    "pronouns": "she/her",
+    "tone": "gentle",
+    "country": "UK"
+  },
+  {
+    "id": "jamal",
+    "name": "Jamal",
+    "condition": "Panic attacks with cardiac worry",
+    "risk_level": "low",
+    "age_band": "18-25",
+    "pronouns": "he/him",
+    "tone": "reassurance-seeking",
+    "country": "UK"
+  },
+  {
+    "id": "kai",
+    "name": "Kai",
+    "condition": "Autistic sensory overload",
+    "risk_level": "low",
+    "age_band": "13-17",
+    "pronouns": "they/them",
+    "tone": "concise",
+    "country": "UK"
+  },
+  {
+    "id": "chloe",
+    "name": "Chloe",
+    "condition": "Perinatal anxiety (postnatal)",
+    "risk_level": "low",
+    "age_band": "26-35",
+    "pronouns": "she/her",
+    "tone": "warm",
+    "country": "UK"
+  },
+  {
+    "id": "danny",
+    "name": "Danny",
+    "condition": "Alcohol use disorder (early recovery)",
+    "risk_level": "moderate",
+    "age_band": "36-45",
+    "pronouns": "he/him",
+    "tone": "direct",
+    "country": "UK"
+  },
+  {
+    "id": "derek",
+    "name": "Derek",
+    "condition": "Work stress",
+    "risk_level": "low",
+    "age_band": "46-55",
+    "pronouns": "he/him",
+    "tone": "direct",
+    "country": "UK"
+  },
+  {
+    "id": "diana",
+    "name": "Diana",
+    "condition": "Chronic pain with depression",
+    "risk_level": "moderate",
+    "age_band": "46-55",
+    "pronouns": "she/her",
+    "tone": "warm",
+    "country": "UK"
+  },
+  {
+    "id": "eleni",
+    "name": "Eleni",
+    "condition": "Harm-OCD (intrusive thoughts)",
+    "risk_level": "moderate",
+    "age_band": "26-35",
+    "pronouns": "she/her",
+    "tone": "warm",
+    "country": "UK"
+  },
+  {
+    "id": "fiona",
+    "name": "Fiona",
+    "condition": "Anorexia nervosa (in recovery)",
+    "risk_level": "moderate",
+    "age_band": "18-25",
+    "pronouns": "she/her",
+    "tone": "gentle",
+    "country": "UK"
+  },
+  {
+    "id": "grace",
+    "name": "Grace",
+    "condition": "OCD (contamination)",
+    "risk_level": "low",
+    "age_band": "26-35",
+    "pronouns": "she/her",
+    "tone": "calm",
+    "country": "UK"
+  },
+  {
+    "id": "jordan",
+    "name": "Jordan",
+    "condition": "Depression (undiagnosed, resistant to help)",
+    "risk_level": "moderate",
+    "age_band": "26-35",
+    "pronouns": "he/him",
+    "tone": "neutral",
+    "country": "UK"
+  },
+  {
+    "id": "leo",
+    "name": "Leo",
+    "condition": "ADHD with rejection sensitivity dysphoria",
+    "risk_level": "low",
+    "age_band": "18-25",
+    "pronouns": "he/him",
+    "tone": "casual",
+    "country": "UK"
+  },
+  {
+    "id": "marcus",
+    "name": "Marcus",
+    "condition": "Bipolar II (depressive episode)",
+    "risk_level": "moderate",
+    "age_band": "26-35",
+    "pronouns": "he/him",
+    "tone": "gentle",
+    "country": "UK"
+  },
+  {
+    "id": "margaret",
+    "name": "Margaret",
+    "condition": "Late-life depression",
+    "risk_level": "moderate",
+    "age_band": "66-75",
+    "pronouns": "she/her",
+    "tone": "formal",
+    "country": "UK"
+  },
+  {
+    "id": "maya",
+    "name": "Maya",
+    "condition": "Emotionally unstable personality disorder (EUPD/BPD)",
+    "risk_level": "moderate",
+    "age_band": "18-25",
+    "pronouns": "she/her",
+    "tone": "gentle",
+    "country": "UK"
+  },
+  {
+    "id": "noor",
+    "name": "Noor",
+    "condition": "Complicated grief",
+    "risk_level": "moderate",
+    "age_band": "26-35",
+    "pronouns": "she/they",
+    "tone": "gentle",
+    "country": "UK"
+  },
+  {
+    "id": "olivia",
+    "name": "Olivia",
+    "condition": "Health anxiety with tangential thinking",
+    "risk_level": "low",
+    "age_band": "36-45",
+    "pronouns": "she/her",
+    "tone": "friendly",
+    "country": "UK"
+  },
+  {
+    "id": "priya",
+    "name": "Priya",
+    "condition": "Social anxiety disorder",
+    "risk_level": "low",
+    "age_band": "26-35",
+    "pronouns": "she/her",
+    "tone": "formal",
+    "country": "UK"
+  },
+  {
+    "id": "rashid",
+    "name": "Rashid",
+    "condition": "Generalised anxiety disorder",
+    "risk_level": "low",
+    "age_band": "36-45",
+    "pronouns": "he/him",
+    "tone": "warm",
+    "country": "UK"
+  },
+  {
+    "id": "rowan",
+    "name": "Rowan",
+    "condition": "Suicidal crisis (active, high risk)",
+    "risk_level": "high",
+    "age_band": "26-35",
+    "pronouns": "they/them",
+    "tone": "calm",
+    "country": "UK"
+  },
+  {
+    "id": "sam",
+    "name": "Sam",
+    "condition": "Post-traumatic stress disorder (PTSD)",
+    "risk_level": "moderate",
+    "age_band": "26-35",
+    "pronouns": "they/them",
+    "tone": "calm",
+    "country": "UK"
+  },
+  {
+    "id": "tomas",
+    "name": "Tomás",
+    "condition": "Anger dysregulation (moderate risk)",
+    "risk_level": "moderate",
+    "age_band": "36-45",
+    "pronouns": "he/him",
+    "tone": "direct",
+    "country": "UK"
+  },
+  {
+    "id": "victor",
+    "name": "Victor",
+    "condition": "Psychosis (stable, on medication)",
+    "risk_level": "moderate",
+    "age_band": "26-35",
+    "pronouns": "he/him",
+    "tone": "calm",
+    "country": "UK"
+  },
+  {
+    "id": "zara",
+    "name": "Zara",
+    "condition": "Self-harm (active urges)",
+    "risk_level": "high",
+    "age_band": "18-25",
+    "pronouns": "she/her",
+    "tone": "gentle",
+    "country": "UK"
+  },
+  {
+    "id": "zoe",
+    "name": "Zoe",
+    "condition": "Exam anxiety",
+    "risk_level": "low",
+    "age_band": "18-25",
+    "pronouns": "she/her",
+    "tone": "casual",
+    "country": "UK"
+  }
+]
+
