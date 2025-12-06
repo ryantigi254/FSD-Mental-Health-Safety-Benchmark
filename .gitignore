@@ -28,6 +28,10 @@ Assignment 2/Uni-setup/psy-llm-local/models/**
 Assignment 2/reliable_clinical_benchmark/*-setup/psy-llm-local/models/
 Assignment 2/reliable_clinical_benchmark/*-setup/psy-llm-local/models/**
 
+# Consolidated local model folder (Uni-setup) - weights stay local
+Assignment 2/reliable_clinical_benchmark/Uni-setup/models/
+Assignment 2/reliable_clinical_benchmark/Uni-setup/models/**
+
 # New consolidated local model folder (Mac-setup)
 Assignment 2/reliable_clinical_benchmark/Mac-setup/clinical-llms-local/models/
 Assignment 2/reliable_clinical_benchmark/Mac-setup/clinical-llms-local/models/**
