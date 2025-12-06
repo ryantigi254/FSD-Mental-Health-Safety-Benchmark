@@ -1,183 +1,75 @@
-# Mental Health LLM Safety Benchmark
+# Uni Setup (Windows, LM Studio + local HF)
 
-Publication-ready evaluation framework for assessing reasoning models on faithfulness, sycophancy, and longitudinal drift in mental health contexts.
+End-to-end steps for the Uni environment (Windows, x64) to mirror the Mac flow: create an isolated conda env, ensure spaCy/scispaCy are available, run generations via LM Studio or local HF models, then score from cache.
 
-## Quick Start
+## 1) Prerequisites
+- Anaconda/Miniconda on PATH
+- Git
+- LM Studio 0.3x (server reachable at `http://127.0.0.1:1234`)
+- Hugging Face token (for HF downloads and gated models)
+- Models placed under `Uni-setup/models/` (already gitignored)
 
-### 1. Environment Setup
+## 2) Create the env (conda, same name as Mac)
+```powershell
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+conda create -n mh-llm-benchmark-env python=3.10 -y
+& "D:\Anaconda3\Scripts\activate" mh-llm-benchmark-env   # adjust path if Anaconda elsewhere
 
-```bash
-cd Assignment\ 2/Uni-setup
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-python -m spacy download en_core_sci_sm
+# spaCy model via scispaCy S3 (matches spaCy 3.6.1)
+python -m pip install --no-deps https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.3/en_core_sci_sm-0.5.3.tar.gz
+python -m spacy validate
+```
+If `en_core_sci_sm` is unavailable, the above S3 link is the tested path for v0.5.3. NER-dependent tests auto-skip if the model is missing.
+
+## 3) Hugging Face auth (CLI)
+```powershell
+huggingface-cli login --token YOUR_HF_TOKEN
 ```
 
-### 2. Configure API Keys
+## 4) LM Studio (local endpoints)
+- Load your model (e.g., `gpt-oss-20b`) and keep server running on `127.0.0.1:1234`.
+- Ensure “Enable CORS”, “Allow per-request MCPs”, and “Just-in-Time Model Loading” are on; allow long JIT timeouts for big models.
 
-Copy `.env.example` to `.env` and add your API keys:
-
-```bash
-cp .env.example .env
-# Edit .env and add:
-# HUGGINGFACE_API_KEY=your_key_here
+## 5) Quick sanity chat (LM Studio client scripts)
+```powershell
+cd lmstudio-scripts
+python chat_gpt_oss_20b.py "Test prompt"  # or chat_qwq_32b.py etc.
 ```
 
-### 3. Setup LM Studio (for PsyLLM)
+## 6) Study A generation then metrics (example LM Studio model)
+```powershell
+cd ..
+$env:PYTHONPATH="src"
+$EP="http://127.0.0.1:1234/v1"
+$MODEL="gpt-oss-20b"
 
-See `docs/ENVIRONMENT.md` for detailed instructions on setting up LM Studio for local PsyLLM inference.
+# Generate only (writes cache)
+python -c "from pipelines.study_a import run_study_a; from models.psyllm import PsyLLMRunner; m=PsyLLMRunner(model_name='$MODEL', api_base='$EP'); run_study_a(model=m, data_dir='data/openr1_psy_splits', output_dir='results', model_name='$MODEL', generate_only=True, cache_out=f'results/{'$MODEL'}/study_a_generations.jsonl')"
 
-### 4. Prepare Data
-
-Ensure your data files are in place:
-
-- `data/openr1_psy_splits/study_a_test.json` - Study A faithfulness data
-- `data/openr1_psy_splits/study_b_test.json` - Study B sycophancy data
-- `data/openr1_psy_splits/study_c_test.json` - Study C longitudinal drift data
-- `data/adversarial_bias/biased_vignettes.json` - Adversarial bias cases
-
-### 5. Run Tests
-
-```bash
-pytest tests/unit/ -v --cov=src
+# Score from cache (no model calls)
+python -c "from pipelines.study_a import run_study_a; from models.psyllm import PsyLLMRunner; m=PsyLLMRunner(model_name='$MODEL', api_base='$EP'); run_study_a(model=m, data_dir='data/openr1_psy_splits', output_dir='results', model_name='$MODEL', from_cache=f'results/{'$MODEL'}/study_a_generations.jsonl')"
 ```
+Adjust `max-samples`/`max-cases` flags in the pipeline calls if you want smaller probes first.
 
-### 6. Run Evaluation
+## 7) Study B and C (LM Studio)
+```powershell
+# Study B (sycophancy), skip NLI for speed unless you have it
+python -c "from pipelines.study_b import run_study_b; from models.psyllm import PsyLLMRunner; m=PsyLLMRunner(model_name='$MODEL', api_base='$EP'); run_study_b(model=m, data_dir='data/openr1_psy_splits', output_dir='results', model_name='$MODEL', max_samples=10, use_nli=False)"
 
-```bash
-# Run a single study
-python scripts/run_evaluation.py --model psyllm --study A
-
-# Run all studies
-python scripts/run_evaluation.py --model psyllm --study all
-
-# With custom parameters
-python scripts/run_evaluation.py --model qwq --study B --max-samples 10 --temperature 0.7
+# Study C (drift)
+python -c "from pipelines.study_c import run_study_c; from models.psyllm import PsyLLMRunner; m=PsyLLMRunner(model_name='$MODEL', api_base='$EP'); run_study_c(model=m, data_dir='data/openr1_psy_splits', output_dir='results', model_name='$MODEL', max_cases=3, use_nli=False)"
 ```
+Switch to the HF-local runners (`hf-local-scripts/`) if you prefer to call downloaded PyTorch models directly instead of LM Studio.
 
-## Single Environment Approach
-
-This project uses **one virtual environment** for all three studies to ensure:
-
-- Reproducibility across all experiments
-- Consistent dependency versions
-- Standard publication practices
-
-## Evaluation Studies
-
-### Study A: Faithfulness (403 prompts/model)
-
-- **Faithfulness Gap (Δ)**: Measures if reasoning is functional or decorative
-- **Step-F1**: Validates reasoning content quality against gold standards
-- **Silent Bias Rate**: Detects hidden demographic biases
-
-### Study B: Sycophancy (1,035 prompts/model)
-
-- **Sycophancy Probability (P_Syc)**: Measures agreement shift under user pressure
-- **Flip Rate**: Clinical failure rate (correct → incorrect transitions)
-- **Evidence Hallucination**: Detects fabricated symptoms to support user's incorrect opinion
-- **Turn of Flip (ToF)**: Defines safe conversation window
-
-### Study C: Longitudinal Drift (460 prompts/model)
-
-- **Entity Recall Decay**: Measures forgetting of critical entities over turns
-- **Knowledge Conflict Rate**: Detects self-contradictions
-- **Continuity Score**: Measures adherence to treatment plan
-
-## Models Evaluated
-
-1. **PsyLLM-8B** (LM Studio, local) – primary path
-2. **GPT-OSS-120B** (LM Studio GGUF MXFP4, `lmstudio-community/openai-gpt-oss-120b-gguf-mxfp4`)
-3. **GPT-OSS-20B** (LM Studio GGUF, record quant e.g., MXFP4/FP16)
-4. **QwQ-32B** (LM Studio GGUF FP16)
-5. **DeepSeek-R1-Distill-Llama-70B** (LM Studio GGUF Q6_K, https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-70B)
-6. **Qwen3-8B** (Hugging Face API baseline)
-
-Current LM Studio runs use these quantised GGUF builds (as downloaded in LM Studio). Remote API runners stay available for QwQ/DeepSeek/GPT-OSS if you prefer hosted inference. All LM Studio communication is handled by `lmstudio_client` for consistent error handling.
-
-## Project Structure
-
+## 8) Tests
+```powershell
+pytest tests/unit -v
+pytest tests/integration -v
 ```
-Uni-setup/
-├── src/
-│   └── reliable_clinical_benchmark/
-│       ├── models/          # Model runners
-│       ├── metrics/          # Evaluation metrics
-│       ├── pipelines/        # Study pipelines
-│       ├── data/             # Data loaders
-│       ├── eval/             # Evaluation orchestration
-│       └── utils/            # Utilities (NLI, NER, stats)
-├── scripts/
-│   ├── run_evaluation.py    # Main evaluation script
-│   └── update_leaderboard.py # Leaderboard generator
-├── tests/
-│   ├── unit/                # Unit tests
-│   └── integration/         # Integration tests
-├── notebooks/               # Analysis notebooks (Jupyter)
-│   ├── study_a_analysis.ipynb
-│   ├── study_b_analysis.ipynb
-│   └── study_c_analysis.ipynb
-├── docs/                    # Documentation
-│   ├── ENVIRONMENT.md
-│   ├── EVALUATION_PROTOCOL.md
-│   ├── study_a_faithfulness.md
-│   ├── study_b_sycophancy.md
-│   └── study_c_drift.md
-├── data/                    # Test data (frozen splits)
-└── results/                 # Evaluation outputs
-```
+Unit split invariants will guard against accidental data edits; integration tests skip if dependencies (datasets/NER/NLI) are absent.
 
-## Example Usage
-
-```bash
-# Evaluate PsyLLM on Study A
-python scripts/run_evaluation.py --model psyllm --study A
-
-# Evaluate QwQ-32B on all studies
-python scripts/run_evaluation.py --model qwq --study all
-
-# Quick test run with limited samples
-python scripts/run_evaluation.py --model psyllm --study B --max-samples 5
-
-# Update leaderboard after running evaluations
-python scripts/update_leaderboard.py --results-dir results
-```
-
-## Documentation
-
-- `docs/ENVIRONMENT.md` - Environment setup and configuration
-- `docs/EVALUATION_PROTOCOL.md` - Detailed evaluation procedure
-- `docs/study_a_faithfulness.md` - Study A implementation guide (metrics, formulas, design decisions)
-- `docs/study_b_sycophancy.md` - Study B implementation guide (metrics, formulas, design decisions)
-- `docs/study_c_drift.md` - Study C implementation guide (metrics, formulas, design decisions)
-
-## Analysis Notebooks
-
-After running evaluations, use the Jupyter notebooks in `notebooks/` to analyse results:
-
-- `notebooks/study_a_analysis.ipynb` - Rank models by faithfulness gap, visualise Step-F1, assess silent bias
-- `notebooks/study_b_analysis.ipynb` - Compare sycophancy probability, flip rates, evidence hallucination, safe conversation windows
-- `notebooks/study_c_analysis.ipynb` - Plot entity recall decay curves, compare drift slopes, assess knowledge conflicts
-
-Each notebook includes:
-- Model ranking tables
-- Visualisations with error bars (bootstrap CIs)
-- Safety card summaries (which models pass thresholds)
-- Interpretation guides connecting metrics to clinical deployment decisions
-
-## Citation
-
-```bibtex
-@article{gichuru2026mental,
-  title={Mental Health LLM Safety Benchmark: Evaluating Reasoning Models on Faithfulness, Sycophancy, and Longitudinal Drift},
-  author={Gichuru, Ryan Mutiga},
-  journal={arXiv preprint},
-  year={2026}
-}
-```
-
-## License
-
-MIT License
-
+## 9) Troubleshooting
+- Connection refused: ensure LM Studio server running on port 1234 and model loaded.
+- spaCy/scispaCy wheels: use Python 3.10 with conda; install `en_core_sci_sm` via `python -m spacy download en_core_sci_sm`.
+- Large HF downloads: use `huggingface-cli download ... --resume-download --local-dir-use-symlinks False`. Keep weights under `models/` (gitignored).
