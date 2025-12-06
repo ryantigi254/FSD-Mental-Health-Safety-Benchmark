@@ -36,6 +36,10 @@ Assignment 2/reliable_clinical_benchmark/Uni-setup/models/**
 Assignment 2/reliable_clinical_benchmark/Mac-setup/clinical-llms-local/models/
 Assignment 2/reliable_clinical_benchmark/Mac-setup/clinical-llms-local/models/**
 
+# Top-level local PsyLLM prototyping (keep out of git)
+Assignment 2/psy-llm-local/
+Assignment 2/psy-llm-local/**
+
 # Local Dissertation prototype clone and dissertation artefacts - keep entirely local, never tracked
 Assignment/Misc/Dissertation/
 Course Material/Assignment/Misc/Dissertation/
