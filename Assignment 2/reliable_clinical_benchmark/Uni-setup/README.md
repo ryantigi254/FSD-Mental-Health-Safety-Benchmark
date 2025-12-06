@@ -87,13 +87,14 @@ This project uses **one virtual environment** for all three studies to ensure:
 
 ## Models Evaluated
 
-1. **PsyLLM-8B** (local via LM Studio) - **Primary model for this dissertation**
-2. **QwQ-32B** (Hugging Face API) - Optional extension
-3. **DeepSeek-R1-32B** (Hugging Face API) - Optional extension
-4. **GPT-OSS-120B** (TBD - placeholder) - Optional extension
-5. **Qwen3-8B** (Hugging Face API - baseline) - Optional extension
+1. **PsyLLM-8B** (LM Studio, local) – primary path
+2. **GPT-OSS-120B** (LM Studio GGUF MXFP4, `lmstudio-community/openai-gpt-oss-120b-gguf-mxfp4`)
+3. **GPT-OSS-20B** (LM Studio GGUF, record quant e.g., MXFP4/FP16)
+4. **QwQ-32B** (LM Studio GGUF FP16)
+5. **DeepSeek-R1-Distill-Llama-70B** (LM Studio GGUF Q6_K, https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-70B)
+6. **Qwen3-8B** (Hugging Face API baseline)
 
-**Note**: For this dissertation, PsyLLM via LM Studio is the primary evaluation path. Other models are configured as remote API runners for spec completeness, but the actual evaluation focuses on local PsyLLM inference. All LM Studio communication is handled by the shared `lmstudio_client` module for consistent error handling.
+Current LM Studio runs use these quantised GGUF builds (as downloaded in LM Studio). Remote API runners stay available for QwQ/DeepSeek/GPT-OSS if you prefer hosted inference. All LM Studio communication is handled by `lmstudio_client` for consistent error handling.
 
 ## Project Structure
 

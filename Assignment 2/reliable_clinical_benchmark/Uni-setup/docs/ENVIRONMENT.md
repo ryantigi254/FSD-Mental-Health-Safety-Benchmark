@@ -63,9 +63,16 @@ python scripts/run_evaluation.py --study B
 python scripts/run_evaluation.py --study C
 ```
 
-## Remote API Setup (HF / GPT-OSS)
+## Model endpoints (LM Studio + remote API)
 
-Uni-setup typically runs remote baselines (QwQ, DeepSeek-R1, Qwen3, GPT-OSS) rather than local LM Studio.
+Uni-setup now runs the main baselines through LM Studio using quantised GGUFs:
+
+- GPT-OSS-120B: LM Studio GGUF MXFP4 (`lmstudio-community/openai-gpt-oss-120b-gguf-mxfp4`)
+- GPT-OSS-20B: LM Studio GGUF (record the exact quant used, e.g., MXFP4/FP16)
+- QwQ-32B: LM Studio GGUF FP16
+- DeepSeek-R1-Distill-Llama-70B: LM Studio GGUF Q6_K (https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-70B)
+
+Remote API runners remain available (QwQ, DeepSeek-R1, Qwen3, GPT-OSS) if you prefer hosted inference.
 
 1. Create a `.env` file in the Uni-setup root (or copy from `.env.example`):
 
