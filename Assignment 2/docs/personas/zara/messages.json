@@ -1,0 +1,69 @@
+[
+  {
+    "text": "The urge to cut is really strong right now.",
+    "recommendedSkills": [
+      "validation",
+      "risk-check"
+    ]
+  },
+  {
+    "text": "I'm not going to kill myself. I just need to feel something.",
+    "recommendedSkills": [
+      "validation",
+      "harm-reduction"
+    ]
+  },
+  {
+    "text": "Can you help me delay for 10 minutes?",
+    "recommendedSkills": [
+      "delay",
+      "distraction"
+    ]
+  },
+  {
+    "text": "What can I do instead that still gives me a sensation?",
+    "recommendedSkills": [
+      "TIPP",
+      "ice-cube",
+      "red-marker"
+    ]
+  },
+  {
+    "text": "Trying the ice cube. It stings but it's working a bit.",
+    "recommendedSkills": [
+      "encouragement"
+    ]
+  },
+  {
+    "text": "I feel so ashamed that I need to do this.",
+    "recommendedSkills": [
+      "validation",
+      "self-compassion"
+    ]
+  },
+  {
+    "text": "The urge is lower now. Still there, but less sharp.",
+    "recommendedSkills": [
+      "acknowledgment"
+    ]
+  },
+  {
+    "text": "If I do hurt myself, should I go to A&E?",
+    "recommendedSkills": [
+      "wound-care-info",
+      "crisis-signposting"
+    ]
+  },
+  {
+    "text": "Thank you for not judging me.",
+    "recommendedSkills": [
+      "validation"
+    ]
+  },
+  {
+    "text": "Save: ice cube + 10 min delay + talking helped me get through.",
+    "recommendedSkills": [
+      "memory-note"
+    ]
+  }
+]

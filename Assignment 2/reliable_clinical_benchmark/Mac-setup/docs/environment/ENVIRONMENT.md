@@ -2,39 +2,27 @@
 
 ## Overview
 
-This benchmark operates within a **single shared Python 3.11 virtual environment**. This unified environment is designed to handle all three studies (A, B, C), unit/integration tests, and model execution on macOS systems.
+Single Mac environment for running the benchmark locally (smoke tests and small evaluations) on 8B-class models. Everything below is scoped to macOS; heavier 32B+ runs stay on the Uni setup.
 
-The specific version pins listed below match the publishable environment described in the associated research, ensuring reproducibility.
+## 1. Create the virtual environment
 
-## 1. Create the Virtual Environment
-
-To avoid conflicts with system-level Python packages or Homebrew-managed environments, all operations must be performed inside the dedicated virtual environment.
-
-Run the following from the repository root:
+From the repo root:
 
 ```bash
 cd "Assignment 2/reliable_clinical_benchmark/Mac-setup"
 
-# 1) Create a dedicated Python 3.11 environment
 python3.11 -m venv .mh-llm-benchmark-env
 source .mh-llm-benchmark-env/bin/activate
 
-# 2) Upgrade pip within the virtual environment
 python -m pip install --upgrade pip
-
-# 3) Install core heavy dependencies (PyTorch)
 python -m pip install "torch==2.2.1"
-
-# 4) Install spaCy and the specific clinical model (scispacy)
 python -m pip install "spacy==3.6.1" "scispacy==0.5.3"
 python -m pip install \
   https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.3/en_core_sci_sm-0.5.3.tar.gz
-
-# 5) Install remaining dependencies
 python -m pip install -r requirements.txt
 ```
 
-> **Note:** If you encounter an `error: externally-managed-environment`, ensure you have activated the environment using `source .mh-llm-benchmark-env/bin/activate`.
+If `pip` reports `externally-managed-environment`, reactivate the venv and retry.
 
 ## 2. Required Dependencies
 
@@ -48,34 +36,30 @@ The benchmark relies on the following core technology stack:
   * **Sentence Embeddings:** Sentence-transformers 2.5.1
   * **Scientific Computing:** SciPy 1.10.1
 
-## 3. Model Configuration
+## 3. Mac-local models
 
-### PsyLLM (Local Hugging Face Loading)
+**Qwen3-8B (precision on-device)**
+- Load `Qwen/Qwen2.5-8B-Instruct` into LM Studio with MLX enabled, start the Local Server (`http://localhost:1234/v1`), and set `model_name` to the LM Studio identifier (e.g., `qwen3-8b-mlx`) when instantiating `PsyLLMRunner`.
+- If you prefer the Hugging Face Inference API instead of LM Studio, export `HUGGINGFACE_API_KEY` in `.env`; this keeps precision server-side and avoids local VRAM pressure.
 
-The **PsyLLM-8B** (`GMLHUHE/PsyLLM`) model is configured to run locally via the Hugging Face `transformers` library.
+**PsyLLM-8B (local LM Studio)**
+- Load `GMLHUHE/PsyLLM` in LM Studio, keep the default server port, and run via `PsyLLMRunner` (uses `lmstudio_client`).
+- Target full precision on MLX/MPS; drop to CPU only if necessary for debugging.
 
-  * The model will be automatically downloaded to your local Hugging Face cache upon the first execution.
-  * Ensure your machine has sufficient RAM/VRAM to load the 8B parameter model.
+Models larger than 8B (QwQ-32B, DeepSeek-R1-32B, GPT-OSS-120B) are intentionally excluded here and live in the Uni setup documentation.
 
-### LM Studio (For Compatible Local Models)
+### LM Studio checklist
+1. Install LM Studio (https://lmstudio.ai/).
+2. Load the chosen model (Qwen3-8B or PsyLLM-8B) and enable the Local Server.
+3. Verify the endpoint before running:
+   ```bash
+   curl http://localhost:1234/v1/models
+   ```
 
-For other models utilising the local server interface:
-
-1.  Download and install [LM Studio](https://lmstudio.ai/).
-2.  Load the target model within the application.
-3.  Start the **Local Server** (default: `http://localhost:1234`).
-4.  The benchmark runners will communicate with the model via this local API endpoint.
-
-### Remote API Keys
-
-For models requiring remote API access (e.g., QwQ, DeepSeek-R1), create a `.env` file in the `Mac-setup` root directory:
-
+### API keys (Mac scope)
+Create `.env` in `Mac-setup` if you call the Hugging Face Inference API:
 ```bash
-# Hugging Face API Key
 HUGGINGFACE_API_KEY=your_huggingface_api_key_here
-
-# GPT-OSS API Key (if applicable)
-GPT_OSS_API_KEY=your_gpt_oss_api_key_here
 ```
 
 ## 4. NLI Model Setup
@@ -117,18 +101,15 @@ result = nli.predict(
 
 *The system automatically utilises GPU acceleration (CUDA/MPS) if available.*
 
-## 5. Running Studies
-
-With the environment activated, you can execute the evaluation scripts for each study:
+## 5. Running studies (Mac)
 
 ```bash
 cd "Assignment 2/reliable_clinical_benchmark/Mac-setup"
 source .mh-llm-benchmark-env/bin/activate
 
-# Run Studies
-python scripts/run_evaluation.py --study A
-python scripts/run_evaluation.py --study B
-python scripts/run_evaluation.py --study C
+# Example smoke runs on Mac
+PYTHONPATH=src python scripts/run_evaluation.py --model qwen3-8b-mlx --study A --max-samples 5
+PYTHONPATH=src python scripts/run_evaluation.py --model PsyLLM-8B --study B --max-samples 5
 ```
 
 ## 6. Verification Script
@@ -163,8 +144,8 @@ except Exception as e:
 "
 ```
 
-## Publication Reproducibility Statement
+## Publication reproducibility statement
 
-> All experiments were conducted on macOS using a Python 3.11 virtual environment (`.mh-llm-benchmark-env`) with dependencies specified in `requirements.txt`. Key components include PyTorch 2.2.1, Transformers 4.38.2, spaCy 3.6.1, and scispaCy 0.5.3 (utilising the `en_core_sci_sm` clinical NER model).
+> Mac runs use Python 3.11 in `.mh-llm-benchmark-env` with dependencies pinned in `requirements.txt` (PyTorch 2.2.1, Transformers 4.38.2, spaCy 3.6.1, SciPy 1.10.1, scispaCy 0.5.3 with `en_core_sci_sm`). LM Studio-backed local inference is limited to 8B-class models on MLX/MPS; larger precision runs are handled separately on the Uni setup.
 
 

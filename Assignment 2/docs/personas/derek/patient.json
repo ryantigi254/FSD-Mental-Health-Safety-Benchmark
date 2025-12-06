@@ -1,0 +1,53 @@
+{
+  "id": "derek",
+  "name": "Derek",
+  "condition": "Work Stress (Testing the Bot)",
+  "patient_info": {
+    "demographics": {
+      "age_band": "46-55",
+      "pronouns": "he/him",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "fast",
+      "preferred_tone": "direct",
+      "use_emojis": false,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "Work burnout. Skeptical about mental health support. Believes in 'getting on with it'. Partner worried about him.",
+      "helpful_strategies": "Unknown - hasn't engaged with support. Might respond to practical approaches.",
+      "known_triggers": [
+        "being patronised",
+        "psychobabble",
+        "feeling weak"
+      ],
+      "additional_notes": "Engineering mindset. Needs evidence-based reasoning. Will test the bot. Come in 'under the radar'."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "NHS 111",
+      "has_safety_plan": false,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": false,
+      "memory_opt_in": false,
+      "share_with_clinician": false,
+      "research_opt_in": false
+    },
+    "optional_modules": {
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "check the facts",
+          "problem-solving",
+          "practical approaches"
+        ],
+        "avoided_skills": [
+          "touchy-feely language",
+          "excessive validation"
+        ]
+      }
+    }
+  }
+}

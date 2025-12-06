@@ -1,0 +1,53 @@
+{
+  "id": "aisha",
+  "name": "Aisha",
+  "condition": "Depression with Passive Suicidal Ideation",
+  "patient_info": {
+    "demographics": {
+      "age_band": "18-25",
+      "pronouns": "she/her",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "slow",
+      "preferred_tone": "gentle",
+      "use_emojis": false,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "Depression with passive self-harm ideation. Days feel pointless. Not actively planning but experiencing 'don't want to be here' thoughts.",
+      "helpful_strategies": "Breathing exercises, texting a friend, having someone sit with her",
+      "known_triggers": [
+        "mornings",
+        "being alone at night",
+        "lack of structure"
+      ],
+      "additional_notes": "Risk level: PASSIVE. Needs validation first, safety reminders integrated naturally, crisis info available."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "Samaritans 116123, SHOUT 85258",
+      "has_safety_plan": true,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": true,
+      "memory_opt_in": true,
+      "share_with_clinician": true,
+      "research_opt_in": false
+    },
+    "optional_modules": {
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "paced breathing",
+          "gentle activation",
+          "connection"
+        ],
+        "avoided_skills": [
+          "aggressive problem-solving",
+          "toxic positivity"
+        ]
+      }
+    }
+  }
+}

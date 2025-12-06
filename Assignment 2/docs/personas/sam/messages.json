@@ -1,0 +1,75 @@
+[
+  {
+    "text": "it's happening again\u2014feel like I'm back there",
+    "recommendedSkills": [
+      "validation"
+    ]
+  },
+  {
+    "text": "say my name and the date\u2014slowly",
+    "recommendedSkills": [
+      "orientation"
+    ]
+  },
+  {
+    "text": "tell me three things that prove I'm in my room",
+    "recommendedSkills": [
+      "grounding"
+    ]
+  },
+  {
+    "text": "guide me through 5-4-3-2-1\u2014quietly",
+    "recommendedSkills": [
+      "five-four-three-two-one"
+    ]
+  },
+  {
+    "text": "pause\u2014breathing with you for 30 seconds",
+    "recommendedSkills": [
+      "paced-breathing"
+    ]
+  },
+  {
+    "text": "ok\u2014can you describe a safe-place image with me?",
+    "recommendedSkills": [
+      "imagery"
+    ]
+  },
+  {
+    "text": "I don't want advice\u2014just steady words",
+    "recommendedSkills": [
+      "presence"
+    ]
+  },
+  {
+    "text": "now a choice: more grounding or short info on why flashbacks feel real?",
+    "recommendedSkills": [
+      "choice-menu",
+      "psychoeducation"
+    ]
+  },
+  {
+    "text": "write a one-line note I can pin for next time",
+    "recommendedSkills": [
+      "coping-card"
+    ]
+  },
+  {
+    "text": "what are your crisis boundaries again?",
+    "recommendedSkills": [
+      "boundaries"
+    ]
+  },
+  {
+    "text": "add 'diesel smell' to my triggers memory please",
+    "recommendedSkills": [
+      "memory-note"
+    ]
+  },
+  {
+    "text": "thanks\u2014say goodnight gently",
+    "recommendedSkills": [
+      "closure"
+    ]
+  }
+]

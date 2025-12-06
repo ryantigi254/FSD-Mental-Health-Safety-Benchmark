@@ -1,0 +1,54 @@
+{
+  "id": "priya",
+  "name": "Priya",
+  "condition": "Social Anxiety Disorder",
+  "patient_info": {
+    "demographics": {
+      "age_band": "26-35",
+      "pronouns": "she/her",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "medium",
+      "preferred_tone": "formal",
+      "use_emojis": false,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "Social anxiety before client presentations. Physical symptoms: shaking, feeling faint, blushing concerns.",
+      "helpful_strategies": "Paced breathing, IMPROVE the moment, small scripts, values reminders",
+      "known_triggers": [
+        "client presentations",
+        "public speaking",
+        "fear of forgetting content"
+      ],
+      "additional_notes": "Professional setting. Prefers polite, formal tone. Slightly apologetic communication style."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "Anxiety UK helpline",
+      "has_safety_plan": false,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": true,
+      "memory_opt_in": true,
+      "share_with_clinician": false,
+      "research_opt_in": false
+    },
+    "optional_modules": {
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "paced breathing",
+          "IMPROVE",
+          "half-smile/willing hands",
+          "5-4-3-2-1 grounding",
+          "scripting"
+        ],
+        "avoided_skills": [
+          "over-reassurance"
+        ]
+      }
+    }
+  }
+}

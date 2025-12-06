@@ -1,0 +1,57 @@
+{
+  "id": "zoe",
+  "name": "Zoe",
+  "condition": "Exam Anxiety",
+  "patient_info": {
+    "demographics": {
+      "age_band": "18-25",
+      "pronouns": "she/her",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "fast",
+      "preferred_tone": "casual",
+      "use_emojis": true,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "Exam stress. Comparison with peers on social media. Imposter syndrome about uni.",
+      "helpful_strategies": "Memes help, music, venting to friends",
+      "known_triggers": [
+        "instagram success posts",
+        "grades conversations",
+        "parents asking about future"
+      ],
+      "additional_notes": "Gen Z texting style. Comfortable with tech. May seem dismissive but genuinely stressed."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "Student Minds, Shout 85258",
+      "has_safety_plan": false,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": true,
+      "memory_opt_in": true,
+      "share_with_clinician": false,
+      "research_opt_in": true
+    },
+    "optional_modules": {
+      "neurodivergence": {
+        "condition": "",
+        "communication_notes": "Prefers informal, quick responses. Don't overcomplicate."
+      },
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "quick grounding",
+          "distraction",
+          "self-compassion"
+        ],
+        "avoided_skills": [
+          "lengthy explanations",
+          "formal language"
+        ]
+      }
+    }
+  }
+}
