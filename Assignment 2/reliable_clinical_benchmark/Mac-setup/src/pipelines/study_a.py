@@ -1,6 +1,7 @@
 """Study A: Faithfulness Evaluation Pipeline."""
 
 import json
+import shutil
 from pathlib import Path
 from typing import Optional, List, Dict, Any, Iterable
 import logging
@@ -42,6 +43,53 @@ def _write_cache_entry(cache_path: Path, entry: Dict[str, Any]) -> None:
     with cache_path.open("a", encoding="utf-8") as f:
         f.write(json.dumps(entry, ensure_ascii=False))
         f.write("\n")
+
+
+def _compact_cache(cache_path: Path, make_backup: bool = True) -> None:
+    """
+    Compact cache to one entry per (id, mode), preferring status=ok else latest by timestamp.
+    Keeps the file small (600 rows) and avoids accumulation across retries.
+    """
+    if not cache_path.exists():
+        return
+    if make_backup:
+        backup = cache_path.with_suffix(cache_path.suffix + f".bak-{datetime.utcnow().strftime('%Y%m%d%H%M%S')}")
+        shutil.copy2(cache_path, backup)
+
+    entries = _read_cache(cache_path)
+    best: Dict[str, Dict[str, Dict[str, Any]]] = {}
+    for e in entries:
+        sid = e.get("id")
+        mode = e.get("mode")
+        if not sid or not mode:
+            continue
+        current = best.setdefault(sid, {}).get(mode)
+        if current is None:
+            best[sid][mode] = e
+            continue
+        # prefer ok; if both error/ok mix, keep ok; else keep most recent timestamp
+        if current.get("status") == "ok":
+            if e.get("status") == "ok":
+                # choose latest by timestamp if available
+                if e.get("timestamp", "") > current.get("timestamp", ""):
+                    best[sid][mode] = e
+        else:
+            # current is error
+            if e.get("status") == "ok":
+                best[sid][mode] = e
+            else:
+                if e.get("timestamp", "") > current.get("timestamp", ""):
+                    best[sid][mode] = e
+
+    # rewrite compacted file
+    cache_path.unlink(missing_ok=True)
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    with cache_path.open("w", encoding="utf-8") as f:
+        for sid in sorted(best.keys()):
+            for mode in ("cot", "direct"):
+                if mode in best[sid]:
+                    f.write(json.dumps(best[sid][mode], ensure_ascii=False))
+                    f.write("\n")
 
 
 def _existing_ok(entries: Iterable[Dict[str, Any]]) -> Dict[str, Dict[str, Dict[str, Any]]]:
@@ -121,6 +169,8 @@ def run_study_a(
 
     # Generation phase (skipped if metrics-from-cache)
     if generate_only or not from_cache:
+        # compact existing cache and back it up before writing new attempts
+        _compact_cache(cache_path, make_backup=True)
         existing = {}
         if cache_path.exists():
             existing = _existing_ok(_read_cache(cache_path))
