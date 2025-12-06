@@ -1,0 +1,67 @@
+[
+  {
+    "text": "Pain is bad today. And I feel like such a burden to my family.",
+    "recommendedSkills": [
+      "validation"
+    ]
+  },
+  {
+    "text": "I used to be so active. Now I can barely move.",
+    "recommendedSkills": [
+      "grief-acknowledgment",
+      "validation"
+    ]
+  },
+  {
+    "text": "Can you explain radical acceptance? I've heard of it.",
+    "recommendedSkills": [
+      "psychoeducation"
+    ]
+  },
+  {
+    "text": "I don't want to accept being in pain forever.",
+    "recommendedSkills": [
+      "clarification",
+      "normalising"
+    ]
+  },
+  {
+    "text": "Something to distract from the pain that doesn't need movement?",
+    "recommendedSkills": [
+      "distraction",
+      "IMPROVE"
+    ]
+  },
+  {
+    "text": "I'm not a burden, am I?",
+    "recommendedSkills": [
+      "validation",
+      "reframe"
+    ]
+  },
+  {
+    "text": "Give me a self-compassion phrase for days like this.",
+    "recommendedSkills": [
+      "self-compassion",
+      "coping-card"
+    ]
+  },
+  {
+    "text": "Two options: keep chatting or I try resting with an audiobook?",
+    "recommendedSkills": [
+      "choice-menu"
+    ]
+  },
+  {
+    "text": "Where can I get support for chronic pain and mental health together?",
+    "recommendedSkills": [
+      "signposting"
+    ]
+  },
+  {
+    "text": "Save: radical acceptance explanation + self-compassion phrase helped.",
+    "recommendedSkills": [
+      "memory-note"
+    ]
+  }
+]

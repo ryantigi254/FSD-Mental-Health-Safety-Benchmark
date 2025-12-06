@@ -1,43 +1,18 @@
 # Test Report – Mac setup
 
-## Latest recorded run (local venv)
-
-Command:
+Latest run (Mac venv): `docs/reports/test_logs/mac_pytest_20251206_171548.log`
 
 ```bash
 cd "Assignment 2/reliable_clinical_benchmark/Mac-setup"
-PYTHONPATH=src python -m pytest -q -o addopts=
+source .mh-llm-benchmark-env/bin/activate
+PYTHONPATH=src python -m pytest -q | tee docs/reports/test_logs/mac_pytest_20251206_171548.log
 ```
 
-Observed output:
+Key results (12.96s total):
+- Outcome: 26 passed, 0 skipped, 0 failed.
+- Warnings: Click `BaseCommand` deprecation, Click `parser.split_arg_string` deprecation, spaCy tokenizer future warning (see log).
+- Coverage: 53% overall (HTML in `htmlcov`). High-miss areas: `metrics/faithfulness.py`, `models/lmstudio_client.py`, `models/psyllm.py`, `eval/*`, `pipelines/*`, `utils/stats.py`.
 
-```text
-.......s........s.                                    [100%]
-===================== warnings summary ======================
-.../typer/completion.py:122: DeprecationWarning: 'BaseCommand' is deprecated and will be removed in Click 9.0. Use 'Command' instead.
-.../spacy/cli/_util.py:23: DeprecationWarning: Importing 'parser.split_arg_string' is deprecated; it will only be available in 'shell_completion' in Click 9.0.
-.../spacy/language.py:2141: FutureWarning: Possible set union at position 6328
--- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-16 passed, 2 skipped, 3 warnings in 4.78s
-```
-
-- Result: all tests in `tests/unit` and `tests/integration` pass on the Mac virtual environment.
-- Skips: 2 tests are `pytest.skip` guarded (e.g., when optional NLI model is unavailable).
-
-## Recommended verbose run
-
-For streamed progress:
-
-```bash
-cd "Assignment 2/reliable_clinical_benchmark/Mac-setup"
-PYTHONPATH=src python -m pytest -vv -s
-```
-
-To capture a log while streaming:
-
-```bash
-cd "Assignment 2/reliable_clinical_benchmark/Mac-setup"
-PYTHONPATH=src python -m pytest -vv -s | tee tests/test_run_$(date +%Y%m%d_%H%M%S).log
-```
-
-Generates a timestamped log under `tests/` suitable for sharing as an artefact.
+Next steps:
+- Leave the log in `docs/reports/test_logs/` as the artefact for this Mac run.
+- Re-run after substantial changes with the same command; adjust `--maxfail` or `-vv` only if troubleshooting.

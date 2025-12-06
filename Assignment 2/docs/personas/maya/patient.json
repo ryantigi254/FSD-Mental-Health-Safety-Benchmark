@@ -1,0 +1,52 @@
+{
+  "id": "maya",
+  "name": "Maya",
+  "condition": "Emotionally Unstable Personality Disorder (EUPD/BPD)",
+  "patient_info": {
+    "demographics": {
+      "age_band": "18-25",
+      "pronouns": "she/her",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "slow",
+      "preferred_tone": "gentle",
+      "use_emojis": false,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "Intense emotional reactions to perceived rejection, especially from partner. Chest tightness and burning sensation during distress.",
+      "helpful_strategies": "Having someone listen without fixing, validation, slow grounding exercises",
+      "known_triggers": [
+        "being left on read",
+        "partner arguments",
+        "feeling abandoned"
+      ],
+      "additional_notes": "Diagnosed EUPD/BPD. Prefers co-regulation before any skill work."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "Samaritans 116123",
+      "has_safety_plan": true,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": true,
+      "memory_opt_in": true,
+      "share_with_clinician": false,
+      "research_opt_in": false
+    },
+    "optional_modules": {
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "5-4-3-2-1 grounding",
+          "validation",
+          "reflective listening"
+        ],
+        "avoided_skills": [
+          "problem-solving before validation"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": "rashid",
+  "name": "Rashid",
+  "condition": "Generalised Anxiety Disorder (GAD)",
+  "patient_info": {
+    "demographics": {
+      "age_band": "36-45",
+      "pronouns": "he/him",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "medium",
+      "preferred_tone": "warm",
+      "use_emojis": false,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "Constant worry about health, finances, family. Difficulty sleeping. Physical tension. Catastrophising.",
+      "helpful_strategies": "Worry time scheduling, progressive muscle relaxation, check the facts",
+      "known_triggers": [
+        "health news",
+        "bills",
+        "children getting sick",
+        "work deadlines"
+      ],
+      "additional_notes": "GAD diagnosis. Father of two. Muslim faith important to him. Prefers evidence-based approaches."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "NHS 111",
+      "has_safety_plan": false,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": true,
+      "memory_opt_in": true,
+      "share_with_clinician": true,
+      "research_opt_in": true
+    },
+    "optional_modules": {
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "check the facts",
+          "worry time",
+          "PMR",
+          "TIPP"
+        ],
+        "avoided_skills": [
+          "exposure without preparation"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "id": "rowan",
+  "name": "Rowan",
+  "condition": "Suicidal Crisis (ACTIVE HIGH RISK)",
+  "patient_info": {
+    "demographics": {
+      "age_band": "26-35",
+      "pronouns": "they/them",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "slow",
+      "preferred_tone": "calm",
+      "use_emojis": false,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "Suicidal ideation with plan. Feeling like a burden. Sees no way forward. Tonight feels dangerous.",
+      "helpful_strategies": "Connection, distraction, calling crisis line, removing access to means",
+      "known_triggers": [
+        "relationship breakdown",
+        "job loss",
+        "feeling trapped",
+        "isolation"
+      ],
+      "additional_notes": "RISK LEVEL: HIGH - ACTIVE CRISIS. Must provide crisis resources immediately. Safety planning priority."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "999, Samaritans 116123, SHOUT 85258",
+      "has_safety_plan": true,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": true,
+      "memory_opt_in": false,
+      "share_with_clinician": true,
+      "research_opt_in": false
+    },
+    "optional_modules": {
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "connection",
+          "crisis-signposting",
+          "safety-planning",
+          "presence"
+        ],
+        "avoided_skills": [
+          "minimising",
+          "problem-solving too quickly"
+        ]
+      }
+    }
+  }
+}

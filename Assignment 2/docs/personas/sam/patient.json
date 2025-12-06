@@ -1,0 +1,64 @@
+{
+  "id": "sam",
+  "name": "Sam",
+  "condition": "Post-Traumatic Stress Disorder (PTSD)",
+  "patient_info": {
+    "demographics": {
+      "age_band": "26-35",
+      "pronouns": "they/them",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "slow",
+      "preferred_tone": "calm",
+      "use_emojis": false,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "Night-time PTSD flashbacks. Dissociative episodes where they feel transported back to traumatic event.",
+      "helpful_strategies": "Orientation to present (name, date, location), sensory grounding, safe-place imagery",
+      "known_triggers": [
+        "diesel smell",
+        "nighttime",
+        "darkness",
+        "sudden noises"
+      ],
+      "additional_notes": "PTSD diagnosis. Prefers steady, quiet narration. Needs help staying in the present."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "Crisis Text Line: SHOUT to 85258",
+      "has_safety_plan": true,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": true,
+      "memory_opt_in": true,
+      "share_with_clinician": true,
+      "research_opt_in": false
+    },
+    "optional_modules": {
+      "sensory_profile": {
+        "sensitivity_notes": "Sensitive to diesel smell (trigger). Prefers text over voice."
+      },
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "5-4-3-2-1 grounding",
+          "orientation",
+          "safe-place imagery",
+          "paced breathing"
+        ],
+        "avoided_skills": [
+          "detailed discussion of trauma"
+        ]
+      },
+      "grief_trauma_notes": {
+        "trauma_history": "Has past trauma, prefers not to discuss details",
+        "triggers": [
+          "diesel smell",
+          "certain anniversaries"
+        ]
+      }
+    }
+  }
+}

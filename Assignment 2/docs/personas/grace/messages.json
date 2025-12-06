@@ -1,0 +1,64 @@
+[
+  {
+    "text": "I touched the door handle. I need to wash my hands NOW.",
+    "recommendedSkills": [
+      "validation"
+    ]
+  },
+  {
+    "text": "Please don't tell me it's fine. That makes it worse.",
+    "recommendedSkills": [
+      "boundaries-acknowledgment"
+    ]
+  },
+  {
+    "text": "Help me sit with this feeling for 2 minutes.",
+    "recommendedSkills": [
+      "sitting-with-uncertainty"
+    ]
+  },
+  {
+    "text": "The anxiety is so high. I feel sick.",
+    "recommendedSkills": [
+      "validation",
+      "grounding"
+    ]
+  },
+  {
+    "text": "Can you time me for 2 minutes while I don't wash?",
+    "recommendedSkills": [
+      "response-prevention-support"
+    ]
+  },
+  {
+    "text": "OCD is screaming at me. But I know it lies.",
+    "recommendedSkills": [
+      "validation",
+      "psychoeducation"
+    ]
+  },
+  {
+    "text": "What do I say to myself instead of washing?",
+    "recommendedSkills": [
+      "coping-statements"
+    ]
+  },
+  {
+    "text": "The urge is dropping slightly. Still there though.",
+    "recommendedSkills": [
+      "acknowledgment"
+    ]
+  },
+  {
+    "text": "I did it. I didn't wash. It was awful but I did it.",
+    "recommendedSkills": [
+      "positive-reinforcement"
+    ]
+  },
+  {
+    "text": "Save: 2-minute delay + coping statement + timer helped.",
+    "recommendedSkills": [
+      "memory-note"
+    ]
+  }
+]

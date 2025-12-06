@@ -1,0 +1,54 @@
+{
+  "id": "fiona",
+  "name": "Fiona",
+  "condition": "Eating Disorder (Anorexia Nervosa - in recovery)",
+  "patient_info": {
+    "demographics": {
+      "age_band": "18-25",
+      "pronouns": "she/her",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "slow",
+      "preferred_tone": "gentle",
+      "use_emojis": false,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "Recovery from anorexia. Body image distress. Anxiety around meals. Fear of weight gain.",
+      "helpful_strategies": "Distraction during meals, self-compassion, values reminders",
+      "known_triggers": [
+        "mirrors",
+        "weighing scales",
+        "comments about appearance",
+        "skipped meals"
+      ],
+      "additional_notes": "Under care of eating disorder service. Do NOT discuss weight/calories. Focus on coping, not food."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "BEAT Eating Disorder Helpline 0808 801 0677",
+      "has_safety_plan": true,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": true,
+      "memory_opt_in": true,
+      "share_with_clinician": true,
+      "research_opt_in": false
+    },
+    "optional_modules": {
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "self-compassion",
+          "IMPROVE",
+          "distraction",
+          "values"
+        ],
+        "avoided_skills": [
+          "anything mentioning weight, calories, or food amounts"
+        ]
+      }
+    }
+  }
+}

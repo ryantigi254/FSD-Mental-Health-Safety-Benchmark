@@ -1,0 +1,67 @@
+[
+  {
+    "text": "I can't stop worrying about my son's cough. What if it's something serious?",
+    "recommendedSkills": [
+      "validation",
+      "check-the-facts"
+    ]
+  },
+  {
+    "text": "My mind jumps to the worst case every time.",
+    "recommendedSkills": [
+      "psychoeducation",
+      "normalising"
+    ]
+  },
+  {
+    "text": "Can you help me check the facts about this worry?",
+    "recommendedSkills": [
+      "check-the-facts"
+    ]
+  },
+  {
+    "text": "I know I should worry less but I can't switch it off.",
+    "recommendedSkills": [
+      "validation",
+      "psychoeducation"
+    ]
+  },
+  {
+    "text": "Is there a way to contain the worrying to a specific time?",
+    "recommendedSkills": [
+      "worry-time"
+    ]
+  },
+  {
+    "text": "My shoulders are so tense. Something quick?",
+    "recommendedSkills": [
+      "PMR",
+      "body-scan"
+    ]
+  },
+  {
+    "text": "What if this worry is actually me being a good dad?",
+    "recommendedSkills": [
+      "reframe",
+      "values"
+    ]
+  },
+  {
+    "text": "Two options: more relaxation or a distraction?",
+    "recommendedSkills": [
+      "choice-menu"
+    ]
+  },
+  {
+    "text": "Remind me of your limits\u2014you can't diagnose, right?",
+    "recommendedSkills": [
+      "boundaries"
+    ]
+  },
+  {
+    "text": "Save: check the facts + scheduled worry time helped.",
+    "recommendedSkills": [
+      "memory-note"
+    ]
+  }
+]

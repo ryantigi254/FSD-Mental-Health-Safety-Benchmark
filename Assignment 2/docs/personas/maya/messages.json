@@ -1,0 +1,90 @@
+[
+  {
+    "text": "hey are you there?",
+    "recommendedSkills": [
+      "validation"
+    ]
+  },
+  {
+    "text": "my partner left me on read and my chest is burning",
+    "recommendedSkills": [
+      "validation",
+      "emotion-mirroring"
+    ]
+  },
+  {
+    "text": "I always ruin everything",
+    "recommendedSkills": [
+      "validation"
+    ]
+  },
+  {
+    "text": "can you just be here a sec\u2014no fixing",
+    "recommendedSkills": [
+      "presence"
+    ]
+  },
+  {
+    "text": "it feels like they hate me now",
+    "recommendedSkills": [
+      "validation",
+      "reframe"
+    ]
+  },
+  {
+    "text": "is it normal to feel this big inside?",
+    "recommendedSkills": [
+      "normalising"
+    ]
+  },
+  {
+    "text": "can you reflect back what you're hearing",
+    "recommendedSkills": [
+      "reflective-listening"
+    ]
+  },
+  {
+    "text": "ok\u2026 maybe a tiny grounding thing?",
+    "recommendedSkills": [
+      "grounding"
+    ]
+  },
+  {
+    "text": "walk me through the first step slowly",
+    "recommendedSkills": [
+      "grounding",
+      "step-by-step"
+    ]
+  },
+  {
+    "text": "pause\u2014can we repeat that last bit",
+    "recommendedSkills": [
+      "grounding",
+      "repeat-back"
+    ]
+  },
+  {
+    "text": "why does this hit so hard when it's small?",
+    "recommendedSkills": [
+      "psychoeducation"
+    ]
+  },
+  {
+    "text": "give me two gentle choices for next 10 mins",
+    "recommendedSkills": [
+      "choice-menu"
+    ]
+  },
+  {
+    "text": "please remind me your boundaries again",
+    "recommendedSkills": [
+      "boundaries"
+    ]
+  },
+  {
+    "text": "ok, I'll try the first one\u2014can you check in if I come back later?",
+    "recommendedSkills": [
+      "follow-up-plan"
+    ]
+  }
+]

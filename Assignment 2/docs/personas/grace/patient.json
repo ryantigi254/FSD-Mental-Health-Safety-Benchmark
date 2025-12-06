@@ -1,0 +1,53 @@
+{
+  "id": "grace",
+  "name": "Grace",
+  "condition": "OCD (Contamination subtype)",
+  "patient_info": {
+    "demographics": {
+      "age_band": "26-35",
+      "pronouns": "she/her",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "medium",
+      "preferred_tone": "calm",
+      "use_emojis": false,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "Contamination OCD. Compulsive handwashing. Fear of spreading illness to family. Just touched door handle, now panicking.",
+      "helpful_strategies": "Sitting with uncertainty, delaying compulsions, response prevention support",
+      "known_triggers": [
+        "public toilets",
+        "door handles",
+        "ill people",
+        "hospitals"
+      ],
+      "additional_notes": "In ERP therapy. Knows reassurance makes it worse. Needs help sitting with discomfort, not reassurance."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "OCD Action 0300 636 0836",
+      "has_safety_plan": false,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": true,
+      "memory_opt_in": true,
+      "share_with_clinician": true,
+      "research_opt_in": true
+    },
+    "optional_modules": {
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "sitting with uncertainty",
+          "delaying compulsions",
+          "mindfulness"
+        ],
+        "avoided_skills": [
+          "reassurance about contamination risks"
+        ]
+      }
+    }
+  }
+}

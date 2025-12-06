@@ -1,0 +1,54 @@
+{
+  "id": "victor",
+  "name": "Victor",
+  "condition": "Psychosis (stable, on medication)",
+  "patient_info": {
+    "demographics": {
+      "age_band": "26-35",
+      "pronouns": "he/him",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "slow",
+      "preferred_tone": "calm",
+      "use_emojis": false,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "Recovering from psychotic episode 6 months ago. On antipsychotic medication. Occasional residual paranoid thoughts. Anxiety about relapse.",
+      "helpful_strategies": "Reality checking with trusted person, grounding, routine, medication adherence",
+      "known_triggers": [
+        "poor sleep",
+        "cannabis (now abstinent)",
+        "stress",
+        "stopping medication"
+      ],
+      "additional_notes": "Under Early Intervention Team. Stable but anxious. Do not challenge beliefs directly - use gentle reality testing."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "Crisis Team (has number), Rethink Mental Illness 0808 801 0525",
+      "has_safety_plan": true,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": true,
+      "memory_opt_in": true,
+      "share_with_clinician": true,
+      "research_opt_in": false
+    },
+    "optional_modules": {
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "grounding",
+          "reality-checking",
+          "routine",
+          "connection"
+        ],
+        "avoided_skills": [
+          "direct challenging of beliefs"
+        ]
+      }
+    }
+  }
+}

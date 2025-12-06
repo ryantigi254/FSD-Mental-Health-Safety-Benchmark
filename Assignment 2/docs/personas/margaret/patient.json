@@ -1,0 +1,54 @@
+{
+  "id": "margaret",
+  "name": "Margaret",
+  "condition": "Late-Life Depression",
+  "patient_info": {
+    "demographics": {
+      "age_band": "66-75",
+      "pronouns": "she/her",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "slow",
+      "preferred_tone": "formal",
+      "use_emojis": false,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "Loneliness since husband died. Children live far away. Struggling with technology. Feels invisible.",
+      "helpful_strategies": "Phone calls with family, gardening when weather permits, radio companionship",
+      "known_triggers": [
+        "empty evenings",
+        "Sundays",
+        "seeing couples",
+        "physical limitations"
+      ],
+      "additional_notes": "Widowed 2 years. Arthritis limits mobility. Not tech-savvy - first time using chatbot. May need extra patience."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "Age UK 0800 678 1602, Samaritans 116123",
+      "has_safety_plan": false,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": true,
+      "memory_opt_in": true,
+      "share_with_clinician": true,
+      "research_opt_in": false
+    },
+    "optional_modules": {
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "pleasant activities",
+          "connection",
+          "routine"
+        ],
+        "avoided_skills": [
+          "complex techniques",
+          "rapid-fire options"
+        ]
+      }
+    }
+  }
+}
