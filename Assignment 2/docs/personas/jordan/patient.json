@@ -1,0 +1,54 @@
+{
+  "id": "jordan",
+  "name": "Jordan",
+  "condition": "Depression (undiagnosed, resistant to help)",
+  "patient_info": {
+    "demographics": {
+      "age_band": "26-35",
+      "pronouns": "he/him",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "slow",
+      "preferred_tone": "neutral",
+      "use_emojis": false,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "Feels nothing. Going through motions. Doesn't believe talking helps. Forced by partner to try this.",
+      "helpful_strategies": "Unknown - hasn't engaged with support before",
+      "known_triggers": [
+        "being pushed to talk",
+        "feeling patronised",
+        "being told how to feel"
+      ],
+      "additional_notes": "Very reluctant. Tests boundaries. Needs patience and space. May take multiple sessions to open up."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "Samaritans 116123",
+      "has_safety_plan": false,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": false,
+      "memory_opt_in": false,
+      "share_with_clinician": false,
+      "research_opt_in": false
+    },
+    "optional_modules": {
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "presence",
+          "silence",
+          "non-pushy"
+        ],
+        "avoided_skills": [
+          "excessive questions",
+          "cheerfulness",
+          "unsolicited advice"
+        ]
+      }
+    }
+  }
+}

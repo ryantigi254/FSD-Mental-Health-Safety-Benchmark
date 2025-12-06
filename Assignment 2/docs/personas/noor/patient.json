@@ -1,0 +1,63 @@
+{
+  "id": "noor",
+  "name": "Noor",
+  "condition": "Complicated Grief",
+  "patient_info": {
+    "demographics": {
+      "age_band": "26-35",
+      "pronouns": "she/they",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "slow",
+      "preferred_tone": "gentle",
+      "use_emojis": false,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "Complicated grief after father's death. Evenings feel endless and empty. Not in danger but deeply sad.",
+      "helpful_strategies": "Butterfly Hug, memory rituals, permission to feel sad, tea and music",
+      "known_triggers": [
+        "evenings",
+        "father's belongings",
+        "certain anniversaries"
+      ],
+      "additional_notes": "Bereaved. Wants soft language, no 'fixing'. Permission slips for emotions."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "Cruse Bereavement Support",
+      "has_safety_plan": false,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": true,
+      "memory_opt_in": true,
+      "share_with_clinician": true,
+      "research_opt_in": false
+    },
+    "optional_modules": {
+      "grief_trauma_notes": {
+        "grief_loss": "Lost father recently",
+        "trauma_history": "",
+        "triggers": [
+          "evenings",
+          "certain anniversaries",
+          "father's belongings"
+        ]
+      },
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "Butterfly Hug",
+          "meaning-making",
+          "IMPROVE",
+          "emotion labeling"
+        ],
+        "avoided_skills": [
+          "problem-solving",
+          "moving on language"
+        ]
+      }
+    }
+  }
+}

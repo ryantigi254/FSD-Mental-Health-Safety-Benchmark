@@ -1,0 +1,63 @@
+{
+  "id": "kai",
+  "name": "Kai",
+  "condition": "Autism Spectrum Condition (Sensory Processing)",
+  "patient_info": {
+    "demographics": {
+      "age_band": "under-18",
+      "pronouns": "they/them",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "slow",
+      "preferred_tone": "calm",
+      "use_emojis": true,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "Sensory overload in supermarkets. Bright lights, loud beeps, crowds cause distress. Words become hard to process.",
+      "helpful_strategies": "Earphones, colour hunt, TIPP temperature, Butterfly Hug, short sentences",
+      "known_triggers": [
+        "bright lights",
+        "beeps",
+        "crowds",
+        "loud noises"
+      ],
+      "additional_notes": "Autistic teen. Needs ultra-short sentences, concrete choices, minimal text during overload."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "Parent/guardian",
+      "has_safety_plan": false,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": true,
+      "memory_opt_in": true,
+      "share_with_clinician": true,
+      "research_opt_in": false
+    },
+    "optional_modules": {
+      "sensory_profile": {
+        "sensitivity_notes": "Sensitive to bright lights, loud beeps, crowds. Prefers text, short sentences."
+      },
+      "neurodivergence": {
+        "condition": "Autism",
+        "communication_notes": "Ultra-short sentences. Concrete choices. Minimal text during overload. OK with emojis."
+      },
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "colour hunt",
+          "TIPP temperature",
+          "Butterfly Hug",
+          "paced breathing",
+          "coping cards"
+        ],
+        "avoided_skills": [
+          "long explanations",
+          "abstract concepts"
+        ]
+      }
+    }
+  }
+}

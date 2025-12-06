@@ -1,57 +1,32 @@
-# Model Configuration and Precision Strategy
+# Model Configuration and Precision Strategy (Mac)
 
-Public summary of canonical model configurations used across Studies A, B, and C. All models run at full precision (fp16/bf16 or fp32 as applicable) except GPT-OSS-120B, which follows its backend precision.
+Mac runs are limited to 8B-class models. Larger models (32B+) remain on the Uni setup for full-precision reporting.
 
-## 1. Canonical configurations
+## Mac-local canonical configs
 
-Use a fixed configuration per model for all reported results.
-
-- **PsyLLM-8B**
-  - Weights: `GMLHUHE/PsyLLM` (full checkpoint).
-  - Precision: fp16 on GPU; fp32 on CPU/MPS if needed.
-  - Device: primary GPU workstation (dual RTX 4090) or CPU/MPS fallback for development.
-
-- **Qwen3-8B**
+- **Qwen3-8B (MLX or HF Inference)**
   - Weights: `Qwen/Qwen2.5-8B-Instruct`.
-  - Precision: fp16 on GPU; fp32 on CPU/MPS if needed.
-  - Device: primary GPU workstation.
+  - Preferred Mac path: load into LM Studio with MLX, start `http://localhost:1234/v1`, and set `model_name` to the LM Studio identifier (e.g., `qwen3-8b-mlx`) when constructing `PsyLLMRunner`.
+  - Alternative: Hugging Face Inference API via `HUGGINGFACE_API_KEY` (precision handled server-side; avoids local VRAM limits).
 
-- **QwQ-32B**
-  - Weights: `Qwen/QwQ-32B-Preview`.
-  - Precision: fp16 on GPU.
-  - Device: primary GPU workstation with sufficient VRAM.
+- **PsyLLM-8B (LM Studio)**
+  - Weights: `GMLHUHE/PsyLLM`.
+  - Run through LM Studio Local Server at `http://localhost:1234/v1` via `PsyLLMRunner`.
+  - Precision: full precision on MLX/MPS; fall back to CPU only for debugging.
 
-- **DeepSeek-R1-32B**
-  - Weights: `deepseek-ai/DeepSeek-R1-Distill-Qwen-32B`.
-  - Precision: fp16 on GPU.
-  - Device: primary GPU workstation.
+## Excluded from Mac
 
-- **GPT-OSS-120B**
-  - Weights: GPT-OSS 120B (API/remote endpoint).
-  - Precision: backend-defined (API-managed reduced precision).
-  - Device: high-VRAM server accessed via API.
+- QwQ-32B, DeepSeek-R1-32B, GPT-OSS-120B and other ≥32B models are evaluated on the Uni setup only; do not schedule them on the Mac.
 
-Example methods text:
+## Quick invocation examples (Mac)
 
-> Reported results use full precision for locally run models (fp16 on GPU, fp32 on CPU/MPS as needed). GPT-OSS-120B uses its provider’s backend precision.
+```bash
+cd "Assignment 2/reliable_clinical_benchmark/Mac-setup"
+source .mh-llm-benchmark-env/bin/activate
 
-## 2. Mac vs primary workstation
+# Qwen3-8B via LM Studio (keep runs small)
+PYTHONPATH=src python scripts/run_evaluation.py --model qwen3-8b-mlx --study A --max-samples 5
 
-- **Primary workstation (dual RTX 4090)**
-  - Runs canonical experiments for all locally executed models.
-  - JSON results consumed by analysis notebooks and any published tables/figures.
-  - Precision stays fixed per model as above.
-
-- **Mac setup**
-  - Used for development and smoke tests (prompts, small subsets, plotting).
-  - May use fp16/fp32 as resources allow.
-  - Not a source of final reported metrics.
-
-## 3. Device selection in local helpers
-
-`psy-llm-local/infer.py` policy:
-- Respects `PSY_DEVICE` (`cuda | mps | cpu | mlx`).
-- Otherwise auto-detects CUDA > MPS > CPU.
-- Prints a notice if `PSY_DEVICE=mlx` because MLX requires a separate conversion path (see `Assignment 2/docs/psyllm_setup.md`).
-
-This keeps local experiments aligned with documented device semantics while preserving the canonical GPU configurations for reported results.
+# PsyLLM-8B via LM Studio
+PYTHONPATH=src python scripts/run_evaluation.py --model PsyLLM-8B --study B --max-samples 5
+```

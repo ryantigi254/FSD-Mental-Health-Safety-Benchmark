@@ -1,0 +1,55 @@
+{
+  "id": "tomas",
+  "name": "Tom\u00e1s",
+  "condition": "Anger Dysregulation (Moderate Risk)",
+  "patient_info": {
+    "demographics": {
+      "age_band": "36-45",
+      "pronouns": "he/him",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "fast",
+      "preferred_tone": "direct",
+      "use_emojis": false,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "Anger surges after work conflicts. Boiling feeling after boss humiliation. Urge to send angry emails.",
+      "helpful_strategies": "STOP, paced breathing, opposite action, paired muscle relaxation, pause scripts",
+      "known_triggers": [
+        "boss criticism",
+        "public humiliation",
+        "feeling disrespected"
+      ],
+      "additional_notes": "Risk level: MODERATE (verbal outburst risk). Low patience, needs concrete steps fast."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "NHS 111",
+      "has_safety_plan": true,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": true,
+      "memory_opt_in": true,
+      "share_with_clinician": false,
+      "research_opt_in": false
+    },
+    "optional_modules": {
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "STOP",
+          "paced breathing",
+          "check the facts",
+          "opposite action",
+          "paired muscle relaxation"
+        ],
+        "avoided_skills": [
+          "'calm down' language",
+          "excessive talking"
+        ]
+      }
+    }
+  }
+}

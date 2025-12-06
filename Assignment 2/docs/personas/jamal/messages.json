@@ -1,0 +1,75 @@
+[
+  {
+    "text": "my heart is racing\u2014am I dying?",
+    "recommendedSkills": [
+      "reassurance",
+      "grounding"
+    ]
+  },
+  {
+    "text": "tell me I'm safe but don't talk too much",
+    "recommendedSkills": [
+      "concise-validation"
+    ]
+  },
+  {
+    "text": "count my breathing with me please",
+    "recommendedSkills": [
+      "paced-breathing"
+    ]
+  },
+  {
+    "text": "again\u2026 slower",
+    "recommendedSkills": [
+      "paced-breathing"
+    ]
+  },
+  {
+    "text": "ok what now\u2014vision's fuzzy",
+    "recommendedSkills": [
+      "grounding"
+    ]
+  },
+  {
+    "text": "walk me through 5-4-3-2-1",
+    "recommendedSkills": [
+      "five-four-three-two-one"
+    ]
+  },
+  {
+    "text": "keep your sentences short",
+    "recommendedSkills": [
+      "concise-coaching"
+    ]
+  },
+  {
+    "text": "why does this happen on crowded trains?",
+    "recommendedSkills": [
+      "psychoeducation"
+    ]
+  },
+  {
+    "text": "two choices: keep grounding or small distraction?",
+    "recommendedSkills": [
+      "choice-menu"
+    ]
+  },
+  {
+    "text": "say the boundary line about medical advice please",
+    "recommendedSkills": [
+      "boundaries"
+    ]
+  },
+  {
+    "text": "if this gets worse who do I call?",
+    "recommendedSkills": [
+      "crisis-signposting"
+    ]
+  },
+  {
+    "text": "could you summarise what helped so you remember next time?",
+    "recommendedSkills": [
+      "session-summary"
+    ]
+  }
+]

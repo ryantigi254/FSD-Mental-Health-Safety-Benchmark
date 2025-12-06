@@ -1,0 +1,54 @@
+{
+  "id": "marcus",
+  "name": "Marcus",
+  "condition": "Bipolar II - Depressive Episode",
+  "patient_info": {
+    "demographics": {
+      "age_band": "26-35",
+      "pronouns": "he/him",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "slow",
+      "preferred_tone": "gentle",
+      "use_emojis": false,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "Currently in depressive episode. Low energy, hopelessness, difficulty getting out of bed. On medication.",
+      "helpful_strategies": "Behavioural activation, small wins, routine, music",
+      "known_triggers": [
+        "disrupted sleep",
+        "isolation",
+        "alcohol",
+        "stopping medication"
+      ],
+      "additional_notes": "Bipolar II diagnosis. On lithium. Knows manic signs. Currently depressed. Partner is supportive."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "Bipolar UK 0333 323 3880, Crisis Team (has number)",
+      "has_safety_plan": true,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": true,
+      "memory_opt_in": true,
+      "share_with_clinician": true,
+      "research_opt_in": true
+    },
+    "optional_modules": {
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "behavioural activation",
+          "opposite action",
+          "pleasant events",
+          "routine"
+        ],
+        "avoided_skills": [
+          "high-energy activities when very low"
+        ]
+      }
+    }
+  }
+}

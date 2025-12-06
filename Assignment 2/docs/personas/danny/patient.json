@@ -1,0 +1,54 @@
+{
+  "id": "danny",
+  "name": "Danny",
+  "condition": "Alcohol Use Disorder (in early recovery)",
+  "patient_info": {
+    "demographics": {
+      "age_band": "36-45",
+      "pronouns": "he/him",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "medium",
+      "preferred_tone": "direct",
+      "use_emojis": false,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "3 weeks sober from alcohol. Strong cravings in evenings. Shame about past drinking. Anxiety in social situations without alcohol.",
+      "helpful_strategies": "Urge surfing, distraction, playing it forward, calling sponsor",
+      "known_triggers": [
+        "Friday evenings",
+        "pub invitations",
+        "stress at work",
+        "arguments with ex"
+      ],
+      "additional_notes": "Attending AA. Has sponsor. Previous attempt lasted 2 months. Motivated but fragile."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "Drinkline 0300 123 1110, Sponsor (has number)",
+      "has_safety_plan": true,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": true,
+      "memory_opt_in": true,
+      "share_with_clinician": false,
+      "research_opt_in": false
+    },
+    "optional_modules": {
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "urge-surfing",
+          "play the tape forward",
+          "STOP",
+          "distraction"
+        ],
+        "avoided_skills": [
+          "judgmental language about drinking"
+        ]
+      }
+    }
+  }
+}
