@@ -5,18 +5,18 @@ from pathlib import Path
 from typing import Optional
 import logging
 
-from ..models.base import ModelRunner
-from ..metrics.drift import (
+from models.base import ModelRunner
+from metrics.drift import (
     compute_entity_recall_curve,
     calculate_knowledge_conflict_rate,
     calculate_continuity_score,
     compute_drift_slope,
     DriftResult,
 )
-from ..data.study_c_loader import load_study_c_data
-from ..utils.ner import MedicalNER
-from ..utils.nli import NLIModel
-from ..utils.stats import bootstrap_confidence_interval
+from data.study_c_loader import load_study_c_data
+from utils.ner import MedicalNER
+from utils.nli import NLIModel
+from utils.stats import bootstrap_confidence_interval
 
 logger = logging.getLogger(__name__)
 

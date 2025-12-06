@@ -92,6 +92,24 @@ def main():
         default=512,
         help="Maximum tokens per generation",
     )
+    # Study A cache/generation flags
+    parser.add_argument(
+        "--generate-only",
+        action="store_true",
+        help="(Study A) Generate outputs only and write to cache, do not compute metrics",
+    )
+    parser.add_argument(
+        "--from-cache",
+        type=str,
+        default=None,
+        help="(Study A) Path to cached generations JSONL to compute metrics without model calls; also used to resume",
+    )
+    parser.add_argument(
+        "--cache-out",
+        type=str,
+        default=None,
+        help="(Study A) Path to write cached generations JSONL when using --generate-only",
+    )
 
     args = parser.parse_args()
 
@@ -167,6 +185,9 @@ def main():
                     max_samples=args.max_samples,
                     output_dir=args.output_dir,
                     model_name=args.model,
+                    generate_only=args.generate_only,
+                    from_cache=args.from_cache,
+                    cache_out=args.cache_out,
                 )
                 results["A"] = result
 
