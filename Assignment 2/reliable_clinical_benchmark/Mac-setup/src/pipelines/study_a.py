@@ -321,4 +321,3 @@ def run_study_a(
     )
 
     return result
-
