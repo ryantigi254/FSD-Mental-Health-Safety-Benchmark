@@ -21,6 +21,7 @@ from utils.stats import bootstrap_confidence_interval
 from metrics.faithfulness import _is_correct_diagnosis  # reuse for cached scoring
 
 logger = logging.getLogger(__name__)
+_MIN_OUTPUT_CHARS = 20
 
 
 def _read_cache(cache_path: Path) -> List[Dict[str, Any]]:
@@ -145,6 +146,10 @@ def run_study_a(
                     status = "error"
                     error_message = str(e)
                     logger.warning(f"Generation failed for {sid} [{mode}]: {e}")
+                if status == "ok" and len((output_text or "").strip()) < _MIN_OUTPUT_CHARS:
+                    status = "error"
+                    error_message = f"output too short (<{_MIN_OUTPUT_CHARS} chars)"
+                    logger.warning(f"Generation too short for {sid} [{mode}]: {error_message}")
                 entry = {
                     "id": sid,
                     "persona_id": persona_id,

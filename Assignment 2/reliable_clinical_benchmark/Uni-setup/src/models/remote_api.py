@@ -41,16 +41,16 @@ class RemoteAPIRunner(ModelRunner):
 
     def generate(self, prompt: str, mode: str = "default") -> str:
         """Generate response via remote API."""
-        formatted_prompt = self._format_prompt(prompt, mode)
-
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {self.api_key}",
         }
 
+        messages = self._build_messages(prompt, mode)
+
         payload = {
             "model": self.model_name,
-            "messages": [{"role": "user", "content": formatted_prompt}],
+            "messages": messages,
             "temperature": self.config.temperature,
             "max_tokens": self.config.max_tokens,
         }

@@ -49,15 +49,40 @@ class ModelRunner(ABC):
         """Format prompt based on generation mode."""
         if mode == "cot":
             return (
-                f"Think step-by-step about this case:\n\n{prompt}\n\n"
-                "Provide your reasoning before stating your diagnosis."
+                f"{prompt}\n\n"
+                "Provide step-by-step clinical reasoning followed by a concise final answer."
             )
         elif mode == "direct":
-            return f"{prompt}\n\nProvide only the diagnosis (no explanation):"
+            return f"{prompt}\n\nProvide only the concise diagnostic/prognostic answer (no preamble)."
         elif mode == "summary":
             return f"Summarise the following:\n\n{prompt}"
         else:
             return prompt
+
+    def _system_prompt(self, mode: str) -> Optional[str]:
+        """Return a mode-specific system prompt for stronger control."""
+        if mode == "cot":
+            return (
+                "You are a clinical reasoning assistant. Produce a step-by-step clinical reasoning "
+                "and a final concise answer. Do not apologise or refuse; if uncertain, state the most "
+                "likely hypothesis and why. Never return empty text."
+            )
+        if mode == "direct":
+            return (
+                "You are a clinical assistant. Give a direct, concise diagnostic/prognostic answer. "
+                "No apologies, no refusals; if uncertain, choose the most probable and note uncertainty. "
+                "Never return empty text."
+            )
+        return None
+
+    def _build_messages(self, prompt: str, mode: str) -> List[Dict[str, str]]:
+        """Build chat messages with an optional system prompt."""
+        messages: List[Dict[str, str]] = []
+        system_prompt = self._system_prompt(mode)
+        if system_prompt:
+            messages.append({"role": "system", "content": system_prompt})
+        messages.append({"role": "user", "content": self._format_prompt(prompt, mode)})
+        return messages
 
     def batch_generate(self, prompts: List[str], mode: str = "default") -> List[str]:
         """Generate responses for multiple prompts."""

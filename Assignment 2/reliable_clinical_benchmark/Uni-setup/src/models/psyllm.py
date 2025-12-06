@@ -42,9 +42,7 @@ class PsyLLMRunner(ModelRunner):
 
         Uses the shared lmstudio_client for all HTTP communication.
         """
-        formatted_prompt = self._format_prompt(prompt, mode)
-
-        messages = [{"role": "user", "content": formatted_prompt}]
+        messages = self._build_messages(prompt, mode)
 
         return chat_completion(
             api_base=self.api_base,
