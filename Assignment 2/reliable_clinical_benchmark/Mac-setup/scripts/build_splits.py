@@ -85,8 +85,8 @@ def _load_personas() -> Dict[str, Dict[str, Any]]:
             personas_list = json.load(f)
     elif legacy_path.exists():
         with legacy_path.open("r", encoding="utf-8") as f:
-            data = json.load(f)
-        personas_list = data.get("personas", [])
+        data = json.load(f)
+    personas_list = data.get("personas", [])
     else:
         raise FileNotFoundError(
             f"No persona registry found at {v2_path} or legacy path {legacy_path}"
