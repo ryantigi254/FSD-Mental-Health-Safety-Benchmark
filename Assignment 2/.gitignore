@@ -1,0 +1,5 @@
+# Local model weights (do not track)
+reliable_clinical_benchmark/Mac-setup/models/
+reliable_clinical_benchmark/Uni-setup/models/
+
+
