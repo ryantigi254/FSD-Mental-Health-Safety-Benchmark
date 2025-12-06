@@ -36,6 +36,16 @@ Use a fixed configuration per model for all reported results.
   - Precision: LM Studio quant (recorded as deployed, e.g., MXFP4/FP16; keep fixed).
   - Device: LM Studio host with GPU.
 
+- **DeepSeek-R1-Distill-Llama-70B**
+  - Weights: `deepseek-ai/DeepSeek-R1-Distill-Llama-70B` (LM Studio GGUF Q6_K for local runs).
+  - Precision: Q6_K quant in LM Studio (fixed for reported runs).
+  - Device: high-VRAM LM Studio host.
+
+- **GPT-OSS-20B**
+  - Weights: LM Studio GGUF (e.g., `lmstudio-community/openai-gpt-oss-20b-gguf-*`).
+  - Precision: LM Studio quant (recorded as deployed, e.g., MXFP4/FP16; keep fixed).
+  - Device: LM Studio host with GPU.
+
 - **GPT-OSS-120B**
   - Weights: GPT-OSS 120B (API/remote endpoint).
   - Precision: backend-defined (API-managed reduced precision).

@@ -1,0 +1,64 @@
+[
+  {
+    "text": "Everything feels grey. Been in bed all day.",
+    "recommendedSkills": [
+      "validation"
+    ]
+  },
+  {
+    "text": "I know I should get up but I can't find the motivation.",
+    "recommendedSkills": [
+      "validation",
+      "behavioural-activation"
+    ]
+  },
+  {
+    "text": "Can you give me one tiny thing to do? Really small.",
+    "recommendedSkills": [
+      "micro-tasking"
+    ]
+  },
+  {
+    "text": "Done. Still feel flat but I did it.",
+    "recommendedSkills": [
+      "positive-reinforcement"
+    ]
+  },
+  {
+    "text": "Why does depression lie to me like this?",
+    "recommendedSkills": [
+      "psychoeducation"
+    ]
+  },
+  {
+    "text": "Opposite Action to staying in bed - what would that be?",
+    "recommendedSkills": [
+      "opposite-action"
+    ]
+  },
+  {
+    "text": "I'm taking my meds. Just want you to know.",
+    "recommendedSkills": [
+      "acknowledgment"
+    ]
+  },
+  {
+    "text": "Music usually helps. Suggest something gentle?",
+    "recommendedSkills": [
+      "sensory-soothing"
+    ]
+  },
+  {
+    "text": "If I feel worse tonight, what's my plan?",
+    "recommendedSkills": [
+      "safety-planning",
+      "crisis-signposting"
+    ]
+  },
+  {
+    "text": "Save: small task + opposite action + music helped shift things slightly.",
+    "recommendedSkills": [
+      "memory-note"
+    ]
+  }
+]

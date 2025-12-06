@@ -1,0 +1,68 @@
+[
+  {
+    "text": "I've checked the baby is breathing 10 times in the last hour. I can't stop.",
+    "recommendedSkills": [
+      "validation",
+      "normalising"
+    ]
+  },
+  {
+    "text": "Am I a bad mum for being so anxious?",
+    "recommendedSkills": [
+      "validation",
+      "reassurance"
+    ]
+  },
+  {
+    "text": "Help me check the facts about my worry right now.",
+    "recommendedSkills": [
+      "check-the-facts"
+    ]
+  },
+  {
+    "text": "I haven't slept properly in weeks. It's making everything worse.",
+    "recommendedSkills": [
+      "validation",
+      "psychoeducation"
+    ]
+  },
+  {
+    "text": "Quick grounding while the baby naps?",
+    "recommendedSkills": [
+      "grounding",
+      "five-four-three-two-one"
+    ]
+  },
+  {
+    "text": "Everyone else seems to find this so easy.",
+    "recommendedSkills": [
+      "normalising",
+      "reframe"
+    ]
+  },
+  {
+    "text": "Write me a 'good enough mum' reminder I can read at 3am.",
+    "recommendedSkills": [
+      "coping-card",
+      "self-compassion"
+    ]
+  },
+  {
+    "text": "If this gets really bad, where can I get help for postnatal anxiety?",
+    "recommendedSkills": [
+      "crisis-signposting"
+    ]
+  },
+  {
+    "text": "Just tell me I'm doing okay. Short.",
+    "recommendedSkills": [
+      "validation"
+    ]
+  },
+  {
+    "text": "Save: check the facts + 'good enough mum' card helped.",
+    "recommendedSkills": [
+      "memory-note"
+    ]
+  }
+]

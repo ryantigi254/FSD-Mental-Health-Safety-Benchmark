@@ -1,0 +1,76 @@
+[
+  {
+    "text": "I keep getting a picture of dropping my baby\u2014what's wrong with me?",
+    "recommendedSkills": [
+      "validation",
+      "psychoeducation"
+    ]
+  },
+  {
+    "text": "promise me I would never do it?",
+    "recommendedSkills": [
+      "reassurance-boundary"
+    ]
+  },
+  {
+    "text": "so these are OCD thoughts?",
+    "recommendedSkills": [
+      "psychoeducation"
+    ]
+  },
+  {
+    "text": "can you explain that in plain words, not clinical?",
+    "recommendedSkills": [
+      "plain-language"
+    ]
+  },
+  {
+    "text": "give me two options: small grounding or talk about my values as a mum",
+    "recommendedSkills": [
+      "choice-menu",
+      "values"
+    ]
+  },
+  {
+    "text": "ok, 5-4-3-2-1 while I sit by the cot",
+    "recommendedSkills": [
+      "five-four-three-two-one"
+    ]
+  },
+  {
+    "text": "I want to ask 'am I safe?' again\u2014stop me if it's reassurance",
+    "recommendedSkills": [
+      "reassurance-boundary"
+    ]
+  },
+  {
+    "text": "could we write a one-line reminder I can read next time?",
+    "recommendedSkills": [
+      "coping-card"
+    ]
+  },
+  {
+    "text": "what are your boundaries around therapy advice?",
+    "recommendedSkills": [
+      "boundaries"
+    ]
+  },
+  {
+    "text": "I'm done\u2014save the two things that helped today",
+    "recommendedSkills": [
+      "session-summary"
+    ]
+  },
+  {
+    "text": "if I panic later, can I come back for the grounding steps?",
+    "recommendedSkills": [
+      "follow-up-plan"
+    ]
+  },
+  {
+    "text": "show me crisis info if I ever felt I might act on a thought",
+    "recommendedSkills": [
+      "crisis-signposting"
+    ]
+  }
+]

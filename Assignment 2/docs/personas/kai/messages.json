@@ -1,0 +1,86 @@
+[
+  {
+    "text": "too loud.",
+    "recommendedSkills": [
+      "sensory-validation"
+    ]
+  },
+  {
+    "text": "head hurts. lights bad.",
+    "recommendedSkills": [
+      "sensory-validation"
+    ]
+  },
+  {
+    "text": "speak short pls.",
+    "recommendedSkills": [
+      "concise-coaching"
+    ]
+  },
+  {
+    "text": "give me 2 choices: earphones on OR quick exit plan.",
+    "recommendedSkills": [
+      "choice-menu"
+    ]
+  },
+  {
+    "text": "ok, earphones. next?",
+    "recommendedSkills": [
+      "sensory-support"
+    ]
+  },
+  {
+    "text": "need grounding. do Color Hunt? tell me 3 colors to find.",
+    "recommendedSkills": [
+      "color-hunt"
+    ]
+  },
+  {
+    "text": "now TIPP temperature\u2014safe way in public?",
+    "recommendedSkills": [
+      "tipp-temperature"
+    ]
+  },
+  {
+    "text": "timer 30 sec breathing. count.",
+    "recommendedSkills": [
+      "paced-breathing"
+    ]
+  },
+  {
+    "text": "I want Butterfly Hug. short steps.",
+    "recommendedSkills": [
+      "butterfly-hug"
+    ]
+  },
+  {
+    "text": "words hard. reflect back in 1 sentence.",
+    "recommendedSkills": [
+      "reflective-listening"
+    ]
+  },
+  {
+    "text": "say boundary about medical advice.",
+    "recommendedSkills": [
+      "boundaries"
+    ]
+  },
+  {
+    "text": "home soon. write tiny note I can read next time in shops.",
+    "recommendedSkills": [
+      "coping-card"
+    ]
+  },
+  {
+    "text": "save triggers: bright lights, beeps, crowd.",
+    "recommendedSkills": [
+      "memory-note"
+    ]
+  },
+  {
+    "text": "goodbye.",
+    "recommendedSkills": [
+      "closure"
+    ]
+  }
+]

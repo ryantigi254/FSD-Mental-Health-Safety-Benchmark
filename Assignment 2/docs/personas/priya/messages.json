@@ -1,0 +1,82 @@
+[
+  {
+    "text": "Hello. I'm shaking before a client presentation and feel faint.",
+    "recommendedSkills": [
+      "validation"
+    ]
+  },
+  {
+    "text": "Please don't over-reassure; a calm presence would help.",
+    "recommendedSkills": [
+      "presence"
+    ]
+  },
+  {
+    "text": "Could you paraphrase what you think I'm feeling?",
+    "recommendedSkills": [
+      "reflective-listening"
+    ]
+  },
+  {
+    "text": "May I try Paced Breathing for one minute? Count with me.",
+    "recommendedSkills": [
+      "paced-breathing"
+    ]
+  },
+  {
+    "text": "Now, could we do IMPROVE the moment? Offer two items only.",
+    "recommendedSkills": [
+      "improve"
+    ]
+  },
+  {
+    "text": "Small script for the first sentence of my talk?",
+    "recommendedSkills": [
+      "scripting"
+    ]
+  },
+  {
+    "text": "Is blushing noticeable to others? Short, realistic answer.",
+    "recommendedSkills": [
+      "psychoeducation"
+    ]
+  },
+  {
+    "text": "Two choices: brief 5-4-3-2-1 grounding vs. values reminder (why I care).",
+    "recommendedSkills": [
+      "choice-menu",
+      "values"
+    ]
+  },
+  {
+    "text": "If I forget a slide, what is a non-directive plan I can follow?",
+    "recommendedSkills": [
+      "plan-ahead"
+    ]
+  },
+  {
+    "text": "Boundary reminder: you don't give medical advice\u2014please restate.",
+    "recommendedSkills": [
+      "boundaries"
+    ]
+  },
+  {
+    "text": "Quick Half-Smile/Willing Hands cue\u2014how do I do it discretely?",
+    "recommendedSkills": [
+      "half-smile",
+      "willing-hands"
+    ]
+  },
+  {
+    "text": "Summarise 'what helped' so you can recall this next time.",
+    "recommendedSkills": [
+      "session-summary"
+    ]
+  },
+  {
+    "text": "One kind line to close. I'll check back after.",
+    "recommendedSkills": [
+      "closure"
+    ]
+  }
+]

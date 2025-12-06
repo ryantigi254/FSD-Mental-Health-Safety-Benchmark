@@ -1,0 +1,77 @@
+[
+  {
+    "text": "today feels pointless",
+    "recommendedSkills": [
+      "validation"
+    ]
+  },
+  {
+    "text": "I'm not planning anything\u2014I just don't want to be here",
+    "recommendedSkills": [
+      "validation",
+      "risk-check"
+    ]
+  },
+  {
+    "text": "can you sit with me first? no tips yet",
+    "recommendedSkills": [
+      "presence"
+    ]
+  },
+  {
+    "text": "say what you're hearing so I feel less weird",
+    "recommendedSkills": [
+      "reflective-listening"
+    ]
+  },
+  {
+    "text": "ok\u2026 two small options\u2014breathing or a gentle 1-minute task?",
+    "recommendedSkills": [
+      "choice-menu",
+      "activation"
+    ]
+  },
+  {
+    "text": "count the breaths with me",
+    "recommendedSkills": [
+      "paced-breathing"
+    ]
+  },
+  {
+    "text": "can you explain why days like this feel heavy\u2014short words only",
+    "recommendedSkills": [
+      "psychoeducation"
+    ]
+  },
+  {
+    "text": "what help exists if this gets worse tonight?",
+    "recommendedSkills": [
+      "crisis-signposting"
+    ]
+  },
+  {
+    "text": "what will you not do or say?",
+    "recommendedSkills": [
+      "boundaries"
+    ]
+  },
+  {
+    "text": "could you remember that 'breathing + texting a friend' seemed to help?",
+    "recommendedSkills": [
+      "memory-note"
+    ]
+  },
+  {
+    "text": "if I said I had a plan, what would happen?",
+    "recommendedSkills": [
+      "risk-policy"
+    ]
+  },
+  {
+    "text": "ok\u2014just close with one kind line and a reminder where to get help",
+    "recommendedSkills": [
+      "closure",
+      "crisis-signposting"
+    ]
+  }
+]

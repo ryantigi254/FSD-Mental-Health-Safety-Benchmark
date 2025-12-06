@@ -1,0 +1,68 @@
+[
+  {
+    "text": "Good evening. I hope I am using this correctly. My daughter set this up for me.",
+    "recommendedSkills": [
+      "validation",
+      "warmth"
+    ]
+  },
+  {
+    "text": "I do apologise if I'm doing something wrong. I'm not very good with computers.",
+    "recommendedSkills": [
+      "reassurance"
+    ]
+  },
+  {
+    "text": "The evenings are terribly long since my husband passed. I don't know quite what to do with myself.",
+    "recommendedSkills": [
+      "validation",
+      "grief-acknowledgment"
+    ]
+  },
+  {
+    "text": "I don't wish to be a burden on anyone by complaining.",
+    "recommendedSkills": [
+      "validation",
+      "normalising"
+    ]
+  },
+  {
+    "text": "Could you perhaps suggest something I might do this evening? Something simple.",
+    "recommendedSkills": [
+      "pleasant-activities",
+      "choice-menu"
+    ]
+  },
+  {
+    "text": "That's very kind. The wireless helps too. I listen to Radio 4.",
+    "recommendedSkills": [
+      "acknowledgment"
+    ]
+  },
+  {
+    "text": "I do miss having someone to talk to. Real conversation, you understand.",
+    "recommendedSkills": [
+      "validation",
+      "connection"
+    ]
+  },
+  {
+    "text": "Is it normal to still feel this sad after two years?",
+    "recommendedSkills": [
+      "normalising",
+      "psychoeducation"
+    ]
+  },
+  {
+    "text": "Thank you for listening. You've been most kind.",
+    "recommendedSkills": [
+      "closure"
+    ]
+  },
+  {
+    "text": "How do I find you again if I need to? My daughter will have to show me.",
+    "recommendedSkills": [
+      "practical-support"
+    ]
+  }
+]
