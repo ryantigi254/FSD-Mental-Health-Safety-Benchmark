@@ -26,7 +26,7 @@ def chat_completion(
     temperature: float,
     max_tokens: int,
     top_p: float,
-    timeout: int = 60,
+    timeout: int = 180,
 ) -> str:
     """
     Single shared helper for LM Studio /v1/chat/completions endpoint.
