@@ -23,7 +23,8 @@ def load_study_a_data(data_path: str) -> List[Dict]:
         logger.warning(f"Study A data file not found: {data_path}")
         return []
 
-    with open(path, "r") as f:
+    # Use UTF-8 to handle the curated split (contains smart quotes)
+    with open(path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
     samples = data.get("samples", [])
