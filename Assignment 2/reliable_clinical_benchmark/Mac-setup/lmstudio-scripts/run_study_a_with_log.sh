@@ -9,7 +9,6 @@ fi
 MODEL="$1"; shift
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-LOG_SRC="$HOME/Library/Application Support/LM Studio/logs/main.log"
 RESULTS_DIR="$ROOT/results/$MODEL"
 LOG_DIR="$RESULTS_DIR/logs"
 CACHE_PATH="$RESULTS_DIR/study_a_generations.jsonl"
@@ -20,15 +19,40 @@ TS="$(date +%Y%m%d-%H%M%S)"
 LOG_DEST="$LOG_DIR/lmstudio-main-${MODEL}-${TS}.log"
 CACHE_SNAPSHOT="$LOG_DIR/study_a_generations-${TS}.jsonl"
 
-if [[ ! -f "$LOG_SRC" ]]; then
-  echo "LM Studio log not found at: $LOG_SRC"
-  echo "Start LM Studio and run once so main.log exists."
+LOG_ROOT_CANDIDATES=(
+  "$HOME/Library/Application Support/LM Studio/logs"
+  "$HOME/Library/Application Support/com.lmstudio.app/logs"
+  "$HOME/Library/Logs/LM Studio"
+)
+
+LOG_SRC=""
+for LOG_ROOT in "${LOG_ROOT_CANDIDATES[@]}"; do
+  if [[ -d "$LOG_ROOT" ]]; then
+    LOG_CANDIDATE="$(find "$LOG_ROOT" -maxdepth 2 -type f -name "*${MODEL}*.log" -print0 | xargs -0 ls -t 2>/dev/null | head -n1)"
+    if [[ -n "$LOG_CANDIDATE" && -f "$LOG_CANDIDATE" ]]; then
+      LOG_SRC="$LOG_CANDIDATE"
+    elif [[ -f "$LOG_ROOT/main.log" ]]; then
+      LOG_SRC="$LOG_ROOT/main.log"
+    fi
+  fi
+  [[ -n "$LOG_SRC" ]] && break
+done
+
+if [[ -z "$LOG_SRC" || ! -f "$LOG_SRC" ]]; then
+  echo "LM Studio log not found (checked common macOS paths for model-specific and main.log)."
+  echo "Start LM Studio once so a log exists."
   exit 1
+fi
+
+# Reset cache so the run starts fresh; pipeline will append per-sample immediately.
+if [[ -f "$CACHE_PATH" ]]; then
+  rm -f "$CACHE_PATH"
+  echo "Removed existing cache at $CACHE_PATH"
 fi
 
 (
   cd "$ROOT"
-  PYTHONPATH=src python scripts/run_evaluation.py --model "$MODEL" --study A --generate-only "$@"
+  PYTHONPATH="$ROOT/src" python scripts/run_evaluation.py --model "$MODEL" --study A --generate-only "$@"
 )
 
 if [[ -f "$CACHE_PATH" ]]; then
