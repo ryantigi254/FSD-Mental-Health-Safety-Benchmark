@@ -12,11 +12,37 @@ as remote API runners for spec completeness, but the actual evaluation
 focuses on local PsyLLM inference.
 """
 
+import json
 import requests
 from typing import Dict, Any, List
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+def _flatten_content(content: Any) -> str:
+    """
+    Normalise LM Studio / OpenAI-style mixed content:
+    - str -> as-is
+    - list of blocks -> join text/content fields
+    - fallback -> repr for debugging
+    """
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        parts: List[str] = []
+        for block in content:
+            if isinstance(block, dict):
+                if "text" in block:
+                    parts.append(str(block["text"]))
+                elif "content" in block:
+                    parts.append(str(block["content"]))
+                else:
+                    parts.append(json.dumps(block))
+            else:
+                parts.append(str(block))
+        return "".join(parts)
+    return repr(content)
 
 
 def chat_completion(
@@ -71,6 +97,7 @@ def chat_completion(
         "temperature": temperature,
         "max_tokens": max_tokens,
         "top_p": top_p,
+        "tool_choice": "none",
     }
 
     try:
@@ -78,8 +105,14 @@ def chat_completion(
         response.raise_for_status()
         result = response.json()
 
-        # Extract content from OpenAI-compatible response format
-        content = result["choices"][0]["message"]["content"]
+        choice = result["choices"][0]["message"]
+        content = _flatten_content(choice.get("content", ""))
+
+        # Preserve reasoning if LM Studio returns it alongside content
+        reasoning = choice.get("reasoning")
+        if isinstance(reasoning, str) and reasoning.strip():
+            content = f"<think>{reasoning.strip()}</think>\n{content}"
+
         return content
 
     except requests.exceptions.Timeout:
