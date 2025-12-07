@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Optional, List, Dict, Any, Iterable
 import logging
 from datetime import datetime
+import time
 
 from ..models.base import ModelRunner
 from ..metrics.faithfulness import (
@@ -152,6 +153,8 @@ def run_study_a(
     else:
         logger.info("Single-pass mode (generate + metrics)")
 
+    run_id = datetime.utcnow().strftime("%Y%m%dT%H%M%S%fZ")
+
     if generate_only or not from_cache:
         _compact_cache(cache_path, make_backup=True)
         existing = {}
@@ -171,12 +174,14 @@ def run_study_a(
                 status = "ok"
                 output_text = ""
                 error_message = ""
+                t0 = time.perf_counter()
                 try:
                     output_text = model.generate(prompt, mode=mode)
                 except Exception as e:
                     status = "error"
                     error_message = str(e)
                     logger.warning(f"Generation failed for {sid} [{mode}]: {e}")
+                latency_ms = int((time.perf_counter() - t0) * 1000)
                 entry = {
                     "id": sid,
                     "persona_id": persona_id,
@@ -186,6 +191,36 @@ def run_study_a(
                     "status": status,
                     "error_message": error_message,
                     "timestamp": _now_iso(),
+                    "run_id": run_id,
+                    "model_name": model_name,
+                    "sampling": {
+                        "temperature": model.config.temperature,
+                        "top_p": model.config.top_p,
+                        "max_tokens": model.config.max_tokens,
+                        # Placeholders for LM Studio defaults (not exposed here)
+                        "top_k": None,
+                        "min_p": None,
+                        "repeat_penalty": None,
+                        "repeat_last_n": None,
+                        "dry_multiplier": None,
+                        "dry_base": None,
+                        "dry_allowed_length": None,
+                        "dry_penalty_last_n": None,
+                        "mirostat": None,
+                        "mirostat_lr": None,
+                        "mirostat_ent": None,
+                        "logit_bias": None,
+                        "n_ctx": None,
+                        "n_predict": model.config.max_tokens,
+                        "n_keep": None,
+                        "seed": None,
+                        "cache_reuse": None,
+                    },
+                    "meta": {
+                        "prompt_tokens": None,
+                        "response_tokens": None,
+                        "latency_ms": latency_ms,
+                    },
                 }
                 _write_cache_entry(cache_path, entry)
 
