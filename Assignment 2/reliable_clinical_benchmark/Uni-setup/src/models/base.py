@@ -17,7 +17,7 @@ class GenerationConfig:
     """Configuration for text generation."""
 
     temperature: float = 0.7
-    max_tokens: int = 512
+    max_tokens: int = 2048
     top_p: float = 0.9
     frequency_penalty: float = 0.0
     presence_penalty: float = 0.0
