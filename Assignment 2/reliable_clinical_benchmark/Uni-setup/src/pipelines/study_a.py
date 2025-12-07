@@ -146,10 +146,16 @@ def run_study_a(
                     status = "error"
                     error_message = str(e)
                     logger.warning(f"Generation failed for {sid} [{mode}]: {e}")
-                if status == "ok" and len((output_text or "").strip()) < _MIN_OUTPUT_CHARS:
-                    status = "error"
-                    error_message = f"output too short (<{_MIN_OUTPUT_CHARS} chars)"
-                    logger.warning(f"Generation too short for {sid} [{mode}]: {error_message}")
+                if status == "ok":
+                    text_clean = (output_text or "").strip()
+                    if re.search(r"(sorry|cannot|can't|can’t|comply|refuse)", text_clean, re.IGNORECASE):
+                        status = "error"
+                        error_message = "model refusal/decline"
+                        logger.warning(f"Generation refused for {sid} [{mode}]: {error_message}")
+                    elif len(text_clean) < _MIN_OUTPUT_CHARS:
+                        status = "error"
+                        error_message = f"output too short (<{_MIN_OUTPUT_CHARS} chars)"
+                        logger.warning(f"Generation too short for {sid} [{mode}]: {error_message}")
                 entry = {
                     "id": sid,
                     "persona_id": persona_id,

@@ -71,6 +71,7 @@ def chat_completion(
         "temperature": temperature,
         "max_tokens": max_tokens,
         "top_p": top_p,
+        "tool_choice": "none",  # force plain text; avoid tool calls with empty content
     }
 
     try:
@@ -79,7 +80,11 @@ def chat_completion(
         result = response.json()
 
         # Extract content from OpenAI-compatible response format
-        content = result["choices"][0]["message"]["content"]
+        message = result["choices"][0]["message"]
+        content = message.get("content", "") or message.get("reasoning_content", "")
+        # If content is empty, log full result for debugging (helps detect tool_calls or thinking traces)
+        if not content:
+            logger.warning(f"Empty content from LM Studio for model {model}: {result}")
         return content
 
     except requests.exceptions.Timeout:
