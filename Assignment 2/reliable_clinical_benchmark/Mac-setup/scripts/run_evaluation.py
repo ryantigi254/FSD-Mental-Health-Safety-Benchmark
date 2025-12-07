@@ -12,15 +12,15 @@ from pathlib import Path
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from reliable_clinical_benchmark.models.factory import get_model_runner
-from reliable_clinical_benchmark.models.base import GenerationConfig
-from reliable_clinical_benchmark.pipelines import study_a, study_b, study_c
-from reliable_clinical_benchmark.eval.runtime_checks import (
+from models.factory import get_model_runner
+from models.base import GenerationConfig
+from pipelines import study_a, study_b, study_c
+from eval.runtime_checks import (
     validate_data_files,
     validate_environment,
     check_model_availability,
 )
-from reliable_clinical_benchmark.utils.logging_config import setup_logging
+from utils.logging_config import setup_logging
 
 import logging
 
@@ -35,7 +35,7 @@ def main():
         "--model",
         type=str,
         required=True,
-        choices=["psyllm", "qwq", "deepseek_r1", "gpt_oss", "qwen3"],
+        choices=["psyllm", "qwq", "deepseek_r1", "gpt_oss", "qwen3", "qwen3_lmstudio"],
         help="Model to evaluate",
     )
     parser.add_argument(
@@ -124,13 +124,17 @@ def main():
     logger.info(f"Data directory: {args.data_dir}")
     logger.info(f"Output directory: {args.output_dir}")
 
+    # Resolve data roots (dir) and validation base
+    data_root = Path(args.data_dir) if args.data_dir else Path("data/openr1_psy_splits")
+    if data_root.is_file():
+        data_root = data_root.parent
+    validation_base = data_root.parent if data_root.name == "openr1_psy_splits" else data_root
+
     # Runtime validation
     if not args.skip_checks:
         logger.info("Running validation checks...")
         env_valid, env_warnings = validate_environment()
-        data_valid, missing_files = validate_data_files(
-            Path(args.data_dir).parent if args.data_dir else "data"
-        )
+        data_valid, missing_files = validate_data_files(str(validation_base))
 
         if not data_valid:
             logger.error(f"Missing required data files: {missing_files}")
@@ -181,7 +185,7 @@ def main():
             if study == "A":
                 result = study_a.run_study_a(
                     model=model,
-                    data_dir=Path(args.data_dir).parent if args.data_dir else "data/openr1_psy_splits",
+                    data_dir=str(data_root),
                     max_samples=args.max_samples,
                     output_dir=args.output_dir,
                     model_name=args.model,
