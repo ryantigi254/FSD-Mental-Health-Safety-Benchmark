@@ -8,6 +8,7 @@ Run:
 """
 
 import json
+from datetime import datetime
 from typing import Any, Dict, List, Tuple
 
 import requests
@@ -60,12 +61,13 @@ def _chat_completion_raw(
     resp.raise_for_status()
     data = resp.json()
     content = data["choices"][0]["message"]["content"]
-    return data, content
+    return data, content, payload
 
 
 def main() -> None:
     api_base = "http://127.0.0.1:1234/v1"
     model = "gpt-oss-20b"  # matches LM Studio load; see HF card for template
+    run_id = datetime.utcnow().strftime("%Y%m%dT%H%M%S%fZ")
     prompts = [
         "Give me a one-line clinical differential for persistent low mood.",
         "List two bullet coping tips for test anxiety.",
@@ -77,7 +79,7 @@ def main() -> None:
     for i, p in enumerate(prompts, 1):
         messages = [{"role": "user", "content": p}]
         try:
-            raw, content = _chat_completion_raw(
+            raw, content, sent = _chat_completion_raw(
                 api_base=api_base,
                 model=model,
                 messages=messages,
@@ -89,13 +91,27 @@ def main() -> None:
         except Exception as e:
             raw = {"error": str(e)}
             flattened = f"[ERROR] {e}"
+            sent = {}
+
+        log = {
+            "run_id": run_id,
+            "prompt_idx": i,
+            "prompt": p,
+            "request": sent,
+            "response_meta": {
+                "id": raw.get("id") if isinstance(raw, dict) else None,
+                "created": raw.get("created") if isinstance(raw, dict) else None,
+                "model": raw.get("model") if isinstance(raw, dict) else None,
+                "usage": raw.get("usage") if isinstance(raw, dict) else None,
+            }
+            if isinstance(raw, dict)
+            else {},
+            "raw_choice": raw.get("choices", raw) if isinstance(raw, dict) else raw,
+            "flattened_content": flattened,
+        }
 
         print(f"--- Prompt {i} ---")
-        print(p)
-        print("raw_choice:")
-        print(json.dumps(raw.get("choices", raw), indent=2)[:2000])  # trim for readability
-        print("flattened_content:")
-        print(flattened)
+        print(json.dumps(log, indent=2)[:4000])  # trim for readability
         print()
 
 
