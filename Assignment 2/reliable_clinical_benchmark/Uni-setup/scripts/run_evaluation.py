@@ -89,8 +89,8 @@ def main():
     parser.add_argument(
         "--max-tokens",
         type=int,
-        default=512,
-        help="Maximum tokens per generation",
+        default=2048,
+        help="Maximum tokens per generation (raise if truncation persists)",
     )
     # Study A cache/generation flags
     parser.add_argument(
