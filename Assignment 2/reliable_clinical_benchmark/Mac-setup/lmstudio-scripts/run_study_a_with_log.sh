@@ -44,12 +44,6 @@ if [[ -z "$LOG_SRC" || ! -f "$LOG_SRC" ]]; then
   exit 1
 fi
 
-# Reset cache so the run starts fresh; pipeline will append per-sample immediately.
-if [[ -f "$CACHE_PATH" ]]; then
-  rm -f "$CACHE_PATH"
-  echo "Removed existing cache at $CACHE_PATH"
-fi
-
 (
   cd "$ROOT"
   PYTHONPATH="$ROOT/src" python scripts/run_evaluation.py --model "$MODEL" --study A --generate-only "$@"
@@ -66,4 +60,3 @@ cp "$LOG_SRC" "$LOG_DEST"
 echo "Copied LM Studio log to $LOG_DEST"
 
 echo "Done. Pairing: $CACHE_SNAPSHOT <-> $LOG_DEST"
-
