@@ -7,6 +7,7 @@ from .qwq import QwQRunner
 from .deepseek_r1 import DeepSeekR1Runner
 from .qwen3 import Qwen3Runner
 from .gpt_oss import GPTOSSRunner
+from .qwen3_lmstudio import Qwen3LMStudioRunner
 from .piaget import Piaget8BRunner
 from .psyche_r1 import PsycheR1Runner
 from .psych_qwen import PsychQwen32BRunner
@@ -43,6 +44,8 @@ def get_model_runner(
         return GPTOSSRunner(config=config)
     elif model_id_lower in ("qwen3", "qwen3-8b"):
         return Qwen3Runner(config=config)
+    elif model_id_lower in ("qwen3_lmstudio", "qwen3-lmstudio", "qwen3-lm"):
+        return Qwen3LMStudioRunner(config=config)
     elif model_id_lower in ("piaget", "piaget-8b"):
         return Piaget8BRunner(config=config)
     elif model_id_lower in ("psyche_r1", "psyche-r1"):
@@ -52,7 +55,7 @@ def get_model_runner(
     else:
         raise ValueError(
             f"Unknown model ID: {model_id}. "
-            f"Supported models: psyllm, qwq, deepseek_r1, gpt_oss, qwen3, "
+            f"Supported models: psyllm, qwq, deepseek_r1, gpt_oss, qwen3, qwen3_lmstudio, "
             f"piaget, psyche_r1, psych_qwen"
         )
 
