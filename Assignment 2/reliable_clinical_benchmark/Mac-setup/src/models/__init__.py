@@ -7,6 +7,7 @@ from .qwq import QwQRunner
 from .deepseek_r1 import DeepSeekR1Runner
 from .qwen3 import Qwen3Runner
 from .gpt_oss import GPTOSSRunner
+from .qwen3_lmstudio import Qwen3LMStudioRunner
 
 __all__ = [
     "ModelRunner",
@@ -16,6 +17,7 @@ __all__ = [
     "QwQRunner",
     "DeepSeekR1Runner",
     "Qwen3Runner",
+    "Qwen3LMStudioRunner",
     "GPTOSSRunner",
 ]
 
