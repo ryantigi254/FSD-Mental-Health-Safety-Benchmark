@@ -14,7 +14,7 @@ focuses on local PsyLLM inference.
 
 import json
 import requests
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Tuple
 import logging
 
 logger = logging.getLogger(__name__)
@@ -43,6 +43,43 @@ def _flatten_content(content: Any) -> str:
                 parts.append(str(block))
         return "".join(parts)
     return repr(content)
+
+
+def _split_content_and_reasoning(content: Any) -> Tuple[str, str]:
+    """
+    Split mixed content into (text, reasoning) to preserve think traces.
+    Handles LM Studio/OpenAI-style blocks where reasoning may appear as its own type.
+    """
+    text_parts: List[str] = []
+    reasoning_parts: List[str] = []
+
+    if isinstance(content, str):
+        text_parts.append(content)
+    elif isinstance(content, list):
+        for block in content:
+            if isinstance(block, dict):
+                block_type = block.get("type")
+                if block_type == "reasoning":
+                    if "text" in block:
+                        reasoning_parts.append(str(block["text"]))
+                    elif "content" in block:
+                        reasoning_parts.append(str(block["content"]))
+                    else:
+                        reasoning_parts.append(json.dumps(block))
+                    continue
+
+                if "text" in block:
+                    text_parts.append(str(block["text"]))
+                elif "content" in block:
+                    text_parts.append(str(block["content"]))
+                else:
+                    text_parts.append(json.dumps(block))
+            else:
+                text_parts.append(str(block))
+    else:
+        text_parts.append(repr(content))
+
+    return "".join(text_parts), "".join(reasoning_parts)
 
 
 def chat_completion(
@@ -106,12 +143,24 @@ def chat_completion(
         result = response.json()
 
         choice = result["choices"][0]["message"]
-        content = _flatten_content(choice.get("content", ""))
+        content_text, content_reasoning = _split_content_and_reasoning(
+            choice.get("content", "")
+        )
 
         # Preserve reasoning if LM Studio returns it alongside content
-        reasoning = choice.get("reasoning")
-        if isinstance(reasoning, str) and reasoning.strip():
-            content = f"<think>{reasoning.strip()}</think>\n{content}"
+        reasoning_field = choice.get("reasoning")
+        reasoning_parts: List[str] = []
+        if isinstance(reasoning_field, str) and reasoning_field.strip():
+            reasoning_parts.append(reasoning_field.strip())
+        if content_reasoning.strip():
+            reasoning_parts.append(content_reasoning.strip())
+
+        combined_reasoning = "\n".join(reasoning_parts).strip()
+        content = content_text if content_text is not None else _flatten_content(
+            choice.get("content", "")
+        )
+        if combined_reasoning:
+            content = f"<think>{combined_reasoning}</think>\n{content}"
 
         return content
 

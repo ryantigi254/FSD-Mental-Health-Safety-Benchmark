@@ -7,6 +7,8 @@ from .qwq import QwQRunner
 from .deepseek_r1 import DeepSeekR1Runner
 from .qwen3 import Qwen3Runner
 from .gpt_oss import GPTOSSRunner
+from .lmstudio_qwq import QwQLMStudioRunner
+from .lmstudio_gpt_oss import GPTOSSLMStudioRunner
 
 __all__ = [
     "ModelRunner",
@@ -14,8 +16,10 @@ __all__ = [
     "get_model_runner",
     "PsyLLMRunner",
     "QwQRunner",
+    "QwQLMStudioRunner",
     "DeepSeekR1Runner",
     "Qwen3Runner",
     "GPTOSSRunner",
+    "GPTOSSLMStudioRunner",
 ]
 
