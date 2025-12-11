@@ -9,6 +9,7 @@ from .qwen3 import Qwen3Runner
 from .gpt_oss import GPTOSSRunner
 from .lmstudio_qwq import QwQLMStudioRunner
 from .lmstudio_gpt_oss import GPTOSSLMStudioRunner
+from .piaget_local import Piaget8BLocalRunner
 
 __all__ = [
     "ModelRunner",
@@ -21,5 +22,6 @@ __all__ = [
     "Qwen3Runner",
     "GPTOSSRunner",
     "GPTOSSLMStudioRunner",
+    "Piaget8BLocalRunner",
 ]
 
