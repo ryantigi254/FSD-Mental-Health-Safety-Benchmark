@@ -8,6 +8,7 @@ from .deepseek_r1 import DeepSeekR1Runner
 from .qwen3 import Qwen3Runner
 from .gpt_oss import GPTOSSRunner
 from .piaget import Piaget8BRunner
+from .piaget_local import Piaget8BLocalRunner
 from .psyche_r1 import PsycheR1Runner
 from .psych_qwen import PsychQwen32BRunner
 from .lmstudio_qwq import QwQLMStudioRunner
@@ -51,6 +52,8 @@ def get_model_runner(
         return Qwen3Runner(config=config)
     elif model_id_lower in ("piaget", "piaget-8b"):
         return Piaget8BRunner(config=config)
+    elif model_id_lower in ("piaget_local", "piaget-8b-local", "piaget8b-local"):
+        return Piaget8BLocalRunner(config=config)
     elif model_id_lower in ("psyche_r1", "psyche-r1"):
         return PsycheR1Runner(config=config)
     elif model_id_lower in ("psych_qwen", "psych_qwen_32b", "psych-qwen-32b"):
