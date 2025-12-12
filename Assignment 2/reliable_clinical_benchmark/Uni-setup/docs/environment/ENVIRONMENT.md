@@ -70,7 +70,7 @@ Uni-setup now runs the main baselines through LM Studio using quantised GGUFs:
 - GPT-OSS-120B: LM Studio GGUF MXFP4 (`lmstudio-community/openai-gpt-oss-120b-gguf-mxfp4`)
 - GPT-OSS-20B: LM Studio GGUF (record the exact quant used, e.g., MXFP4/FP16)
 - QwQ-32B: LM Studio GGUF FP16
-- DeepSeek-R1-Distill-Llama-70B: LM Studio GGUF Q6_K (https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Llama-70B)
+- DeepSeek-R1-Distill-Qwen-14B: LM Studio / HF local or API (`deepseek-ai/DeepSeek-R1-Distill-Qwen-14B`)
 
 Remote API runners remain available (QwQ, DeepSeek-R1, Qwen3, GPT-OSS) if you prefer hosted inference.
 

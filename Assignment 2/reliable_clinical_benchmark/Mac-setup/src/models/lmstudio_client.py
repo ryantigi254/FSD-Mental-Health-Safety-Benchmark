@@ -3,7 +3,7 @@ Shared LM Studio HTTP client for all locally-hosted models.
 
 This module provides a single, unified interface for communicating with
 LM Studio's local server API. All models running via LM Studio (PsyLLM,
-and potentially others like QwQ-32B, DeepSeek-R1-32B if loaded locally)
+and potentially others like QwQ-32B, DeepSeek-R1-14B if loaded locally)
 should use this client to ensure consistent error handling and timeout management.
 
 For this dissertation, PsyLLM is the primary model evaluated, running

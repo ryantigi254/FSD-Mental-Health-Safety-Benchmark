@@ -1,7 +1,7 @@
 """
 Base class for remote API-based model runners.
 
-Used by QwQ-32B, DeepSeek-R1-32B, GPT-OSS-120B, Qwen3-8B.
+Used by QwQ-32B, DeepSeek-R1-14B, GPT-OSS-120B, Qwen3-8B.
 
 **Note**: These remote API runners are configured for spec completeness, but for
 this dissertation, PsyLLM via LM Studio (local inference) is the primary
