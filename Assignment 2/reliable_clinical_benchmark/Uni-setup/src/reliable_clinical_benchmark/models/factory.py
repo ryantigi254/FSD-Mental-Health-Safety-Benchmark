@@ -3,6 +3,7 @@
 from typing import Optional
 from .base import ModelRunner, GenerationConfig
 from .psyllm import PsyLLMRunner
+from .psyllm_local import PsyLLMLocalRunner
 from .qwq import QwQRunner
 from .deepseek_r1 import DeepSeekR1Runner
 from .qwen3 import Qwen3Runner
@@ -40,6 +41,8 @@ def get_model_runner(
 
     if model_id_lower == "psyllm":
         return PsyLLMRunner(config=config)
+    elif model_id_lower in ("psyllm_local", "psyllm-8b-local", "psyllm-local-hf"):
+        return PsyLLMLocalRunner(config=config)
     elif model_id_lower in ("qwq", "qwq-32b"):
         return QwQRunner(config=config)
     elif model_id_lower in ("qwq_lmstudio", "qwq-lmstudio", "qwq-32b-lmstudio"):

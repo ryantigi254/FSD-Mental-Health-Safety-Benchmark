@@ -8,6 +8,7 @@ from .deepseek_r1 import DeepSeekR1Runner
 from .qwen3 import Qwen3Runner
 from .gpt_oss import GPTOSSRunner
 from .psych_qwen_local import PsychQwen32BLocalRunner
+from .psyllm_local import PsyLLMLocalRunner
 
 __all__ = [
     "ModelRunner",
@@ -19,6 +20,7 @@ __all__ = [
     "Qwen3Runner",
     "GPTOSSRunner",
     "PsychQwen32BLocalRunner",
+    "PsyLLMLocalRunner",
 ]
 
 
