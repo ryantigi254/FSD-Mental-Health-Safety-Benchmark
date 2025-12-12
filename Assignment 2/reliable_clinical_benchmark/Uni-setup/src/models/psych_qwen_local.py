@@ -1,8 +1,7 @@
 """
-Local runner for Psyche-R1 using Hugging Face transformers (no LM Studio).
+Local runner for Psych_Qwen_32B using Hugging Face transformers (no LM Studio).
 
-Loads the model from a local directory (default: Uni-setup/models/Psyche-R1)
-and runs generation using the tokenizer chat template.
+Loads from: Uni-setup/models/Psych_Qwen_32B
 """
 
 import re
@@ -15,17 +14,12 @@ from .base import ModelRunner, GenerationConfig
 
 
 DEFAULT_TOP_K = 20
-DEFAULT_REPETITION_PENALTY = 1.05
 
 
-class PsycheR1LocalRunner(ModelRunner):
-    """
-    Local inference for Psyche-R1 via transformers.
-    """
-
+class PsychQwen32BLocalRunner(ModelRunner):
     def __init__(
         self,
-        model_name: str = "models/Psyche-R1",
+        model_name: str = "models/Psych_Qwen_32B",
         device_map: str = "auto",
         dtype: torch.dtype = torch.bfloat16,
         config: Optional[GenerationConfig] = None,
@@ -35,8 +29,8 @@ class PsycheR1LocalRunner(ModelRunner):
             model_name,
             config
             or GenerationConfig(
-                temperature=1e-5,
-                top_p=0.8,
+                temperature=0.6,
+                top_p=0.95,
                 max_tokens=1024,
             ),
         )
@@ -62,6 +56,7 @@ class PsycheR1LocalRunner(ModelRunner):
             messages,
             tokenize=False,
             add_generation_prompt=True,
+            enable_thinking=(mode == "cot"),
         )
         tokenized = self.tokenizer(
             prompt_text,
@@ -72,27 +67,13 @@ class PsycheR1LocalRunner(ModelRunner):
         return {k: v.to(self.model.device) for k, v in tokenized.items()}
 
     def _strip_role_markers(self, text: str) -> str:
-        """
-        Defensive cleanup: some models may emit chat role markers or headers.
-        We only want assistant-visible content.
-        """
         t = (text or "").strip()
-        # Common Qwen chat artifacts (sometimes survive decoding depending on tokenizer settings)
         t = t.replace("<|im_end|>", "").strip()
         if "<|im_start|>assistant" in t:
             t = t.split("<|im_start|>assistant", 1)[1].strip()
         return t.strip()
 
     def _extract_reasoning_and_answer(self, text: str) -> Tuple[str, str]:
-        """
-        Extract (reasoning, answer) from model text.
-
-        Preference order:
-        1) <think> / <redacted_reasoning> blocks
-        2) REASONING:/DIAGNOSIS: sections
-        3) Reasoning: ... then Diagnosis/Answer/Conclusion:
-        4) Fallback: use the whole text for both
-        """
         t = self._strip_role_markers(text)
 
         think_pattern = r"<(?:redacted_reasoning|think)>(.*?)</(?:redacted_reasoning|think)>"
@@ -111,35 +92,22 @@ class PsycheR1LocalRunner(ModelRunner):
                 answer = t[d_start + len("diagnosis:") :].strip()
                 return reasoning, answer
 
-        # Generic fallback split
         parts = re.split(r"\n(?:Diagnosis|Answer|Conclusion):\s*", t)
         if len(parts) >= 2:
-            reasoning = parts[0].strip()
-            answer = parts[1].strip()
-            return reasoning, answer
+            return parts[0].strip(), parts[1].strip()
 
         return t, t
 
     def _normalize_for_mode(self, text: str, mode: str) -> str:
-        """
-        Normalise output so downstream Study A metrics can parse reliably.
-
-        - cot: always emit REASONING:/DIAGNOSIS: blocks
-        - direct: emit diagnosis only (best-effort)
-        """
         t = self._strip_role_markers(text)
 
         if mode == "cot":
             reasoning, answer = self._extract_reasoning_and_answer(t)
-            reasoning = reasoning.strip()
-            answer = answer.strip()
-            return f"REASONING:\n{reasoning}\n\nDIAGNOSIS:\n{answer}".strip()
+            return f"REASONING:\n{reasoning.strip()}\n\nDIAGNOSIS:\n{answer.strip()}".strip()
 
         if mode == "direct":
-            # Remove any reasoning block if the model ignored instructions.
             _, answer = self._extract_reasoning_and_answer(t)
             ans = (answer or "").strip()
-            # If answer is still verbose, keep only the first non-empty line.
             for line in ans.splitlines():
                 line = line.strip()
                 if line:
@@ -159,7 +127,6 @@ class PsycheR1LocalRunner(ModelRunner):
             temperature=self.config.temperature,
             top_p=self.config.top_p,
             top_k=DEFAULT_TOP_K,
-            repetition_penalty=DEFAULT_REPETITION_PENALTY,
             eos_token_id=self.tokenizer.eos_token_id,
             pad_token_id=self.tokenizer.pad_token_id,
         )
@@ -169,7 +136,6 @@ class PsycheR1LocalRunner(ModelRunner):
         return self._normalize_for_mode(output, mode)
 
     def generate_with_reasoning(self, prompt: str) -> Tuple[str, str]:
-        # Use the same normalised CoT format, then parse it deterministically.
         full_response = self.generate(prompt, mode="cot")
         reasoning, answer = self._extract_reasoning_and_answer(full_response)
         return answer.strip(), reasoning.strip()

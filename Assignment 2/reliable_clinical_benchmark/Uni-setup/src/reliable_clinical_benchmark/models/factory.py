@@ -12,6 +12,7 @@ from .piaget_local import Piaget8BLocalRunner
 from .psyche_r1 import PsycheR1Runner
 from .psyche_r1_local import PsycheR1LocalRunner
 from .psych_qwen import PsychQwen32BRunner
+from .psych_qwen_local import PsychQwen32BLocalRunner
 from .lmstudio_qwq import QwQLMStudioRunner
 from .lmstudio_gpt_oss import GPTOSSLMStudioRunner
 import logging
@@ -61,6 +62,8 @@ def get_model_runner(
         return PsycheR1LocalRunner(config=config)
     elif model_id_lower in ("psych_qwen", "psych_qwen_32b", "psych-qwen-32b"):
         return PsychQwen32BRunner(config=config)
+    elif model_id_lower in ("psych_qwen_local", "psych-qwen-32b-local", "psych-qwen-local-hf"):
+        return PsychQwen32BLocalRunner(config=config)
     else:
         raise ValueError(
             f"Unknown model ID: {model_id}. "
