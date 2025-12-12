@@ -1,31 +1,31 @@
 import argparse
-import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer
+
+from reliable_clinical_benchmark.models.psych_qwen_local import PsychQwen32BLocalRunner
+from reliable_clinical_benchmark.models.base import GenerationConfig
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("prompt")
-    parser.add_argument("--model-dir", default="../models/Psych_Qwen_32B")
     parser.add_argument("--max-new-tokens", type=int, default=512)
     parser.add_argument("--temperature", type=float, default=0.6)
+    parser.add_argument(
+        "--quantization",
+        default="4bit",
+        help="Quantization mode (e.g. 4bit, 8bit, none). Default: 4bit",
+    )
     args = parser.parse_args()
 
-    tokenizer = AutoTokenizer.from_pretrained(args.model_dir)
-    model = AutoModelForCausalLM.from_pretrained(
-        args.model_dir,
-        torch_dtype=torch.bfloat16 if torch.cuda.is_available() else torch.float32,
-        device_map="auto",
+    runner = PsychQwen32BLocalRunner(
+        model_name="../models/Psych_Qwen_32B",
+        quantization=args.quantization,
+        config=GenerationConfig(
+            temperature=args.temperature,
+            top_p=0.95,
+            max_tokens=args.max_new_tokens,
+        ),
     )
-
-    inputs = tokenizer(args.prompt, return_tensors="pt").to(model.device)
-    outputs = model.generate(
-        **inputs,
-        max_new_tokens=args.max_new_tokens,
-        do_sample=args.temperature > 0,
-        temperature=args.temperature,
-    )
-    print(tokenizer.decode(outputs[0], skip_special_tokens=True))
+    print(runner.generate(args.prompt, mode="cot"))
 
 
 if __name__ == "__main__":
