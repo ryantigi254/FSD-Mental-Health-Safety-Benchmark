@@ -21,8 +21,8 @@ Use a fixed configuration per model for all reported results.
   - Precision: fp16 on GPU.
   - Device: primary GPU workstation with sufficient VRAM.
 
-- **DeepSeek-R1-32B**
-  - Weights: `deepseek-ai/DeepSeek-R1-Distill-Qwen-32B`.
+- **DeepSeek-R1-14B**
+  - Weights: `deepseek-ai/DeepSeek-R1-Distill-Qwen-14B`.
   - Precision: fp16 on GPU.
   - Device: primary GPU workstation.
 

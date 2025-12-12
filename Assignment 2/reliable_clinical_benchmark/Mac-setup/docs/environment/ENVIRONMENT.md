@@ -46,7 +46,7 @@ The benchmark relies on the following core technology stack:
 - Load `GMLHUHE/PsyLLM` in LM Studio, keep the default server port, and run via `PsyLLMRunner` (uses `lmstudio_client`).
 - Target full precision on MLX/MPS; drop to CPU only if necessary for debugging.
 
-Models larger than 8B (QwQ-32B, DeepSeek-R1-32B, GPT-OSS-120B) are intentionally excluded here and live in the Uni setup documentation.
+Models larger than 8B (QwQ-32B, DeepSeek-R1-14B, GPT-OSS-120B) are intentionally excluded here and live in the Uni setup documentation.
 
 ### LM Studio checklist
 1. Install LM Studio (https://lmstudio.ai/).
