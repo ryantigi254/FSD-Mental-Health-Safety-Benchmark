@@ -76,20 +76,11 @@ Unit split invariants will guard against accidental data edits; integration test
 
 ## 10) Running large local models on limited VRAM (e.g., 32B on 24GB)
 
-### Why quantization is needed
-- **32B in bf16** is ~64GB just for weights → cannot fit on a 24GB GPU.
-- **8-bit** is ~32GB for weights → still usually too big for 24GB.
-- **4-bit** is typically required; any remainder can be **offloaded to CPU RAM**.
+### What we used
+For **Psych_Qwen_32B** on a **24GB VRAM** GPU, we used **`quantization="4bit"`** in the local runner.
 
-### Psych_Qwen_32B local runner (quant + CPU offload)
-The repo includes a local runner that loads from `models/Psych_Qwen_32B`:
-- `reliable_clinical_benchmark.models.psych_qwen_local.PsychQwen32BLocalRunner`
-
-It supports:
-- **`quantization="4bit"`** (recommended for 24GB VRAM)
-- **`quantization="8bit"`** (may still OOM on 24GB)
-- **`max_memory={0:"22GiB","cpu":"48GiB"}`** to cap GPU usage and allow CPU offload
-- **`offload_folder="offload/psych_qwen_32b"`** for stable offloading
+### Customising quantization (optional)
+The local runner supports a `quantization=` argument so you can pick what fits your hardware/use case (e.g. `"4bit"` or `"8bit"`).
 
 Example (PowerShell):
 ```powershell
@@ -103,7 +94,3 @@ $py="C:\Users\22837352\.conda\envs\mh-llm-benchmark-env\python.exe"
 m=PsychQwen32BLocalRunner(quantization='4bit'); \
 print('runner_ready', m.model_name)"
 ```
-
-### Windows note (bitsandbytes)
-4-bit/8-bit loading uses `bitsandbytes`. On Windows this can be finicky depending on CUDA/toolchain.
-If `bitsandbytes` fails to install/import, the fallback is to run quantized inference under **WSL2/Linux**.
