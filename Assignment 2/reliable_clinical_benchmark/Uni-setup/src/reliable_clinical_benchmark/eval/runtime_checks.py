@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 from typing import List, Tuple
 import logging
+import json
 
 logger = logging.getLogger(__name__)
 
@@ -88,6 +89,103 @@ def validate_environment() -> Tuple[bool, List[str]]:
         return False, warnings
 
     logger.info("Environment validation passed")
+    return True, []
+
+
+def validate_study_b_schema(data_dir: str = "data") -> Tuple[bool, List[str]]:
+    """
+    Validate Study B split has persona IDs + well-formed IDs before running generations.
+
+    Args:
+        data_dir: Base data directory (should contain openr1_psy_splits/)
+
+    Returns:
+        Tuple of (is_valid, list_of_errors)
+    """
+    data_path = Path(data_dir)
+    study_b_path = data_path / "openr1_psy_splits" / "study_b_test.json"
+    if not study_b_path.exists():
+        return False, [f"Study B split not found: {study_b_path}"]
+
+    try:
+        payload = json.loads(study_b_path.read_text(encoding="utf-8"))
+    except Exception as e:
+        return False, [f"Study B split is not valid JSON: {study_b_path} ({e})"]
+
+    errors: List[str] = []
+
+    samples = payload.get("samples")
+    multi_turn_cases = payload.get("multi_turn_cases")
+
+    if not isinstance(samples, list):
+        errors.append("Study B: 'samples' must be a list")
+        samples = []
+    if not isinstance(multi_turn_cases, list):
+        errors.append("Study B: 'multi_turn_cases' must be a list")
+        multi_turn_cases = []
+
+    seen_ids = set()
+    for i, item in enumerate(samples):
+        if not isinstance(item, dict):
+            errors.append(f"Study B sample[{i}]: must be an object")
+            continue
+
+        sid = item.get("id")
+        if not isinstance(sid, str) or not sid.strip():
+            errors.append(f"Study B sample[{i}]: missing/invalid 'id'")
+        else:
+            if sid in seen_ids:
+                errors.append(f"Study B: duplicate sample id '{sid}'")
+            seen_ids.add(sid)
+
+        for key in ("prompt", "gold_answer", "incorrect_opinion"):
+            v = item.get(key)
+            if not isinstance(v, str) or not v.strip():
+                errors.append(f"Study B sample[{sid or i}]: missing/invalid '{key}'")
+
+        metadata = item.get("metadata")
+        if not isinstance(metadata, dict):
+            errors.append(f"Study B sample[{sid or i}]: missing/invalid 'metadata'")
+        else:
+            persona_id = metadata.get("persona_id")
+            if not isinstance(persona_id, str) or not persona_id.strip():
+                errors.append(f"Study B sample[{sid or i}]: missing/invalid metadata.persona_id")
+
+    for j, case in enumerate(multi_turn_cases):
+        if not isinstance(case, dict):
+            errors.append(f"Study B multi_turn_cases[{j}]: must be an object")
+            continue
+
+        cid = case.get("id")
+        if not isinstance(cid, str) or not cid.strip():
+            errors.append(f"Study B multi_turn_cases[{j}]: missing/invalid 'id'")
+
+        gold = case.get("gold_answer")
+        if not isinstance(gold, str) or not gold.strip():
+            errors.append(f"Study B multi_turn_cases[{cid or j}]: missing/invalid 'gold_answer'")
+
+        turns = case.get("turns")
+        if not isinstance(turns, list) or not turns:
+            errors.append(f"Study B multi_turn_cases[{cid or j}]: missing/invalid 'turns'")
+        else:
+            for k, t in enumerate(turns):
+                if not isinstance(t, dict):
+                    errors.append(f"Study B multi_turn_cases[{cid or j}] turn[{k}]: must be an object")
+                    continue
+                msg = t.get("message")
+                if not isinstance(msg, str) or not msg.strip():
+                    errors.append(f"Study B multi_turn_cases[{cid or j}] turn[{k}]: missing/invalid 'message'")
+
+        metadata = case.get("metadata")
+        if not isinstance(metadata, dict):
+            errors.append(f"Study B multi_turn_cases[{cid or j}]: missing/invalid 'metadata'")
+        else:
+            persona_id = metadata.get("persona_id")
+            if not isinstance(persona_id, str) or not persona_id.strip():
+                errors.append(f"Study B multi_turn_cases[{cid or j}]: missing/invalid metadata.persona_id")
+
+    if errors:
+        return False, errors
     return True, []
 
 
