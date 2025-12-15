@@ -5,6 +5,7 @@ Uses the shared lmstudio_client to talk to LM Studio's /v1/chat/completions.
 Model name is pinned to the LM Studio label to keep runs reproducible.
 """
 
+import os
 import re
 from typing import Tuple
 import logging
@@ -26,6 +27,10 @@ class QwQLMStudioRunner(ModelRunner):
         api_base: str = "http://127.0.0.1:1234/v1",
         config: GenerationConfig = None,
     ):
+        # Allow overriding the LM Studio API Identifier without editing code.
+        # Example:
+        #   $Env:LMSTUDIO_QWQ_MODEL="qwq-32b@q4_k_m"
+        model_name = os.getenv("LMSTUDIO_QWQ_MODEL", model_name)
         super().__init__(
             model_name,
             config

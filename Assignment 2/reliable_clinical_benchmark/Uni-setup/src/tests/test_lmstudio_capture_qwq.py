@@ -4,10 +4,12 @@ chat template parts, and ensure we record text even if LM Studio returns
 chunked content (e.g., text/tool blocks or <think> traces).
 
 Run:
-    PYTHONPATH=src python src/tests/test_lmstudio_capture_qwq.py
+    PYTHONPATH=src python src/tests/test_lmstudio_capture_qwq.py --model qwq-32b@q4_k_m
 """
 
+import argparse
 import json
+import os
 from datetime import datetime
 from typing import Any, Dict, List, Tuple
 
@@ -65,8 +67,20 @@ def _chat_completion_raw(
 
 
 def main() -> None:
-    api_base = "http://127.0.0.1:1234/v1"
-    model = "QwQ-32B-GGUF"  # matches LM Studio load; see HF card for template
+    p = argparse.ArgumentParser()
+    p.add_argument("--api-base", default="http://127.0.0.1:1234/v1")
+    p.add_argument(
+        "--model",
+        default=os.getenv("LMSTUDIO_QWQ_MODEL", "QwQ-32B-GGUF"),
+        help="LM Studio API Identifier (or set $Env:LMSTUDIO_QWQ_MODEL).",
+    )
+    p.add_argument("--max-tokens", type=int, default=1024)
+    p.add_argument("--temperature", type=float, default=0.6)
+    p.add_argument("--top-p", type=float, default=0.95)
+    args = p.parse_args()
+
+    api_base = args.api_base
+    model = args.model
     run_id = datetime.utcnow().strftime("%Y%m%dT%H%M%S%fZ")
     prompts = [
         "Give me a one-line clinical differential for persistent low mood.",
@@ -83,9 +97,9 @@ def main() -> None:
                 api_base=api_base,
                 model=model,
                 messages=messages,
-                temperature=0.7,
-                max_tokens=1024,
-                top_p=0.9,
+                temperature=args.temperature,
+                max_tokens=args.max_tokens,
+                top_p=args.top_p,
             )
             flattened = _flatten_content(content)
         except Exception as e:
