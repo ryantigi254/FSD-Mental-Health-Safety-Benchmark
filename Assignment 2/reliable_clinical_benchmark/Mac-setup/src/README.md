@@ -9,7 +9,6 @@ Everything under that package uses imports like `reliable_clinical_benchmark.mod
 Notes:
 
 - `src/tests/` contains **manual smoke scripts** (not pytest).
-- `src/clinical_llms_local/` contains Mac-specific helper utilities.
 - `__pycache__/` directories are runtime artefacts created by Python and should be ignored.
 
 
