@@ -189,6 +189,90 @@ def validate_study_b_schema(data_dir: str = "data") -> Tuple[bool, List[str]]:
     return True, []
 
 
+def validate_study_c_schema(data_dir: str = "data") -> Tuple[bool, List[str]]:
+    """
+    Validate Study C split has persona IDs + well-formed turn structure before running generations.
+
+    Args:
+        data_dir: Base data directory (should contain openr1_psy_splits/)
+
+    Returns:
+        Tuple of (is_valid, list_of_errors)
+    """
+    data_path = Path(data_dir)
+    study_c_path = data_path / "openr1_psy_splits" / "study_c_test.json"
+    if not study_c_path.exists():
+        return False, [f"Study C split not found: {study_c_path}"]
+
+    try:
+        payload = json.loads(study_c_path.read_text(encoding="utf-8"))
+    except Exception as e:
+        return False, [f"Study C split is not valid JSON: {study_c_path} ({e})"]
+
+    errors: List[str] = []
+    cases = payload.get("cases")
+    if not isinstance(cases, list):
+        return False, ["Study C: 'cases' must be a list"]
+
+    seen_ids = set()
+    for i, case in enumerate(cases):
+        if not isinstance(case, dict):
+            errors.append(f"Study C cases[{i}]: must be an object")
+            continue
+
+        cid = case.get("id")
+        if not isinstance(cid, str) or not cid.strip():
+            errors.append(f"Study C cases[{i}]: missing/invalid 'id'")
+            cid = f"idx:{i}"
+        else:
+            if cid in seen_ids:
+                errors.append(f"Study C: duplicate case id '{cid}'")
+            seen_ids.add(cid)
+
+        ps = case.get("patient_summary")
+        if not isinstance(ps, str) or not ps.strip():
+            errors.append(f"Study C cases[{cid}]: missing/invalid 'patient_summary'")
+
+        critical_entities = case.get("critical_entities")
+        if not isinstance(critical_entities, list):
+            errors.append(f"Study C cases[{cid}]: missing/invalid 'critical_entities'")
+        else:
+            for ent in critical_entities:
+                if not isinstance(ent, str) or not ent.strip():
+                    errors.append(f"Study C cases[{cid}]: critical_entities contains invalid entry")
+                    break
+
+        turns = case.get("turns")
+        if not isinstance(turns, list) or not turns:
+            errors.append(f"Study C cases[{cid}]: missing/invalid 'turns'")
+        else:
+            for j, t in enumerate(turns):
+                if not isinstance(t, dict):
+                    errors.append(f"Study C cases[{cid}] turn[{j}]: must be an object")
+                    continue
+                turn_no = t.get("turn")
+                if not isinstance(turn_no, int):
+                    errors.append(f"Study C cases[{cid}] turn[{j}]: missing/invalid 'turn'")
+                msg = t.get("message")
+                if not isinstance(msg, str) or not msg.strip():
+                    errors.append(f"Study C cases[{cid}] turn[{j}]: missing/invalid 'message'")
+
+        metadata = case.get("metadata")
+        if not isinstance(metadata, dict):
+            errors.append(f"Study C cases[{cid}]: missing/invalid 'metadata'")
+        else:
+            persona_id = metadata.get("persona_id")
+            if not isinstance(persona_id, str) or not persona_id.strip():
+                errors.append(f"Study C cases[{cid}]: missing/invalid metadata.persona_id")
+            source_openr1_ids = metadata.get("source_openr1_ids")
+            if not isinstance(source_openr1_ids, list) or not source_openr1_ids:
+                errors.append(f"Study C cases[{cid}]: missing/invalid metadata.source_openr1_ids")
+
+    if errors:
+        return False, errors
+    return True, []
+
+
 def check_model_availability(model_id: str) -> bool:
     """
     Check if a specific model is available.
