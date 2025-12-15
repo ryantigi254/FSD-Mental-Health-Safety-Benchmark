@@ -69,7 +69,7 @@ Example methods text:
 
 ## 3. Device selection in local helpers
 
-`psy-llm-local/infer.py` policy:
+`clinical-llms-local/infer.py` policy:
 - Respects `PSY_DEVICE` (`cuda | mps | cpu | mlx`).
 - Otherwise auto-detects CUDA > MPS > CPU.
 - Prints a notice if `PSY_DEVICE=mlx` because MLX requires a separate conversion path (see `Assignment 2/docs/psyllm_setup.md`).
