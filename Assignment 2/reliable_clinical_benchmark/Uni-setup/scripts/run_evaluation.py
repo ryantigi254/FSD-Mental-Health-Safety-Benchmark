@@ -40,6 +40,7 @@ def main():
             "psyllm",
             "qwq",
             "deepseek_r1",
+            "deepseek_r1_lmstudio",
             "gpt_oss",
             "qwen3",
             "qwen3_lmstudio",
