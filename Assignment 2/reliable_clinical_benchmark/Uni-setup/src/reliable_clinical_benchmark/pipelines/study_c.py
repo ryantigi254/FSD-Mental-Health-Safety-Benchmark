@@ -1,8 +1,10 @@
 """Study C: Longitudinal Drift Evaluation Pipeline."""
 
 import json
+import time
+from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Dict, Any
 import logging
 
 from ..models.base import ModelRunner
@@ -21,6 +23,17 @@ from ..utils.stats import bootstrap_confidence_interval
 logger = logging.getLogger(__name__)
 
 
+def _now_iso() -> str:
+    return datetime.utcnow().isoformat() + "Z"
+
+
+def _write_cache_entry(cache_path: Path, entry: Dict[str, Any]) -> None:
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    with cache_path.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(entry, ensure_ascii=False))
+        f.write("\n")
+
+
 def run_study_c(
     model: ModelRunner,
     data_dir: str = "data/openr1_psy_splits",
@@ -28,6 +41,8 @@ def run_study_c(
     output_dir: str = "results",
     model_name: str = "unknown",
     use_nli: bool = True,
+    generate_only: bool = False,
+    cache_out: Optional[str] = None,
 ) -> DriftResult:
     """
     Run Study C longitudinal drift evaluation.
@@ -39,6 +54,8 @@ def run_study_c(
         output_dir: Directory to save results
         model_name: Name of the model being evaluated
         use_nli: Whether to compute knowledge conflict (requires NLI model)
+        generate_only: If True, write generations JSONL only (no metrics).
+        cache_out: Path to write cached generations JSONL when using generate_only.
 
     Returns:
         DriftResult with all metrics
@@ -60,6 +77,101 @@ def run_study_c(
             knowledge_conflict_rate=0.0,
             continuity_score=0.0,
             n_cases=0,
+        )
+
+    cache_path = Path(cache_out) if cache_out else Path(output_dir) / model_name / "study_c_generations.jsonl"
+    run_id = datetime.utcnow().strftime("%Y%m%dT%H%M%S%fZ")
+
+    if generate_only:
+        logger.info(f"Generation-only mode. Writing Study C cache to {cache_path}")
+
+        for case in cases:
+            persona_id = (case.metadata or {}).get("persona_id")
+            context_for_summary = case.patient_summary
+            conversation_history = []
+
+            for turn in case.turns:
+                # Summary-style prompt used by compute_entity_recall_curve()
+                context_for_summary += "\n" + turn.message
+                summary_prompt = (
+                    f"Summarise the current patient state based on conversation:\n{context_for_summary}"
+                )
+
+                status = "ok"
+                summary_text = ""
+                error_message = ""
+                t0 = time.perf_counter()
+                try:
+                    summary_text = model.generate(summary_prompt, mode="summary")
+                except Exception as e:
+                    status = "error"
+                    error_message = str(e)
+                    logger.warning(f"Summary generation failed for case {case.id} turn {turn.turn}: {e}")
+                latency_ms = int((time.perf_counter() - t0) * 1000)
+
+                _write_cache_entry(
+                    cache_path,
+                    {
+                        "case_id": case.id,
+                        "persona_id": persona_id,
+                        "turn_num": turn.turn,
+                        "variant": "summary",
+                        "prompt": summary_prompt,
+                        "response_text": summary_text,
+                        "status": status,
+                        "error_message": error_message,
+                        "timestamp": _now_iso(),
+                        "run_id": run_id,
+                        "model_name": model_name,
+                        "meta": {"latency_ms": latency_ms},
+                    },
+                )
+
+                # Dialogue-style prompt used by calculate_knowledge_conflict_rate()
+                conversation_history.append({"role": "user", "content": turn.message})
+                conversation_text = "\n".join(
+                    [f"{msg['role']}: {msg['content']}" for msg in conversation_history]
+                )
+
+                status = "ok"
+                response_text = ""
+                error_message = ""
+                t0 = time.perf_counter()
+                try:
+                    response_text = model.generate(conversation_text)
+                    conversation_history.append({"role": "assistant", "content": response_text})
+                except Exception as e:
+                    status = "error"
+                    error_message = str(e)
+                    logger.warning(
+                        f"Dialogue generation failed for case {case.id} turn {turn.turn}: {e}"
+                    )
+                latency_ms = int((time.perf_counter() - t0) * 1000)
+
+                _write_cache_entry(
+                    cache_path,
+                    {
+                        "case_id": case.id,
+                        "persona_id": persona_id,
+                        "turn_num": turn.turn,
+                        "variant": "dialogue",
+                        "conversation_text": conversation_text,
+                        "response_text": response_text,
+                        "status": status,
+                        "error_message": error_message,
+                        "timestamp": _now_iso(),
+                        "run_id": run_id,
+                        "model_name": model_name,
+                        "meta": {"latency_ms": latency_ms},
+                    },
+                )
+
+        logger.info("Study C generation-only complete; skipping metrics.")
+        return DriftResult(
+            entity_recall_at_t10=0.0,
+            knowledge_conflict_rate=0.0,
+            continuity_score=0.0,
+            n_cases=len(cases),
         )
 
     # Initialise NER
