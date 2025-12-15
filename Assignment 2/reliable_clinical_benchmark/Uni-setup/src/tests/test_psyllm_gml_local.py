@@ -12,6 +12,7 @@ import json
 import re
 import sys
 import time
+import warnings
 from datetime import datetime
 from typing import Any, Dict
 
@@ -30,6 +31,14 @@ def _parse_args() -> argparse.Namespace:
 
 
 def main() -> None:
+    # Keep smoke output clean on Windows/CUDA builds that lack FlashAttention.
+    # This warning is emitted by Transformers SDPA integration and is not a failure.
+    warnings.filterwarnings(
+        "ignore",
+        message=r".*Torch was not compiled with flash attention.*",
+        category=UserWarning,
+    )
+
     args = _parse_args()
     run_id = datetime.utcnow().strftime("%Y%m%dT%H%M%S%fZ")
 
