@@ -6,6 +6,7 @@ and runs generation using the tokenizer chat template.
 """
 
 import re
+from pathlib import Path
 from typing import Tuple, Optional, Dict
 
 import torch
@@ -16,6 +17,62 @@ from .base import ModelRunner, GenerationConfig
 
 DEFAULT_TOP_K = 20
 DEFAULT_REPETITION_PENALTY = 1.05
+
+PSYCHE_R1_CHAT_TEMPLATE = r"""{%- if tools %}
+    {{- '<|im_start|>system\n' }}
+    {%- if messages[0]['role'] == 'system' %}
+        {{- messages[0]['content'] }}
+    {%- else %}
+        {{- 'You are Qwen, created by Alibaba Cloud. You are a helpful assistant.' }}
+    {%- endif %}
+    {{- "\n\n# Tools\n\nYou may call one or more functions to assist with the user query.\n\nYou are provided with function signatures within <tools></tools> XML tags:\n<tools>" }}
+    {%- for tool in tools %}
+        {{- "\n" }}
+        {{- tool | tojson }}
+    {%- endfor %}
+    {{- "\n</tools>\n\nFor each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\n<tool_call>\n{\"name\": <function-name>, \"arguments\": <args-json-object>}\n</tool_call><|im_end|>\n" }}
+{%- else %}
+    {%- if messages[0]['role'] == 'system' %}
+        {{- '<|im_start|>system\n' + messages[0]['content'] + '<|im_end|>\n' }}
+    {%- else %}
+        {{- '<|im_start|>system\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\n' }}
+    {%- endif %}
+{%- endif %}
+{%- for message in messages %}
+    {%- if (message.role == "user") or (message.role == "system" and not loop.first) or (message.role == "assistant" and not message.tool_calls) %}
+        {{- '<|im_start|>' + message.role + '\n' + message.content + '<|im_end|>' + '\n' }}
+    {%- elif message.role == "assistant" %}
+        {{- '<|im_start|>' + message.role }}
+        {%- if message.content %}
+            {{- '\n' + message.content }}
+        {%- endif %}
+        {%- for tool_call in message.tool_calls %}
+            {%- if tool_call.function is defined %}
+                {%- set tool_call = tool_call.function %}
+            {%- endif %}
+            {{- '\n<tool_call>\n{"name": "' }}
+            {{- tool_call.name }}
+            {{- '", "arguments": ' }}
+            {{- tool_call.arguments | tojson }}
+            {{- '}\n</tool_call>' }}
+        {%- endfor %}
+        {{- '<|im_end|>\n' }}
+    {%- elif message.role == "tool" %}
+        {%- if (loop.index0 == 0) or (messages[loop.index0 - 1].role != "tool") %}
+            {{- '<|im_start|>user' }}
+        {%- endif %}
+        {{- '\n<tool_response>\n' }}
+        {{- message.content }}
+        {{- '\n</tool_response>' }}
+        {%- if loop.last or (messages[loop.index0 + 1].role != "tool") %}
+            {{- '<|im_end|>\n' }}
+        {%- endif %}
+    {%- endif %}
+{%- endfor %}
+{%- if add_generation_prompt %}
+    {{- '<|im_start|>assistant\n' }}
+{%- endif %}
+"""
 
 
 class PsycheR1LocalRunner(ModelRunner):
@@ -44,16 +101,31 @@ class PsycheR1LocalRunner(ModelRunner):
         self.tokenizer = AutoTokenizer.from_pretrained(
             model_name, use_fast=True, local_files_only=local_files_only
         )
+        self.tokenizer.chat_template = PSYCHE_R1_CHAT_TEMPLATE
+        if self.tokenizer.pad_token_id is None and self.tokenizer.eos_token_id is not None:
+            self.tokenizer.pad_token = self.tokenizer.eos_token
+
         model_config = AutoConfig.from_pretrained(
             model_name, local_files_only=local_files_only
         )
         self.model = AutoModelForCausalLM.from_pretrained(
             model_name,
             device_map=device_map,
-            dtype=dtype,
+            torch_dtype=dtype,
             config=model_config,
             local_files_only=local_files_only,
         )
+        self.model.eval()
+
+    def _format_prompt(self, prompt: str, mode: str) -> str:
+        """
+        Psyche-R1 is typically prompted to wrap its reasoning in <think> tags.
+        We still normalise outputs for the benchmark parser afterwards.
+        """
+        base = super()._format_prompt(prompt, mode)
+        if mode == "cot":
+            return f"{base}\n\nWrap your reasoning in <think>...</think> tags."
+        return base
 
     def _build_inputs(self, prompt: str, mode: str = "default") -> Dict[str, torch.Tensor]:
         formatted_prompt = self._format_prompt(prompt, mode)
@@ -152,17 +224,21 @@ class PsycheR1LocalRunner(ModelRunner):
         encoded = self._build_inputs(prompt, mode)
         input_token_count = int(encoded["input_ids"].shape[-1])
 
-        gen = self.model.generate(
-            **encoded,
-            max_new_tokens=self.config.max_tokens,
-            do_sample=True,
-            temperature=self.config.temperature,
-            top_p=self.config.top_p,
-            top_k=DEFAULT_TOP_K,
-            repetition_penalty=DEFAULT_REPETITION_PENALTY,
-            eos_token_id=self.tokenizer.eos_token_id,
-            pad_token_id=self.tokenizer.pad_token_id,
-        )
+        offload_dir = Path("offload/psyche_r1")
+        offload_dir.mkdir(parents=True, exist_ok=True)
+
+        with torch.inference_mode():
+            gen = self.model.generate(
+                **encoded,
+                max_new_tokens=self.config.max_tokens,
+                do_sample=True,
+                temperature=self.config.temperature,
+                top_p=self.config.top_p,
+                top_k=DEFAULT_TOP_K,
+                repetition_penalty=DEFAULT_REPETITION_PENALTY,
+                eos_token_id=self.tokenizer.eos_token_id,
+                pad_token_id=self.tokenizer.pad_token_id,
+            )
 
         generated_only = gen[0, input_token_count:]
         output = self.tokenizer.decode(generated_only, skip_special_tokens=True)
