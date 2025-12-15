@@ -17,33 +17,37 @@ def main() -> None:
     uni_setup_root = Path(__file__).resolve().parents[1]
     _ensure_src_on_path(uni_setup_root)
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
+    # Define shared args in a parent parser so they can be placed
+    # either before or after the subcommand (prompt/study-a).
+    common = argparse.ArgumentParser(add_help=False)
+    common.add_argument(
         "--api-base",
         default="http://127.0.0.1:1234/v1",
         help="LM Studio API base URL.",
     )
-    parser.add_argument(
+    common.add_argument(
         "--api-identifier",
         default="qwen3-8b",
         help="LM Studio API Identifier for the loaded model.",
     )
-    parser.add_argument(
+    common.add_argument(
         "--model-name",
         default="qwen3-lmstudio",
         help="Folder name under results/ (and model_name field in JSONL).",
     )
-    parser.add_argument("--temperature", type=float, default=0.7)
-    parser.add_argument("--top-p", type=float, default=0.9)
-    parser.add_argument("--max-new-tokens", type=int, default=4096)
+    common.add_argument("--temperature", type=float, default=0.7)
+    common.add_argument("--top-p", type=float, default=0.9)
+    common.add_argument("--max-new-tokens", type=int, default=4096)
+
+    parser = argparse.ArgumentParser(parents=[common])
 
     sub = parser.add_subparsers(dest="cmd", required=True)
 
-    p_prompt = sub.add_parser("prompt")
+    p_prompt = sub.add_parser("prompt", parents=[common])
     p_prompt.add_argument("prompt")
     p_prompt.add_argument("--mode", choices=["cot", "direct"], default="cot")
 
-    p_study_a = sub.add_parser("study-a")
+    p_study_a = sub.add_parser("study-a", parents=[common])
     p_study_a.add_argument("--max-samples", type=int, default=None)
     p_study_a.add_argument(
         "--data-dir",
