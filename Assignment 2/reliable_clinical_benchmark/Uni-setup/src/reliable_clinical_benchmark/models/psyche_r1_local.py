@@ -17,6 +17,7 @@ from .base import ModelRunner, GenerationConfig
 
 DEFAULT_TOP_K = 20
 DEFAULT_REPETITION_PENALTY = 1.05
+DEFAULT_MAX_NEW_TOKENS = 4096
 
 PSYCHE_R1_CHAT_TEMPLATE = r"""{%- if tools %}
     {{- '<|im_start|>system\n' }}
@@ -94,7 +95,7 @@ class PsycheR1LocalRunner(ModelRunner):
             or GenerationConfig(
                 temperature=1e-5,
                 top_p=0.8,
-                max_tokens=1024,
+                max_tokens=DEFAULT_MAX_NEW_TOKENS,
             ),
         )
 
