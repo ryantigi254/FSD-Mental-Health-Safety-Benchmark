@@ -13,6 +13,7 @@ Run (PowerShell):
 
 import argparse
 import json
+import re
 import sys
 import time
 from datetime import datetime
@@ -25,6 +26,18 @@ from reliable_clinical_benchmark.models.base import GenerationConfig
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument(
+        "--model",
+        type=str,
+        default="Compumacy/Psych_Qwen_32B",
+        help="HF model id or local directory (e.g. models/Psych_Qwen_32B).",
+    )
+    parser.add_argument(
+        "--quantization",
+        type=str,
+        default="4bit",
+        help="Quantization mode: 4bit (NF4), 8bit, or none.",
+    )
+    parser.add_argument(
         "--prompt-idx",
         type=int,
         default=0,
@@ -36,6 +49,17 @@ def _parse_args() -> argparse.Namespace:
         default=0,
         help="If >0, only run the first N prompts.",
     )
+    parser.add_argument(
+        "--max-tokens",
+        type=int,
+        default=256,
+        help="Max new tokens per prompt.",
+    )
+    parser.add_argument(
+        "--skip-raw",
+        action="store_true",
+        help="Skip printing/storing raw output text (faster).",
+    )
     return parser.parse_args()
 
 
@@ -43,11 +67,12 @@ def main() -> None:
     args = _parse_args()
     run_id = datetime.utcnow().strftime("%Y%m%dT%H%M%S%fZ")
     runner = PsychQwen32BLocalRunner(
-        model_name="models/Psych_Qwen_32B",
+        model_name=args.model,
+        quantization=args.quantization,
         config=GenerationConfig(
             temperature=0.6,
             top_p=0.95,
-            max_tokens=128,
+            max_tokens=args.max_tokens,
         ),
     )
 
@@ -72,16 +97,24 @@ def main() -> None:
         sys.stdout.flush()
         t0 = time.perf_counter()
         try:
-            out = runner.generate(p, mode="cot")
+            out_cot = runner.generate(p, mode="cot")
+            out_direct = runner.generate(p, mode="direct")
             elapsed_ms = int((time.perf_counter() - t0) * 1000)
+            think_pat = r"<think>(.*?)</think>"
+            think_cot = re.search(think_pat, out_cot or "", re.DOTALL)
+            think_direct = re.search(think_pat, out_direct or "", re.DOTALL)
             log: Dict[str, Any] = {
                 "run_id": run_id,
                 "prompt_idx": i,
                 "prompt": p,
                 "model": runner.model_name,
                 "elapsed_ms": elapsed_ms,
-                "output": out[:4000],
+                "has_think_cot": bool(think_cot),
+                "has_think_direct": bool(think_direct),
             }
+            if not args.skip_raw:
+                log["output_cot"] = (out_cot or "")[:4000]
+                log["output_direct"] = (out_direct or "")[:4000]
         except Exception as e:
             log = {
                 "run_id": run_id,
