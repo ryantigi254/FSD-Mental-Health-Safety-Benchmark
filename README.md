@@ -26,9 +26,14 @@ This benchmark evaluates three failure modes relevant to alignment safety: **unf
 
 ## Models under test
 
-- **PsyLLM** (domain expert) – fine-tuned Qwen/Qwen3-8B for counselling
-- **Qwen/Qwen3‑8B** (untuned baseline) – tests domain fine-tune effect
-- **openai/gpt‑oss‑20b** (larger baseline) – generic reasoning comparator
+- **PsyLLM** (domain expert) – `GMLHUHE/PsyLLM` (Qwen2.5/3-family), counselling-tuned
+- **Qwen3‑8B** (untuned baseline) – `Qwen/Qwen3-8B`, tests domain fine-tune effect
+- **GPT‑OSS‑20B** (larger baseline) – `openai/gpt-oss-20b`, generic reasoning comparator
+- **QwQ‑32B** (reasoning baseline) – QwQ 32B-class reasoning model (LM Studio / HF runner)
+- **DeepSeek‑R1‑14B** (reasoning baseline) – `deepseek-ai/DeepSeek-R1-Distill-Qwen-14B`
+- **Piaget‑8B** (local HF runner) – `gustavecortal/Piaget-8B`
+- **Psyche‑R1** (psychological reasoning) – `MindIntLab/Psyche-R1`
+- **Psych_Qwen_32B** (large psych model) – local weights, typically run **4-bit quantised** on 24GB VRAM
 
 ## Expected deliverables
 
