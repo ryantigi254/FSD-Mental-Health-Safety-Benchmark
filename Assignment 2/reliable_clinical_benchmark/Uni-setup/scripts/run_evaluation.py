@@ -18,6 +18,7 @@ from reliable_clinical_benchmark.pipelines import study_a, study_b, study_c
 from reliable_clinical_benchmark.eval.runtime_checks import (
     validate_data_files,
     validate_environment,
+    validate_study_b_schema,
     check_model_availability,
 )
 from reliable_clinical_benchmark.utils.logging_config import setup_logging
@@ -46,6 +47,7 @@ def main():
             "qwen3_lmstudio",
             # Local HF runners
             "psyllm_local",
+            "psyllm_gml_local",
             "piaget_local",
             "psyche_r1_local",
             "psych_qwen_local",
@@ -53,6 +55,7 @@ def main():
             "piaget-8b-local",
             "psyche-r1-local",
             "psych-qwen-32b-local",
+            "psyllm-gml-local",
         ],
         help="Model to evaluate",
     )
@@ -166,6 +169,17 @@ def main():
         if not data_valid:
             logger.error(f"Missing required data files: {missing_files}")
             logger.error("Please ensure all data files are present before running evaluation.")
+            sys.exit(1)
+
+        study_b_valid, study_b_errors = validate_study_b_schema(
+            str(Path(args.data_dir).parent if args.data_dir else "data")
+        )
+        if not study_b_valid:
+            logger.error("Study B split validation failed:")
+            for err in study_b_errors[:20]:
+                logger.error(f"  - {err}")
+            if len(study_b_errors) > 20:
+                logger.error(f"  ... {len(study_b_errors) - 20} more")
             sys.exit(1)
 
         if env_warnings:
