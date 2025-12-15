@@ -8,8 +8,8 @@ class Qwen3Runner(RemoteAPIRunner):
 
     def __init__(self, config: GenerationConfig = None):
         super().__init__(
-            model_name="Qwen/Qwen2.5-8B-Instruct",
-            api_endpoint="https://api-inference.huggingface.co/models/Qwen/Qwen2.5-8B-Instruct",
+            model_name="Qwen/Qwen3-8B",
+            api_endpoint="https://api-inference.huggingface.co/models/Qwen/Qwen3-8B",
             api_key_env="HUGGINGFACE_API_KEY",
             config=config,
         )
