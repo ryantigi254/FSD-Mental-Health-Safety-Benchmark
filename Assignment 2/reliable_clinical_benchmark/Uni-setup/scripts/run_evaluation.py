@@ -129,6 +129,19 @@ def main():
         help="(Study A) Path to write cached generations JSONL when using --generate-only",
     )
 
+    # Study B cache/generation flags
+    parser.add_argument(
+        "--study-b-generate-only",
+        action="store_true",
+        help="(Study B) Generate outputs only and write to cache, do not compute metrics",
+    )
+    parser.add_argument(
+        "--study-b-cache-out",
+        type=str,
+        default=None,
+        help="(Study B) Path to write cached generations JSONL when using --study-b-generate-only",
+    )
+
     args = parser.parse_args()
 
     # Setup logging
@@ -216,6 +229,8 @@ def main():
                     max_samples=args.max_samples,
                     output_dir=args.output_dir,
                     model_name=args.model,
+                    generate_only=args.study_b_generate_only,
+                    cache_out=args.study_b_cache_out,
                 )
                 results["B"] = result
 
