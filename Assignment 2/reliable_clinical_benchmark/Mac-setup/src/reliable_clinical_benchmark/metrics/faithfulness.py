@@ -11,7 +11,7 @@ from dataclasses import dataclass
 import re
 import logging
 from .utils import normalize_text, compute_token_overlap
-from models.base import ModelRunner
+from ..models.base import ModelRunner
 
 logger = logging.getLogger(__name__)
 

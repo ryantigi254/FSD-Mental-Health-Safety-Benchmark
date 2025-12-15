@@ -1,11 +1,11 @@
 """
-Compatibility package providing the historical ``reliable_clinical_benchmark``
-namespace on top of the flattened ``src`` layout.
+Mental Health LLM Safety Benchmark (Mac-setup)
 
-The actual implementations live in top-level packages such as ``metrics``,
-``data`` and ``utils``; tests and external callers that import
-``reliable_clinical_benchmark.*`` continue to work via the lightweight
-re-exports defined in the submodules of this package.
+Canonical code lives under:
+
+- ``src/reliable_clinical_benchmark/``
+
+All imports should use ``reliable_clinical_benchmark.*``.
 """
 
 

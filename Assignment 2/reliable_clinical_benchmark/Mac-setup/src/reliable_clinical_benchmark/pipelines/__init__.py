@@ -1,7 +1,6 @@
-"""
-Thin wrappers to expose ``reliable_clinical_benchmark.pipelines`` modules by
-forwarding to the canonical top-level ``pipelines`` package.
-"""
+"""Evaluation pipelines for Studies A, B, and C."""
 
-from pipelines import *  # noqa: F401,F403
+from . import study_a, study_b, study_c
+
+__all__ = ["study_a", "study_b", "study_c"]
 

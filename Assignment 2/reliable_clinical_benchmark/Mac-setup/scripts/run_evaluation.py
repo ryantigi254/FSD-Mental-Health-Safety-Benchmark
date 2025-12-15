@@ -12,15 +12,15 @@ from pathlib import Path
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from models.factory import get_model_runner
-from models.base import GenerationConfig
-from pipelines import study_a, study_b, study_c
-from eval.runtime_checks import (
+from reliable_clinical_benchmark.models.factory import get_model_runner
+from reliable_clinical_benchmark.models.base import GenerationConfig
+from reliable_clinical_benchmark.pipelines import study_a, study_b, study_c
+from reliable_clinical_benchmark.eval.runtime_checks import (
     validate_data_files,
     validate_environment,
     check_model_availability,
 )
-from utils.logging_config import setup_logging
+from reliable_clinical_benchmark.utils.logging_config import setup_logging
 
 import logging
 
