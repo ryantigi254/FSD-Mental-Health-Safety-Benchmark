@@ -35,7 +35,23 @@ def main():
         "--model",
         type=str,
         required=True,
-        choices=["psyllm", "qwq", "deepseek_r1", "gpt_oss", "qwen3"],
+        choices=[
+            # Remote / LM Studio runners
+            "psyllm",
+            "qwq",
+            "deepseek_r1",
+            "gpt_oss",
+            "qwen3",
+            # Local HF runners
+            "psyllm_local",
+            "piaget_local",
+            "psyche_r1_local",
+            "psych_qwen_local",
+            # Alternate IDs supported by the factory (kept explicit for CLI discoverability)
+            "piaget-8b-local",
+            "psyche-r1-local",
+            "psych-qwen-32b-local",
+        ],
         help="Model to evaluate",
     )
     parser.add_argument(
@@ -89,7 +105,7 @@ def main():
     parser.add_argument(
         "--max-tokens",
         type=int,
-        default=2048,
+        default=4096,
         help="Maximum tokens per generation (raise if truncation persists)",
     )
     # Study A cache/generation flags
