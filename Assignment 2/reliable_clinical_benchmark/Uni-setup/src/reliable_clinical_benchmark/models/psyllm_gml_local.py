@@ -1,19 +1,18 @@
 """
-Local runner for Psych_Qwen_32B using Hugging Face transformers (no LM Studio).
+Local runner for GMLHUHE/PsyLLM using Hugging Face transformers (no LM Studio).
 
-Designed for 24GB VRAM setups:
-- Default quantization is 4-bit NF4 (bitsandbytes) for weights
-- Optional CPU offload via device_map="auto" + max_memory
+This is the PsyLLM model from:
+- https://huggingface.co/GMLHUHE/PsyLLM
 
-Supports loading either:
-- A fully merged model checkpoint, OR
-- A PEFT/LoRA adapter repo (loads base model then applies adapter)
+It is an ~8B Qwen3-family model (BF16) and should fit in full precision on a 24GB GPU.
+
+The model card shows Qwen3-style usage with enable_thinking and <think> blocks.
+If the tokenizer repo does not ship a chat template, we inject a Qwen3-compatible
+template so that apply_chat_template(enable_thinking=...) works consistently.
 """
 
 import re
-import json
-from pathlib import Path
-from typing import Tuple, Optional, Dict
+from typing import Tuple, Optional, Dict, Any
 
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig
@@ -22,10 +21,9 @@ from .base import ModelRunner, GenerationConfig
 
 
 DEFAULT_TOP_K = 20
-DEFAULT_REPETITION_PENALTY = 1.05
-DEFAULT_MAX_NEW_TOKENS = 4096
 
-PSYCH_QWEN_CHAT_TEMPLATE = r"""{%- if tools %}
+# Qwen3-style chat template (provided by you) to preserve <think> blocks and support enable_thinking.
+PSYLLM_QWEN3_CHAT_TEMPLATE = r"""{%- if tools %}
     {{- '<|im_start|>system\n' }}
     {%- if messages[0].role == 'system' %}
         {{- messages[0].content + '\n\n' }}
@@ -125,17 +123,21 @@ PSYCH_QWEN_CHAT_TEMPLATE = r"""{%- if tools %}
 {%- endif %}"""
 
 
-class PsychQwen32BLocalRunner(ModelRunner):
+class PsyLLMGMLLocalRunner(ModelRunner):
+    """
+    HF-local inference for GMLHUHE/PsyLLM via transformers.
+    Returns raw assistant output (minimal stripping) for objective logging.
+    """
+
     def __init__(
         self,
-        model_name: str = "Compumacy/Psych_Qwen_32B",
+        model_name: str = "GMLHUHE/PsyLLM",
         device_map: str = "auto",
         dtype: torch.dtype = torch.bfloat16,
-        quantization: Optional[str] = "4bit",
-        max_memory: Optional[Dict] = None,
-        offload_folder: str = "offload/psych_qwen_32b",
         config: Optional[GenerationConfig] = None,
         local_files_only: bool = False,
+        trust_remote_code: bool = True,
+        force_chat_template: bool = True,
     ):
         super().__init__(
             model_name,
@@ -147,110 +149,49 @@ class PsychQwen32BLocalRunner(ModelRunner):
             ),
         )
 
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True, local_files_only=local_files_only)
-        self.tokenizer.chat_template = PSYCH_QWEN_CHAT_TEMPLATE
-        model_config = AutoConfig.from_pretrained(model_name, local_files_only=local_files_only)
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            model_name,
+            use_fast=True,
+            local_files_only=local_files_only,
+            trust_remote_code=trust_remote_code,
+        )
 
-        q = (quantization or "").lower().strip()
-        quantization_config = None
-        if q in ("4bit", "4-bit", "bnb4", "bnb_4bit", "nf4"):
-            try:
-                from transformers import BitsAndBytesConfig
-            except Exception as e:  # pragma: no cover
-                raise RuntimeError(
-                    "4-bit quantization requested but BitsAndBytesConfig is unavailable. "
-                    "Install bitsandbytes (and a compatible CUDA build), or use WSL2/Linux."
-                ) from e
-            quantization_config = BitsAndBytesConfig(
-                load_in_4bit=True,
-                bnb_4bit_quant_type="nf4",
-                bnb_4bit_use_double_quant=True,
-                bnb_4bit_compute_dtype=dtype,
-            )
-        elif q in ("8bit", "8-bit", "bnb8", "bnb_8bit"):
-            try:
-                from transformers import BitsAndBytesConfig
-            except Exception as e:  # pragma: no cover
-                raise RuntimeError(
-                    "8-bit quantization requested but BitsAndBytesConfig is unavailable. "
-                    "Install bitsandbytes (and a compatible CUDA build), or use WSL2/Linux."
-                ) from e
-            quantization_config = BitsAndBytesConfig(load_in_8bit=True)
-        elif q in ("", "none", "no"):
-            quantization_config = None
-        else:
-            raise ValueError("quantization must be one of: None, '8bit', '4bit'")
+        if force_chat_template:
+            self.tokenizer.chat_template = PSYLLM_QWEN3_CHAT_TEMPLATE
 
-        if max_memory is None and device_map == "auto":
-            max_memory = {0: "22GiB", "cpu": "48GiB"}
-
-        adapter_base: Optional[str] = None
-        adapter_config_path: Optional[Path] = None
-        try:
-            resolved_dir = Path(model_name)
-            if resolved_dir.exists() and resolved_dir.is_dir():
-                candidate = resolved_dir / "adapter_config.json"
-                if candidate.exists():
-                    adapter_config_path = candidate
-        except Exception:
-            adapter_config_path = None
-
-        if adapter_config_path is not None:
-            try:
-                data = json.loads(adapter_config_path.read_text(encoding="utf-8"))
-                adapter_base = data.get("base_model_name_or_path")
-            except Exception:
-                adapter_base = None
-
-        if adapter_base:
-            base_model = AutoModelForCausalLM.from_pretrained(
-                adapter_base,
-                device_map=device_map,
-                torch_dtype=dtype,
-                config=AutoConfig.from_pretrained(adapter_base, local_files_only=local_files_only),
-                quantization_config=quantization_config,
-                max_memory=max_memory,
-                offload_folder=offload_folder,
-                local_files_only=local_files_only,
-            )
-            try:
-                from peft import PeftModel
-            except Exception as e:  # pragma: no cover
-                raise RuntimeError(
-                    "This checkpoint looks like a PEFT/LoRA adapter (adapter_config.json present), "
-                    "but peft is not installed. Install peft to load it."
-                ) from e
-            self.model = PeftModel.from_pretrained(base_model, model_name, local_files_only=local_files_only)
-        else:
-            self.model = AutoModelForCausalLM.from_pretrained(
-                model_name,
-                device_map=device_map,
-                torch_dtype=dtype,
-                config=model_config,
-                quantization_config=quantization_config,
-                max_memory=max_memory,
-                offload_folder=offload_folder,
-                local_files_only=local_files_only,
-            )
-
+        model_config = AutoConfig.from_pretrained(
+            model_name,
+            local_files_only=local_files_only,
+            trust_remote_code=trust_remote_code,
+        )
+        self.model = AutoModelForCausalLM.from_pretrained(
+            model_name,
+            device_map=device_map,
+            torch_dtype=dtype,
+            config=model_config,
+            local_files_only=local_files_only,
+            trust_remote_code=trust_remote_code,
+        )
         self.model.eval()
 
     def _build_inputs(self, prompt: str, mode: str = "default") -> Dict[str, torch.Tensor]:
         formatted_prompt = self._format_prompt(prompt, mode)
         messages = [{"role": "user", "content": formatted_prompt}]
-        try:
-            prompt_text = self.tokenizer.apply_chat_template(
-                messages,
-                tokenize=False,
-                add_generation_prompt=True,
-                enable_thinking=(mode == "cot"),
-            )
-        except TypeError:
-            prompt_text = self.tokenizer.apply_chat_template(
-                messages,
-                tokenize=False,
-                add_generation_prompt=True,
-            )
+
+        prompt_text: str
+        if hasattr(self.tokenizer, "apply_chat_template"):
+            kwargs: Dict[str, Any] = dict(tokenize=False, add_generation_prompt=True)
+            # Mirror the model card: enable_thinking for CoT.
+            if mode == "cot":
+                kwargs["enable_thinking"] = True
+            try:
+                prompt_text = self.tokenizer.apply_chat_template(messages, **kwargs)
+            except TypeError:
+                kwargs.pop("enable_thinking", None)
+                prompt_text = self.tokenizer.apply_chat_template(messages, **kwargs)
+        else:
+            prompt_text = formatted_prompt
+
         tokenized = self.tokenizer(
             prompt_text,
             return_tensors="pt",
@@ -268,27 +209,12 @@ class PsychQwen32BLocalRunner(ModelRunner):
 
     def _extract_reasoning_and_answer(self, text: str) -> Tuple[str, str]:
         t = self._strip_role_markers(text)
-
         think_pattern = r"<(?:redacted_reasoning|think)>(.*?)</(?:redacted_reasoning|think)>"
         think_match = re.search(think_pattern, t, re.DOTALL)
         if think_match:
             reasoning = think_match.group(1).strip()
             answer = t[think_match.end() :].strip()
             return reasoning, answer.strip()
-
-        lower = t.lower()
-        if "reasoning:" in lower and "diagnosis:" in lower:
-            r_start = lower.find("reasoning:") + len("reasoning:")
-            d_start = lower.find("diagnosis:")
-            if d_start > r_start:
-                reasoning = t[r_start:d_start].strip()
-                answer = t[d_start + len("diagnosis:") :].strip()
-                return reasoning, answer
-
-        parts = re.split(r"\n(?:Diagnosis|Answer|Conclusion):\s*", t)
-        if len(parts) >= 2:
-            return parts[0].strip(), parts[1].strip()
-
         return t, t
 
     def generate(self, prompt: str, mode: str = "default") -> str:
@@ -302,7 +228,6 @@ class PsychQwen32BLocalRunner(ModelRunner):
             temperature=self.config.temperature,
             top_p=self.config.top_p,
             top_k=DEFAULT_TOP_K,
-            repetition_penalty=DEFAULT_REPETITION_PENALTY,
             eos_token_id=self.tokenizer.eos_token_id,
             pad_token_id=self.tokenizer.pad_token_id,
         )

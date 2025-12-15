@@ -10,6 +10,10 @@ The canonical factory is:
 
 - `src/reliable_clinical_benchmark/models/factory.py` → `get_model_runner(model_id, config=...)`
 
+## Import layout (canonical)
+
+Only `reliable_clinical_benchmark.*` imports are supported. The legacy flat import tree (`models.*`, `pipelines.*`, `utils.*`, etc.) has been removed to avoid duplicated logic and ambiguous imports.
+
 ## Runner categories
 
 ### Local HF runners (weights on disk)

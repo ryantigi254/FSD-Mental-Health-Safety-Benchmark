@@ -56,20 +56,20 @@ $EP="http://127.0.0.1:1234/v1"
 $MODEL="gpt-oss-20b"
 
 # Generate only (writes cache)
-python -c "from pipelines.study_a import run_study_a; from models.psyllm import PsyLLMRunner; m=PsyLLMRunner(model_name='$MODEL', api_base='$EP'); run_study_a(model=m, data_dir='data/openr1_psy_splits', output_dir='results', model_name='$MODEL', generate_only=True, cache_out=f'results/{'$MODEL'}/study_a_generations.jsonl')"
+python -c "from reliable_clinical_benchmark.pipelines.study_a import run_study_a; from reliable_clinical_benchmark.models.psyllm import PsyLLMRunner; model_id='$MODEL'; ep='$EP'; m=PsyLLMRunner(model_name=model_id, api_base=ep); run_study_a(model=m, data_dir='data/openr1_psy_splits', output_dir='results', model_name=model_id, generate_only=True, cache_out=f'results/{model_id}/study_a_generations.jsonl')"
 
 # Score from cache (no model calls)
-python -c "from pipelines.study_a import run_study_a; from models.psyllm import PsyLLMRunner; m=PsyLLMRunner(model_name='$MODEL', api_base='$EP'); run_study_a(model=m, data_dir='data/openr1_psy_splits', output_dir='results', model_name='$MODEL', from_cache=f'results/{'$MODEL'}/study_a_generations.jsonl')"
+python -c "from reliable_clinical_benchmark.pipelines.study_a import run_study_a; from reliable_clinical_benchmark.models.psyllm import PsyLLMRunner; model_id='$MODEL'; ep='$EP'; m=PsyLLMRunner(model_name=model_id, api_base=ep); run_study_a(model=m, data_dir='data/openr1_psy_splits', output_dir='results', model_name=model_id, from_cache=f'results/{model_id}/study_a_generations.jsonl')"
 ```
 Adjust `max-samples`/`max-cases` flags in the pipeline calls if you want smaller probes first.
 
 ## 7) Study B and C (LM Studio)
 ```powershell
 # Study B (sycophancy), skip NLI for speed unless you have it
-python -c "from pipelines.study_b import run_study_b; from models.psyllm import PsyLLMRunner; m=PsyLLMRunner(model_name='$MODEL', api_base='$EP'); run_study_b(model=m, data_dir='data/openr1_psy_splits', output_dir='results', model_name='$MODEL', max_samples=10, use_nli=False)"
+python -c "from reliable_clinical_benchmark.pipelines.study_b import run_study_b; from reliable_clinical_benchmark.models.psyllm import PsyLLMRunner; model_id='$MODEL'; ep='$EP'; m=PsyLLMRunner(model_name=model_id, api_base=ep); run_study_b(model=m, data_dir='data/openr1_psy_splits', output_dir='results', model_name=model_id, max_samples=10, use_nli=False)"
 
 # Study C (drift)
-python -c "from pipelines.study_c import run_study_c; from models.psyllm import PsyLLMRunner; m=PsyLLMRunner(model_name='$MODEL', api_base='$EP'); run_study_c(model=m, data_dir='data/openr1_psy_splits', output_dir='results', model_name='$MODEL', max_cases=3, use_nli=False)"
+python -c "from reliable_clinical_benchmark.pipelines.study_c import run_study_c; from reliable_clinical_benchmark.models.psyllm import PsyLLMRunner; model_id='$MODEL'; ep='$EP'; m=PsyLLMRunner(model_name=model_id, api_base=ep); run_study_c(model=m, data_dir='data/openr1_psy_splits', output_dir='results', model_name=model_id, max_cases=3, use_nli=False)"
 ```
 Switch to the HF-local runners (`hf-local-scripts/`) if you prefer to call downloaded PyTorch models directly instead of LM Studio.
 
