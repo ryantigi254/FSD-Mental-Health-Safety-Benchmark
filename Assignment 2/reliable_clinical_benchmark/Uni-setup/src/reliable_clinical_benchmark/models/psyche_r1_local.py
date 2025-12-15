@@ -111,7 +111,7 @@ class PsycheR1LocalRunner(ModelRunner):
         self.model = AutoModelForCausalLM.from_pretrained(
             model_name,
             device_map=device_map,
-            torch_dtype=dtype,
+            dtype=dtype,
             config=model_config,
             local_files_only=local_files_only,
         )
@@ -124,17 +124,29 @@ class PsycheR1LocalRunner(ModelRunner):
         """
         base = super()._format_prompt(prompt, mode)
         if mode == "cot":
-            return f"{base}\n\nWrap your reasoning in <think>...</think> tags."
+            return (
+                f"{base}\n\n"
+                "Wrap your reasoning in <think>...</think> tags.\n"
+                "After </think>, provide only the final diagnosis."
+            )
         return base
 
     def _build_inputs(self, prompt: str, mode: str = "default") -> Dict[str, torch.Tensor]:
         formatted_prompt = self._format_prompt(prompt, mode)
         messages = [{"role": "user", "content": formatted_prompt}]
-        prompt_text = self.tokenizer.apply_chat_template(
-            messages,
-            tokenize=False,
-            add_generation_prompt=True,
-        )
+        try:
+            prompt_text = self.tokenizer.apply_chat_template(
+                messages,
+                tokenize=False,
+                add_generation_prompt=True,
+                enable_thinking=(mode == "cot"),
+            )
+        except TypeError:
+            prompt_text = self.tokenizer.apply_chat_template(
+                messages,
+                tokenize=False,
+                add_generation_prompt=True,
+            )
         tokenized = self.tokenizer(
             prompt_text,
             return_tensors="pt",
@@ -173,6 +185,12 @@ class PsycheR1LocalRunner(ModelRunner):
             reasoning = think_match.group(1).strip()
             answer = t[think_match.end() :].strip()
             return reasoning, answer.strip()
+
+        open_think_pattern = r"<(?:redacted_reasoning|think)>\s*"
+        open_think_match = re.search(open_think_pattern, t)
+        if open_think_match and "</think>" not in t and "</redacted_reasoning>" not in t:
+            reasoning = t[open_think_match.end() :].strip()
+            return reasoning, ""
 
         lower = t.lower()
         if "reasoning:" in lower and "diagnosis:" in lower:
