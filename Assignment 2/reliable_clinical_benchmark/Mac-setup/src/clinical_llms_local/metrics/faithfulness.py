@@ -12,8 +12,8 @@ from dataclasses import dataclass
 import re
 import logging
 
-from metrics.utils import normalize_text, compute_token_overlap
-from models.base import ModelRunner
+from reliable_clinical_benchmark.metrics.utils import normalize_text, compute_token_overlap
+from reliable_clinical_benchmark.models.base import ModelRunner
 
 logger = logging.getLogger(__name__)
 

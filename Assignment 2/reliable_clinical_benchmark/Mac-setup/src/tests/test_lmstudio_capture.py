@@ -9,7 +9,7 @@ Run:
     PYTHONPATH=src python src/tests/test_lmstudio_capture.py
 """
 
-from models.lmstudio_client import chat_completion
+from reliable_clinical_benchmark.models.lmstudio_client import chat_completion
 
 
 def main() -> None:

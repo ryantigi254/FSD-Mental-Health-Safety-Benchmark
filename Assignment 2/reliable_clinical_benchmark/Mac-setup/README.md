@@ -85,8 +85,8 @@ Generation-only with cache compaction/resume:
 cd "Assignment 2/reliable_clinical_benchmark/Mac-setup"
 source .mh-llm-benchmark-env/bin/activate
 PYTHONPATH=src python - <<'PY'
-from pipelines.study_a import run_study_a
-from models.psyllm import PsyLLMRunner
+from reliable_clinical_benchmark.pipelines.study_a import run_study_a
+from reliable_clinical_benchmark.models.psyllm import PsyLLMRunner
 model = PsyLLMRunner(model_name="qwen3-8b-mlx", api_base="http://localhost:1234/v1")
 run_study_a(
     model=model,
@@ -103,8 +103,8 @@ Metrics from cache (no model calls):
 
 ```bash
 PYTHONPATH=src python - <<'PY'
-from pipelines.study_a import run_study_a
-from models.psyllm import PsyLLMRunner
+from reliable_clinical_benchmark.pipelines.study_a import run_study_a
+from reliable_clinical_benchmark.models.psyllm import PsyLLMRunner
 dummy = PsyLLMRunner(model_name="qwen3-8b-mlx", api_base="http://localhost:1234/v1")
 run_study_a(
     model=dummy,

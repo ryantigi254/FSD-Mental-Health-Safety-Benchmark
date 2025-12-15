@@ -1,15 +1,15 @@
 """Factory for creating local-weight model runners."""
 
 from typing import Optional
-from models.base import ModelRunner, GenerationConfig
-from models.psyllm import PsyLLMRunner
-from models.qwq import QwQRunner
-from models.deepseek_r1 import DeepSeekR1Runner
-from models.qwen3 import Qwen3Runner
-from models.gpt_oss import GPTOSSRunner
-from .piaget import Piaget8BRunner
-from .psyche_r1 import PsycheR1Runner
-from .psych_qwen import PsychQwen32BRunner
+from reliable_clinical_benchmark.models.base import ModelRunner, GenerationConfig
+from reliable_clinical_benchmark.models.psyllm import PsyLLMRunner
+from reliable_clinical_benchmark.models.qwq import QwQRunner
+from reliable_clinical_benchmark.models.deepseek_r1 import DeepSeekR1Runner
+from reliable_clinical_benchmark.models.qwen3 import Qwen3Runner
+from reliable_clinical_benchmark.models.gpt_oss import GPTOSSRunner
+from reliable_clinical_benchmark.models.piaget import Piaget8BRunner
+from reliable_clinical_benchmark.models.psyche_r1 import PsycheR1Runner
+from reliable_clinical_benchmark.models.psych_qwen import PsychQwen32BRunner
 import logging
 
 logger = logging.getLogger(__name__)

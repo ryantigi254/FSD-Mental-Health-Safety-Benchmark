@@ -90,7 +90,7 @@ This model was selected for the benchmark because:
 The NLI model is initialised automatically via the `NLIModel` utility:
 
 ```python
-from utils.nli import NLIModel
+from reliable_clinical_benchmark.utils.nli import NLIModel
 
 nli = NLIModel()
 result = nli.predict(
@@ -122,7 +122,7 @@ import sys
 import torch
 import transformers
 import spacy
-from utils.nli import NLIModel
+from reliable_clinical_benchmark.utils.nli import NLIModel
 print(f'Python: {sys.version}')
 print(f'✓ PyTorch: {torch.__version__}')
 print(f'✓ Transformers: {transformers.__version__}')
