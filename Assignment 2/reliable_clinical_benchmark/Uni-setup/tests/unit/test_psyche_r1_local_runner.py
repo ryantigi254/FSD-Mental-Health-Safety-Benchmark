@@ -43,3 +43,16 @@ def test_normalise_for_mode_direct_returns_single_line():
     assert normalised.strip() == "Obsessive-compulsive disorder"
 
 
+@pytest.mark.unit
+def test_normalise_for_mode_direct_collapses_explanatory_paragraph_to_label():
+    runner = PsycheR1LocalRunner.__new__(PsycheR1LocalRunner)
+    raw = (
+        "Constructivism: Your perceptions and interpretations of events are shaped by your "
+        "experiences and beliefs. Consider that Sylvester's behavior might not be a reflection "
+        "of you but rather a manifestation of his own issues."
+    )
+    normalised = runner._normalize_for_mode(raw, mode="direct")
+    assert "\n" not in normalised.strip()
+    assert normalised.strip() == "Constructivism"
+
+
