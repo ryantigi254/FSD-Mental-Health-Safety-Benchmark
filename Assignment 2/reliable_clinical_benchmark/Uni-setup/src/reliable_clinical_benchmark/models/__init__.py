@@ -9,6 +9,7 @@ from .qwen3 import Qwen3Runner
 from .gpt_oss import GPTOSSRunner
 from .lmstudio_qwq import QwQLMStudioRunner
 from .lmstudio_gpt_oss import GPTOSSLMStudioRunner
+from .lmstudio_qwen3 import Qwen3LMStudioRunner
 from .piaget_local import Piaget8BLocalRunner
 from .psyche_r1_local import PsycheR1LocalRunner
 from .psych_qwen_local import PsychQwen32BLocalRunner
@@ -23,6 +24,7 @@ __all__ = [
     "QwQLMStudioRunner",
     "DeepSeekR1Runner",
     "Qwen3Runner",
+    "Qwen3LMStudioRunner",
     "GPTOSSRunner",
     "GPTOSSLMStudioRunner",
     "Piaget8BLocalRunner",
