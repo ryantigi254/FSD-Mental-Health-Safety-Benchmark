@@ -7,12 +7,19 @@ Run:
 
 import argparse
 import json
+import re
 import sys
 import time
 from datetime import datetime
 from typing import Dict, Any
 
-from reliable_clinical_benchmark.models.psyche_r1_local import PsycheR1LocalRunner
+import torch
+
+from reliable_clinical_benchmark.models.psyche_r1_local import (
+    PsycheR1LocalRunner,
+    DEFAULT_TOP_K,
+    DEFAULT_REPETITION_PENALTY,
+)
 from reliable_clinical_benchmark.models.base import GenerationConfig
 
 
@@ -29,6 +36,11 @@ def _parse_args() -> argparse.Namespace:
         type=int,
         default=0,
         help="If >0, only run the first N prompts.",
+    )
+    parser.add_argument(
+        "--skip-raw",
+        action="store_true",
+        help="Skip printing/storing the raw decoded generation (faster).",
     )
     return parser.parse_args()
 
@@ -66,7 +78,28 @@ def main() -> None:
         sys.stdout.flush()
         t0 = time.perf_counter()
         try:
-            out = runner.generate(p, mode="cot")
+            encoded = runner._build_inputs(p, mode="cot")
+            input_token_count = int(encoded["input_ids"].shape[-1])
+            with torch.inference_mode():
+                gen = runner.model.generate(
+                    **encoded,
+                    max_new_tokens=runner.config.max_tokens,
+                    do_sample=True,
+                    temperature=runner.config.temperature,
+                    top_p=runner.config.top_p,
+                    top_k=DEFAULT_TOP_K,
+                    repetition_penalty=DEFAULT_REPETITION_PENALTY,
+                    eos_token_id=runner.tokenizer.eos_token_id,
+                    pad_token_id=runner.tokenizer.pad_token_id,
+                )
+            generated_only = gen[0, input_token_count:]
+            raw = runner.tokenizer.decode(generated_only, skip_special_tokens=True).strip()
+            out = runner._normalize_for_mode(raw, mode="cot")
+
+            think_match = None
+            if not args.skip_raw:
+                think_match = re.search(r"<think>(.*?)</think>", raw, re.DOTALL)
+
             elapsed_ms = int((time.perf_counter() - t0) * 1000)
             log: Dict[str, Any] = {
                 "run_id": run_id,
@@ -74,8 +107,16 @@ def main() -> None:
                 "prompt": p,
                 "model": runner.model_name,
                 "elapsed_ms": elapsed_ms,
-                "output": out[:4000],
+                "output_normalised": out[:4000],
             }
+            if not args.skip_raw:
+                log["output_raw"] = raw[:4000]
+                log["has_think"] = bool(think_match)
+                if think_match is not None:
+                    reasoning = think_match.group(1).strip()
+                    answer = raw[think_match.end() :].strip()
+                    log["think_excerpt"] = reasoning[:800]
+                    log["answer_excerpt"] = answer[:800]
         except Exception as e:
             log = {
                 "run_id": run_id,
