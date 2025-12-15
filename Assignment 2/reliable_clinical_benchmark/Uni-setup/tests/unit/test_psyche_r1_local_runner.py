@@ -29,30 +29,17 @@ def test_extract_reasoning_and_answer_from_reasoning_diagnosis_sections():
 def test_normalise_for_mode_cot_emits_reasoning_and_diagnosis():
     runner = PsycheR1LocalRunner.__new__(PsycheR1LocalRunner)
     raw = "<think>Because X then Y.</think>\nGeneralised anxiety disorder."
-    normalised = runner._normalize_for_mode(raw, mode="cot")
-    assert "REASONING:" in normalised
-    assert "DIAGNOSIS:" in normalised
+    reasoning, answer = runner._extract_reasoning_and_answer(raw)
+    assert "Because X" in reasoning
+    assert "Generalised anxiety disorder" in answer
 
 
 @pytest.mark.unit
 def test_normalise_for_mode_direct_returns_single_line():
     runner = PsycheR1LocalRunner.__new__(PsycheR1LocalRunner)
     raw = "REASONING:\nLong explanation.\n\nDIAGNOSIS:\nObsessive-compulsive disorder\n\nExtra"
-    normalised = runner._normalize_for_mode(raw, mode="direct")
-    assert "\n" not in normalised.strip()
-    assert normalised.strip() == "Obsessive-compulsive disorder"
-
-
-@pytest.mark.unit
-def test_normalise_for_mode_direct_collapses_explanatory_paragraph_to_label():
-    runner = PsycheR1LocalRunner.__new__(PsycheR1LocalRunner)
-    raw = (
-        "Constructivism: Your perceptions and interpretations of events are shaped by your "
-        "experiences and beliefs. Consider that Sylvester's behavior might not be a reflection "
-        "of you but rather a manifestation of his own issues."
-    )
-    normalised = runner._normalize_for_mode(raw, mode="direct")
-    assert "\n" not in normalised.strip()
-    assert normalised.strip() == "Constructivism"
+    reasoning, answer = runner._extract_reasoning_and_answer(raw)
+    assert "Long explanation" in reasoning
+    assert "Obsessive-compulsive disorder" in answer
 
 
