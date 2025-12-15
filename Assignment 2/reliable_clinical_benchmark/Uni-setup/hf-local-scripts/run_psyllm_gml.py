@@ -1,4 +1,5 @@
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -13,9 +14,37 @@ def _ensure_src_on_path(uni_setup_root: Path) -> None:
         sys.path.insert(0, str(src_dir))
 
 
+def _ensure_hf_cache_under_models_dir(uni_setup_root: Path) -> None:
+    """
+    Force Hugging Face + Transformers caches to live under Uni-setup/models/.
+
+    This ensures large checkpoints (e.g., GMLHUHE/PsyLLM) are saved under:
+        <Uni-setup>/models/
+    rather than the default user cache under C:\\Users\\...
+
+    Env vars are only set if not already defined, so users can override.
+    """
+
+    models_dir = uni_setup_root / "models"
+    models_dir.mkdir(parents=True, exist_ok=True)
+
+    hf_home = models_dir / "hf_home"
+    hub_cache = models_dir / "hf_hub"
+    transformers_cache = models_dir / "transformers_cache"
+
+    hf_home.mkdir(parents=True, exist_ok=True)
+    hub_cache.mkdir(parents=True, exist_ok=True)
+    transformers_cache.mkdir(parents=True, exist_ok=True)
+
+    os.environ.setdefault("HF_HOME", str(hf_home))
+    os.environ.setdefault("HUGGINGFACE_HUB_CACHE", str(hub_cache))
+    os.environ.setdefault("TRANSFORMERS_CACHE", str(transformers_cache))
+
+
 def main() -> None:
     uni_setup_root = Path(__file__).resolve().parents[1]
     _ensure_src_on_path(uni_setup_root)
+    _ensure_hf_cache_under_models_dir(uni_setup_root)
 
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument(
