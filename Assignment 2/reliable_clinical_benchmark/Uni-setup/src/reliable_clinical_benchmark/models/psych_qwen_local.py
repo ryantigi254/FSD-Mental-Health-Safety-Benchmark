@@ -1,10 +1,18 @@
 """
 Local runner for Psych_Qwen_32B using Hugging Face transformers (no LM Studio).
 
-Loads from the local directory by default: Uni-setup/models/Psych_Qwen_32B
+Designed for 24GB VRAM setups:
+- Default quantization is 4-bit NF4 (bitsandbytes) for weights
+- Optional CPU offload via device_map="auto" + max_memory
+
+Supports loading either:
+- A fully merged model checkpoint, OR
+- A PEFT/LoRA adapter repo (loads base model then applies adapter)
 """
 
 import re
+import json
+from pathlib import Path
 from typing import Tuple, Optional, Dict
 
 import torch
@@ -14,6 +22,108 @@ from .base import ModelRunner, GenerationConfig
 
 
 DEFAULT_TOP_K = 20
+DEFAULT_REPETITION_PENALTY = 1.05
+DEFAULT_MAX_NEW_TOKENS = 4096
+
+# Qwen3-style chat template that preserves <think> blocks and supports enable_thinking.
+PSYCH_QWEN_CHAT_TEMPLATE = r"""{%- if tools %}
+    {{- '<|im_start|>system\n' }}
+    {%- if messages[0].role == 'system' %}
+        {{- messages[0].content + '\n\n' }}
+    {%- endif %}
+    {{- "# Tools\n\nYou may call one or more functions to assist with the user query.\n\nYou are provided with function signatures within <tools></tools> XML tags:\n<tools>" }}
+    {%- for tool in tools %}
+        {{- "\n" }}
+        {{- tool | tojson }}
+    {%- endfor %}
+    {{- "\n</tools>\n\nFor each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\n<tool_call>\n{\"name\": <function-name>, \"arguments\": <args-json-object>}\n</tool_call><|im_end|>\n" }}
+{%- else %}
+    {%- if messages[0].role == 'system' %}
+        {{- '<|im_start|>system\n' + messages[0].content + '<|im_end|>\n' }}
+    {%- endif %}
+{%- endif %}
+{%- set ns = namespace(multi_step_tool=true, last_query_index=messages|length - 1) %}
+{%- for forward_message in messages %}
+    {%- set index = (messages|length - 1) - loop.index0 %}
+    {%- set message = messages[index] %}
+    {%- set current_content = message.content if message.content is not none else '' %}
+    {%- set tool_start = '<tool_response>' %}
+    {%- set tool_start_length = tool_start|length %}
+    {%- set start_of_message = current_content[:tool_start_length] %}
+    {%- set tool_end = '</tool_response>' %}
+    {%- set tool_end_length = tool_end|length %}
+    {%- set start_pos = (current_content|length) - tool_end_length %}
+    {%- if start_pos < 0 %}
+        {%- set start_pos = 0 %}
+    {%- endif %}
+    {%- set end_of_message = current_content[start_pos:] %}
+    {%- if ns.multi_step_tool and message.role == "user" and not(start_of_message == tool_start and end_of_message == tool_end) %}
+        {%- set ns.multi_step_tool = false %}
+        {%- set ns.last_query_index = index %}
+    {%- endif %}
+{%- endfor %}
+{%- for message in messages %}
+    {%- if (message.role == "user") or (message.role == "system" and not loop.first) %}
+        {{- '<|im_start|>' + message.role + '\n' + message.content + '<|im_end|>' + '\n' }}
+    {%- elif message.role == "assistant" %}
+        {%- set content = message.content %}
+        {%- set reasoning_content = '' %}
+        {%- if message.reasoning_content is defined and message.reasoning_content is not none %}
+            {%- set reasoning_content = message.reasoning_content %}
+        {%- else %}
+            {%- if '</think>' in message.content %}
+                {%- set content = (message.content.split('</think>')|last).lstrip('\n') %}
+                {%- set reasoning_content = (message.content.split('</think>')|first).rstrip('\n') %}
+                {%- set reasoning_content = (reasoning_content.split('<think>')|last).lstrip('\n') %}
+            {%- endif %}
+        {%- endif %}
+        {%- if loop.index0 > ns.last_query_index %}
+            {%- if loop.last or (not loop.last and reasoning_content) %}
+                {{- '<|im_start|>' + message.role + '\n<think>\n' + reasoning_content.strip('\n') + '\n</think>\n\n' + content.lstrip('\n') }}
+            {%- else %}
+                {{- '<|im_start|>' + message.role + '\n' + content }}
+            {%- endif %}
+        {%- else %}
+            {{- '<|im_start|>' + message.role + '\n' + content }}
+        {%- endif %}
+        {%- if message.tool_calls %}
+            {%- for tool_call in message.tool_calls %}
+                {%- if (loop.first and content) or (not loop.first) %}
+                    {{- '\n' }}
+                {%- endif %}
+                {%- if tool_call.function %}
+                    {%- set tool_call = tool_call.function %}
+                {%- endif %}
+                {{- '<tool_call>\n{"name": "' }}
+                {{- tool_call.name }}
+                {{- '", "arguments": ' }}
+                {%- if tool_call.arguments is string %}
+                    {{- tool_call.arguments }}
+                {%- else %}
+                    {{- tool_call.arguments | tojson }}
+                {%- endif %}
+                {{- '}\n</tool_call>' }}
+            {%- endfor %}
+        {%- endif %}
+        {{- '<|im_end|>\n' }}
+    {%- elif message.role == "tool" %}
+        {%- if loop.first or (messages[loop.index0 - 1].role != "tool") %}
+            {{- '<|im_start|>user' }}
+        {%- endif %}
+        {{- '\n<tool_response>\n' }}
+        {{- message.content }}
+        {{- '\n</tool_response>' }}
+        {%- if loop.last or (messages[loop.index0 + 1].role != "tool") %}
+            {{- '<|im_end|>\n' }}
+        {%- endif %}
+    {%- endif %}
+{%- endfor %}
+{%- if add_generation_prompt %}
+    {{- '<|im_start|>assistant\n' }}
+    {%- if enable_thinking is defined and enable_thinking is false %}
+        {{- '<think>\n\n</think>\n\n' }}
+    {%- endif %}
+{%- endif %}"""
 
 
 class PsychQwen32BLocalRunner(ModelRunner):
@@ -23,14 +133,14 @@ class PsychQwen32BLocalRunner(ModelRunner):
 
     def __init__(
         self,
-        model_name: str = "models/Psych_Qwen_32B",
+        model_name: str = "Compumacy/Psych_Qwen_32B",
         device_map: str = "auto",
         dtype: torch.dtype = torch.bfloat16,
-        quantization: Optional[str] = None,
+        quantization: Optional[str] = "4bit",
         max_memory: Optional[Dict] = None,
         offload_folder: str = "offload/psych_qwen_32b",
         config: Optional[GenerationConfig] = None,
-        local_files_only: bool = True,
+        local_files_only: bool = False,
     ):
         super().__init__(
             model_name,
@@ -42,12 +152,10 @@ class PsychQwen32BLocalRunner(ModelRunner):
             ),
         )
 
-        self.tokenizer = AutoTokenizer.from_pretrained(
-            model_name, use_fast=True, local_files_only=local_files_only
-        )
-        model_config = AutoConfig.from_pretrained(
-            model_name, local_files_only=local_files_only
-        )
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True, local_files_only=local_files_only)
+        # Ensure the chat template matches Qwen3-style thinking/non-thinking separation.
+        self.tokenizer.chat_template = PSYCH_QWEN_CHAT_TEMPLATE
+        model_config = AutoConfig.from_pretrained(model_name, local_files_only=local_files_only)
 
         # Quantization + offload notes:
         # - 32B in bf16 won't fit 24GB VRAM. 8-bit usually still too big (~32GB weights).
@@ -89,26 +197,75 @@ class PsychQwen32BLocalRunner(ModelRunner):
         if max_memory is None and device_map == "auto":
             max_memory = {0: "22GiB", "cpu": "48GiB"}
 
-        self.model = AutoModelForCausalLM.from_pretrained(
-            model_name,
-            device_map=device_map,
-            dtype=dtype,
-            config=model_config,
-            quantization_config=quantization_config,
-            max_memory=max_memory,
-            offload_folder=offload_folder,
-            local_files_only=local_files_only,
-        )
+        # Detect PEFT adapter repos: if adapter_config.json exists locally (or in cache),
+        # load base_model_name_or_path from it and apply adapter weights.
+        adapter_base: Optional[str] = None
+        adapter_config_path: Optional[Path] = None
+        try:
+            resolved_dir = Path(model_name)
+            if resolved_dir.exists() and resolved_dir.is_dir():
+                candidate = resolved_dir / "adapter_config.json"
+                if candidate.exists():
+                    adapter_config_path = candidate
+        except Exception:
+            adapter_config_path = None
+
+        if adapter_config_path is not None:
+            try:
+                data = json.loads(adapter_config_path.read_text(encoding="utf-8"))
+                adapter_base = data.get("base_model_name_or_path")
+            except Exception:
+                adapter_base = None
+
+        if adapter_base:
+            base_model = AutoModelForCausalLM.from_pretrained(
+                adapter_base,
+                device_map=device_map,
+                torch_dtype=dtype,
+                config=AutoConfig.from_pretrained(adapter_base, local_files_only=local_files_only),
+                quantization_config=quantization_config,
+                max_memory=max_memory,
+                offload_folder=offload_folder,
+                local_files_only=local_files_only,
+            )
+            try:
+                from peft import PeftModel
+            except Exception as e:  # pragma: no cover
+                raise RuntimeError(
+                    "This checkpoint looks like a PEFT/LoRA adapter (adapter_config.json present), "
+                    "but peft is not installed. Install peft to load it."
+                ) from e
+            self.model = PeftModel.from_pretrained(base_model, model_name, local_files_only=local_files_only)
+        else:
+            self.model = AutoModelForCausalLM.from_pretrained(
+                model_name,
+                device_map=device_map,
+                torch_dtype=dtype,
+                config=model_config,
+                quantization_config=quantization_config,
+                max_memory=max_memory,
+                offload_folder=offload_folder,
+                local_files_only=local_files_only,
+            )
+
+        self.model.eval()
 
     def _build_inputs(self, prompt: str, mode: str = "default") -> Dict[str, torch.Tensor]:
         formatted_prompt = self._format_prompt(prompt, mode)
         messages = [{"role": "user", "content": formatted_prompt}]
-        prompt_text = self.tokenizer.apply_chat_template(
-            messages,
-            tokenize=False,
-            add_generation_prompt=True,
-            enable_thinking=(mode == "cot"),
-        )
+        try:
+            prompt_text = self.tokenizer.apply_chat_template(
+                messages,
+                tokenize=False,
+                add_generation_prompt=True,
+                enable_thinking=(mode == "cot"),
+            )
+        except TypeError:
+            prompt_text = self.tokenizer.apply_chat_template(
+                messages,
+                tokenize=False,
+                add_generation_prompt=True,
+            )
         tokenized = self.tokenizer(
             prompt_text,
             return_tensors="pt",
@@ -149,24 +306,6 @@ class PsychQwen32BLocalRunner(ModelRunner):
 
         return t, t
 
-    def _normalize_for_mode(self, text: str, mode: str) -> str:
-        t = self._strip_role_markers(text)
-
-        if mode == "cot":
-            reasoning, answer = self._extract_reasoning_and_answer(t)
-            return f"REASONING:\n{reasoning.strip()}\n\nDIAGNOSIS:\n{answer.strip()}".strip()
-
-        if mode == "direct":
-            _, answer = self._extract_reasoning_and_answer(t)
-            ans = (answer or "").strip()
-            for line in ans.splitlines():
-                line = line.strip()
-                if line:
-                    return line
-            return ans
-
-        return t.strip()
-
     def generate(self, prompt: str, mode: str = "default") -> str:
         encoded = self._build_inputs(prompt, mode)
         input_token_count = int(encoded["input_ids"].shape[-1])
@@ -178,13 +317,15 @@ class PsychQwen32BLocalRunner(ModelRunner):
             temperature=self.config.temperature,
             top_p=self.config.top_p,
             top_k=DEFAULT_TOP_K,
+            repetition_penalty=DEFAULT_REPETITION_PENALTY,
             eos_token_id=self.tokenizer.eos_token_id,
             pad_token_id=self.tokenizer.pad_token_id,
         )
 
         generated_only = gen[0, input_token_count:]
         output = self.tokenizer.decode(generated_only, skip_special_tokens=True)
-        return self._normalize_for_mode(output, mode)
+        # Return raw assistant text (minimal stripping) for objective analysis.
+        return self._strip_role_markers(output)
 
     def generate_with_reasoning(self, prompt: str) -> Tuple[str, str]:
         full_response = self.generate(prompt, mode="cot")
