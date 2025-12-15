@@ -18,6 +18,8 @@ from .base import ModelRunner, GenerationConfig
 DEFAULT_TOP_K = 20
 DEFAULT_REPETITION_PENALTY = 1.05
 DEFAULT_MAX_NEW_TOKENS = 4096
+_MAX_DIRECT_LABEL_CHARS = 120
+_MAX_DIRECT_LABEL_WORDS = 10
 
 PSYCHE_R1_CHAT_TEMPLATE = r"""{%- if tools %}
     {{- '<|im_start|>system\n' }}
@@ -130,6 +132,12 @@ class PsycheR1LocalRunner(ModelRunner):
                 "Wrap your reasoning in <think>...</think> tags.\n"
                 "After </think>, provide only the final diagnosis."
             )
+        if mode == "direct":
+            return (
+                f"{base}\n\n"
+                "Return exactly ONE short diagnosis label on a single line (no explanation). "
+                "If uncertain, return: Unknown"
+            )
         return base
 
     def _build_inputs(self, prompt: str, mode: str = "default") -> Dict[str, torch.Tensor]:
@@ -211,6 +219,56 @@ class PsycheR1LocalRunner(ModelRunner):
 
         return t, t
 
+    def _extract_diagnosis_only(self, text: str) -> str:
+        """
+        Best-effort extraction of a short diagnosis label.
+
+        Psyche-R1 sometimes returns a full sentence/paragraph even in 'direct' mode.
+        We try to collapse that to a stable, single-line label for downstream scoring.
+        """
+        t = self._strip_role_markers(text)
+
+        # Prefer explicit diagnosis markers if present.
+        m = re.search(r"(?im)^\s*diagnosis\s*:\s*(.+?)\s*$", t)
+        if m:
+            return m.group(1).strip()
+
+        m = re.search(r"(?im)^\s*final\s+diagnosis\s*:\s*(.+?)\s*$", t)
+        if m:
+            return m.group(1).strip()
+
+        lower = t.lower()
+        if "diagnosis:" in lower:
+            idx = lower.rfind("diagnosis:")
+            tail = t[idx + len("diagnosis:") :].strip()
+            if tail:
+                return tail.splitlines()[0].strip()
+
+        # If the model emitted <think> ... </think>, take anything after the closing tag.
+        closed = re.search(r"<(?:redacted_reasoning|think)>.*?</(?:redacted_reasoning|think)>\s*(.*)$", t, re.DOTALL)
+        if closed:
+            after = (closed.group(1) or "").strip()
+            if after:
+                return after.splitlines()[0].strip()
+
+        # Heuristic: if there's a leading label (e.g. "Constructivism: ..."), keep only the label.
+        if ":" in t and "\n" not in t:
+            head, _ = t.split(":", 1)
+            head = head.strip()
+            if 1 <= len(head.split()) <= 4 and len(head) <= _MAX_DIRECT_LABEL_CHARS:
+                return head
+
+        # Fallback: first non-empty line, truncated.
+        for line in t.splitlines():
+            line = line.strip()
+            if line:
+                words = line.split()
+                if len(words) > _MAX_DIRECT_LABEL_WORDS or len(line) > _MAX_DIRECT_LABEL_CHARS:
+                    return " ".join(words[:_MAX_DIRECT_LABEL_WORDS]).strip()
+                return line
+
+        return "Unknown"
+
     def _normalize_for_mode(self, text: str, mode: str) -> str:
         """
         Normalise output so downstream Study A metrics can parse reliably.
@@ -227,15 +285,14 @@ class PsycheR1LocalRunner(ModelRunner):
             return f"REASONING:\n{reasoning}\n\nDIAGNOSIS:\n{answer}".strip()
 
         if mode == "direct":
-            # Remove any reasoning block if the model ignored instructions.
-            _, answer = self._extract_reasoning_and_answer(t)
-            ans = (answer or "").strip()
-            # If answer is still verbose, keep only the first non-empty line.
-            for line in ans.splitlines():
-                line = line.strip()
-                if line:
-                    return line
-            return ans
+            # Enforce a single-line diagnosis label for scoring stability.
+            diagnosis = self._extract_diagnosis_only(t)
+            diagnosis = (diagnosis or "").strip()
+            # Always return a single line.
+            diagnosis = diagnosis.splitlines()[0].strip() if diagnosis else "Unknown"
+            if len(diagnosis) > _MAX_DIRECT_LABEL_CHARS:
+                diagnosis = " ".join(diagnosis.split()[:_MAX_DIRECT_LABEL_WORDS]).strip()
+            return diagnosis
 
         return t.strip()
 
