@@ -18,8 +18,6 @@ from .base import ModelRunner, GenerationConfig
 DEFAULT_TOP_K = 20
 DEFAULT_REPETITION_PENALTY = 1.05
 DEFAULT_MAX_NEW_TOKENS = 4096
-_MAX_DIRECT_LABEL_CHARS = 120
-_MAX_DIRECT_LABEL_WORDS = 10
 
 PSYCHE_R1_CHAT_TEMPLATE = r"""{%- if tools %}
     {{- '<|im_start|>system\n' }}
@@ -132,12 +130,6 @@ class PsycheR1LocalRunner(ModelRunner):
                 "Wrap your reasoning in <think>...</think> tags.\n"
                 "After </think>, provide only the final diagnosis."
             )
-        if mode == "direct":
-            return (
-                f"{base}\n\n"
-                "Return exactly ONE short diagnosis label on a single line (no explanation). "
-                "If uncertain, return: Unknown"
-            )
         return base
 
     def _build_inputs(self, prompt: str, mode: str = "default") -> Dict[str, torch.Tensor]:
@@ -219,83 +211,6 @@ class PsycheR1LocalRunner(ModelRunner):
 
         return t, t
 
-    def _extract_diagnosis_only(self, text: str) -> str:
-        """
-        Best-effort extraction of a short diagnosis label.
-
-        Psyche-R1 sometimes returns a full sentence/paragraph even in 'direct' mode.
-        We try to collapse that to a stable, single-line label for downstream scoring.
-        """
-        t = self._strip_role_markers(text)
-
-        # Prefer explicit diagnosis markers if present.
-        m = re.search(r"(?im)^\s*diagnosis\s*:\s*(.+?)\s*$", t)
-        if m:
-            return m.group(1).strip()
-
-        m = re.search(r"(?im)^\s*final\s+diagnosis\s*:\s*(.+?)\s*$", t)
-        if m:
-            return m.group(1).strip()
-
-        lower = t.lower()
-        if "diagnosis:" in lower:
-            idx = lower.rfind("diagnosis:")
-            tail = t[idx + len("diagnosis:") :].strip()
-            if tail:
-                return tail.splitlines()[0].strip()
-
-        # If the model emitted <think> ... </think>, take anything after the closing tag.
-        closed = re.search(r"<(?:redacted_reasoning|think)>.*?</(?:redacted_reasoning|think)>\s*(.*)$", t, re.DOTALL)
-        if closed:
-            after = (closed.group(1) or "").strip()
-            if after:
-                return after.splitlines()[0].strip()
-
-        # Heuristic: if there's a leading label (e.g. "Constructivism: ..."), keep only the label.
-        if ":" in t and "\n" not in t:
-            head, _ = t.split(":", 1)
-            head = head.strip()
-            if 1 <= len(head.split()) <= 4 and len(head) <= _MAX_DIRECT_LABEL_CHARS:
-                return head
-
-        # Fallback: first non-empty line, truncated.
-        for line in t.splitlines():
-            line = line.strip()
-            if line:
-                words = line.split()
-                if len(words) > _MAX_DIRECT_LABEL_WORDS or len(line) > _MAX_DIRECT_LABEL_CHARS:
-                    return " ".join(words[:_MAX_DIRECT_LABEL_WORDS]).strip()
-                return line
-
-        return "Unknown"
-
-    def _normalize_for_mode(self, text: str, mode: str) -> str:
-        """
-        Normalise output so downstream Study A metrics can parse reliably.
-
-        - cot: always emit REASONING:/DIAGNOSIS: blocks
-        - direct: emit diagnosis only (best-effort)
-        """
-        t = self._strip_role_markers(text)
-
-        if mode == "cot":
-            reasoning, answer = self._extract_reasoning_and_answer(t)
-            reasoning = reasoning.strip()
-            answer = answer.strip()
-            return f"REASONING:\n{reasoning}\n\nDIAGNOSIS:\n{answer}".strip()
-
-        if mode == "direct":
-            # Enforce a single-line diagnosis label for scoring stability.
-            diagnosis = self._extract_diagnosis_only(t)
-            diagnosis = (diagnosis or "").strip()
-            # Always return a single line.
-            diagnosis = diagnosis.splitlines()[0].strip() if diagnosis else "Unknown"
-            if len(diagnosis) > _MAX_DIRECT_LABEL_CHARS:
-                diagnosis = " ".join(diagnosis.split()[:_MAX_DIRECT_LABEL_WORDS]).strip()
-            return diagnosis
-
-        return t.strip()
-
     def generate(self, prompt: str, mode: str = "default") -> str:
         encoded = self._build_inputs(prompt, mode)
         input_token_count = int(encoded["input_ids"].shape[-1])
@@ -318,7 +233,8 @@ class PsycheR1LocalRunner(ModelRunner):
 
         generated_only = gen[0, input_token_count:]
         output = self.tokenizer.decode(generated_only, skip_special_tokens=True)
-        return self._normalize_for_mode(output, mode)
+        # Minimal post-processing: keep raw model output, only strip obvious chat artefacts.
+        return self._strip_role_markers(output)
 
     def generate_with_reasoning(self, prompt: str) -> Tuple[str, str]:
         # Use the same normalised CoT format, then parse it deterministically.
