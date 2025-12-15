@@ -221,7 +221,7 @@ class PsychQwen32BLocalRunner(ModelRunner):
             base_model = AutoModelForCausalLM.from_pretrained(
                 adapter_base,
                 device_map=device_map,
-                torch_dtype=dtype,
+                dtype=dtype,
                 config=AutoConfig.from_pretrained(adapter_base, local_files_only=local_files_only),
                 quantization_config=quantization_config,
                 max_memory=max_memory,
@@ -240,7 +240,7 @@ class PsychQwen32BLocalRunner(ModelRunner):
             self.model = AutoModelForCausalLM.from_pretrained(
                 model_name,
                 device_map=device_map,
-                torch_dtype=dtype,
+                dtype=dtype,
                 config=model_config,
                 quantization_config=quantization_config,
                 max_memory=max_memory,

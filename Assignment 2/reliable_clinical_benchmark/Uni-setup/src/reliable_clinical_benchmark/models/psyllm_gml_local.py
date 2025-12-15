@@ -167,7 +167,7 @@ class PsyLLMGMLLocalRunner(ModelRunner):
         self.model = AutoModelForCausalLM.from_pretrained(
             model_name,
             device_map=device_map,
-            torch_dtype=dtype,
+            dtype=dtype,
             config=model_config,
             local_files_only=local_files_only,
             trust_remote_code=trust_remote_code,
