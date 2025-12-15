@@ -16,6 +16,7 @@ from .psych_qwen import PsychQwen32BRunner
 from .psych_qwen_local import PsychQwen32BLocalRunner
 from .lmstudio_qwq import QwQLMStudioRunner
 from .lmstudio_gpt_oss import GPTOSSLMStudioRunner
+from .lmstudio_qwen3 import Qwen3LMStudioRunner
 import logging
 
 logger = logging.getLogger(__name__)
@@ -55,6 +56,8 @@ def get_model_runner(
         return GPTOSSLMStudioRunner(config=config)
     elif model_id_lower in ("qwen3", "qwen3-8b"):
         return Qwen3Runner(config=config)
+    elif model_id_lower in ("qwen3_lmstudio", "qwen3-lmstudio", "qwen3-8b-lmstudio"):
+        return Qwen3LMStudioRunner(config=config)
     elif model_id_lower in ("piaget", "piaget-8b"):
         return Piaget8BRunner(config=config)
     elif model_id_lower in ("piaget_local", "piaget-8b-local", "piaget8b-local"):

@@ -42,6 +42,7 @@ def main():
             "deepseek_r1",
             "gpt_oss",
             "qwen3",
+            "qwen3_lmstudio",
             # Local HF runners
             "psyllm_local",
             "piaget_local",
