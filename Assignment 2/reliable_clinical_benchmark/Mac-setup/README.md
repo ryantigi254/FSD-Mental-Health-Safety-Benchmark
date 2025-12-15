@@ -30,7 +30,7 @@ python -m pip install -r requirements.txt
 
 ## Structure
 
-- `psy-llm-local/` — Direct PyTorch inference for PsyLLM.
+- `clinical-llms-local/` — Direct PyTorch inference for PsyLLM.
 - `lmstudio-scripts/` — One-off chats against the LM Studio API.
 
 ## LM Studio checklist (8B-class)
@@ -57,7 +57,7 @@ Then point runners at HF endpoints rather than the local server.
 ## PsyLLM local inference (PyTorch)
 
 ```bash
-cd psy-llm-local/models/PsyLLM
+cd clinical-llms-local/models/PsyLLM
 huggingface-cli login  # if needed
 huggingface-cli download GMLHUHE/PsyLLM --local-dir . --local-dir-use-symlinks False
 cd ..
