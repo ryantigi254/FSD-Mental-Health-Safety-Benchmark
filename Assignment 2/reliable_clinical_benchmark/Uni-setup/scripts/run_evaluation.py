@@ -197,7 +197,7 @@ def main():
             if study == "A":
                 result = study_a.run_study_a(
                     model=model,
-                    data_dir=Path(args.data_dir).parent if args.data_dir else "data/openr1_psy_splits",
+                    data_dir=args.data_dir or "data/openr1_psy_splits",
                     max_samples=args.max_samples,
                     output_dir=args.output_dir,
                     model_name=args.model,
@@ -210,7 +210,7 @@ def main():
             elif study == "B":
                 result = study_b.run_study_b(
                     model=model,
-                    data_dir=Path(args.data_dir).parent if args.data_dir else "data/openr1_psy_splits",
+                    data_dir=args.data_dir or "data/openr1_psy_splits",
                     max_samples=args.max_samples,
                     output_dir=args.output_dir,
                     model_name=args.model,
@@ -220,7 +220,7 @@ def main():
             elif study == "C":
                 result = study_c.run_study_c(
                     model=model,
-                    data_dir=Path(args.data_dir).parent if args.data_dir else "data/openr1_psy_splits",
+                    data_dir=args.data_dir or "data/openr1_psy_splits",
                     max_cases=args.max_cases,
                     output_dir=args.output_dir,
                     model_name=args.model,
