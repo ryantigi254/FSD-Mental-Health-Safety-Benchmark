@@ -42,6 +42,12 @@ def _parse_args() -> argparse.Namespace:
         action="store_true",
         help="Skip printing/storing the raw decoded generation (faster).",
     )
+    parser.add_argument(
+        "--max-tokens",
+        type=int,
+        default=512,
+        help="Max new tokens per prompt (raise to reduce truncation).",
+    )
     return parser.parse_args()
 
 
@@ -53,7 +59,7 @@ def main() -> None:
         config=GenerationConfig(
             temperature=0.7,
             top_p=0.9,
-            max_tokens=128,
+            max_tokens=args.max_tokens,
         ),
     )
 
