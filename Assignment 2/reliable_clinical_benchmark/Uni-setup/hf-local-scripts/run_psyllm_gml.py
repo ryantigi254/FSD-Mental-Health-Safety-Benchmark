@@ -3,10 +3,6 @@ import os
 import sys
 from pathlib import Path
 
-from reliable_clinical_benchmark.models.base import GenerationConfig
-from reliable_clinical_benchmark.models.psyllm_gml_local import PsyLLMGMLLocalRunner
-from reliable_clinical_benchmark.pipelines.study_a import run_study_a
-
 
 def _ensure_src_on_path(uni_setup_root: Path) -> None:
     src_dir = uni_setup_root / "src"
@@ -41,10 +37,52 @@ def _ensure_hf_cache_under_models_dir(uni_setup_root: Path) -> None:
     os.environ.setdefault("TRANSFORMERS_CACHE", str(transformers_cache))
 
 
+def _resolve_hf_model_to_local_dir(model: str, uni_setup_root: Path) -> str:
+    """
+    If `model` is a local path, return it unchanged.
+
+    If `model` looks like a HF repo id (e.g. "GMLHUHE/PsyLLM"), download a snapshot into:
+        <Uni-setup>/models/<repo_name>/
+
+    This makes the weights visible under Uni-setup/models (as you requested) and avoids the
+    default user cache under C:\\Users\\...
+    """
+
+    model_path = Path(model)
+    if model_path.exists():
+        return str(model_path)
+
+    if "/" not in model:
+        return model
+
+    repo_name = model.split("/")[-1].strip()
+    if not repo_name:
+        return model
+
+    local_dir = uni_setup_root / "models" / repo_name
+    local_dir.mkdir(parents=True, exist_ok=True)
+
+    # Import lazily so env vars (HF_HOME / caches) are set before any HF code runs.
+    from huggingface_hub import snapshot_download
+
+    snapshot_download(
+        repo_id=model,
+        local_dir=str(local_dir),
+        local_dir_use_symlinks=False,
+        resume_download=True,
+    )
+    return str(local_dir)
+
+
 def main() -> None:
     uni_setup_root = Path(__file__).resolve().parents[1]
     _ensure_src_on_path(uni_setup_root)
     _ensure_hf_cache_under_models_dir(uni_setup_root)
+
+    # Import after sys.path + HF cache env vars are set.
+    from reliable_clinical_benchmark.models.base import GenerationConfig
+    from reliable_clinical_benchmark.models.psyllm_gml_local import PsyLLMGMLLocalRunner
+    from reliable_clinical_benchmark.pipelines.study_a import run_study_a
 
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument(
@@ -88,8 +126,9 @@ def main() -> None:
 
     args = parser.parse_args()
 
+    resolved_model = _resolve_hf_model_to_local_dir(args.model, uni_setup_root)
     runner = PsyLLMGMLLocalRunner(
-        model_name=args.model,
+        model_name=resolved_model,
         config=GenerationConfig(
             temperature=args.temperature,
             top_p=args.top_p,
