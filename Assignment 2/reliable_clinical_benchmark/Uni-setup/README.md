@@ -9,6 +9,17 @@ End-to-end steps for the Uni environment (Windows, x64) to mirror the Mac flow: 
 - Hugging Face token (for HF downloads and gated models)
 - Models placed under `Uni-setup/models/` (already gitignored)
 
+## Models (8) used in this benchmark run
+
+- **PsyLLM (domain expert)**: [`GMLHUHE/PsyLLM`](https://huggingface.co/GMLHUHE/PsyLLM)
+- **Qwen3‑8B (untuned baseline)**: [`Qwen/Qwen3-8B`](https://huggingface.co/Qwen/Qwen3-8B)
+- **GPT‑OSS‑20B (larger baseline)**: [`openai/gpt-oss-20b`](https://huggingface.co/openai/gpt-oss-20b)
+- **QwQ‑32B (reasoning baseline)**: [`Qwen/QwQ-32B-Preview`](https://huggingface.co/Qwen/QwQ-32B-Preview)
+- **DeepSeek‑R1‑14B (reasoning baseline)**: [`deepseek-ai/DeepSeek-R1-Distill-Qwen-14B`](https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-14B) — paper: [`DeepSeek_R1.pdf`](https://github.com/deepseek-ai/DeepSeek-R1/blob/main/DeepSeek_R1.pdf)
+- **Piaget‑8B (local HF runner)**: [`gustavecortal/Piaget-8B`](https://huggingface.co/gustavecortal/Piaget-8B)
+- **Psyche‑R1 (psychological reasoning)**: [`MindIntLab/Psyche-R1`](https://huggingface.co/MindIntLab/Psyche-R1) — paper: [`arXiv:2508.10848`](https://arxiv.org/pdf/2508.10848)
+- **Psych_Qwen_32B (large psych model)**: [`Compumacy/Psych_Qwen_32B`](https://huggingface.co/Compumacy/Psych_Qwen_32B) — typically run 4‑bit quantised on 24GB VRAM (local weights)
+
 ## 2) Create the env (conda, same name as Mac)
 ```powershell
 cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
