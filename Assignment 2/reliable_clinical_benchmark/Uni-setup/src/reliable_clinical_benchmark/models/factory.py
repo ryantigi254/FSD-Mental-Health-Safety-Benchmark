@@ -5,7 +5,6 @@ from .base import ModelRunner, GenerationConfig
 from .psyllm import PsyLLMRunner
 from .psyllm_local import PsyLLMLocalRunner
 from .psyllm_gml_local import PsyLLMGMLLocalRunner
-from .qwq import QwQRunner
 from .deepseek_r1 import DeepSeekR1Runner
 from .lmstudio_deepseek_r1 import DeepSeekR1LMStudioRunner
 from .qwen3 import Qwen3Runner
@@ -48,9 +47,7 @@ def get_model_runner(
         return PsyLLMLocalRunner(config=config)
     elif model_id_lower in ("psyllm_gml_local", "psyllm-gml-local", "psyllm-gmlhuhe-local", "gmlhuhe_psyllm_local"):
         return PsyLLMGMLLocalRunner(config=config)
-    elif model_id_lower in ("qwq", "qwq-32b"):
-        return QwQRunner(config=config)
-    elif model_id_lower in ("qwq_lmstudio", "qwq-lmstudio", "qwq-32b-lmstudio"):
+    elif model_id_lower in ("qwq", "qwq-32b", "qwq_lmstudio", "qwq-lmstudio", "qwq-32b-lmstudio"):
         return QwQLMStudioRunner(config=config)
     elif model_id_lower in ("deepseek_r1", "deepseek-r1-32b"):
         return DeepSeekR1Runner(config=config)
