@@ -1,5 +1,8 @@
+import json
+import math
 import re
-from typing import Dict, Tuple, Optional, List
+from pathlib import Path
+from typing import Dict, Tuple, Optional, List, Set
 
 import numpy as np
 
@@ -238,8 +241,14 @@ def extract_diagnosis_with_method(text: str) -> Tuple[str, str]:
 
 
 def compute_output_complexity(text: str) -> Tuple[float, Dict[str, float]]:
+    """
+    Legacy function for backward compatibility.
+    Returns combined complexity score and features.
+    """
+    verbosity, noise_score, word_count = compute_complexity_metrics(text)
+    
+    # Calculate legacy combined score
     clean_text = clean_model_output(text)
-
     if not clean_text:
         return 1.0, {
             "word_count": 0.0,
@@ -250,8 +259,6 @@ def compute_output_complexity(text: str) -> Tuple[float, Dict[str, float]]:
         }
 
     char_count = len(clean_text)
-    words = clean_text.split()
-    word_count = len(words)
     line_count = len([l for l in clean_text.split("\n") if l.strip()])
 
     non_ascii = sum(1 for c in clean_text if ord(c) > 127)
@@ -289,3 +296,119 @@ def compute_output_complexity(text: str) -> Tuple[float, Dict[str, float]]:
     }
 
     return score, features
+
+
+def compute_complexity_metrics(text: str) -> Tuple[float, float, int]:
+    """
+    Splits complexity into Verbosity (Length) and Noise (Artifacts).
+    
+    Returns:
+        verbosity: Log-scale word count (measures "Time to Read")
+        noise_score: Unicode/Non-ASCII density (measures "Technical Readability")
+        word_count: Raw word count
+    """
+    if not text:
+        return 0.0, 0.0, 0
+    
+    # 1. Verbosity (Log-scale word count)
+    # Measures "Time to Read" / Information Density
+    words = text.split()
+    word_count = len(words)
+    # Log10 makes the scale manageable (10 words -> 1.0, 100 -> 2.0, 1000 -> 3.0)
+    verbosity = math.log10(word_count + 1) if word_count > 0 else 0.0
+
+    # 2. Noise Score (Unicode/Non-ASCII density)
+    # Measures "Technical Readability" / Formatting Failures
+    char_count = len(text)
+    if char_count == 0:
+        return 0.0, 0.0, 0
+    
+    # Count chars outside standard ASCII range (often unicode artifacts in bad generations)
+    non_ascii = sum(1 for c in text if ord(c) > 127)
+    noise_ratio = non_ascii / char_count
+    
+    return round(verbosity, 3), round(noise_ratio, 4), word_count
+
+
+def load_valid_diagnoses(gold_labels_path: Path) -> Dict[str, str]:
+    """
+    Loads unique diagnosis labels from gold_diagnosis_labels.json.
+    
+    Returns:
+        Dictionary mapping normalized (lowercase) diagnosis to original format
+        e.g., {"generalized anxiety disorder": "Generalized Anxiety Disorder"}
+    """
+    if not gold_labels_path.exists():
+        return {}
+    
+    try:
+        with open(gold_labels_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+            # Map normalized to original format
+            diagnosis_map = {}
+            for label in data.get("labels", {}).values():
+                normalized = label.lower().strip()
+                if normalized not in diagnosis_map:
+                    diagnosis_map[normalized] = label
+            return diagnosis_map
+    except Exception:
+        return {}
+
+
+def extract_diagnosis_closed_set(clean_text: str, valid_diagnoses: Dict[str, str]) -> Tuple[str, str]:
+    """
+    Scans clean text for exact matches against known valid diagnoses using closed-set matching.
+    
+    This method is deterministic and robust to formatting variations, making it superior
+    to NLI-based extraction for scientific reproducibility.
+    
+    Args:
+        clean_text: Text with <think> tags removed
+        valid_diagnoses: Dictionary mapping normalized (lowercase) diagnosis to original format
+    
+    Returns:
+        Tuple of (diagnosis_label, extraction_method)
+        - diagnosis_label: The matched diagnosis in original format or "REFUSAL"/"EXTRACTION_FAILED"
+        - extraction_method: How the diagnosis was extracted
+    """
+    if not clean_text:
+        return "NO_OUTPUT", "no_output"
+    
+    # 1. Check Refusal First (on clean text)
+    if is_refusal(clean_text):
+        return "REFUSAL", "refusal_detection"
+
+    if not valid_diagnoses:
+        return "NO_WHITELIST", "failed_no_whitelist"
+
+    text_lower = clean_text.lower()
+    found_normalized = []
+    
+    # 2. Scan for every known gold diagnosis
+    for normalized_diag, original_diag in valid_diagnoses.items():
+        # Flexible matching: replace hyphens with spaces to handle "Post-traumatic" vs "Post traumatic"
+        clean_diag = normalized_diag.replace("-", " ")
+        search_text = text_lower.replace("-", " ")
+        
+        # Check if the diagnosis concept exists in the text
+        if clean_diag in search_text:
+            found_normalized.append((normalized_diag, original_diag))
+
+    # 3. Resolve Findings
+    if len(found_normalized) == 1:
+        return found_normalized[0][1], "closed_set_match"
+    
+    elif len(found_normalized) > 1:
+        # Ambiguity resolution: Prefer longest match
+        # e.g., Finds "Depression" AND "Major Depressive Disorder" -> Pick "Major Depressive Disorder"
+        found_normalized.sort(key=lambda x: len(x[0]), reverse=True)
+        # For simplicity, we assume the specific diagnosis implies the general one.
+        best_match = found_normalized[0][1]
+        return best_match, "closed_set_match_longest"
+
+    # 4. Fallback to heuristic if no closed-set match
+    diagnosis, method = extract_diagnosis_with_method(clean_text)
+    if method not in ("failed", "no_output") and diagnosis not in ("EXTRACTION_FAILED", "NO_OUTPUT"):
+        return diagnosis, f"heuristic_fallback_{method}"
+    
+    return "EXTRACTION_FAILED", "closed_set_no_match"
