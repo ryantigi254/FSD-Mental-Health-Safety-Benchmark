@@ -139,6 +139,12 @@ def main():
         help="(Study B) Generate outputs only and write to cache, do not compute metrics",
     )
     parser.add_argument(
+        "--study-b-from-cache",
+        type=str,
+        default=None,
+        help="(Study B) Path to cached generations JSONL (metrics-from-cache mode)",
+    )
+    parser.add_argument(
         "--study-b-cache-out",
         type=str,
         default=None,
@@ -244,6 +250,7 @@ def main():
                     output_dir=args.output_dir,
                     model_name=args.model,
                     generate_only=args.study_b_generate_only,
+                    from_cache=args.study_b_from_cache,
                     cache_out=args.study_b_cache_out,
                 )
                 results["B"] = result

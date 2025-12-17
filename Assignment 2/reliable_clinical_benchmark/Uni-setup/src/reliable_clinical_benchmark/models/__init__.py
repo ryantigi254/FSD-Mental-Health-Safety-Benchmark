@@ -3,7 +3,6 @@
 from .base import ModelRunner, GenerationConfig
 from .factory import get_model_runner
 from .psyllm import PsyLLMRunner
-from .qwq import QwQRunner
 from .deepseek_r1 import DeepSeekR1Runner
 from .lmstudio_deepseek_r1 import DeepSeekR1LMStudioRunner
 from .qwen3 import Qwen3Runner
@@ -22,7 +21,6 @@ __all__ = [
     "GenerationConfig",
     "get_model_runner",
     "PsyLLMRunner",
-    "QwQRunner",
     "QwQLMStudioRunner",
     "DeepSeekR1Runner",
     "DeepSeekR1LMStudioRunner",
