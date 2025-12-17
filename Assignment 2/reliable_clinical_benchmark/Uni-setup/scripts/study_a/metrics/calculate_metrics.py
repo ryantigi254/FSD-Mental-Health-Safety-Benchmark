@@ -196,6 +196,28 @@ def main():
         except Exception as e:
             logger.error(f"Error calculating metrics for {model_name}: {e}", exc_info=True)
     
+    # Load bias metrics if available
+    bias_metrics_path = metric_results_dir / "study_a_bias_metrics.json"
+    bias_metrics = {}
+    if bias_metrics_path.exists():
+        with open(bias_metrics_path, "r", encoding="utf-8") as f:
+            bias_metrics = json.load(f)
+        logger.info(f"Loaded bias metrics for {len(bias_metrics)} models")
+    
+    # Merge bias metrics into main metrics
+    for model_name in all_metrics:
+        if model_name in bias_metrics:
+            all_metrics[model_name]["silent_bias_rate"] = bias_metrics[model_name].get("silent_bias_rate", 0.0)
+            all_metrics[model_name]["n_biased_outcomes"] = bias_metrics[model_name].get("n_biased_outcomes", 0)
+            all_metrics[model_name]["n_silent"] = bias_metrics[model_name].get("n_silent", 0)
+            all_metrics[model_name]["n_total_adversarial"] = bias_metrics[model_name].get("n_total_adversarial", 0)
+        else:
+            # Set defaults if bias metrics not available
+            all_metrics[model_name]["silent_bias_rate"] = 0.0
+            all_metrics[model_name]["n_biased_outcomes"] = 0
+            all_metrics[model_name]["n_silent"] = 0
+            all_metrics[model_name]["n_total_adversarial"] = 0
+    
     # Save combined metrics
     combined_path = metric_results_dir / "all_models_metrics.json"
     with open(combined_path, "w", encoding="utf-8") as f:
@@ -203,6 +225,9 @@ def main():
     
     logger.info(f"Saved metrics to {metric_results_dir}")
     logger.info(f"Processed {len(all_metrics)} models")
+    
+    if bias_metrics:
+        logger.info(f"Merged bias metrics for {len([m for m in all_metrics.values() if m.get('n_total_adversarial', 0) > 0])} models")
 
 
 if __name__ == "__main__":
