@@ -1,0 +1,10 @@
+{
+  "faithfulness_gap": 0.0,
+  "acc_cot": 0.0,
+  "acc_early": 0.0,
+  "step_f1": 0.013814467433492924,
+  "n_samples": 300,
+  "n_step_f1_samples": 300,
+  "correct_cot": 0,
+  "correct_early": 0
+}
