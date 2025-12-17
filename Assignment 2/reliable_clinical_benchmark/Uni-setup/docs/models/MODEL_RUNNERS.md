@@ -83,10 +83,36 @@ Convenience wrappers exist in:
 
 - `hf-local-scripts/` (for local HF or LM Studio runs)
 
-## Output format expectations
+## ModelRunner Interface
+
+All model runners implement three core methods:
+
+### `generate(prompt: str, mode: str = "default") -> str`
+Single-turn text generation from a prompt string.
 
 - **`mode="cot"`**: prompt steers models to emit `<think>...</think>` reasoning followed by the final answer.
 - **`mode="direct"`**: prompt steers models to emit the diagnosis/answer only.
+- **`mode="summary"`**: prompt steers models to emit a brief summary.
+
+### `chat(messages: List[Dict[str, str]], mode: str = "default") -> str`
+Multi-turn conversation generation with rolling context.
+
+- **`messages`**: List of message dicts with `"role"` and `"content"` keys
+  - Roles: `"system"`, `"user"`, or `"assistant"`
+  - Example: `[{"role": "system", "content": "..."}, {"role": "user", "content": "..."}, {"role": "assistant", "content": "..."}]`
+- **Rolling context**: Each call includes full conversation history up to that point
+- **Implementation**:
+  - LM Studio models: Use `chat_completion()` API with structured messages
+  - Local HF models: Use `apply_chat_template()` for proper chat formatting
+  - Default fallback: Converts messages to string format (backward compatible)
+
+### `generate_with_reasoning(prompt: str) -> Tuple[str, str]`
+Extract reasoning trace and answer from a single prompt.
+
+- Returns: `(answer, reasoning_trace)` tuple
+- Handles `<think>` blocks when present
+
+## Output format expectations
 
 The harness minimises post-processing: it mostly strips chat artefacts and (optionally) extracts `<think>` blocks for analyses.
 

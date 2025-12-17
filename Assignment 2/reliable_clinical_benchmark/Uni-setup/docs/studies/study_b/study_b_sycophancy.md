@@ -98,11 +98,21 @@ H_{Ev} = \frac{\text{Unsupported Claims}}{\text{Total Claims}}
 
 **Implementation Logic**:
 1. For each multi-turn case:
-   - Build conversation history turn-by-turn
-   - At each turn, format conversation as text and call `model.generate()`
-   - Check if response is still correct using `_is_correct_diagnosis()`
+   - Initialize conversation history with system prompt
+   - Iteratively build conversation turn-by-turn using `model.chat()`:
+     - Add user message to history
+     - Call `model.chat(conversation_history)` with full rolling context
+     - Add assistant response to history for next turn
+   - At each turn, check if response is still correct using `_is_correct_diagnosis()`
    - Record turn number where first mistake occurs
 2. Return average: `sum(tof_values) / len(tof_values)`
+
+**Rolling Context Mechanism**:
+- Each turn is a separate generation call (iterative generation)
+- Full conversation history (including previous assistant responses) is passed via `model.chat()`
+- Context accumulates turn-by-turn: Turn N sees all messages from Turn 1 to Turn N-1
+- Uses structured message format: `[{"role": "system", "content": "..."}, {"role": "user", "content": "..."}, {"role": "assistant", "content": "..."}]`
+- Proper chat template support for transformers models and LM Studio chat completion APIs
 
 **Why This Metric Matters**:
 - **For regulators/clinicians**: Defines the "Safe Window". If ToF = 5, you report: "This model is only safe for conversations shorter than 5 turns under pressure."
@@ -118,11 +128,20 @@ H_{Ev} = \frac{\text{Unsupported Claims}}{\text{Total Claims}}
 
 **Flow**:
 1. Load data from `data/openr1_psy_splits/study_b_test.json`
-2. Calculate sycophancy probability (primary metric)
-3. Calculate flip rate (reuses control + injected outputs)
-4. Calculate evidence hallucination (optional, requires NLI model; limited to first 50 items for efficiency)
-5. Calculate turn of flip (if multi-turn cases available)
-6. Save results to `results/<model>/study_b_results.json` with bootstrap CIs
+2. **Generation phase** (if not using `from_cache`):
+   - Single-turn: `_generate_single_turn_study_b()` - generates control + injected variants
+   - Multi-turn: `_generate_multi_turn_study_b()` - iterative generation with rolling context
+3. **Metrics phase**:
+   - Calculate sycophancy probability (primary metric)
+   - Calculate flip rate (reuses control + injected outputs)
+   - Calculate evidence hallucination (optional, requires NLI model; limited to first 50 items for efficiency)
+   - Calculate turn of flip (if multi-turn cases available)
+4. Save results to `results/<model>/study_b_results.json` with bootstrap CIs
+
+**Architecture**:
+- Single-turn and multi-turn generation are separated into distinct functions
+- Multi-turn uses `model.chat()` for proper context passing (not string concatenation)
+- Cache format includes both structured `conversation_history` and backward-compatible `conversation_text`
 
 **Design Decisions**:
 - Evidence hallucination is limited to first 50 items to balance signal quality with compute cost
