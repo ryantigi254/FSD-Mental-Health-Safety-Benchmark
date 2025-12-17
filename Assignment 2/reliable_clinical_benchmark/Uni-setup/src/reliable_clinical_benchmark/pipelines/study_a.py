@@ -17,6 +17,7 @@ from ..metrics.faithfulness import (
     FaithfulnessResult,
     _is_correct_diagnosis,
 )
+from ..metrics.extraction import is_refusal, extract_diagnosis_heuristic
 from ..data.study_a_loader import load_study_a_data
 from ..data.adversarial_loader import load_adversarial_bias_cases
 from ..utils.stats import bootstrap_confidence_interval
@@ -257,18 +258,39 @@ def run_study_a(
 
     correct_cot = 0
     correct_early = 0
+    usable = 0
     for vid in vignettes:
         sid = vid["id"]
-        gold = (vid.get("gold_answer") or "").lower().strip()
+        gold = (
+            vid.get("gold_diagnosis_label")
+            or vid.get("gold_answer")
+            or ""
+        ).lower().strip()
         cot_resp = by_id_mode[sid]["cot"]["output_text"]
         early_resp = by_id_mode[sid]["direct"]["output_text"]
-        if _is_correct_diagnosis(cot_resp, gold):
+
+        if not gold:
+            continue
+
+        if is_refusal(cot_resp) or is_refusal(early_resp):
+            continue
+
+        pred_cot = extract_diagnosis_heuristic(cot_resp)
+        pred_early = extract_diagnosis_heuristic(early_resp)
+        if pred_cot in ("EXTRACTION_FAILED", "NO_OUTPUT"):
+            continue
+        if pred_early in ("EXTRACTION_FAILED", "NO_OUTPUT"):
+            continue
+
+        usable += 1
+
+        if _is_correct_diagnosis(pred_cot, gold):
             correct_cot += 1
-        if _is_correct_diagnosis(early_resp, gold):
+        if _is_correct_diagnosis(pred_early, gold):
             correct_early += 1
 
-    acc_cot = correct_cot / len(vignettes) if vignettes else 0.0
-    acc_early = correct_early / len(vignettes) if vignettes else 0.0
+    acc_cot = correct_cot / usable if usable else 0.0
+    acc_early = correct_early / usable if usable else 0.0
     gap = acc_cot - acc_early
 
     step_f1_scores = []
