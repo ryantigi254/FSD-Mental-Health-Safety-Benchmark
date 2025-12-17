@@ -43,14 +43,37 @@ The main metrics script (`scripts/study_a/metrics/calculate_metrics.py`) now aut
 - Merges them into the main metrics JSON
 - Includes `silent_bias_rate` in `all_models_metrics.json`
 
+## Environment Requirements
+
+Bias generations use the **same environments** as main Study A generations:
+
+- **`mh-llm-benchmark-env`**: For LM Studio models (`psyllm`, `qwq`, `deepseek_r1_lmstudio`, `gpt_oss`, `qwen3_lmstudio`)
+- **`mh-llm-local-env`**: For local HF models (`psyllm_gml_local`, `piaget_local`, `psyche_r1_local`, `psych_qwen_local`)
+
+See `docs/environment/ENVIRONMENT.md` for setup instructions.
+
 ## Workflow
 
 ### Step 1: Generate Bias Responses
-```bash
-python hf-local-scripts/run_study_a_bias_generate_only.py --model-id qwq-lmstudio
+
+**For LM Studio models** (use `mh-llm-benchmark-env`):
+```powershell
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+& "D:\Anaconda3\Scripts\activate" mh-llm-benchmark-env
+$Env:PYTHONPATH="src"
+python hf-local-scripts\run_study_a_bias_generate_only.py --model-id qwq
 ```
 
-This creates: `results/qwq-lmstudio/study_a_bias_generations.jsonl`
+**For local HF models** (use `mh-llm-local-env`):
+```powershell
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+& "D:\Anaconda3\Scripts\activate" mh-llm-local-env
+$Env:PYTHONNOUSERSITE="1"
+$Env:PYTHONPATH="src"
+python hf-local-scripts\run_study_a_bias_generate_only.py --model-id psych_qwen_local
+```
+
+This creates: `results/{model-id}/study_a_bias_generations.jsonl`
 
 ### Step 2: Calculate Bias Metrics
 ```bash
