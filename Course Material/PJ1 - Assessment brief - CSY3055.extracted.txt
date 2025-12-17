@@ -1,0 +1,473 @@
+CSY3055 – PJ1: Undergraduate Marking Rubric
+Assessment Brief
+Assessment Brief
+Assessment Brief
+Assessment Brief
+Assessment Brief
+Module title:
+Natural Language Processing (NLP)
+Natural Language Processing (NLP)
+Module code:
+CSY3055
+Assessment code/title:
+PJ1
+PJ1
+Assessment weighting/word-limit:
+60%/ 1500 words
+Submission date:
+27th January 2026
+27th January 2026
+Feedback date:
+23rd February 2026
+Module Leader:
+Oluseyi Oyedeji
+Oluseyi Oyedeji
+Resit date:
+17th April 2026
+Assessment Task:
+Assessment Task:
+Assessment Task:
+Assessment Task:
+Assessment Task:
+Title (Question): Individual Course Project
+Setting the scene:
+This assessment builds directly on your proposal report (Assignment 1). You are now required to carry out your project, implementing, evaluating, and critically analysing an NLP system or application of your choice. The final submission includes a substantial written report, a working implementation (code/artifact), and a demonstration/viva to present your work.
+The Task
+You must submit the following components:
+A written report of approximately 1500 words.
+A working implementation (code/artifact) of your proposed system.
+A viva/demonstration to present your project outcomes.
+Your written report should be structured to include at least the following sections:
+Abstract
+Introduction
+Literature Review
+Methodology
+Implementation and Artifact Description
+Experimentation and Results
+Ethics, Critical Evaluation and Discussion
+Conclusion
+Future Work and Recommendations
+References
+Appendices (if required)
+Requirements and Guideline
+Topic Refinement:
+Provide a refined version of the previously chosen topic, ensuring specificity and feasibility.
+Highlight any modifications made to the initial proposal to better address the identified problem.
+Expanded Literature Review:
+Extend the literature review from the first assignment.
+Include additional relevant studies, advancements, and recent developments in the field.
+Critically analyze the effectiveness and limitations of the reviewed approaches.
+Detailed Methodology:
+Elaborate on the proposed methodology, covering:
+Data: Finalized data sources and preprocessing methods.
+Models: Specific algorithms or frameworks utilized (e.g., fine-tuning GPT models, training transformers).
+Evaluation Metrics: Key metrics to benchmark success and ensure replicable results.
+Tools & Libraries: Detailed explanation of tools and environments used (e.g., Python, TensorFlow, PyTorch).
+Discuss any updates to the methodology based on feedback or further research.
+Experimentation and Results:
+Conduct experiments based on the proposed methodology.
+Provide clear documentation of results, including:
+Visualizations (charts, graphs, tables).
+Comparative analysis with benchmarks or baselines.
+Highlight challenges faced during the experimental phase and how they were addressed.
+Results discussion should integrate ethical reflection
+Artifact Development:
+Provide details about the final artifact, including:
+Functional description.
+Screenshots, architecture diagrams, or code snippets.
+A demo if applicable (e.g., web-based tools or deployed models).
+Address any challenges encountered during the implementation phase.
+Conclusion and Future Work:
+Summarize the project's achievements, including how objectives were met.
+Discuss the limitations and propose future improvements or extensions to the work.
+Your project should demonstrate the ability to design and implement an NLP system, carry out appropriate experimentation, evaluate results critically, and reflect on ethical, legal and environmental issues. You are expected to provide evidence of independent research, technical competence, and critical analysis.
+Learning Outcomes aligned to this Assessment:
+On successful completion of this assessment, you will be able to:
+b) Analyse, compare and select the most appropriate methods and algorithms for building NLP driven solutions
+c)  Design, implement, evaluate and deploy NLP-based models for given real-life scenarios
+(f) Communicate technical ideas effectively in written and oral form.
+Learning Outcomes are available on the Module Specification for the module, and on the NILE site
+Academic Practice (referencing style, literature usage, AI Usage):
+All sources must be referenced appropriately using the Harvard referencing style. Failure to acknowledge sources may constitute academic misconduct.
+Title (Question): Individual Course Project
+Setting the scene:
+This assessment builds directly on your proposal report (Assignment 1). You are now required to carry out your project, implementing, evaluating, and critically analysing an NLP system or application of your choice. The final submission includes a substantial written report, a working implementation (code/artifact), and a demonstration/viva to present your work.
+The Task
+You must submit the following components:
+A written report of approximately 1500 words.
+A working implementation (code/artifact) of your proposed system.
+A viva/demonstration to present your project outcomes.
+Your written report should be structured to include at least the following sections:
+Abstract
+Introduction
+Literature Review
+Methodology
+Implementation and Artifact Description
+Experimentation and Results
+Ethics, Critical Evaluation and Discussion
+Conclusion
+Future Work and Recommendations
+References
+Appendices (if required)
+Requirements and Guideline
+Topic Refinement:
+Provide a refined version of the previously chosen topic, ensuring specificity and feasibility.
+Highlight any modifications made to the initial proposal to better address the identified problem.
+Expanded Literature Review:
+Extend the literature review from the first assignment.
+Include additional relevant studies, advancements, and recent developments in the field.
+Critically analyze the effectiveness and limitations of the reviewed approaches.
+Detailed Methodology:
+Elaborate on the proposed methodology, covering:
+Data: Finalized data sources and preprocessing methods.
+Models: Specific algorithms or frameworks utilized (e.g., fine-tuning GPT models, training transformers).
+Evaluation Metrics: Key metrics to benchmark success and ensure replicable results.
+Tools & Libraries: Detailed explanation of tools and environments used (e.g., Python, TensorFlow, PyTorch).
+Discuss any updates to the methodology based on feedback or further research.
+Experimentation and Results:
+Conduct experiments based on the proposed methodology.
+Provide clear documentation of results, including:
+Visualizations (charts, graphs, tables).
+Comparative analysis with benchmarks or baselines.
+Highlight challenges faced during the experimental phase and how they were addressed.
+Results discussion should integrate ethical reflection
+Artifact Development:
+Provide details about the final artifact, including:
+Functional description.
+Screenshots, architecture diagrams, or code snippets.
+A demo if applicable (e.g., web-based tools or deployed models).
+Address any challenges encountered during the implementation phase.
+Conclusion and Future Work:
+Summarize the project's achievements, including how objectives were met.
+Discuss the limitations and propose future improvements or extensions to the work.
+Your project should demonstrate the ability to design and implement an NLP system, carry out appropriate experimentation, evaluate results critically, and reflect on ethical, legal and environmental issues. You are expected to provide evidence of independent research, technical competence, and critical analysis.
+Learning Outcomes aligned to this Assessment:
+On successful completion of this assessment, you will be able to:
+b) Analyse, compare and select the most appropriate methods and algorithms for building NLP driven solutions
+c)  Design, implement, evaluate and deploy NLP-based models for given real-life scenarios
+(f) Communicate technical ideas effectively in written and oral form.
+Learning Outcomes are available on the Module Specification for the module, and on the NILE site
+Academic Practice (referencing style, literature usage, AI Usage):
+All sources must be referenced appropriately using the Harvard referencing style. Failure to acknowledge sources may constitute academic misconduct.
+Title (Question): Individual Course Project
+Setting the scene:
+This assessment builds directly on your proposal report (Assignment 1). You are now required to carry out your project, implementing, evaluating, and critically analysing an NLP system or application of your choice. The final submission includes a substantial written report, a working implementation (code/artifact), and a demonstration/viva to present your work.
+The Task
+You must submit the following components:
+A written report of approximately 1500 words.
+A working implementation (code/artifact) of your proposed system.
+A viva/demonstration to present your project outcomes.
+Your written report should be structured to include at least the following sections:
+Abstract
+Introduction
+Literature Review
+Methodology
+Implementation and Artifact Description
+Experimentation and Results
+Ethics, Critical Evaluation and Discussion
+Conclusion
+Future Work and Recommendations
+References
+Appendices (if required)
+Requirements and Guideline
+Topic Refinement:
+Provide a refined version of the previously chosen topic, ensuring specificity and feasibility.
+Highlight any modifications made to the initial proposal to better address the identified problem.
+Expanded Literature Review:
+Extend the literature review from the first assignment.
+Include additional relevant studies, advancements, and recent developments in the field.
+Critically analyze the effectiveness and limitations of the reviewed approaches.
+Detailed Methodology:
+Elaborate on the proposed methodology, covering:
+Data: Finalized data sources and preprocessing methods.
+Models: Specific algorithms or frameworks utilized (e.g., fine-tuning GPT models, training transformers).
+Evaluation Metrics: Key metrics to benchmark success and ensure replicable results.
+Tools & Libraries: Detailed explanation of tools and environments used (e.g., Python, TensorFlow, PyTorch).
+Discuss any updates to the methodology based on feedback or further research.
+Experimentation and Results:
+Conduct experiments based on the proposed methodology.
+Provide clear documentation of results, including:
+Visualizations (charts, graphs, tables).
+Comparative analysis with benchmarks or baselines.
+Highlight challenges faced during the experimental phase and how they were addressed.
+Results discussion should integrate ethical reflection
+Artifact Development:
+Provide details about the final artifact, including:
+Functional description.
+Screenshots, architecture diagrams, or code snippets.
+A demo if applicable (e.g., web-based tools or deployed models).
+Address any challenges encountered during the implementation phase.
+Conclusion and Future Work:
+Summarize the project's achievements, including how objectives were met.
+Discuss the limitations and propose future improvements or extensions to the work.
+Your project should demonstrate the ability to design and implement an NLP system, carry out appropriate experimentation, evaluate results critically, and reflect on ethical, legal and environmental issues. You are expected to provide evidence of independent research, technical competence, and critical analysis.
+Learning Outcomes aligned to this Assessment:
+On successful completion of this assessment, you will be able to:
+b) Analyse, compare and select the most appropriate methods and algorithms for building NLP driven solutions
+c)  Design, implement, evaluate and deploy NLP-based models for given real-life scenarios
+(f) Communicate technical ideas effectively in written and oral form.
+Learning Outcomes are available on the Module Specification for the module, and on the NILE site
+Academic Practice (referencing style, literature usage, AI Usage):
+All sources must be referenced appropriately using the Harvard referencing style. Failure to acknowledge sources may constitute academic misconduct.
+Title (Question): Individual Course Project
+Setting the scene:
+This assessment builds directly on your proposal report (Assignment 1). You are now required to carry out your project, implementing, evaluating, and critically analysing an NLP system or application of your choice. The final submission includes a substantial written report, a working implementation (code/artifact), and a demonstration/viva to present your work.
+The Task
+You must submit the following components:
+A written report of approximately 1500 words.
+A working implementation (code/artifact) of your proposed system.
+A viva/demonstration to present your project outcomes.
+Your written report should be structured to include at least the following sections:
+Abstract
+Introduction
+Literature Review
+Methodology
+Implementation and Artifact Description
+Experimentation and Results
+Ethics, Critical Evaluation and Discussion
+Conclusion
+Future Work and Recommendations
+References
+Appendices (if required)
+Requirements and Guideline
+Topic Refinement:
+Provide a refined version of the previously chosen topic, ensuring specificity and feasibility.
+Highlight any modifications made to the initial proposal to better address the identified problem.
+Expanded Literature Review:
+Extend the literature review from the first assignment.
+Include additional relevant studies, advancements, and recent developments in the field.
+Critically analyze the effectiveness and limitations of the reviewed approaches.
+Detailed Methodology:
+Elaborate on the proposed methodology, covering:
+Data: Finalized data sources and preprocessing methods.
+Models: Specific algorithms or frameworks utilized (e.g., fine-tuning GPT models, training transformers).
+Evaluation Metrics: Key metrics to benchmark success and ensure replicable results.
+Tools & Libraries: Detailed explanation of tools and environments used (e.g., Python, TensorFlow, PyTorch).
+Discuss any updates to the methodology based on feedback or further research.
+Experimentation and Results:
+Conduct experiments based on the proposed methodology.
+Provide clear documentation of results, including:
+Visualizations (charts, graphs, tables).
+Comparative analysis with benchmarks or baselines.
+Highlight challenges faced during the experimental phase and how they were addressed.
+Results discussion should integrate ethical reflection
+Artifact Development:
+Provide details about the final artifact, including:
+Functional description.
+Screenshots, architecture diagrams, or code snippets.
+A demo if applicable (e.g., web-based tools or deployed models).
+Address any challenges encountered during the implementation phase.
+Conclusion and Future Work:
+Summarize the project's achievements, including how objectives were met.
+Discuss the limitations and propose future improvements or extensions to the work.
+Your project should demonstrate the ability to design and implement an NLP system, carry out appropriate experimentation, evaluate results critically, and reflect on ethical, legal and environmental issues. You are expected to provide evidence of independent research, technical competence, and critical analysis.
+Learning Outcomes aligned to this Assessment:
+On successful completion of this assessment, you will be able to:
+b) Analyse, compare and select the most appropriate methods and algorithms for building NLP driven solutions
+c)  Design, implement, evaluate and deploy NLP-based models for given real-life scenarios
+(f) Communicate technical ideas effectively in written and oral form.
+Learning Outcomes are available on the Module Specification for the module, and on the NILE site
+Academic Practice (referencing style, literature usage, AI Usage):
+All sources must be referenced appropriately using the Harvard referencing style. Failure to acknowledge sources may constitute academic misconduct.
+Title (Question): Individual Course Project
+Setting the scene:
+This assessment builds directly on your proposal report (Assignment 1). You are now required to carry out your project, implementing, evaluating, and critically analysing an NLP system or application of your choice. The final submission includes a substantial written report, a working implementation (code/artifact), and a demonstration/viva to present your work.
+The Task
+You must submit the following components:
+A written report of approximately 1500 words.
+A working implementation (code/artifact) of your proposed system.
+A viva/demonstration to present your project outcomes.
+Your written report should be structured to include at least the following sections:
+Abstract
+Introduction
+Literature Review
+Methodology
+Implementation and Artifact Description
+Experimentation and Results
+Ethics, Critical Evaluation and Discussion
+Conclusion
+Future Work and Recommendations
+References
+Appendices (if required)
+Requirements and Guideline
+Topic Refinement:
+Provide a refined version of the previously chosen topic, ensuring specificity and feasibility.
+Highlight any modifications made to the initial proposal to better address the identified problem.
+Expanded Literature Review:
+Extend the literature review from the first assignment.
+Include additional relevant studies, advancements, and recent developments in the field.
+Critically analyze the effectiveness and limitations of the reviewed approaches.
+Detailed Methodology:
+Elaborate on the proposed methodology, covering:
+Data: Finalized data sources and preprocessing methods.
+Models: Specific algorithms or frameworks utilized (e.g., fine-tuning GPT models, training transformers).
+Evaluation Metrics: Key metrics to benchmark success and ensure replicable results.
+Tools & Libraries: Detailed explanation of tools and environments used (e.g., Python, TensorFlow, PyTorch).
+Discuss any updates to the methodology based on feedback or further research.
+Experimentation and Results:
+Conduct experiments based on the proposed methodology.
+Provide clear documentation of results, including:
+Visualizations (charts, graphs, tables).
+Comparative analysis with benchmarks or baselines.
+Highlight challenges faced during the experimental phase and how they were addressed.
+Results discussion should integrate ethical reflection
+Artifact Development:
+Provide details about the final artifact, including:
+Functional description.
+Screenshots, architecture diagrams, or code snippets.
+A demo if applicable (e.g., web-based tools or deployed models).
+Address any challenges encountered during the implementation phase.
+Conclusion and Future Work:
+Summarize the project's achievements, including how objectives were met.
+Discuss the limitations and propose future improvements or extensions to the work.
+Your project should demonstrate the ability to design and implement an NLP system, carry out appropriate experimentation, evaluate results critically, and reflect on ethical, legal and environmental issues. You are expected to provide evidence of independent research, technical competence, and critical analysis.
+Learning Outcomes aligned to this Assessment:
+On successful completion of this assessment, you will be able to:
+b) Analyse, compare and select the most appropriate methods and algorithms for building NLP driven solutions
+c)  Design, implement, evaluate and deploy NLP-based models for given real-life scenarios
+(f) Communicate technical ideas effectively in written and oral form.
+Learning Outcomes are available on the Module Specification for the module, and on the NILE site
+Academic Practice (referencing style, literature usage, AI Usage):
+All sources must be referenced appropriately using the Harvard referencing style. Failure to acknowledge sources may constitute academic misconduct.
+Assessment Guidance:
+Assessment Guidance:
+Assessment Guidance:
+Assessment Guidance:
+Assessment Guidance:
+Reading List: You will find a link to your online reading list on NILE in the “About this module” section.
+Use of Generative AI (Artificial Intelligence) within this Assessment:
+AI Categories:
+Category 1: No GenAI allowed
+For this type of assessment, you are unable to use GenAI due to the design of the assessment. For example, a closed book exam where you are required to demonstrate within controlled conditions that you have core knowledge or a skill in a particular area. As it is not possible to use GenAI within this type of assessment, you do not need to acknowledge use of GenAI.
+Academic Practice support
+The Skills Hub is a central repository where you will find a range of support for your study and assessments: https://skillshub.northampton.ac.uk/
+Notes for Staff: Include relevant academic skills links
+Reading List: You will find a link to your online reading list on NILE in the “About this module” section.
+Use of Generative AI (Artificial Intelligence) within this Assessment:
+AI Categories:
+Category 1: No GenAI allowed
+For this type of assessment, you are unable to use GenAI due to the design of the assessment. For example, a closed book exam where you are required to demonstrate within controlled conditions that you have core knowledge or a skill in a particular area. As it is not possible to use GenAI within this type of assessment, you do not need to acknowledge use of GenAI.
+Academic Practice support
+The Skills Hub is a central repository where you will find a range of support for your study and assessments: https://skillshub.northampton.ac.uk/
+Notes for Staff: Include relevant academic skills links
+Reading List: You will find a link to your online reading list on NILE in the “About this module” section.
+Use of Generative AI (Artificial Intelligence) within this Assessment:
+AI Categories:
+Category 1: No GenAI allowed
+For this type of assessment, you are unable to use GenAI due to the design of the assessment. For example, a closed book exam where you are required to demonstrate within controlled conditions that you have core knowledge or a skill in a particular area. As it is not possible to use GenAI within this type of assessment, you do not need to acknowledge use of GenAI.
+Academic Practice support
+The Skills Hub is a central repository where you will find a range of support for your study and assessments: https://skillshub.northampton.ac.uk/
+Notes for Staff: Include relevant academic skills links
+Reading List: You will find a link to your online reading list on NILE in the “About this module” section.
+Use of Generative AI (Artificial Intelligence) within this Assessment:
+AI Categories:
+Category 1: No GenAI allowed
+For this type of assessment, you are unable to use GenAI due to the design of the assessment. For example, a closed book exam where you are required to demonstrate within controlled conditions that you have core knowledge or a skill in a particular area. As it is not possible to use GenAI within this type of assessment, you do not need to acknowledge use of GenAI.
+Academic Practice support
+The Skills Hub is a central repository where you will find a range of support for your study and assessments: https://skillshub.northampton.ac.uk/
+Notes for Staff: Include relevant academic skills links
+Reading List: You will find a link to your online reading list on NILE in the “About this module” section.
+Use of Generative AI (Artificial Intelligence) within this Assessment:
+AI Categories:
+Category 1: No GenAI allowed
+For this type of assessment, you are unable to use GenAI due to the design of the assessment. For example, a closed book exam where you are required to demonstrate within controlled conditions that you have core knowledge or a skill in a particular area. As it is not possible to use GenAI within this type of assessment, you do not need to acknowledge use of GenAI.
+Academic Practice support
+The Skills Hub is a central repository where you will find a range of support for your study and assessments: https://skillshub.northampton.ac.uk/
+Notes for Staff: Include relevant academic skills links
+Feedback:
+Feedback:
+Feedback:
+Feedback:
+Feedback:
+Feedback should be received within 20 working days
+An announcement will be sent out via NILE to inform you of when feedback is available.
+Instruction on Anonymity for students Further guidance is available online
+Feedback should be received within 20 working days
+An announcement will be sent out via NILE to inform you of when feedback is available.
+Instruction on Anonymity for students Further guidance is available online
+Feedback should be received within 20 working days
+An announcement will be sent out via NILE to inform you of when feedback is available.
+Instruction on Anonymity for students Further guidance is available online
+Feedback should be received within 20 working days
+An announcement will be sent out via NILE to inform you of when feedback is available.
+Instruction on Anonymity for students Further guidance is available online
+Feedback should be received within 20 working days
+An announcement will be sent out via NILE to inform you of when feedback is available.
+Instruction on Anonymity for students Further guidance is available online
+Assessment Criteria
+Weight
+Evidence checklist
+Learning Outcomes
+Fail
+Work does not achieve requirements
+Pass
+Work achieves requirements
+Satisfactory
+Work of satisfactory quality
+Good
+Work of worthy quality
+Excellent
+Work of high quality
+Introduction & Background
+10%
+Problem definition, context, rationale
+f
+No clear problem defined; no rationale or context provided
+Problem identified but vague or irrelevant
+Problem adequately defined with some rationale and context
+Clear and relevant problem; rationale explained with context
+Excellent, precise problem definition; strong rationale linked to real-world impact
+Literature Review
+15%
+Coverage of sources, comparison of approaches, quality of sources
+b, f
+No review; irrelevant or missing sources
+Minimal review; weak or non-academic sources
+Adequate review with some relevant academic sources
+Good review; sources relevant and critically compared
+Excellent review with strong critical insight and wide coverage of sources
+Methodology
+20%
+Dataset selection, preprocessing, algorithms/models/tools, evaluation metrics, feasibility
+b, c
+No clear methodology; unrealistic or missing details
+Weak or vague methodology; feasibility doubtful
+Adequate methodology with some gaps in detail or feasibility
+Clear, feasible methodology with sound justification
+Excellent methodology; detailed, realistic, and well-justified
+Implementation & Artifact
+20%
+Implementation quality, functionality, code readability & documentation, creativity
+c
+No implementation or artifact delivered
+Minimal or incomplete implementation; artifact does not function
+Adequate implementation; artifact functions with some issues
+Good quality implementation; functional artifact with clear documentation
+Excellent, professional-quality implementation; artifact highly functional, creative, and well-documented
+Experimentation & Results
+15%
+Experimental design, results presentation, results interpretation & discussion
+b, c
+No experimentation or results
+Minimal or weak experimentation; poor presentation
+Adequate experimentation with basic results and some discussion
+Good experimentation, results clearly presented and interpreted
+Excellent, well-designed experiments with insightful results and critical discussion
+Ethics & Critical Evaluation
+10%
+Ethical issues, legal/environmental considerations, mitigations
+b, c
+No mention of ethics/legal/environmental issues
+Minimal mention without relevance
+Adequate coverage of some issues but limited depth
+Good coverage of relevant issues with suggested mitigations
+Excellent, insightful analysis of ethical/legal/environmental risks with strong mitigation strategies
+Presentation, Structure & Referencing
+10%
+Report organisation, clarity, academic writing, Harvard referencing, Viva/Demonstration
+f
+Report missing or incoherent; no referencing
+Poorly structured; limited referencing
+Adequately structured; some referencing errors
+Well-structured, clear, consistent referencing
+Excellent structure and clarity; flawless referencing; professional presentation
