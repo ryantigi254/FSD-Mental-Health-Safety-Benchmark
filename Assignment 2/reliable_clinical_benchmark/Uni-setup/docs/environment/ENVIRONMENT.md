@@ -41,10 +41,36 @@ pytest tests/integration -v
 
 Use this when you want to run **local HF runners** that load weights from `Uni-setup/models/` (Piaget, Psyche-R1, Psych_Qwen_32B, PsyLLM).
 
-Key points:
+### Setup
 
-- Keep it separate from `mh-llm-benchmark-env` so the pinned `transformers==4.38.2` does not block newer chat-template features.
+```powershell
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+conda create -n mh-llm-local-env python=3.10 -y
+& "D:\Anaconda3\Scripts\activate" mh-llm-local-env   # adjust if Anaconda elsewhere
+
+# Install core dependencies with latest transformers (needed for modern chat templates)
+pip install torch transformers accelerate bitsandbytes
+
+# Install other requirements (may upgrade transformers beyond pinned version)
+pip install -r requirements.txt --upgrade transformers
+
+# For models requiring TensorFlow (e.g., some local runners)
+# pip install tensorflow>=2.13.0  # Only if needed for specific models
+```
+
+### What runs in this env
+
+- **Local HF model runners**: `piaget_local`, `psyche_r1_local`, `psych_qwen_local`, `psyllm_gml_local`
+- **Generation scripts**: `hf-local-scripts/run_study_*_generate_only.py` (when using local models)
+- Models that require:
+  - Modern `transformers` versions (for Qwen3-style `enable_thinking` chat templating)
+  - Higher TensorFlow versions (if needed by specific model implementations)
+
+### Key points
+
+- **Keep it separate from `mh-llm-benchmark-env`** so the pinned `transformers==4.38.2` does not block newer chat-template features.
 - Prefer running pip via the env python and disable user-site packages (`PYTHONNOUSERSITE=1`) to avoid package bleed.
+- This environment was specifically created for Piaget and other local models that need a more modern dependency stack.
 
 ## Local weight storage
 
