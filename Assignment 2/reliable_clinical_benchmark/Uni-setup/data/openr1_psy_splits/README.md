@@ -19,4 +19,12 @@ an example script for deriving `study_a_test.json` from the OpenR1‑Psy dataset
 Once generated, these splits should be treated as **frozen test sets** for
 published experiments.
 
+## Related Files
+
+**Gold diagnosis labels** for Study A are now in a separate directory:
+- `data/study_a_gold/` - Contains all Study A gold label files
+  - See `data/study_a_gold/README.md` for details
+
+This separation keeps the frozen test splits clean and organized.
+
 
