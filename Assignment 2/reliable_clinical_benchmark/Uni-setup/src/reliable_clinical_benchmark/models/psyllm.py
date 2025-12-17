@@ -53,7 +53,7 @@ class PsyLLMRunner(ModelRunner):
             temperature=self.config.temperature,
             max_tokens=self.config.max_tokens,
             top_p=self.config.top_p,
-            timeout=600,
+            timeout=None,  # No timeout - allow long generations
         )
 
     def generate_with_reasoning(self, prompt: str) -> Tuple[str, str]:
