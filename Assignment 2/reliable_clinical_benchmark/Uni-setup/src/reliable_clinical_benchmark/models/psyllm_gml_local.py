@@ -241,4 +241,62 @@ class PsyLLMGMLLocalRunner(ModelRunner):
         reasoning, answer = self._extract_reasoning_and_answer(full_response)
         return answer.strip(), reasoning.strip()
 
+    def chat(self, messages: List[Dict[str, str]], mode: str = "default") -> str:
+        """
+        Generate response from chat history using transformers chat template.
+        
+        Properly handles multi-turn conversations with rolling context.
+        """
+        # Apply mode formatting to the last user message if needed
+        formatted_messages = messages.copy()
+        if formatted_messages and formatted_messages[-1].get("role") == "user" and mode != "default":
+            last_msg = formatted_messages[-1]
+            formatted_content = self._format_prompt(last_msg["content"], mode)
+            formatted_messages[-1] = {"role": "user", "content": formatted_content}
+        
+        # Build inputs using chat template
+        prompt_text: str
+        if hasattr(self.tokenizer, "apply_chat_template"):
+            kwargs: Dict[str, Any] = dict(tokenize=False, add_generation_prompt=True)
+            if mode == "cot":
+                kwargs["enable_thinking"] = True
+            try:
+                prompt_text = self.tokenizer.apply_chat_template(formatted_messages, **kwargs)
+            except TypeError:
+                kwargs.pop("enable_thinking", None)
+                prompt_text = self.tokenizer.apply_chat_template(formatted_messages, **kwargs)
+        else:
+            # Fallback: convert to string
+            prompt_parts = []
+            for msg in formatted_messages:
+                role = msg.get("role", "user")
+                content = msg.get("content", "")
+                prompt_parts.append(f"{role.capitalize()}: {content}")
+            prompt_text = "\n".join(prompt_parts)
+        
+        # Tokenize and generate
+        encoded = self.tokenizer(
+            prompt_text,
+            return_tensors="pt",
+            return_attention_mask=True,
+            add_special_tokens=False,
+        )
+        encoded = {k: v.to(self.model.device) for k, v in encoded.items()}
+        input_token_count = int(encoded["input_ids"].shape[-1])
+        
+        gen = self.model.generate(
+            **encoded,
+            max_new_tokens=self.config.max_tokens,
+            do_sample=True,
+            temperature=self.config.temperature,
+            top_p=self.config.top_p,
+            top_k=DEFAULT_TOP_K,
+            eos_token_id=self.tokenizer.eos_token_id,
+            pad_token_id=self.tokenizer.pad_token_id,
+        )
+        
+        generated_only = gen[0, input_token_count:]
+        output = self.tokenizer.decode(generated_only, skip_special_tokens=True)
+        return self._strip_role_markers(output)
+
 
