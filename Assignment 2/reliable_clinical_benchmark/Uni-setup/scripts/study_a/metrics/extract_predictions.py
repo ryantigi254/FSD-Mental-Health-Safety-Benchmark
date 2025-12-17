@@ -113,7 +113,8 @@ def main() -> int:
                 # 2. Clean text ONCE
                 clean_text = clean_model_output(raw_text)
                 
-                # 3. Extract Diagnosis (using Clean Text + Whitelist)
+                # 3. Extract Diagnosis FIRST (using Clean Text + Whitelist)
+                # This ensures we find valid diagnoses even if there's a disclaimer at the end
                 if whitelist:
                     diagnosis, method = extract_diagnosis_closed_set(clean_text, whitelist)
                 else:
@@ -124,12 +125,17 @@ def main() -> int:
                         diagnosis = "EXTRACTION_FAILED"
                         method = "missing_whitelist"
 
-                # 4. Refusal Check (Redundant check for metadata, strictly using Clean Text)
-                refusal_bool = is_refusal(clean_text)
-                # Ensure consistency: if the text is fundamentally a refusal, override extraction
-                if refusal_bool:
-                    diagnosis = "REFUSAL"
-                    method = "refusal_detection"
+                # 4. Refusal Check (ONLY if no valid diagnosis was found)
+                # Key insight: If we found a valid diagnosis, the model didn't refuse
+                # (even if it added a safety disclaimer at the end)
+                refusal_bool = False
+                if diagnosis in ("EXTRACTION_FAILED", "NO_WHITELIST", "NO_OUTPUT", "closed_set_no_match"):
+                    # Only check for refusal if extraction failed
+                    refusal_bool = is_refusal(clean_text)
+                    if refusal_bool:
+                        diagnosis = "REFUSAL"
+                        method = "refusal_detection"
+                # If diagnosis was successfully extracted, ignore any disclaimer text
 
                 # 5. Complexity Metrics (using Raw Text to catch bad formatting artifacts)
                 # We use raw_text because <think> tags might contain the broken unicode we want to detect.

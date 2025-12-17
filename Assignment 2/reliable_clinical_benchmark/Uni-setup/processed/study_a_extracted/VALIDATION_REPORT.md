@@ -151,6 +151,8 @@ All processed files have been successfully updated with the new extraction pipel
 - [x] No JSON parsing errors
 - [x] Closed-set matching successfully extracting from verbose responses
 - [x] Ambiguity resolution working (`closed_set_match_longest`)
+- [x] Context-aware refusal detection working correctly
+- [x] Diagnosis-first extraction preserving valid diagnoses
 
 ---
 
@@ -188,8 +190,14 @@ Expected improvements:
 - **Noise**: 0.0 - 0.28 (0-28% non-ASCII characters)
 - **Word count**: 1 - 1,695 words
 
+### Refusal Detection Improvements
+- **Total refusals detected**: 6 (0.17% of all entries) ⭐ **Significantly reduced false positives**
+- **Context-aware logic**: Correctly distinguishes between hard refusals and helpful responses with disclaimers
+- **Diagnosis-first approach**: Ensures valid diagnoses are preserved even when disclaimer text is present
+- **Key improvement**: Responses with valid diagnoses + end-of-text disclaimers are no longer incorrectly flagged
+
 ### Data Quality
-- **Total entries validated**: 3,567
+- **Total entries validated**: 3,600 (excluding qwq - still updating)
 - **Entries with issues**: 0
 - **Format compliance**: 100%
 - **Field completeness**: 100%

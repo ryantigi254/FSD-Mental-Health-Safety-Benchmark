@@ -26,7 +26,9 @@ metric-results/
 ```
 Raw Model Output (results/*/study_a_generations.jsonl)
     ↓
-Extract Text Fields (output_text, mode, id)
+Extract Predictions (scripts/study_a/metrics/extract_predictions.py)
+    ↓ Extract diagnoses, detect refusals, compute complexity metrics
+    ↓ Output: processed/study_a_extracted/{model}/study_a_extracted.jsonl
     ↓
 Apply Objective Functions (per LaTeX spec)
     ↓
@@ -34,6 +36,78 @@ Calculate Metrics (faithfulness_gap, step_f1, etc.)
     ↓
 Save to metric-results/ (JSON format)
 ```
+
+## Step-by-Step Processing Sequence
+
+### Step 1: Generate Model Responses
+Run generation scripts to create `results/{model-id}/study_a_generations.jsonl`:
+- See `docs/studies/study_a/study_a_generation_commands.md` for model-specific commands
+- Each entry contains: `id`, `mode` (cot/direct), `output_text`, `status`, `timestamp`, `model_name`
+
+### Step 2: Extract Predictions (Required)
+**Script**: `scripts/study_a/metrics/extract_predictions.py`
+
+**Command**:
+```powershell
+python scripts\study_a\metrics\extract_predictions.py
+```
+
+**What it does**:
+- Reads `results/{model-id}/study_a_generations.jsonl`
+- Extracts diagnoses using closed-set matching against gold labels
+- Detects refusals (context-aware: ignores disclaimers at end if diagnosis found)
+- Computes complexity metrics (verbosity, noise score, word count)
+- Writes to `processed/study_a_extracted/{model-id}/study_a_extracted.jsonl`
+
+**Output Format**:
+```json
+{
+  "id": "a_001",
+  "mode": "cot",
+  "model_name": "qwq",
+  "status": "ok",
+  "is_refusal": false,
+  "extracted_diagnosis": "Major Depressive Disorder",
+  "extraction_method": "closed_set_match",
+  "response_verbosity": 2.1,
+  "format_noise_score": 0.02,
+  "word_count": 125
+}
+```
+
+**Important**: This step must be run after any changes to:
+- `src/reliable_clinical_benchmark/metrics/extraction.py` (refusal detection logic)
+- Gold labels (`data/study_a_gold/gold_diagnosis_labels.json`)
+- Generation files (if regenerated)
+
+### Step 3: Calculate Metrics
+**Script**: `scripts/study_a/metrics/calculate_metrics.py`
+
+**Command**:
+```powershell
+python scripts\study_a\metrics\calculate_metrics.py
+```
+
+**What it does**:
+- Reads extracted predictions from `processed/study_a_extracted/`
+- Calculates faithfulness gap, step-F1, accuracy metrics
+- Merges with bias metrics (if available)
+- Writes to `metric-results/all_models_metrics.json`
+
+### Step 4: Calculate Bias Metrics (Optional, Separate)
+**Script**: `scripts/study_a/metrics/calculate_bias.py`
+
+**Command**:
+```powershell
+python scripts\study_a\metrics\calculate_bias.py
+```
+
+**What it does**:
+- Reads `results/{model-id}/study_a_bias_generations.jsonl`
+- Calculates Silent Bias Rate (R_SB)
+- Writes to `metric-results/study_a_bias_metrics.json`
+
+**Note**: Bias metrics are automatically merged into `all_models_metrics.json` by `calculate_metrics.py`
 
 ## Study A: Faithfulness Metrics
 

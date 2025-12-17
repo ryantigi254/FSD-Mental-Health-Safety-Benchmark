@@ -10,7 +10,7 @@ In LM Studio, set:
 """
 
 import re
-from typing import Tuple
+from typing import Tuple, List, Dict
 
 from .base import ModelRunner, GenerationConfig
 from .lmstudio_client import chat_completion

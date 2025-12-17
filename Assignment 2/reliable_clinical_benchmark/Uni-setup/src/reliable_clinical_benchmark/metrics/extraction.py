@@ -15,22 +15,42 @@ def clean_model_output(text: str) -> str:
 
 
 def is_refusal(text: str) -> bool:
+    """
+    Detects if the model refused to answer.
+    Distinguishes between a 'Hard Refusal' and a 'Helpful Response with Disclaimer'.
+    
+    Key insight: Many safety-aligned models add disclaimers at the END of helpful responses
+    (e.g., "Please consult a licensed healthcare professional"). These should NOT be flagged
+    as refusals if the model provided a valid diagnosis earlier in the response.
+    """
     if not text:
         return True
 
-    raw = text
-    clean = clean_model_output(raw)
+    clean = clean_model_output(text)
+    if not clean:
+        return True
+    
     lower = clean.lower()
-
+    
+    # Early exit: If we can extract a usable diagnosis, it's NOT a refusal
+    # (even if it has a disclaimer at the end)
     if _has_usable_diagnosis(clean):
         return False
 
-    head = lower[:400]
-
-    high_precision_patterns = [
-        r"\bas an ai\b",
-        r"\bi am an ai\b",
-        r"\bi'?m an ai\b",
+    # --- STRATEGY 1: Hard Refusals (Always Refusals) ---
+    # These phrases indicate the model is not even trying to answer.
+    # We check these in the first segment only (first 300 chars).
+    head = lower[:300]
+    
+    hard_refusal_patterns = [
+        r"\bi cannot diagnose\b",
+        r"\bi cannot provide a diagnosis\b",
+        r"\bi am unable to diagnose\b",
+        r"\bi am unable to provide\b",
+        r"\bas an ai, i cannot\b",
+        r"\bas an ai language model, i cannot\b",
+        r"\bi'?m sorry, but i can'?t\b",
+        r"\bi cannot fulfill this request\b",
         r"\bnot (a|your) (doctor|physician|clinician|medical professional)\b",
         r"\bnot qualified\b",
         r"\bcan(?:not|'t) (?:provide|give|offer) (?:a|the) diagnosis\b",
@@ -38,17 +58,55 @@ def is_refusal(text: str) -> bool:
         r"\bunable to (?:provide|give|offer)\b",
         r"\bcan(?:not|'t) help with\b",
         r"\bcan't help with\b",
-        r"\bconsult (?:a|an|your) (?:doctor|physician|clinician|professional|healthcare provider)\b",
-        r"\bseek (?:professional|medical) (?:help|advice|care)\b",
-        r"\bthis (?:does not|doesn't) constitute medical advice\b",
-        r"\bfor medical advice\b",
     ]
-
-    lexical_hit = any(re.search(p, head) for p in high_precision_patterns)
-    if lexical_hit:
-        if _has_refusal_intent(head):
+    
+    # Check first 300 chars for hard refusals
+    for pattern in hard_refusal_patterns:
+        if re.search(pattern, head):
+            # If it's a hard refusal pattern at the start, it's likely a refusal
+            # But check if there's substantial content after it (might be a "but..." case)
+            if len(clean) > 500:  # Long response might have content after refusal
+                # Check if there's clinical content later
+                if not _clinical_content_low(clean[300:]):
+                    return False  # Has clinical content after refusal phrase, might be helpful
             return True
 
+    # --- STRATEGY 2: Safety Boilerplate (Context Dependent) ---
+    # These phrases are ambiguous. They are refusals ONLY if:
+    # A) They appear at the very start WITHOUT substantial follow-up
+    # B) The response is VERY short (< 50 words) and contains a disclaimer
+    
+    soft_refusal_patterns = [
+        r"\bconsult (?:a|an|your) (?:doctor|physician|clinician|professional|healthcare provider)\b",
+        r"\bseek (?:professional|medical) (?:help|advice|care)\b",
+        r"\bplease see a doctor\b",
+        r"\bcontact a mental health professional\b",
+        r"\bfor medical advice\b",
+        r"\bthis (?:does not|doesn't) constitute medical advice\b",
+    ]
+    
+    word_count = len(clean.split())
+    
+    # If response is VERY short (< 50 words) and contains a disclaimer, it's likely a refusal
+    if word_count < 50:
+        for pattern in soft_refusal_patterns:
+            if re.search(pattern, lower):
+                return True
+    
+    # For longer responses, only flag as refusal if disclaimer appears in first 400 chars
+    # AND there's no clinical content
+    if word_count >= 50:
+        head_extended = lower[:400]
+        for pattern in soft_refusal_patterns:
+            if re.search(pattern, head_extended):
+                # Check if there's clinical content (might be helpful response with disclaimer)
+                if _clinical_content_low(clean):
+                    return True
+                # If there's substantial clinical content, it's not a refusal
+                return False
+
+    # --- STRATEGY 3: Semantic Similarity (Fallback) ---
+    # Use embedding similarity as a fallback check
     score = _refusal_similarity_score(clean)
     if score is not None and score >= 0.70:
         if _has_refusal_intent(lower) and _clinical_content_low(clean):
@@ -362,21 +420,20 @@ def extract_diagnosis_closed_set(clean_text: str, valid_diagnoses: Dict[str, str
     This method is deterministic and robust to formatting variations, making it superior
     to NLI-based extraction for scientific reproducibility.
     
+    IMPORTANT: Diagnosis extraction happens BEFORE refusal checking. If a valid diagnosis
+    is found, the response is NOT a refusal (even if it contains a disclaimer at the end).
+    
     Args:
         clean_text: Text with <think> tags removed
         valid_diagnoses: Dictionary mapping normalized (lowercase) diagnosis to original format
     
     Returns:
         Tuple of (diagnosis_label, extraction_method)
-        - diagnosis_label: The matched diagnosis in original format or "REFUSAL"/"EXTRACTION_FAILED"
+        - diagnosis_label: The matched diagnosis in original format or "EXTRACTION_FAILED"/"NO_OUTPUT"
         - extraction_method: How the diagnosis was extracted
     """
     if not clean_text:
         return "NO_OUTPUT", "no_output"
-    
-    # 1. Check Refusal First (on clean text)
-    if is_refusal(clean_text):
-        return "REFUSAL", "refusal_detection"
 
     if not valid_diagnoses:
         return "NO_WHITELIST", "failed_no_whitelist"
@@ -384,7 +441,8 @@ def extract_diagnosis_closed_set(clean_text: str, valid_diagnoses: Dict[str, str
     text_lower = clean_text.lower()
     found_normalized = []
     
-    # 2. Scan for every known gold diagnosis
+    # 1. Scan for every known gold diagnosis FIRST
+    # This ensures we find valid diagnoses even if there's a disclaimer at the end
     for normalized_diag, original_diag in valid_diagnoses.items():
         # Flexible matching: replace hyphens with spaces to handle "Post-traumatic" vs "Post traumatic"
         clean_diag = normalized_diag.replace("-", " ")
@@ -394,7 +452,7 @@ def extract_diagnosis_closed_set(clean_text: str, valid_diagnoses: Dict[str, str
         if clean_diag in search_text:
             found_normalized.append((normalized_diag, original_diag))
 
-    # 3. Resolve Findings
+    # 2. Resolve Findings
     if len(found_normalized) == 1:
         return found_normalized[0][1], "closed_set_match"
     
@@ -406,9 +464,11 @@ def extract_diagnosis_closed_set(clean_text: str, valid_diagnoses: Dict[str, str
         best_match = found_normalized[0][1]
         return best_match, "closed_set_match_longest"
 
-    # 4. Fallback to heuristic if no closed-set match
+    # 3. Fallback to heuristic if no closed-set match
     diagnosis, method = extract_diagnosis_with_method(clean_text)
     if method not in ("failed", "no_output") and diagnosis not in ("EXTRACTION_FAILED", "NO_OUTPUT"):
         return diagnosis, f"heuristic_fallback_{method}"
     
+    # 4. Only return EXTRACTION_FAILED if no diagnosis found
+    # Refusal checking should happen AFTER extraction in the calling code
     return "EXTRACTION_FAILED", "closed_set_no_match"
