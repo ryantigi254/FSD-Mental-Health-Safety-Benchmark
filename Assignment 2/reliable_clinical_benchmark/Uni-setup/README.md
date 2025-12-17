@@ -55,14 +55,23 @@ cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setu
 conda create -n mh-llm-local-env python=3.10 -y
 & "D:\Anaconda3\Scripts\activate" mh-llm-local-env   # adjust path if Anaconda elsewhere
 
+# Install PyTorch with CUDA support (REQUIRED for GPU inference)
+# Check your CUDA version with: nvidia-smi
+# For CUDA 12.1 (most common): use cu121
+# For CUDA 11.8: use cu118
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
 # Install latest transformers and dependencies for local HF models
-pip install torch transformers accelerate bitsandbytes
+pip install transformers accelerate bitsandbytes
 # Install package dependencies (but may need newer transformers than requirements.txt pins)
 pip install -r requirements.txt --upgrade transformers
 ```
 
+**Important:** PyTorch must be installed with CUDA support for GPU inference. If you install PyTorch without the CUDA index URL, you'll get the CPU-only build (`torch-2.x.x+cpu`), which will not detect your GPU. Always use the CUDA-specific index URL matching your CUDA version (check with `nvidia-smi`).
+
 **Key points:**
 - **Separate from `mh-llm-benchmark-env`** to avoid dependency conflicts
+- **PyTorch with CUDA support is required** for GPU inference. Install using the CUDA-specific index URL (e.g., `--index-url https://download.pytorch.org/whl/cu121` for CUDA 12.1). Without this, PyTorch will be CPU-only and models won't detect your GPU.
 - The benchmark env pins `transformers==4.38.2`, which may block newer chat-template features
 - Local models (Piaget, Psyche-R1, etc.) need modern `transformers` for Qwen3-style `enable_thinking` chat templating
 - Use `PYTHONNOUSERSITE=1` to avoid package bleed between environments
@@ -159,9 +168,18 @@ Unit split invariants will guard against accidental data edits; integration test
 
 For **Psych_Qwen_32B** on a **24GB VRAM** GPU, we used **`quantization="4bit"`** in the local runner.
 
+**Important**: 
+- **PyTorch with CUDA support** must be installed (see setup instructions above). Without CUDA-enabled PyTorch, models won't detect your GPU.
+- Quantization requires **`bitsandbytes`** to be installed in `mh-llm-local-env`. If you get `PackageNotFoundError: No package metadata was found for bitsandbytes`, install it:
+
+```powershell
+conda activate mh-llm-local-env
+pip install bitsandbytes
+```
+
 ### Customising quantization (optional)
 
-The local runner supports a `quantization=` argument so you can pick what fits your hardware/use case (e.g. `"4bit"` or `"8bit"`).
+The local runner supports a `quantization=` argument so you can pick what fits your hardware/use case (e.g. `"4bit"` or `"8bit"`). **`bitsandbytes` must be installed** for any quantization mode.
 
 Example (PowerShell, using `mh-llm-local-env`):
 
