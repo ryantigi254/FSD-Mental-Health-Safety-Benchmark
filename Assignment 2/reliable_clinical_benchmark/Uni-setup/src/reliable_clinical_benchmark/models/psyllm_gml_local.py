@@ -12,7 +12,7 @@ template so that apply_chat_template(enable_thinking=...) works consistently.
 """
 
 import re
-from typing import Tuple, Optional, Dict, Any
+from typing import Tuple, Optional, Dict, Any, List
 
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig
