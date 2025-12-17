@@ -162,9 +162,17 @@ class PsychQwen32BLocalRunner(ModelRunner):
         # - 4-bit (NF4) is typically required; any remainder can be offloaded to CPU RAM.
         # - On Windows, bitsandbytes support can be finicky. We keep it optional and
         #   raise a clear error if requested but unavailable.
+        # - Quantization requires CUDA; if no GPU is available, skip quantization.
         q = (quantization or "").lower().strip()
         quantization_config = None
+        has_cuda = torch.cuda.is_available()
+        
         if q in ("4bit", "4-bit", "bnb4", "bnb_4bit", "nf4"):
+            if not has_cuda:
+                raise RuntimeError(
+                    "4-bit quantization requires CUDA/GPU, but no GPU is available. "
+                    "Either use a GPU-enabled system or set quantization='none' for CPU-only inference."
+                )
             try:
                 from transformers import BitsAndBytesConfig
             except Exception as e:  # pragma: no cover
@@ -179,6 +187,11 @@ class PsychQwen32BLocalRunner(ModelRunner):
                 bnb_4bit_compute_dtype=dtype,
             )
         elif q in ("8bit", "8-bit", "bnb8", "bnb_8bit"):
+            if not has_cuda:
+                raise RuntimeError(
+                    "8-bit quantization requires CUDA/GPU, but no GPU is available. "
+                    "Either use a GPU-enabled system or set quantization='none' for CPU-only inference."
+                )
             try:
                 from transformers import BitsAndBytesConfig
             except Exception as e:  # pragma: no cover
@@ -194,7 +207,8 @@ class PsychQwen32BLocalRunner(ModelRunner):
 
         # Sensible defaults for 24GB VRAM + 64GB RAM (tweak as needed).
         # 'max_memory' is honored by transformers/accelerate when device_map is used.
-        if max_memory is None and device_map == "auto":
+        # Only set max_memory if CUDA is available (like other local models).
+        if max_memory is None and device_map == "auto" and torch.cuda.is_available():
             max_memory = {0: "22GiB", "cpu": "48GiB"}
 
         # Detect PEFT adapter repos: if adapter_config.json exists locally (or in cache),

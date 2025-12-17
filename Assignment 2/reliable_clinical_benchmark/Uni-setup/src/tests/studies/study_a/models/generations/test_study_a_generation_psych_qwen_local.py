@@ -7,8 +7,8 @@ Run (PowerShell):
     cd Uni-setup
     $Env:PYTHONNOUSERSITE="1"
     $Env:PYTHONPATH="src"
-    $py="C:\\Users\\22837352\\.conda\\envs\\mh-llm-benchmark-env\\python.exe"
-    & $py src\\tests\\test_psych_qwen_local.py --prompt-idx 1
+    $py="C:\\Users\\22837352\\.conda\\envs\\mh-llm-local-env\\python.exe"  # ← Use local env (has bitsandbytes)
+    & $py src\\tests\\studies\\study_a\\models\\generations\\test_study_a_generation_psych_qwen_local.py --quantization 4bit --prompt-idx 1
 """
 
 import argparse
@@ -28,8 +28,8 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--model",
         type=str,
-        default="Compumacy/Psych_Qwen_32B",
-        help="HF model id or local directory (e.g. models/Psych_Qwen_32B).",
+        default="models/Psych_Qwen_32B",
+        help="HF model id or local directory (e.g. models/Psych_Qwen_32B). Default: models/Psych_Qwen_32B (local).",
     )
     parser.add_argument(
         "--quantization",
