@@ -78,11 +78,45 @@ class Qwen3LMStudioRunner(ModelRunner):
             temperature=self.config.temperature,
             max_tokens=self.config.max_tokens,
             top_p=self.config.top_p,
-            timeout=600,
+            timeout=None,  # No timeout - allow long generations
         )
 
     def generate_with_reasoning(self, prompt: str) -> Tuple[str, str]:
         full_response = self.generate(prompt, mode="cot")
         return extract_answer_and_reasoning(full_response)
+
+    def chat(self, messages: List[Dict[str, str]], mode: str = "default") -> str:
+        """
+        Generate response from chat history using LM Studio chat completion API.
+        
+        Properly handles multi-turn conversations with rolling context.
+        """
+        # Format system/user messages, preserving assistant responses in history
+        formatted_messages = []
+        for msg in messages:
+            role = msg.get("role", "user")
+            content = msg.get("content", "")
+            
+            if role == "system":
+                formatted_messages.append({"role": "system", "content": content})
+            elif role == "user":
+                # Apply mode formatting only to the last user message
+                if msg == messages[-1] and mode != "default":
+                    formatted_content = self._format_prompt(content, mode)
+                    formatted_messages.append({"role": "user", "content": formatted_content})
+                else:
+                    formatted_messages.append({"role": "user", "content": content})
+            elif role == "assistant":
+                formatted_messages.append({"role": "assistant", "content": content})
+        
+        return chat_completion(
+            api_base=self.api_base,
+            model=self.model_name,
+            messages=formatted_messages,
+            temperature=self.config.temperature,
+            max_tokens=self.config.max_tokens,
+            top_p=self.config.top_p,
+            timeout=None,  # No timeout - allow long generations
+        )
 
 

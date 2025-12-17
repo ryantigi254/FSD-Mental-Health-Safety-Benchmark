@@ -12,7 +12,7 @@ Recommended GGUF source (example):
 
 import os
 import re
-from typing import Tuple
+from typing import Tuple, List, Dict
 
 from .base import ModelRunner, GenerationConfig
 from .lmstudio_client import chat_completion
@@ -83,7 +83,39 @@ class DeepSeekR1LMStudioRunner(ModelRunner):
             temperature=self.config.temperature,
             max_tokens=self.config.max_tokens,
             top_p=self.config.top_p,
-            timeout=600,
+            timeout=None,  # No timeout - allow long generations
+        )
+
+    def chat(self, messages: List[Dict[str, str]], mode: str = "default") -> str:
+        """
+        Generate response from chat history using LM Studio chat completion API.
+        
+        Properly handles multi-turn conversations with rolling context.
+        """
+        formatted_messages = []
+        for msg in messages:
+            role = msg.get("role", "user")
+            content = msg.get("content", "")
+            
+            if role == "system":
+                formatted_messages.append({"role": "system", "content": content})
+            elif role == "user":
+                if msg == messages[-1] and mode != "default":
+                    formatted_content = self._format_prompt(content, mode)
+                    formatted_messages.append({"role": "user", "content": formatted_content})
+                else:
+                    formatted_messages.append({"role": "user", "content": content})
+            elif role == "assistant":
+                formatted_messages.append({"role": "assistant", "content": content})
+        
+        return chat_completion(
+            api_base=self.api_base,
+            model=self.model_name,
+            messages=formatted_messages,
+            temperature=self.config.temperature,
+            max_tokens=self.config.max_tokens,
+            top_p=self.config.top_p,
+            timeout=None,
         )
 
     def generate_with_reasoning(self, prompt: str) -> Tuple[str, str]:

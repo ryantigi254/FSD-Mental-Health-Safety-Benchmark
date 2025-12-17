@@ -14,7 +14,7 @@ focuses on local PsyLLM inference.
 
 import json
 import requests
-from typing import Dict, Any, List, Tuple
+from typing import Dict, Any, List, Tuple, Union, Optional
 import logging
 
 logger = logging.getLogger(__name__)
@@ -89,7 +89,7 @@ def chat_completion(
     temperature: float,
     max_tokens: int,
     top_p: float,
-    timeout: int = 60,
+    timeout: Optional[Union[int, Tuple[int, Optional[int]]]] = None,
 ) -> str:
     """
     Single shared helper for LM Studio /v1/chat/completions endpoint.
@@ -106,7 +106,9 @@ def chat_completion(
         temperature: Sampling temperature (0.0-2.0)
         max_tokens: Maximum tokens to generate
         top_p: Nucleus sampling parameter
-        timeout: Request timeout in seconds (default: 60)
+        timeout: Request timeout in seconds. If None, no timeout (default: None).
+                 Can be a tuple (connect_timeout, read_timeout) for fine-grained control.
+                 For long-running generations, use None or a large read_timeout.
 
     Returns:
         Generated text content from the model
@@ -137,8 +139,20 @@ def chat_completion(
         "tool_choice": "none",
     }
 
+    # Use tuple timeout: (connect_timeout, read_timeout)
+    # Connect timeout: 30s to fail fast if server is down
+    # Read timeout: None (no limit) to allow long generations
+    if timeout is None:
+        request_timeout = (30, None)  # 30s connect, no read timeout
+    elif isinstance(timeout, tuple):
+        request_timeout = timeout
+    else:
+        # If single int provided, use it for both (backward compatibility)
+        # But prefer no read timeout for long generations
+        request_timeout = (30, timeout) if timeout > 60 else (timeout, timeout)
+
     try:
-        response = requests.post(endpoint, json=payload, timeout=timeout)
+        response = requests.post(endpoint, json=payload, timeout=request_timeout)
         response.raise_for_status()
         result = response.json()
 
@@ -165,8 +179,9 @@ def chat_completion(
         return content
 
     except requests.exceptions.Timeout:
-        logger.error(f"LM Studio request timed out after {timeout}s for model {model}")
-        raise TimeoutError(f"Generation timed out after {timeout}s")
+        timeout_str = f"{timeout}s" if timeout else "no timeout set"
+        logger.error(f"LM Studio request timed out ({timeout_str}) for model {model}")
+        raise TimeoutError(f"Generation timed out ({timeout_str})")
 
     except requests.exceptions.HTTPError as e:
         logger.error(f"LM Studio HTTP error for model {model}: {e}")

@@ -61,6 +61,47 @@ class ModelRunner(ABC):
         """
         pass
 
+    def chat(self, messages: List[Dict[str, str]], mode: str = "default") -> str:
+        """
+        Generate response from chat history (multi-turn conversations).
+        
+        This method handles iterative generation with rolling context. Each call
+        should include the full conversation history up to that point, including
+        previous assistant responses.
+        
+        Args:
+            messages: List of message dicts with "role" and "content" keys.
+                     Roles should be "system", "user", or "assistant".
+                     Example: [
+                         {"role": "system", "content": "You are a helpful assistant."},
+                         {"role": "user", "content": "Hello"},
+                         {"role": "assistant", "content": "Hi there!"},
+                         {"role": "user", "content": "How are you?"}
+                     ]
+            mode: Generation mode ('cot', 'direct', 'summary')
+        
+        Returns:
+            Generated text response from the model
+        
+        Default implementation converts messages to a single prompt string.
+        Subclasses should override this for proper chat template handling.
+        """
+        # Default: convert messages to a single prompt string
+        # This works for simple cases but subclasses should override for proper chat templates
+        prompt_parts = []
+        for msg in messages:
+            role = msg.get("role", "user")
+            content = msg.get("content", "")
+            if role == "system":
+                prompt_parts.append(f"System: {content}")
+            elif role == "user":
+                prompt_parts.append(f"User: {content}")
+            elif role == "assistant":
+                prompt_parts.append(f"Assistant: {content}")
+        
+        prompt = "\n".join(prompt_parts)
+        return self.generate(prompt, mode=mode)
+
     def _format_prompt(self, prompt: str, mode: str) -> str:
         """Format prompt based on generation mode."""
         if mode == "cot":
