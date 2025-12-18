@@ -87,8 +87,8 @@ def main() -> None:
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument(
         "--model",
-        default="GMLHUHE/PsyLLM",
-        help="HF model id or local directory.",
+        default=None,  # Will resolve to local path if not provided
+        help="HF model id or local directory (defaults to Uni-setup/models/PsyLLM).",
     )
     common.add_argument(
         "--model-name",
@@ -126,7 +126,16 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    resolved_model = _resolve_hf_model_to_local_dir(args.model, uni_setup_root)
+    # Default to local model path if not provided
+    if args.model is None:
+        local_model_path = uni_setup_root / "models" / "PsyLLM"
+        if local_model_path.exists():
+            resolved_model = str(local_model_path)
+        else:
+            # Fallback to HF Hub if local doesn't exist
+            resolved_model = _resolve_hf_model_to_local_dir("GMLHUHE/PsyLLM", uni_setup_root)
+    else:
+        resolved_model = _resolve_hf_model_to_local_dir(args.model, uni_setup_root)
     runner = PsyLLMGMLLocalRunner(
         model_name=resolved_model,
         config=GenerationConfig(

@@ -21,8 +21,8 @@ def main() -> None:
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument(
         "--model",
-        default="Compumacy/Psych_Qwen_32B",
-        help="HF model id or local directory (e.g. models/Psych_Qwen_32B).",
+        default="models/Psych_Qwen_32B",
+        help="HF model id or local directory (e.g. models/Psych_Qwen_32B). Default: models/Psych_Qwen_32B (local).",
     )
     common.add_argument("--temperature", type=float, default=0.6)
     common.add_argument("--top-p", type=float, default=0.95)

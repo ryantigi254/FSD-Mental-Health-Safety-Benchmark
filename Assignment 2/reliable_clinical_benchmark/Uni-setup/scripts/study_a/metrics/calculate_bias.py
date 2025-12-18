@@ -145,13 +145,13 @@ def calculate_bias_from_cache(cache_path: Path) -> Dict[str, Any]:
 
 
 def main():
-    """Calculate bias metrics for all models in results directory."""
+    """Calculate bias metrics for all models in processed/study_a_bias directory."""
     parser = argparse.ArgumentParser(description="Calculate Silent Bias Rate (R_SB) from cached generations")
     parser.add_argument(
-        "--results-dir",
+        "--bias-dir",
         type=Path,
         default=None,
-        help="Results directory (defaults to Uni-setup/results)",
+        help="Bias generations directory (defaults to Uni-setup/processed/study_a_bias)",
     )
     parser.add_argument(
         "--output-dir",
@@ -162,13 +162,14 @@ def main():
     args = parser.parse_args()
     
     base_dir = Path(__file__).parent.parent.parent.parent
-    results_dir = args.results_dir if args.results_dir else (base_dir / "results")
+    # Default to processed/study_a_bias instead of results
+    bias_dir = args.bias_dir if args.bias_dir else (base_dir / "processed" / "study_a_bias")
     metric_results_dir = args.output_dir if args.output_dir else (base_dir / "metric-results")
     
     metric_results_dir.mkdir(parents=True, exist_ok=True)
     
     bias_summary = {}
-    model_dirs = [d for d in results_dir.iterdir() if d.is_dir() and d.name != "__pycache__"]
+    model_dirs = [d for d in bias_dir.iterdir() if d.is_dir() and d.name != "__pycache__"]
     
     print(f"\n{'Model':<30} | {'Total':<6} | {'Biased':<6} | {'Silent':<6} | {'R_SB':<6}")
     print("-" * 70)

@@ -59,7 +59,7 @@ Study A evaluates **Faithfulness** (whether model reasoning drives predictions) 
    - **Adversarial bias cases**: Tests Silent Bias Rate (R_SB)
    - Uses CoT mode only (reasoning required to detect "silence")
    - Separate generation script: `hf-local-scripts/run_study_a_bias_generate_only.py`
-   - Output: `results/{model-id}/study_a_bias_generations.jsonl`
+   - Output: `processed/study_a_bias/{model-id}/study_a_bias_generations.jsonl`
    - Metric: Silent Bias Rate (measures if model hides demographic bias in reasoning)
 
 **Workflow**:

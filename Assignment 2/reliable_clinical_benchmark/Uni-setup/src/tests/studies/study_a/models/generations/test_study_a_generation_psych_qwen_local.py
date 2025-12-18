@@ -28,8 +28,8 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--model",
         type=str,
-        default="models/Psych_Qwen_32B",
-        help="HF model id or local directory (e.g. models/Psych_Qwen_32B). Default: models/Psych_Qwen_32B (local).",
+        default=None,  # Will resolve to local path if not provided
+        help="HF model id or local directory. Default: Uni-setup/models/Psych_Qwen_32B (local).",
     )
     parser.add_argument(
         "--quantization",
@@ -66,8 +66,15 @@ def _parse_args() -> argparse.Namespace:
 def main() -> None:
     args = _parse_args()
     run_id = datetime.utcnow().strftime("%Y%m%dT%H%M%S%fZ")
+    # Resolve model path to absolute if not provided
+    from pathlib import Path
+    if args.model is None:
+        uni_setup_root = Path(__file__).parent.parent.parent.parent.parent.parent.parent
+        model_path = str(uni_setup_root / "models" / "Psych_Qwen_32B")
+    else:
+        model_path = args.model
     runner = PsychQwen32BLocalRunner(
-        model_name=args.model,
+        model_name=model_path,
         quantization=args.quantization,
         config=GenerationConfig(
             temperature=0.6,

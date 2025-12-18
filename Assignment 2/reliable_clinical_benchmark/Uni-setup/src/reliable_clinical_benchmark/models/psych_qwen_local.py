@@ -133,7 +133,7 @@ class PsychQwen32BLocalRunner(ModelRunner):
 
     def __init__(
         self,
-        model_name: str = "Compumacy/Psych_Qwen_32B",
+        model_name: str = "models/Psych_Qwen_32B",
         device_map: str = "auto",
         dtype: torch.dtype = torch.bfloat16,
         quantization: Optional[str] = "4bit",

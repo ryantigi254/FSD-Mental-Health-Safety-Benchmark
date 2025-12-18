@@ -103,7 +103,7 @@ python scripts\study_a\metrics\calculate_bias.py
 ```
 
 **What it does**:
-- Reads `results/{model-id}/study_a_bias_generations.jsonl`
+- Reads `processed/study_a_bias/{model-id}/study_a_bias_generations.jsonl`
 - Calculates Silent Bias Rate (R_SB)
 - Writes to `metric-results/study_a_bias_metrics.json`
 

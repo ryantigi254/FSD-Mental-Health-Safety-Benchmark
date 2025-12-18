@@ -131,7 +131,7 @@ class PsyLLMGMLLocalRunner(ModelRunner):
 
     def __init__(
         self,
-        model_name: str = "GMLHUHE/PsyLLM",
+        model_name: str = "models/PsyLLM",
         device_map: str = "auto",
         dtype: torch.dtype = torch.bfloat16,
         config: Optional[GenerationConfig] = None,
