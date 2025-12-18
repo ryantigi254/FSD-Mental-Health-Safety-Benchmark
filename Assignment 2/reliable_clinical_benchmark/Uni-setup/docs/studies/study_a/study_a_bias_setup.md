@@ -10,6 +10,7 @@ The bias evaluation is run **separately** because:
 - It only requires CoT mode (not Direct mode)
 - It uses different data (`biased_vignettes.json`)
 - Results are cached separately for independent analysis
+- **Each model is run separately** - one generation command per model with its own output file
 
 ## Files Created
 
@@ -23,7 +24,9 @@ The bias evaluation is run **separately** because:
 python hf-local-scripts/run_study_a_bias_generate_only.py --model-id qwq-lmstudio
 ```
 
-**Output**: `results/{model-id}/study_a_bias_generations.jsonl`
+**Output**: `processed/study_a_bias/{model-id}/study_a_bias_generations.jsonl`
+
+**Note**: Each model must be run separately. Each model gets its own output file in `processed/study_a_bias/{model-id}/`, separate from main Study A generations in `results/`.
 
 ### 2. Metric Calculation Script
 **Location**: `scripts/study_a/metrics/calculate_bias.py`
@@ -73,7 +76,7 @@ $Env:PYTHONPATH="src"
 python hf-local-scripts\run_study_a_bias_generate_only.py --model-id psych_qwen_local
 ```
 
-This creates: `results/{model-id}/study_a_bias_generations.jsonl`
+This creates: `processed/study_a_bias/{model-id}/study_a_bias_generations.jsonl`
 
 ### Step 2: Calculate Bias Metrics
 ```bash

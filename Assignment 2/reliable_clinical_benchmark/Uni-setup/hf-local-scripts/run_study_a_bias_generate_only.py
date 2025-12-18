@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -10,6 +11,29 @@ def _ensure_src_on_path(uni_setup_root: Path) -> None:
     src_dir = uni_setup_root / "src"
     if str(src_dir) not in sys.path:
         sys.path.insert(0, str(src_dir))
+
+
+def _ensure_hf_cache_under_models_dir(uni_setup_root: Path) -> None:
+    """
+    Force Hugging Face + Transformers caches to live under Uni-setup/models/.
+    
+    This ensures large checkpoints are saved under <Uni-setup>/models/
+    rather than the default user cache under C:\\Users\\...
+    """
+    models_dir = uni_setup_root / "models"
+    models_dir.mkdir(parents=True, exist_ok=True)
+    
+    hf_home = models_dir / "hf_home"
+    hub_cache = models_dir / "hf_hub"
+    transformers_cache = models_dir / "transformers_cache"
+    
+    hf_home.mkdir(parents=True, exist_ok=True)
+    hub_cache.mkdir(parents=True, exist_ok=True)
+    transformers_cache.mkdir(parents=True, exist_ok=True)
+    
+    os.environ.setdefault("HF_HOME", str(hf_home))
+    os.environ.setdefault("HUGGINGFACE_HUB_CACHE", str(hub_cache))
+    os.environ.setdefault("TRANSFORMERS_CACHE", str(transformers_cache))
 
 
 def _now_iso() -> str:
@@ -46,6 +70,18 @@ def _parse_args() -> argparse.Namespace:
         help="Model ID understood by reliable_clinical_benchmark.models.factory.get_model_runner",
     )
     p.add_argument(
+        "--model",
+        type=str,
+        default=None,
+        help="HF model path/ID for local models (overrides default model path).",
+    )
+    p.add_argument(
+        "--quantization",
+        type=str,
+        default=None,
+        help="Quantization mode for local models (e.g., 4bit, 8bit, none). Default: 4bit for psych_qwen_local.",
+    )
+    p.add_argument(
         "--data-path",
         type=str,
         default=None,
@@ -55,15 +91,15 @@ def _parse_args() -> argparse.Namespace:
         "--output-dir",
         type=str,
         default=None,
-        help="Results directory (defaults to Uni-setup/results).",
+        help="Output directory (defaults to Uni-setup/processed/study_a_bias).",
     )
     p.add_argument("--max-cases", type=int, default=None, help="Limit bias cases.")
-    p.add_argument("--max-tokens", type=int, default=4096, help="Max new tokens per generation.")
+    p.add_argument("--max-tokens", type=int, default=8192, help="Max new tokens per generation (default: 8192 to allow long reasoning).")
     p.add_argument(
         "--cache-out",
         type=str,
         default=None,
-        help="Explicit cache path (defaults to results/<model-id>/study_a_bias_generations.jsonl).",
+        help="Explicit cache path (defaults to processed/study_a_bias/<model-id>/study_a_bias_generations.jsonl).",
     )
     return p.parse_args()
 
@@ -71,13 +107,58 @@ def _parse_args() -> argparse.Namespace:
 def main() -> None:
     uni_setup_root = Path(__file__).resolve().parents[1]
     _ensure_src_on_path(uni_setup_root)
+    
+    # Set up HF cache directories for local models (before any HF imports)
+    _ensure_hf_cache_under_models_dir(uni_setup_root)
 
-    # Import only after src is on sys.path.
+    # Import only after src is on sys.path and HF cache env vars are set.
     from reliable_clinical_benchmark.data.adversarial_loader import load_adversarial_bias_cases
     from reliable_clinical_benchmark.models.base import GenerationConfig
     from reliable_clinical_benchmark.models.factory import get_model_runner
 
     args = _parse_args()
+    
+    # For local HF models, instantiate directly (like main Study A scripts)
+    # This ensures proper model path and quantization settings
+    model_id_lower = args.model_id.lower()
+    runner = None
+    
+    # Check if this is a local HF model and instantiate directly
+    if model_id_lower in ("psyllm", "psyllm_gml_local", "psyllm-gml-local", "psyllm-gmlhuhe-local", "gmlhuhe_psyllm_local"):
+        from reliable_clinical_benchmark.models.psyllm_gml_local import PsyLLMGMLLocalRunner
+        model_path = args.model or str(uni_setup_root / "models" / "PsyLLM")
+        runner = PsyLLMGMLLocalRunner(
+            model_name=model_path,
+            config=GenerationConfig(max_tokens=args.max_tokens),
+        )
+    elif model_id_lower in ("piaget_local", "piaget-8b-local", "piaget8b-local"):
+        from reliable_clinical_benchmark.models.piaget_local import Piaget8BLocalRunner
+        model_path = args.model or str(uni_setup_root / "models" / "Piaget-8B")
+        runner = Piaget8BLocalRunner(
+            model_name=model_path,
+            config=GenerationConfig(max_tokens=args.max_tokens),
+        )
+    elif model_id_lower in ("psyche_r1_local", "psyche-r1-local", "psyche-r1-local-hf"):
+        from reliable_clinical_benchmark.models.psyche_r1_local import PsycheR1LocalRunner
+        model_path = args.model or str(uni_setup_root / "models" / "Psyche-R1")
+        runner = PsycheR1LocalRunner(
+            model_name=model_path,
+            config=GenerationConfig(max_tokens=args.max_tokens),
+        )
+    elif model_id_lower in ("psych_qwen_local", "psych-qwen-32b-local", "psych-qwen-local-hf"):
+        from reliable_clinical_benchmark.models.psych_qwen_local import PsychQwen32BLocalRunner
+        model_path = args.model or str(uni_setup_root / "models" / "Psych_Qwen_32B")
+        quantization = args.quantization or "4bit"  # Default to 4bit for 32B model
+        runner = PsychQwen32BLocalRunner(
+            model_name=model_path,
+            quantization=quantization,
+            config=GenerationConfig(max_tokens=args.max_tokens),
+        )
+    
+    # For LM Studio models or if runner not set, use factory
+    if runner is None:
+        config = GenerationConfig(max_tokens=args.max_tokens)
+        runner = get_model_runner(args.model_id, config)
 
     # Load bias data
     if args.data_path:
@@ -107,14 +188,18 @@ def main() -> None:
         adversarial_cases = adversarial_cases[:args.max_cases]
         print(f"Limited to {args.max_cases} cases")
 
-    output_dir = Path(args.output_dir) if args.output_dir else (uni_setup_root / "results")
-    
-    config = GenerationConfig(max_tokens=args.max_tokens)
-    runner = get_model_runner(args.model_id, config)
+    # Default to processed/study_a_bias instead of results
+    if args.output_dir:
+        output_dir = Path(args.output_dir)
+    else:
+        output_dir = uni_setup_root / "processed" / "study_a_bias"
 
     cache_out = args.cache_out
     if cache_out is None:
-        cache_out = str(output_dir / args.model_id / "study_a_bias_generations.jsonl")
+        # Save to processed/study_a_bias/{model-id}/study_a_bias_generations.jsonl
+        model_output_dir = output_dir / args.model_id
+        model_output_dir.mkdir(parents=True, exist_ok=True)
+        cache_out = str(model_output_dir / "study_a_bias_generations.jsonl")
 
     print(f"Running Silent Bias Evaluation on {len(adversarial_cases)} adversarial cases...")
     print(f"Output: {cache_out}")

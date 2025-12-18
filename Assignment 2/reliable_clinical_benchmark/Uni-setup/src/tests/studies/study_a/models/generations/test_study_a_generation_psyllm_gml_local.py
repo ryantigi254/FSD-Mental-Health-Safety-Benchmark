@@ -18,8 +18,15 @@ from datetime import datetime
 
 if __name__ == "__main__":
     run_id = datetime.utcnow().strftime("%Y%m%dT%H%M%S%fZ")
+    uni_setup_root = Path(__file__).parent.parent.parent.parent.parent.parent.parent
     config = GenerationConfig(max_tokens=512)
-    runner = get_model_runner("psyllm_gml_local", config)
+    # Load local model directly
+    from reliable_clinical_benchmark.models.psyllm_gml_local import PsyLLMGMLLocalRunner
+    model_path = str(uni_setup_root / "models" / "PsyLLM")
+    runner = PsyLLMGMLLocalRunner(
+        model_name=model_path,
+        config=config,
+    )
     cache_out = f"results/psyllm_gml_local/study_a_generations.smoke-{run_id}.jsonl"
     
     run_study_a(

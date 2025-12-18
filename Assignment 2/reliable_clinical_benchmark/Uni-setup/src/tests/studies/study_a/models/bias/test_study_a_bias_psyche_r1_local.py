@@ -11,10 +11,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent))
 
-from reliable_clinical_benchmark.models.factory import get_model_runner
 from reliable_clinical_benchmark.models.base import GenerationConfig
 from reliable_clinical_benchmark.data.adversarial_loader import load_adversarial_bias_cases
-from datetime import datetime
 
 
 def format_bias_prompt(vignette: str) -> str:
@@ -26,21 +24,7 @@ def format_bias_prompt(vignette: str) -> str:
     )
 
 
-def _now_iso() -> str:
-    """Get current timestamp in ISO format."""
-    return datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-
-
-def _write_cache_entry(cache_path: Path, entry: dict) -> None:
-    """Append a single JSON line to the cache file."""
-    import json
-    cache_path.parent.mkdir(parents=True, exist_ok=True)
-    with open(cache_path, "a", encoding="utf-8") as f:
-        f.write(json.dumps(entry, ensure_ascii=False) + "\n")
-
-
 if __name__ == "__main__":
-    run_id = datetime.utcnow().strftime("%Y%m%dT%H%M%S%fZ")
     uni_setup_root = Path(__file__).parent.parent.parent.parent.parent.parent.parent
     
     data_path = uni_setup_root / "data" / "adversarial_bias" / "biased_vignettes.json"
@@ -54,53 +38,44 @@ if __name__ == "__main__":
     # Test with first 2 cases
     test_cases = adversarial_cases[:2]
     
-    config = GenerationConfig(max_tokens=512)
-    runner = get_model_runner("psyche_r1_local", config)
-    cache_out = f"results/psyche_r1_local/study_a_bias_generations.smoke-{run_id}.jsonl"
-    cache_path = Path(cache_out)
+    config = GenerationConfig(max_tokens=512)  # Lower limit for smoke test (full generation uses 8192)
+    # Load local model directly
+    from reliable_clinical_benchmark.models.psyche_r1_local import PsycheR1LocalRunner
+    model_path = str(uni_setup_root / "models" / "Psyche-R1")
+    runner = PsycheR1LocalRunner(
+        model_name=model_path,
+        config=config,
+    )
 
-    for case in test_cases:
+    print("=" * 80)
+    print("Psyche-R1 (Local HF) - Study A Bias Smoke Test")
+    print("=" * 80)
+    
+    for i, case in enumerate(test_cases, 1):
         case_id = case.get("id", "")
         prompt_text = case.get("prompt", "")
         bias_feature = case.get("bias_feature", "")
         bias_label = case.get("bias_label", "")
-        metadata = case.get("metadata", {})
 
         if not prompt_text:
             continue
 
         formatted_prompt = format_bias_prompt(prompt_text)
 
-        status = "ok"
-        output_text = ""
-        error_message = ""
+        print(f"\n--- Case {i}: {case_id} ---")
+        print(f"Bias Feature: {bias_feature}")
+        print(f"Bias Label: {bias_label}")
+        print(f"\nPrompt:\n{formatted_prompt}\n")
+        print("-" * 80)
         
         try:
             output_text = runner.generate(formatted_prompt, mode="cot")
+            print(f"Output:\n{output_text}\n")
+            print(f"Status: OK")
         except Exception as e:
-            status = "error"
-            error_message = str(e)
-
-        entry = {
-            "id": case_id,
-            "bias_feature": bias_feature,
-            "bias_label": bias_label,
-            "prompt": formatted_prompt,
-            "output_text": output_text,
-            "status": status,
-            "error_message": error_message,
-            "timestamp": _now_iso(),
-            "run_id": run_id,
-            "model_name": "psyche_r1_local",
-            "metadata": metadata,
-            "sampling": {
-                "temperature": runner.config.temperature,
-                "top_p": runner.config.top_p,
-                "max_tokens": runner.config.max_tokens,
-            },
-        }
-
-        _write_cache_entry(cache_path, entry)
-
-    print(f"[ok] wrote {cache_out}")
-
+            print(f"Status: ERROR")
+            print(f"Error: {e}\n")
+        
+        print("=" * 80)
+    
+    print("\n[ok] Smoke test complete - outputs displayed above")

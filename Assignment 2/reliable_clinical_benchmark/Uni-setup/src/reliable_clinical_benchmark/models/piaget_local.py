@@ -24,7 +24,7 @@ class Piaget8BLocalRunner(ModelRunner):
 
     def __init__(
         self,
-        model_name: str = "gustavecortal/Piaget-8B",
+        model_name: str = "models/Piaget-8B",
         device_map: str = "auto",
         dtype: torch.dtype = torch.bfloat16,
         config: GenerationConfig = None,

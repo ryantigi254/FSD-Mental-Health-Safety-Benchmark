@@ -156,8 +156,8 @@ def generate_report(processed_dir: Path, exclude_models: List[str] = None) -> st
     lines.append("")
     lines.append("### Extraction Method Distribution")
     total_closed_set = sum(
-        sum(s['extraction_methods'].get('closed_set_match', 0) + s['extraction_methods'].get('closed_set_match_longest', 0) 
-            for s in all_stats.values())
+        s['extraction_methods'].get('closed_set_match', 0) + s['extraction_methods'].get('closed_set_match_longest', 0) 
+        for s in all_stats.values()
     )
     total_entries_all = sum(s['total_entries'] for s in all_stats.values())
     closed_set_pct = (total_closed_set / total_entries_all * 100) if total_entries_all > 0 else 0
@@ -199,8 +199,8 @@ def main():
         print(f"ERROR: Processed directory not found: {processed_dir}")
         return 1
     
-    # Exclude qwq as requested
-    exclude_models = ["qwq"]
+    # Include all models (qwq now has complete data)
+    exclude_models = []
     
     report = generate_report(processed_dir, exclude_models=exclude_models)
     

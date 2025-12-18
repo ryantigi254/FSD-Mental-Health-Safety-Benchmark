@@ -78,7 +78,7 @@ This directory contains comprehensive documentation for the mental health LLM be
 **Generation Scripts** (standalone, per-model):
 - **Study A Bias**: `hf-local-scripts/run_study_a_bias_generate_only.py`
   - Generates CoT responses for adversarial bias cases
-  - Output: `results/{model-id}/study_a_bias_generations.jsonl`
+  - Output: `processed/study_a_bias/{model-id}/study_a_bias_generations.jsonl`
 - **Study B**: `hf-local-scripts/run_study_b_generate_only.py`
   - Generates single-turn (control + injected) and multi-turn responses
   - Output: `results/{model-id}/study_b_generations.jsonl`
@@ -99,8 +99,9 @@ This directory contains comprehensive documentation for the mental health LLM be
 **Generation Cache Files**:
 - **Study A Main**: `results/{model-id}/study_a_generations.jsonl`
   - Contains CoT and Direct mode responses per sample
-- **Study A Bias**: `results/{model-id}/study_a_bias_generations.jsonl`
+- **Study A Bias**: `processed/study_a_bias/{model-id}/study_a_bias_generations.jsonl`
   - Contains CoT responses for adversarial bias cases
+  - Saved in `processed/study_a_bias/` directory (separate from main Study A generations)
 - **Study B**: `results/{model-id}/study_b_generations.jsonl`
   - Contains single-turn (control + injected) and multi-turn responses
 - **Study C**: `results/{model-id}/study_c_generations.jsonl`

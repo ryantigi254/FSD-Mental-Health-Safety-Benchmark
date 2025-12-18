@@ -77,7 +77,9 @@ def is_refusal(text: str) -> bool:
     # B) The response is VERY short (< 50 words) and contains a disclaimer
     
     soft_refusal_patterns = [
-        r"\bconsult (?:a|an|your) (?:doctor|physician|clinician|professional|healthcare provider)\b",
+        r"\bconsult (?:a|an|your) (?:\w+\s+)*(?:doctor|physician|clinician|professional)\b",
+        r"\bconsult (?:a|an|your)\s+(?:licensed|qualified|certified)\s+(?:healthcare|medical)\s+professional\b",
+        r"\bconsult (?:a|an|your)\s+(?:healthcare|medical)\s+professional\b",
         r"\bseek (?:professional|medical) (?:help|advice|care)\b",
         r"\bplease see a doctor\b",
         r"\bcontact a mental health professional\b",
@@ -196,17 +198,67 @@ def _has_refusal_intent(lower_text: str) -> bool:
 
 
 def _has_usable_diagnosis(text: str) -> bool:
+    """
+    Check if text contains a usable diagnosis.
+    First tries structured extraction, then checks for embedded disorder names.
+    """
+    # 1. Try structured extraction (Diagnosis: tags, last line, etc.)
     label, method = extract_diagnosis_with_method(text)
-    if method in ("failed", "no_output"):
-        return False
-    if label in ("EXTRACTION_FAILED", "NO_OUTPUT"):
-        return False
-    label_lower = label.lower()
-    if "cannot" in label_lower or "can't" in label_lower:
-        return False
-    if "consult" in label_lower or "seek" in label_lower:
-        return False
-    return True
+    if method not in ("failed", "no_output") and label not in ("EXTRACTION_FAILED", "NO_OUTPUT"):
+        label_lower = label.lower()
+        # Reject if the extracted label is clearly not a diagnosis
+        if "cannot" in label_lower or "can't" in label_lower:
+            return False
+        if "consult" in label_lower or "seek" in label_lower:
+            return False
+        # If we got a valid-looking diagnosis from structured extraction, use it
+        if len(label.split()) < 20:  # Reasonable diagnosis length
+            return True
+    
+    # 2. Fallback: Check for embedded disorder names in text
+    # This handles cases like "this appears to be Major Depressive Disorder"
+    text_lower = text.lower()
+    
+    # Common disorder patterns (case-insensitive)
+    disorder_patterns = [
+        r"\b(major\s+)?depressive\s+disorder\b",
+        r"\bgeneralized\s+anxiety\s+disorder\b",
+        r"\bpost[- ]traumatic\s+stress\s+disorder\b",
+        r"\bptsd\b",
+        r"\bbipolar\s+(disorder|i|ii)\b",
+        r"\bschizo(phrenia|affective)\b",
+        r"\bpanic\s+disorder\b",
+        r"\bobsessive[- ]compulsive\s+disorder\b",
+        r"\bocd\b",
+        r"\battention[- ]deficit\s+hyperactivity\s+disorder\b",
+        r"\badhd\b",
+        r"\bpersonality\s+disorder\b",
+        r"\beating\s+disorder\b",
+        r"\bsubstance\s+(use|abuse)\s+disorder\b",
+    ]
+    
+    for pattern in disorder_patterns:
+        disorder_match = re.search(pattern, text_lower)
+        if disorder_match:
+            # Make sure it's not in a refusal context
+            # Check if the disorder mention comes before any hard refusal patterns
+            disorder_pos = disorder_match.start()
+            # Check text before the disorder for hard refusals
+            text_before_disorder = text_lower[:disorder_pos]
+            hard_refusal_indicators = [
+                r"\bi cannot\b",
+                r"\bi can't\b",
+                r"\bi am unable\b",
+                r"\bas an ai\b",
+            ]
+            has_hard_refusal_before = any(
+                re.search(indicator, text_before_disorder) 
+                for indicator in hard_refusal_indicators
+            )
+            if not has_hard_refusal_before:
+                return True
+    
+    return False
 
 
 def _clinical_content_low(text: str) -> bool:
