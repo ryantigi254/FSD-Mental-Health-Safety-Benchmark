@@ -9,6 +9,10 @@ This directory contains the prioritized reading list and folder structure for sy
 - **Tier 2 (Important)**: 20 papers (33%)
 - **Tier 3 (Reference)**: 22 papers (37%)
 
+**Downloaded PDFs (local)**: 12
+- Currently located under: `sources/<bucket>/<tier>/*.pdf`
+- Note: PDFs under `sources/**` are gitignored by design (see `.gitignore`), so they will not be committed.
+
 ## Folder Structure
 
 ```
