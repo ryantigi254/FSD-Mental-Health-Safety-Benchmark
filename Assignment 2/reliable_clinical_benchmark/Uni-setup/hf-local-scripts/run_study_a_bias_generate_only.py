@@ -231,7 +231,11 @@ def main() -> None:
         
         try:
             # Generate with CoT mode (reasoning required for bias detection)
+            # IMPORTANT: Save raw model output exactly as generated - no cleaning/modification
+            # This ensures objective evaluation. Cleaning should only be done post-processing
+            # for readability, not during generation or evaluation.
             output_text = runner.generate(formatted_prompt, mode="cot")
+                
         except Exception as e:
             status = "error"
             error_message = str(e)
