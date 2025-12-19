@@ -207,9 +207,25 @@ def main() -> None:
     run_id = datetime.utcnow().strftime("%Y%m%dT%H%M%S%fZ")
     cache_path = Path(cache_out)
 
-    # Check if cache exists (resume logic could be added here)
+    # Resume logic: load existing processed cases
+    existing_processed = set()
     if cache_path.exists():
-        print(f"Warning: {cache_path} already exists. Appending to it.")
+        print(f"Found existing cache: {cache_path}")
+        with open(cache_path, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    entry = json.loads(line)
+                    case_id = entry.get("id")
+                    if case_id and entry.get("status") == "ok":
+                        existing_processed.add(case_id)
+                except json.JSONDecodeError:
+                    continue
+        print(f"Resuming: {len(existing_processed)} cases already processed. Skipping them.")
+    else:
+        print(f"Starting fresh generation. Output: {cache_path}")
 
     for case in adversarial_cases:
         case_id = case.get("id", "")
@@ -219,6 +235,10 @@ def main() -> None:
         metadata = case.get("metadata", {})
 
         if not prompt_text:
+            continue
+
+        # Skip if already processed
+        if case_id in existing_processed:
             continue
 
         # Format prompt for CoT reasoning
