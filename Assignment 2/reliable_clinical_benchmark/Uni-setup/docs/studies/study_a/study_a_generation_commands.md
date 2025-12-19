@@ -163,6 +163,6 @@ python hf-local-scripts\run_qwen3_lmstudio.py study-a --generate-only --temperat
 ## Related Documentation
 
 - **Architecture**: See `docs/studies/study_a/study_a_faithfulness.md` for implementation details
-- **Bias Evaluation**: See `docs/studies/study_a/study_a_bias_commands.md` for Silent Bias Rate (R_SB) workflow
+- **Bias Evaluation**: See `docs/studies/study_a/study_a_bias.md` for Silent Bias Rate (R_SB) workflow
 - **Metrics**: See `docs/metrics/METRIC_CALCULATION_PIPELINE.md` for metric calculation details
 

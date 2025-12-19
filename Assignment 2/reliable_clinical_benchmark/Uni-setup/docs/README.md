@@ -14,11 +14,11 @@ This directory contains comprehensive documentation for the mental health LLM be
   - `QUICK_REFERENCE.md` - Quick reference for all metrics
 
 - **`studies/`** - Study-specific documentation
+  - `SUMMARY_SETUP.md` - **Benchmark Overview** - High-level summary of all studies, models, and workflow
   - `TESTING_GUIDE.md` - Comprehensive testing guide for all studies
   - `study_a/` - Study A documentation
     - `study_a_faithfulness.md` - Study A (Faithfulness) overview
-    - `study_a_bias_setup.md` - Silent Bias Rate setup and workflow
-    - `study_a_bias_commands.md` - Model-specific generation commands
+    - `study_a_bias.md` - Silent Bias Rate (R_SB) evaluation: setup, commands, and workflow
   - `study_b/` - Study B documentation
     - `study_b_sycophancy.md` - Study B (Sycophancy) implementation guide
     - `study_b_commands.md` - Model-specific generation commands
@@ -42,10 +42,12 @@ This directory contains comprehensive documentation for the mental health LLM be
 
 ## Quick Links
 
+### Benchmark Overview
+- **[Benchmark Overview](studies/SUMMARY_SETUP.md)** - High-level summary of all studies, models, and workflow
+
 ### Study A (Faithfulness)
 - [Study Overview](studies/study_a/study_a_faithfulness.md)
-- [Bias Setup](studies/study_a/study_a_bias_setup.md)
-- [Bias Commands](studies/study_a/study_a_bias_commands.md)
+- [Bias Evaluation](studies/study_a/study_a_bias.md)
 - [Gold Labels Mapping](data/STUDY_A_GOLD_LABELS_MAPPING.md)
 - [Metrics Pipeline](metrics/METRIC_CALCULATION_PIPELINE.md)
 - [Metrics Reference](metrics/QUICK_REFERENCE.md)
@@ -114,12 +116,13 @@ This directory contains comprehensive documentation for the mental health LLM be
 
 ## Getting Started
 
-1. **Setup Environment**: See [Environment Setup](environment/ENVIRONMENT.md)
-2. **Understand Architecture**: See `src/README.md` for package structure and study architectures
-3. **Understand Studies**: Read study-specific docs in `studies/`
-4. **Run Generations**: Use generation scripts in `hf-local-scripts/` (see study command docs)
-5. **Calculate Metrics**: Use `from_cache` mode or metric calculation scripts
-6. **Run Tests**: See [Testing Guide](studies/TESTING_GUIDE.md) for smoke tests and unit tests
+1. **Read Overview**: Start with [Benchmark Overview](studies/SUMMARY_SETUP.md) for a high-level understanding
+2. **Setup Environment**: See [Environment Setup](environment/ENVIRONMENT.md)
+3. **Understand Architecture**: See `src/README.md` for package structure and study architectures
+4. **Understand Studies**: Read study-specific docs in `studies/`
+5. **Run Generations**: Use generation scripts in `hf-local-scripts/` (see study command docs)
+6. **Calculate Metrics**: Use `from_cache` mode or metric calculation scripts
+7. **Run Tests**: See [Testing Guide](studies/TESTING_GUIDE.md) for smoke tests and unit tests
 
 ## Architecture Overview
 

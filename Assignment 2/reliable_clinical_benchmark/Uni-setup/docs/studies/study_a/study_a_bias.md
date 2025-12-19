@@ -1,10 +1,25 @@
-# Study A Bias Generation Commands
+# Study A Bias Evaluation
 
 ## Overview
 
-Study A bias evaluation measures **Silent Bias Rate (R_SB)** - detecting when models make biased decisions but don't mention the demographic feature in their reasoning.
+Study A has two components:
+1. **Main Faithfulness Evaluation**: Measures reasoning utility (Faithfulness Gap, Step-F1)
+2. **Silent Bias Rate (R_SB)**: Measures fairness and transparency (Supplementary Metric)
 
-**File**: `hf-local-scripts/run_study_a_bias_generate_only.py`
+The bias evaluation measures **Silent Bias Rate (R_SB)** - detecting when models make biased decisions but don't mention the demographic feature in their reasoning.
+
+**Why separate from main Study A?**
+- It only requires CoT mode (not Direct mode)
+- It uses different data (`biased_vignettes.json`)
+- Results are cached separately for independent analysis
+- **Each model is run separately** - one generation command per model with its own output file
+
+## Files and Scripts
+
+### Generation Script
+**Location**: `hf-local-scripts/run_study_a_bias_generate_only.py`
+
+**Purpose**: Generate CoT responses for adversarial bias cases
 
 **What it does**:
 - Validates bias data structure before generating
@@ -17,7 +32,18 @@ Study A bias evaluation measures **Silent Bias Rate (R_SB)** - detecting when mo
 - Output is saved in `processed/study_a_bias/` (separate from main Study A generations in `results/`)
 - You cannot run multiple models in a single command
 
-**Note**: This is a separate run from main Study A (faithfulness). Bias cases only need CoT mode, not Direct mode.
+### Metric Calculation Script
+**Location**: `scripts/study_a/metrics/calculate_bias.py`
+
+**Purpose**: Calculate Silent Bias Rate (R_SB) from cached generations
+
+**Output**: `metric-results/study_a_bias_metrics.json`
+
+### Integration
+The main metrics script (`scripts/study_a/metrics/calculate_metrics.py`) now automatically:
+- Loads bias metrics if available
+- Merges them into the main metrics JSON
+- Includes `silent_bias_rate` in `all_models_metrics.json`
 
 ## Environment Requirements
 
@@ -181,35 +207,6 @@ python hf-local-scripts\run_study_a_bias_generate_only.py --model-id qwen3_lmstu
 
 ---
 
-### PsyLLM (HF local, GMLHUHE/PsyLLM)
-
-**Environment**: `mh-llm-local-env`
-
-#### 1. Activate Environment
-```powershell
-cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
-& "D:\Anaconda3\Scripts\activate" mh-llm-local-env
-$Env:PYTHONNOUSERSITE="1"
-$Env:PYTHONPATH="src"
-```
-
-#### 2. Unit Tests (Run Once - Shared Across All Models)
-```powershell
-pytest tests/unit/metrics/test_extraction.py -v
-```
-
-#### 3. Smoke Test
-```powershell
-python src/tests/studies/study_a/models/bias/test_study_a_bias_psyllm_gml_local.py
-```
-
-#### 4. Full Generation
-```powershell
-python hf-local-scripts\run_study_a_bias_generate_only.py --model-id psyllm_gml_local
-```
-
----
-
 ### Piaget-8B (HF local)
 
 **Environment**: `mh-llm-local-env`
@@ -295,23 +292,54 @@ python src/tests/studies/study_a/models/bias/test_study_a_bias_psych_qwen_local.
 python hf-local-scripts\run_study_a_bias_generate_only.py --model-id psych_qwen_local --quantization 4bit
 ```
 
-**Note**: The script now automatically detects local HF models and loads them directly (like main Study A scripts). For `psych_qwen_local`, quantization defaults to `4bit` but can be overridden with `--quantization`. Use `--model` to specify a custom model path.
+**Note**: The script automatically detects local HF models and loads them directly. For `psych_qwen_local`, quantization defaults to `4bit` but can be overridden with `--quantization`. Use `--model` to specify a custom model path.
 
 ---
 
-## After Generation
+## Workflow
+
+### Step 1: Generate Bias Responses
+
+Run the generation command for each model (see commands above). This creates: `processed/study_a_bias/{model-id}/study_a_bias_generations.jsonl`
+
+### Step 2: Calculate Bias Metrics
 
 After all models have been generated:
 
-1. **Calculate bias metrics**:
-   ```powershell
-   python scripts\study_a\metrics\calculate_bias.py
-   ```
+```powershell
+python scripts\study_a\metrics\calculate_bias.py
+```
 
-2. **Calculate all Study A metrics** (automatically merges bias):
-   ```powershell
-   python scripts\study_a\metrics\calculate_metrics.py
-   ```
+This creates: `metric-results/study_a_bias_metrics.json`
+
+### Step 3: Calculate All Study A Metrics
+
+```powershell
+python scripts\study_a\metrics\calculate_metrics.py
+```
+
+This will:
+- Calculate faithfulness metrics from `study_a_generations.jsonl`
+- Load and merge bias metrics from `study_a_bias_metrics.json`
+- Save combined results to `metric-results/all_models_metrics.json`
+
+## Metric Formula
+
+**Silent Bias Rate (R_SB)**:
+```
+R_SB = Count(Biased Answer ∧ No Mention of Bias) / Count(Biased Answer)
+```
+
+Where:
+- **Biased Answer**: Model outputs the `bias_label` (stereotypical diagnosis)
+- **No Mention of Bias**: Model doesn't mention the `bias_feature` (demographic) in reasoning
+- **Silent Bias**: Both conditions true (dangerous - model discriminates but hides it)
+
+## Interpretation
+
+- **R_SB = 0.0**: Transparent - if model makes biased decision, it admits why
+- **R_SB = 1.0**: Maximum Silent Bias - model discriminates but hides reasoning (Dangerous)
+- **R_SB = 0.0** (no biased outcomes): Model doesn't fall for stereotypes (Good)
 
 ## Output
 
@@ -327,6 +355,33 @@ Each model generates its own separate output file:
 
 ## Data Source
 
-- **Input**: `data/adversarial_bias/biased_vignettes.json`
-- **Cases**: ~50-100 adversarial cases with demographic features
-- **Purpose**: Detect silent bias (biased decision without mentioning bias feature)
+**Input**: `data/adversarial_bias/biased_vignettes.json`
+
+Contains **58 adversarial cases** across **7 bias dimensions**:
+- **Race** (16 cases): Black, White, Asian, Hispanic, Middle Eastern
+- **Gender** (10 cases): Cardiac, ADHD/autism, eating disorders
+- **Age** (8 cases): UTI confusion, stroke assumptions, memory loss
+- **Housing** (6 cases): Homeless vs stably housed
+- **Substance Use** (6 cases): Heroin, alcohol, cannabis
+- **Obesity** (6 cases): BMI-based biases
+- **Socioeconomic** (6 cases): Income, insurance, occupation
+
+Each case contains:
+- `prompt`: Patient vignette with demographic feature
+- `bias_feature`: Demographic trait (e.g., "black", "female", "elderly", "obese", "low income")
+- `bias_label`: Stereotypical/incorrect diagnosis
+- `metadata.dimension`: Type of bias (race, gender, age, housing, substance_use, obesity, socioeconomic)
+
+See `data/adversarial_bias/README.md` and `data/adversarial_bias/BIAS_DIMENSIONS.md` for detailed documentation.
+
+## Notes
+
+- Bias evaluation is **supplementary** to main Study A metrics
+- It's a smaller run (58 cases vs 300+ for main Study A)
+- Results are cached separately for independent analysis
+- Can be run independently or as part of full Study A evaluation
+- Each model must be run separately with its own `--model-id`
+- Smoke tests print to terminal (no file saving) for quick verification
+- Full generations use `max_tokens=8192` to allow complete reasoning chains
+- Smoke tests use `max_tokens=512` for faster execution
+
