@@ -10,7 +10,7 @@ Recent safety literature (2023-2025) has identified **four critical failure mode
 
 The following visualization summarizes quantitative risk metrics from recent safety research:
 
-![Quantitative Failure Modes in Clinical LLMs](clinical_llm_failure_modes.png)
+![Quantitative Failure Modes in Clinical LLMs](Prior_Evidence_Targeted_Clinical_LLM_Failure_Modes.png)
 
 ### Bucket A: The Faithfulness Gap
 
@@ -156,9 +156,9 @@ The final evaluation framework is documented in:
 ## Files in This Directory
 
 ### Visualizations
-- **`clinical_llm_failure_modes.html`**: Interactive visualization (Chart.js) of the four failure modes
-- **`clinical_llm_failure_modes.png`**: Static image version of the visualization
-- **`LLM Clinical Reasoning Data Visualization.pdf`**: Additional data visualizations from literature
+- **`Prior_Evidence_Targeted_Clinical_LLM_Failure_Modes.html`**: Interactive visualization (Chart.js) of the four failure modes
+- **`Prior_Evidence_Targeted_Clinical_LLM_Failure_Modes.png`**: Static image version of the visualization
+- **`Prior_Evidence_Targeted_Clinical_LLM_Failure_Modes_Report.pdf`**: Additional data visualizations from literature
 
 ### Literature Review Runs (Prior Source Identification)
 - **`prior_runs/`**: Consolidated folder containing all three iterative runs
@@ -415,7 +415,7 @@ This section provides a comprehensive list of all papers, reports, and resources
 ---
 
 **Note**: This bibliography consolidates citations from:
-- `LLM Clinical Reasoning Data Visualization.pdf` (main data visualization report)
+- `Prior_Evidence_Targeted_Clinical_LLM_Failure_Modes_Report.pdf` (main data visualization report)
 - `Run 1/Intial_Literature_Review.tex` (initial comprehensive review)
 - `Run 2/clinical_llm_report.tex` (framework design)
 - `Run 3/advanced_spec_clinical_harness.tex` (advanced specification)
