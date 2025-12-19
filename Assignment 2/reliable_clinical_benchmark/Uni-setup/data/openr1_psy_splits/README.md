@@ -13,6 +13,35 @@ The code expects these files exactly here (paths are relative to the Uni-setup r
 - Study B loader: `data/openr1_psy_splits/study_b_test.json`
 - Study C loader: `data/openr1_psy_splits/study_c_test.json`
 
+### Source Dataset
+
+These splits are derived from the **OpenR1-Psy** dataset, a large-scale psychological counseling dataset:
+
+- **Hugging Face**: [GMLHUHE/OpenR1-Psy](https://huggingface.co/datasets/GMLHUHE/OpenR1-Psy)
+- **Paper**: [arXiv:2505.15715](https://arxiv.org/abs/2505.15715) - "Beyond Empathy: Integrating Diagnostic and Therapeutic Reasoning with Large Language Models for Mental Health Counseling"
+- **GitHub**: [OpenR1-Psy Repository](https://github.com/GMLHUHE/OpenR1-Psy)
+
+**Dataset Features**:
+- **19,302 dialogues** with multi-turn psychological counseling interactions
+- **Joint reasoning–response pairs**: includes diagnostic & therapeutic reasoning traces
+- **Clinically grounded**: aligned with DSM/ICD diagnostic standards
+- **Therapeutic diversity**: CBT, ACT, psychodynamic, humanistic, and integrative approaches
+- **Quality-controlled**: multi-dimensional validation for coherence, reasoning completeness, and framework consistency
+
+The dataset integrates **diagnostic reasoning** and **therapeutic reasoning** to train and evaluate large language models for mental health dialogue generation, going beyond empathy-focused corpora by incorporating explicit reasoning traces.
+
+**Citation**:
+```bibtex
+@article{hu2025beyond,
+  title={Beyond Empathy: Integrating Diagnostic and Therapeutic Reasoning with Large Language Models for Mental Health Counseling},
+  author={Hu, He and Zhou, Yucheng and Si, Juzheng and Wang, Qianning and Zhang, Hengheng and Ren, Fuji and Ma, Fei and Cui, Laizhong},
+  journal={arXiv preprint arXiv:2505.15715},
+  year={2025}
+}
+```
+
+### Split Generation
+
 See the Mac-setup `data/openr1_psy_splits/README.md` for the JSON schemas and
 an example script for deriving `study_a_test.json` from the OpenR1‑Psy dataset.
 
