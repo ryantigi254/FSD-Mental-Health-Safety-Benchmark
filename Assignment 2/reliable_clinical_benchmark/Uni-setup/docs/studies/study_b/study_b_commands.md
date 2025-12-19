@@ -21,60 +21,330 @@ Study B evaluates **Sycophancy** - measuring whether models abandon medical trut
 - Multi-turn generation: `_generate_multi_turn_study_b()` - uses `model.chat()` with structured message history
 - Rolling context: Each turn includes full conversation history (system + all previous user/assistant messages)
 
-## Commands per Model
+## Environment Requirements
 
-Run these from `Uni-setup/`:
+- **`mh-llm-benchmark-env`**: For LM Studio models (`qwq`, `deepseek_r1_lmstudio`, `gpt_oss`, `qwen3_lmstudio`, `psyllm`)
+- **`mh-llm-local-env`**: For local HF models (`psyllm_gml_local`, `piaget_local`, `psyche_r1_local`, `psych_qwen_local`)
+
+See `docs/environment/ENVIRONMENT.md` for setup instructions.
+
+**Note**: Adjust the Anaconda path (`D:\Anaconda3\Scripts\activate`) if your installation lives elsewhere.
+
+## Workflow per Model
+
+For each model:
+
+1. **Activate environment** and set up paths  
+2. **Run unit tests** (shared extraction/metrics tests, once per environment)  
+3. **Run Study B smoke test** (model-specific, tiny `max_samples`)  
+4. **Run full Study B generation** (`run_study_b_generate_only.py`)  
+
+All commands below are run from:
+
+```powershell
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+```
+
+---
 
 ### PsyLLM (LM Studio)
+
+**Environment**: `mh-llm-benchmark-env`
+
+#### 1. Activate Environment
+
+```powershell
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+& "D:\Anaconda3\Scripts\activate" mh-llm-benchmark-env
+$Env:PYTHONPATH="src"
+```
+
+#### 2. Unit Tests (Run Once – Shared Across All Models)
+
+```powershell
+pytest tests/unit/metrics/test_extraction.py -v
+```
+
+#### 3. Smoke Test (Study B)
+
+```powershell
+python src/tests/studies/study_b/lmstudio/test_study_b_gpt_oss.py
+```
+
+#### 4. Full Generation (Study B)
+
 ```powershell
 python hf-local-scripts\run_study_b_generate_only.py --model-id psyllm
 ```
 
+---
+
 ### PsyLLM (HF local, GMLHUHE/PsyLLM)
+
+**Environment**: `mh-llm-local-env`
+
+#### 1. Activate Environment
+
+```powershell
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+& "D:\Anaconda3\Scripts\activate" mh-llm-local-env
+$Env:PYTHONNOUSERSITE="1"
+$Env:PYTHONPATH="src"
+```
+
+#### 2. Unit Tests (Run Once – Shared Across All Models)
+
+```powershell
+pytest tests/unit/metrics/test_extraction.py -v
+```
+
+#### 3. Smoke Test (Study B)
+
+```powershell
+python src/tests/studies/study_b/models/test_study_b_psyllm_gml_local.py
+```
+
+#### 4. Full Generation (Study B)
+
 ```powershell
 python hf-local-scripts\run_study_b_generate_only.py --model-id psyllm_gml_local
 ```
 
+---
+
 ### QwQ-32B (LM Studio)
+
+**Environment**: `mh-llm-benchmark-env`
+
+#### 1. Activate Environment
+
+```powershell
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+& "D:\Anaconda3\Scripts\activate" mh-llm-benchmark-env
+$Env:PYTHONPATH="src"
+```
+
+#### 2. Unit Tests (Run Once – Shared Across All Models)
+
+```powershell
+pytest tests/unit/metrics/test_extraction.py -v
+```
+
+#### 3. Smoke Test (Study B)
+
+```powershell
+python src/tests/studies/study_b/lmstudio/test_study_b_qwq.py
+```
+
+#### 4. Full Generation (Study B)
+
 ```powershell
 python hf-local-scripts\run_study_b_generate_only.py --model-id qwq
 ```
 
+---
+
 ### DeepSeek-R1 (LM Studio distill)
+
+**Environment**: `mh-llm-benchmark-env`
+
+#### 1. Activate Environment
+
+```powershell
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+& "D:\Anaconda3\Scripts\activate" mh-llm-benchmark-env
+$Env:PYTHONPATH="src"
+```
+
+#### 2. Unit Tests (Run Once – Shared Across All Models)
+
+```powershell
+pytest tests/unit/metrics/test_extraction.py -v
+```
+
+#### 3. Smoke Test (Study B)
+
+```powershell
+python src/tests/studies/study_b/lmstudio/test_study_b_deepseek_r1_lmstudio.py
+```
+
+#### 4. Full Generation (Study B)
+
 ```powershell
 python hf-local-scripts\run_study_b_generate_only.py --model-id deepseek_r1_lmstudio
 ```
 
+---
+
 ### GPT-OSS-20B (LM Studio)
+
+**Environment**: `mh-llm-benchmark-env`
+
+#### 1. Activate Environment
+
+```powershell
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+& "D:\Anaconda3\Scripts\activate" mh-llm-benchmark-env
+$Env:PYTHONPATH="src"
+```
+
+#### 2. Unit Tests (Run Once – Shared Across All Models)
+
+```powershell
+pytest tests/unit/metrics/test_extraction.py -v
+```
+
+#### 3. Smoke Test (Study B)
+
+```powershell
+python src/tests/studies/study_b/lmstudio/test_study_b_gpt_oss.py
+```
+
+#### 4. Full Generation (Study B)
+
 ```powershell
 python hf-local-scripts\run_study_b_generate_only.py --model-id gpt_oss
 ```
 
+---
+
 ### Qwen3-8B (LM Studio)
+
+**Environment**: `mh-llm-benchmark-env`
+
+#### 1. Activate Environment
+
+```powershell
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+& "D:\Anaconda3\Scripts\activate" mh-llm-benchmark-env
+$Env:PYTHONPATH="src"
+```
+
+#### 2. Unit Tests (Run Once – Shared Across All Models)
+
+```powershell
+pytest tests/unit/metrics/test_extraction.py -v
+```
+
+#### 3. Smoke Test (Study B)
+
+```powershell
+python src/tests/studies/study_b/lmstudio/test_study_b_qwen3_lmstudio.py
+```
+
+#### 4. Full Generation (Study B)
+
 ```powershell
 python hf-local-scripts\run_study_b_generate_only.py --model-id qwen3_lmstudio
 ```
 
+---
+
 ### Piaget-8B (HF local)
+
+**Environment**: `mh-llm-local-env`
+
+#### 1. Activate Environment
+
+```powershell
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+& "D:\Anaconda3\Scripts\activate" mh-llm-local-env
+$Env:PYTHONNOUSERSITE="1"
+$Env:PYTHONPATH="src"
+```
+
+#### 2. Unit Tests (Run Once – Shared Across All Models)
+
+```powershell
+pytest tests/unit/metrics/test_extraction.py -v
+```
+
+#### 3. Smoke Test (Study B)
+
+```powershell
+python src/tests/studies/study_b/models/test_study_b_piaget_local.py
+```
+
+#### 4. Full Generation (Study B)
+
 ```powershell
 python hf-local-scripts\run_study_b_generate_only.py --model-id piaget_local
 ```
 
+---
+
 ### Psyche-R1 (HF local)
+
+**Environment**: `mh-llm-local-env`
+
+#### 1. Activate Environment
+
+```powershell
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+& "D:\Anaconda3\Scripts\activate" mh-llm-local-env
+$Env:PYTHONNOUSERSITE="1"
+$Env:PYTHONPATH="src"
+```
+
+#### 2. Unit Tests (Run Once – Shared Across All Models)
+
+```powershell
+pytest tests/unit/metrics/test_extraction.py -v
+```
+
+#### 3. Smoke Test (Study B)
+
+```powershell
+python src/tests/studies/study_b/models/test_study_b_psyche_r1_local.py
+```
+
+#### 4. Full Generation (Study B)
+
 ```powershell
 python hf-local-scripts\run_study_b_generate_only.py --model-id psyche_r1_local
 ```
 
+---
+
 ### Psych-Qwen-32B (HF local, 4-bit)
+
+**Environment**: `mh-llm-local-env`
+
+#### 1. Activate Environment
+
 ```powershell
-python hf-local-scripts\run_study_b_generate_only.py --model-id psych_qwen_local
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+& "D:\Anaconda3\Scripts\activate" mh-llm-local-env
+$Env:PYTHONNOUSERSITE="1"
+$Env:PYTHONPATH="src"
 ```
 
-## Quick Smoke Test
+#### 2. Unit Tests (Run Once – Shared Across All Models)
 
-Test with a small subset first (any model):
 ```powershell
-python hf-local-scripts\run_study_b_generate_only.py --model-id qwen3_lmstudio --max-samples 5 --max-tokens 512
+pytest tests/unit/metrics/test_extraction.py -v
+```
+
+#### 3. Smoke Test (Study B)
+
+```powershell
+python src/tests/studies/study_b/models/test_study_b_psych_qwen_local.py
+```
+
+#### 4. Full Generation (Study B)
+
+```powershell
+python hf-local-scripts\run_study_b_generate_only.py --model-id psych_qwen_local --quantization 4bit
+```
+
+---
+
+## Quick Smoke Test (Generic)
+
+If you just want a fast pipeline-level smoke test using the shared helper:
+
+```powershell
+python src/tests/studies/study_b/test_study_b_generate_only.py --model-id qwen3_lmstudio --max-samples 1 --max-tokens 512
 ```
 
 ## After Generation
