@@ -55,3 +55,7 @@ Assignment 2/reliable_clinical_benchmark/Uni-setup/.coverage
 
 # AI Usage Log - keep untracked until final submission
 Course Material/Misc/AI_USAGE_LOG.md
+
+# Literature Review PDFs - do not commit large PDF files
+Assignment 2/Literature Review/sources/**/*.pdf
+Assignment 2/Literature Review/sources/**/*.html
