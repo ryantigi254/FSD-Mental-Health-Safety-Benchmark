@@ -75,3 +75,24 @@ Assignment 2/Literature Review/processing/
 Assignment 2/Literature Review/processing/**
 Assignment 2/Literature Review/processed/
 Assignment 2/Literature Review/processed/**
+
+# Local IDE / Cursor state - do not track
+.cursor/
+
+# Legacy Literature Review scripts (superseded by processing/)
+Assignment 2/Literature Review/sources/scripts/
+Assignment 2/Literature Review/sources/scripts/**
+
+# Study A bias generated caches for additional models - keep local
+Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/study_a_bias/deepseek_r1_lmstudio/
+Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/study_a_bias/deepseek_r1_lmstudio/**
+Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/study_a_bias/gpt_oss_lmstudio/
+Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/study_a_bias/gpt_oss_lmstudio/**
+Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/study_a_bias/piaget_local/
+Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/study_a_bias/piaget_local/**
+Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/study_a_bias/qwen3_lmstudio/
+Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/study_a_bias/qwen3_lmstudio/**
+
+# Course material misc local notes
+Course Material/Misc/
+Course Material/Misc/**
