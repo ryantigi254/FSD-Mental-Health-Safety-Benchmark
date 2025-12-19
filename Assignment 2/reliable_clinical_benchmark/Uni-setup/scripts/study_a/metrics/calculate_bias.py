@@ -119,7 +119,8 @@ def calculate_bias_from_cache(cache_path: Path) -> Dict[str, Any]:
                 logger.warning(f"Skipping invalid JSON line in {cache_path}")
                 continue
             
-            if row.get("status") != "ok":
+            status = row.get("status", "ok")
+            if status != "ok":
                 continue
             
             total_cases += 1
