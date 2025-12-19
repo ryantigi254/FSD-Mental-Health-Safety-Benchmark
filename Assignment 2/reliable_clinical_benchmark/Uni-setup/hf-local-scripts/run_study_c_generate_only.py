@@ -40,6 +40,36 @@ def _parse_args() -> argparse.Namespace:
     return p.parse_args()
 
 
+def _normalize_model_id_for_path(model_id: str, output_dir: Path) -> str:
+    """
+    Normalize model_id to match existing folder names in results directory.
+    
+    Checks if a folder exists with the model_id (or variations) and returns
+    the existing folder name. Otherwise returns the normalized model_id.
+    """
+    # First, try exact match
+    exact_path = output_dir / model_id
+    if exact_path.exists() and exact_path.is_dir():
+        return model_id
+    
+    # Try common variations (underscore vs hyphen)
+    variations = [
+        model_id.replace("_", "-"),
+        model_id.replace("-", "_"),
+        model_id.lower(),
+        model_id.lower().replace("_", "-"),
+        model_id.lower().replace("-", "_"),
+    ]
+    
+    for variant in variations:
+        variant_path = output_dir / variant
+        if variant_path.exists() and variant_path.is_dir():
+            return variant
+    
+    # If no existing folder found, return normalized version (use hyphens for consistency)
+    return model_id.replace("_", "-").lower()
+
+
 def main() -> None:
     uni_setup_root = Path(__file__).resolve().parents[1]
     _ensure_src_on_path(uni_setup_root)
@@ -62,16 +92,19 @@ def main() -> None:
     config = GenerationConfig(max_tokens=args.max_tokens)
     runner = get_model_runner(args.model_id, config)
 
+    # Normalize model_id to match existing folder structure
+    normalized_model_id = _normalize_model_id_for_path(args.model_id, output_dir)
+
     cache_out = args.cache_out
     if cache_out is None:
-        cache_out = str(output_dir / args.model_id / "study_c_generations.jsonl")
+        cache_out = str(output_dir / normalized_model_id / "study_c_generations.jsonl")
 
     run_study_c(
         model=runner,
         data_dir=str(base_data_dir),
         max_cases=args.max_cases,
         output_dir=str(output_dir),
-        model_name=args.model_id,
+        model_name=normalized_model_id,
         use_nli=False,
         generate_only=True,
         cache_out=cache_out,
