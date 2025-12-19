@@ -160,20 +160,19 @@ The final evaluation framework is documented in:
 - **`clinical_llm_failure_modes.png`**: Static image version of the visualization
 - **`LLM Clinical Reasoning Data Visualization.pdf`**: Additional data visualizations from literature
 
-### Literature Review Runs
-- **`Run 1/`**: Initial literature review and shortlist
-  - `Intial_Literature_Review.tex` - Initial comprehensive review (LaTeX)
-  - `Initial Literature Overview.pdf` - Compiled overview
-  - `LLM Clinical Reasoning Literature Shortlist.pdf` - Key papers shortlist
-- **`Run 2/`**: Framework design phase
-  - `clinical_llm_report.tex` - Framework design document (LaTeX)
-  - `Clinical LLM Evaluation Framework Design.pdf` - Compiled framework
-- **`Run 3/`**: Advanced specification
-  - `advanced_spec_clinical_harness.tex` - Advanced specification (LaTeX)
-  - `Advanced_Spec_Clinical_Harness.pdf` - Compiled specification
+### Literature Review Runs (Prior Source Identification)
+- **`prior_runs/`**: Consolidated folder containing all three iterative runs
+  - **Run 1**: `Intial_Literature_Review.tex`, `Initial Literature Overview.pdf`, `LLM Clinical Reasoning Literature Shortlist.pdf`
+  - **Run 2**: `clinical_llm_report.tex`, `Clinical LLM Evaluation Framework Design.pdf`
+  - **Run 3**: `advanced_spec_clinical_harness.tex`, `Advanced_Spec_Clinical_Harness.pdf`
 
 ### Additional Resources
 - **`prompts/`**: Prompt templates and examples used in evaluation
+- **`sources/`**: **Prioritized reading list and folder structure** for organizing papers
+  - `README.md` - Complete documentation (merged from multiple guides)
+  - `PRIORITY_READING_LIST.csv` - Complete prioritized list with scores (60 papers)
+  - `DOWNLOAD_GUIDE.md` - Comprehensive guide with all download links organized by folder
+  - Folder structure organized by bucket (A/B/C/D) and tier (1/2/3)
 
 ## Complete Bibliography: All Papers Cited
 
