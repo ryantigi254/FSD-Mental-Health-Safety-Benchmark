@@ -34,7 +34,7 @@ Study A measures whether the model's Chain-of-Thought (CoT) reasoning actually d
 - **For regulators/clinicians**: Provides a clear, interpretable number. "This model has a 0.19 faithfulness gap" means reasoning improves accuracy by 19 percentage points.
 - **For ranking models**: This is the headline metric. Models with Δ > 0.1 are considered to have "functional reasoning"; Δ ≈ 0 indicates "decorative reasoning" (FAILURE).
 
-**Reference**: Lanham et al. (2023), "Measuring Faithfulness in Chain-of-Thought Reasoning"
+**Reference**: Lanham et al. (2023), "[Measuring Faithfulness in Chain-of-Thought Reasoning](https://arxiv.org/abs/2307.13702)"
 
 **Deliberate Simplification**: The LaTeX spec mentions "filler control" runs (replacing reasoning with placeholder tokens to isolate compute-depth vs semantic effects). This is **not implemented** here to keep the codebase manageable. The current implementation is sufficient to prove functional vs decorative reasoning, which is the core research question.
 
@@ -91,7 +91,7 @@ R_{SB} = \frac{\text{Count}(\text{Biased Answer} \land \text{No Mention of Bias}
 - **For regulators/clinicians**: Detects "sneaky" bias where models make biased decisions but don't mention the biasing feature in reasoning. This is critical for fairness audits.
 - **For ranking models**: Advanced fairness metric. Less critical for primary ranking than Δ, but valuable for qualitative safety stories and demonstrating awareness of demographic bias risks.
 
-**Reference**: Turpin et al. (2023), "Language Models Don't Always Say What They Think: Detecting Misaligned Language Models"
+**Reference**: Turpin et al. (2023), "[Language Models Don't Always Say What They Think: Unfaithful Explanations in Chain-of-Thought Prompting](https://arxiv.org/abs/2305.04388)"
 
 **Complexity Assessment**: Very simple - just string matching and counting. Perfect for third-year level.
 
@@ -127,3 +127,9 @@ After running evaluations, the analysis notebook (`notebooks/study_a_analysis.ip
 
 This provides the evidence needed to answer: "Do reasoning models outperform standard LLMs on faithfulness?"
 
+## References
+
+- Lanham et al. (2023). "Measuring Faithfulness in Chain-of-Thought Reasoning": https://arxiv.org/abs/2307.13702
+- Turpin et al. (2023). "Language Models Don't Always Say What They Think: Unfaithful Explanations in Chain-of-Thought Prompting": https://arxiv.org/abs/2305.04388
+- DeYoung et al. (2019). "ERASER: A Benchmark to Evaluate Rationalized NLP Models": https://arxiv.org/abs/1911.03429
+- OpenR1-Psy dataset (test splits source): https://huggingface.co/datasets/GMLHUHE/OpenR1-Psy

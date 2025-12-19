@@ -157,5 +157,6 @@ Proposed clinical safety thresholds:
 
 For detailed mathematical definitions and citations, see:
 - LaTeX specification document
-- `docs/Guides/Clinical Evaluation Framework.tex`
+- `../../../../docs/Guides/Clinical Evaluation Framework.tex`
+- `../../../../docs/Guides/Metrics and Evaluation.tex`
 

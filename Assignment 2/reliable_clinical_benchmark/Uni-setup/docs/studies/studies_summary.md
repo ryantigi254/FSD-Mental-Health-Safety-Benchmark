@@ -88,10 +88,10 @@ Models loaded from `Uni-setup/models/` directory:
 
 | Model | Runner Class | Model ID(s) | Notes |
 |-------|-------------|-------------|-------|
-| **PsyLLM** | `PsyLLMGMLLocalRunner` | `psyllm`, `psyllm_gml_local` | GMLHUHE/PsyLLM - domain expert, counselling-tuned |
-| **Piaget-8B** | `Piaget8BLocalRunner` | `piaget_local`, `piaget-8b-local` | gustavecortal/Piaget-8B |
-| **Psyche-R1** | `PsycheR1LocalRunner` | `psyche_r1_local`, `psyche-r1-local` | MindIntLab/Psyche-R1 - psychological reasoning |
-| **Psych_Qwen-32B** | `PsychQwen32BLocalRunner` | `psych_qwen_local`, `psych-qwen-32b-local` | Compumacy/Psych_Qwen_32B - **4-bit quantized** (24GB VRAM) |
+| **PsyLLM** | `PsyLLMGMLLocalRunner` | `psyllm`, `psyllm_gml_local` | [GMLHUHE/PsyLLM](https://huggingface.co/GMLHUHE/PsyLLM) - domain expert, counselling-tuned |
+| **Piaget-8B** | `Piaget8BLocalRunner` | `piaget_local`, `piaget-8b-local` | [gustavecortal/Piaget-8B](https://huggingface.co/gustavecortal/Piaget-8B) |
+| **Psyche-R1** | `PsycheR1LocalRunner` | `psyche_r1_local`, `psyche-r1-local` | [MindIntLab/Psyche-R1](https://huggingface.co/MindIntLab/Psyche-R1) - psychological reasoning |
+| **Psych_Qwen-32B** | `PsychQwen32BLocalRunner` | `psych_qwen_local`, `psych-qwen-32b-local` | [Compumacy/Psych_Qwen_32B](https://huggingface.co/Compumacy/Psych_Qwen_32B) - **4-bit quantized** (24GB VRAM) |
 
 ### LM Studio Runners (OpenAI-compatible API)
 
@@ -99,10 +99,10 @@ Models hosted locally via LM Studio server:
 
 | Model | Runner Class | Model ID(s) | Notes |
 |-------|-------------|-------------|-------|
-| **QwQ-32B** | `QwQLMStudioRunner` | `qwq_lmstudio`, `qwq-32b-lmstudio` | Reasoning baseline |
-| **DeepSeek-R1-14B** | `DeepSeekR1LMStudioRunner` | `deepseek_r1_lmstudio`, `deepseek-r1-lmstudio` | Reasoning baseline |
-| **GPT-OSS-20B** | `GPTOSSLMStudioRunner` | `gpt_oss_lmstudio`, `gpt-oss-20b` | Generic reasoning comparator |
-| **Qwen3-8B** | `Qwen3LMStudioRunner` | `qwen3_lmstudio`, `qwen3-8b-lmstudio` | Untuned baseline |
+| **QwQ-32B** | `QwQLMStudioRunner` | `qwq_lmstudio`, `qwq-32b-lmstudio` | [Qwen/QwQ-32B-Preview](https://huggingface.co/Qwen/QwQ-32B-Preview) (overview: https://qwenlm.github.io/blog/qwq-32b-preview/) |
+| **DeepSeek-R1-14B** | `DeepSeekR1LMStudioRunner` | `deepseek_r1_lmstudio`, `deepseek-r1-lmstudio` | [deepseek-ai/DeepSeek-R1-Distill-Qwen-14B](https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-14B) (report: https://arxiv.org/abs/2501.12948) |
+| **GPT-OSS-20B** | `GPTOSSLMStudioRunner` | `gpt_oss_lmstudio`, `gpt-oss-20b` | Model card: https://openai.com/index/gpt-oss-model-card/ |
+| **Qwen3-8B** | `Qwen3LMStudioRunner` | `qwen3_lmstudio`, `qwen3-8b-lmstudio` | [Qwen/Qwen3-8B](https://huggingface.co/Qwen/Qwen3-8B) (report: https://arxiv.org/abs/2505.09388) |
 
 **Model Runner Documentation**: See [MODEL_RUNNERS.md](../models/MODEL_RUNNERS.md) for detailed implementation and interface.
 
@@ -180,7 +180,7 @@ python scripts/study_c/metrics/calculate_drift.py
 - Extraction logic: `src/tests/studies/study_a/extraction/test_*.py`
 - Metrics: `src/tests/studies/study_a/metrics/test_*.py`
 
-See [Testing Guide](TESTING_GUIDE.md) for comprehensive testing documentation.
+See [Testing Guide](../testing/TESTING_GUIDE.md) for comprehensive testing documentation.
 
 ---
 
@@ -254,7 +254,7 @@ Uni-setup/
         ├── study_a/
         ├── study_b/
         ├── study_c/
-        └── SUMMARY_SETUP.md   # This file
+        └── studies_summary.md   # This file
 ```
 
 ---
@@ -265,7 +265,7 @@ Uni-setup/
 1. **Start Here**: [Main Documentation Index](../README.md)
 2. **Environment**: [Environment Setup](../environment/ENVIRONMENT.md)
 3. **Models**: [Model Runners](../models/MODEL_RUNNERS.md)
-4. **Testing**: [Testing Guide](TESTING_GUIDE.md)
+4. **Testing**: [Testing Guide](../testing/TESTING_GUIDE.md)
 
 ### For Running Evaluations
 1. **Study A**: [Study A Generation Commands](study_a/study_a_generation_commands.md)

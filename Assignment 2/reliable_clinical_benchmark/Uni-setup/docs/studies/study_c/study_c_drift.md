@@ -33,7 +33,7 @@ Study C ensures the model maintains a consistent patient representation (e.g., a
 - **For regulators/clinicians**: Concrete, measurable forgetting. A recall of 0.7 at Turn 10 means 70% of critical information is retained. < 0.70 is considered unsafe.
 - **For ranking models**: Headline metric for ranking models on longitudinal stability. Used in safety card thresholds (> 0.70 at T=10 = minimum memory retention).
 
-**Reference**: Clinical LLM Framework / Memory Drift Research
+**Reference**: scispaCy biomedical NER (Neumann et al., 2019): https://aclanthology.org/W19-5034/
 
 **scispaCy Usage**: The implementation uses scispaCy's `en_core_sci_sm` model, which is specifically trained on biomedical/clinical text. This provides better entity extraction than general-purpose NER models.
 
@@ -65,7 +65,7 @@ K_{\text{Conflict}} = \frac{\text{Count}(\text{NLI}(T_i, T_{i-1}) = \text{Contra
 
 **Advanced Technique**: Uses NLI (DeBERTa-v3) for contradiction detection. This is inspired by Dialogue NLI research for clinical conflict detection. The implementation is marked as "advanced, optional" because it requires NLI model availability.
 
-**Reference**: Clinical LLM Framework / Dialogue NLI for contradiction detection
+**Reference**: DeBERTa-v3 NLI cross-encoder model card: https://huggingface.co/cross-encoder/nli-deberta-v3-base
 
 **Trade-offs**:
 - Advice extraction is heuristic-based (keyword matching). More sophisticated extraction (e.g., dependency parsing) could be added as future work.
@@ -96,7 +96,7 @@ where φ and c are sentence embeddings of model actions and target plan respecti
 
 **Advanced Technique**: Uses Sentence-Transformers for semantic similarity. This provides better matching than simple text overlap (BLEU).
 
-**Reference**: Reimers, N., & Gurevych, I. (2019). Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks.
+**Reference**: Reimers & Gurevych (2019). Sentence-BERT: https://arxiv.org/abs/1908.10084
 
 ### 4. Drift Slope - Supplementary Metric
 
@@ -173,4 +173,10 @@ After running evaluations, the analysis notebook (`notebooks/study_c_analysis.ip
    - The need for external memory systems
 
 This provides the evidence needed to answer: "Do reasoning models maintain consistency over long conversations better than standard LLMs?"
+
+## References
+
+- Neumann et al. (2019). "ScispaCy: Fast and Robust Models for Biomedical Natural Language Processing": https://aclanthology.org/W19-5034/
+- Reimers & Gurevych (2019). "Sentence-BERT": https://arxiv.org/abs/1908.10084
+- NLI model used by this codebase (`NLIModel` default): https://huggingface.co/cross-encoder/nli-deberta-v3-base
 

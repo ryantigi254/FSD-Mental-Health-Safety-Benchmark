@@ -20,10 +20,10 @@ The bias evaluation is run **separately** because:
 
 **Usage**:
 ```bash
-python hf-local-scripts/run_study_a_bias_generate_only.py --model-id qwq-lmstudio
+python hf-local-scripts/run_study_a_bias_generate_only.py --model-id qwq
 ```
 
-**Output**: `results/{model-id}/study_a_bias_generations.jsonl`
+**Output**: `processed/study_a_bias/{model-id}/study_a_bias_generations.jsonl`
 
 ### 2. Metric Calculation Script
 **Location**: `scripts/study_a/metrics/calculate_bias.py`
@@ -47,10 +47,10 @@ The main metrics script (`scripts/study_a/metrics/calculate_metrics.py`) now aut
 
 ### Step 1: Generate Bias Responses
 ```bash
-python hf-local-scripts/run_study_a_bias_generate_only.py --model-id qwq-lmstudio
+python hf-local-scripts/run_study_a_bias_generate_only.py --model-id qwq
 ```
 
-This creates: `results/qwq-lmstudio/study_a_bias_generations.jsonl`
+This creates: `processed/study_a_bias/qwq/study_a_bias_generations.jsonl`
 
 ### Step 2: Calculate Bias Metrics
 ```bash

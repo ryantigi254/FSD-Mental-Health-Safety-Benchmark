@@ -14,8 +14,8 @@ This directory contains comprehensive documentation for the mental health LLM be
   - `QUICK_REFERENCE.md` - Quick reference for all metrics
 
 - **`studies/`** - Study-specific documentation
-  - `SUMMARY_SETUP.md` - **Benchmark Overview** - High-level summary of all studies, models, and workflow
-  - `TESTING_GUIDE.md` - Comprehensive testing guide for all studies
+  - `studies_summary.md` - **Benchmark Overview** - High-level summary of all studies, models, and workflow
+  - See `testing/TESTING_GUIDE.md` - Comprehensive testing guide for all studies
   - `study_a/` - Study A documentation
     - `study_a_faithfulness.md` - Study A (Faithfulness) overview
     - `study_a_bias.md` - Silent Bias Rate (R_SB) evaluation: setup, commands, and workflow
@@ -43,7 +43,7 @@ This directory contains comprehensive documentation for the mental health LLM be
 ## Quick Links
 
 ### Benchmark Overview
-- **[Benchmark Overview](studies/SUMMARY_SETUP.md)** - High-level summary of all studies, models, and workflow
+- **[Benchmark Overview](studies/studies_summary.md)** - High-level summary of all studies, models, and workflow
 
 ### Study A (Faithfulness)
 - [Study Overview](studies/study_a/study_a_faithfulness.md)
@@ -62,7 +62,7 @@ This directory contains comprehensive documentation for the mental health LLM be
 
 ### General
 - [Model Runners](models/MODEL_RUNNERS.md) - ModelRunner interface (`generate`, `chat`, `generate_with_reasoning`)
-- [Testing Guide](studies/TESTING_GUIDE.md) - Smoke tests and unit tests for all studies
+- [Testing Guide](testing/TESTING_GUIDE.md) - Smoke tests and unit tests for all studies
 - [Testing Strategy](testing/TESTING.md)
 - [Environment Setup](environment/ENVIRONMENT.md)
 - [Evaluation Protocol](evaluation/EVALUATION_PROTOCOL.md)
@@ -116,13 +116,13 @@ This directory contains comprehensive documentation for the mental health LLM be
 
 ## Getting Started
 
-1. **Read Overview**: Start with [Benchmark Overview](studies/SUMMARY_SETUP.md) for a high-level understanding
+1. **Read Overview**: Start with [Benchmark Overview](studies/studies_summary.md) for a high-level understanding
 2. **Setup Environment**: See [Environment Setup](environment/ENVIRONMENT.md)
 3. **Understand Architecture**: See `src/README.md` for package structure and study architectures
 4. **Understand Studies**: Read study-specific docs in `studies/`
 5. **Run Generations**: Use generation scripts in `hf-local-scripts/` (see study command docs)
 6. **Calculate Metrics**: Use `from_cache` mode or metric calculation scripts
-7. **Run Tests**: See [Testing Guide](studies/TESTING_GUIDE.md) for smoke tests and unit tests
+7. **Run Tests**: See [Testing Guide](testing/TESTING_GUIDE.md) for smoke tests and unit tests
 
 ## Architecture Overview
 
