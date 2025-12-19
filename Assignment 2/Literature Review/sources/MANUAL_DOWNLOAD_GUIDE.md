@@ -2,7 +2,8 @@
 
 ## Status Summary
 - **Automatically downloaded**: 25 PDFs + 4 HTML files + 1 Markdown
-- **Remaining**: ~29 papers + articles/blogs/resources require manual download
+- **Manually downloaded**: 12 additional papers (see below)
+- **Remaining**: ~17 papers + articles/blogs/resources require manual download
 
 ## Papers Requiring Manual Download
 
@@ -10,32 +11,27 @@
 
 #### EMNLP 2024 Findings
 1. **Lanham et al. / Paul et al. (2024)** - "Making Reasoning Matter: Measuring and Improving Faithfulness"
+   - ✅ **DOWNLOADED** - `bucket_a_faithfulness/tier_1_must_read/Lanham_2024_Making_Reasoning_Matter.pdf`
    - **Note**: Same paper, different author listings (Lanham and Paul are co-authors)
-   - Search: https://aclanthology.org/volumes/2024.findings-emnlp/
-   - Search for: "Making Reasoning Matter" OR "Lanham" OR "Paul"
-   - Save as: `bucket_a_faithfulness/tier_1_must_read/Lanham_2024_Making_Reasoning_Matter.pdf`
-   - (Alternative filename if found with Paul as first author: `Paul_2024_Making_Reasoning_Matter.pdf`)
 
 2. **Gabriel et al. (2024)** - "Can AI Relate: Testing Large Language Model Response for Mental Health Support"
-   - Search: https://aclanthology.org/volumes/2024.findings-emnlp/
-   - Search for: "Can AI Relate" OR "Gabriel"
-   - Save as: `bucket_c_silent_bias/tier_2_important/Gabriel_2024_Can_AI_Relate.pdf`
+   - ✅ **DOWNLOADED** - `bucket_c_silent_bias/tier_2_important/Gabriel_2024_Can_AI_Relate.pdf`
 
 #### EMNLP 2025 Findings
 4. **Kaur (2025)** - "Echoes of Agreement: Argument-Driven Sycophancy"
-   - Search: EMNLP 2025 proceedings (when available)
-   - Save as: `bucket_b_sycophancy/tier_1_must_read/Kaur_2025_Echoes_of_Agreement.pdf`
+   - ✅ **DOWNLOADED** - `bucket_b_sycophancy/tier_1_must_read/Kaur_2025_Echoes_of_Agreement.pdf`
 
 5. **Hong et al. (2025)** - "ELEPHANT and SYCON-Bench: Measuring Social Sycophancy"
    - Search: EMNLP 2025 proceedings (when available)
    - Save as: `bucket_b_sycophancy/tier_1_must_read/Hong_2025_ELEPHANT_SYCON_Bench.pdf`
 
 6. **Kruse et al. (2025)** - "Large Language Models with Temporal Reasoning for Longitudinal Clinical Summarisation"
-   - Search: EMNLP 2025 proceedings (when available)
-   - Save as: `bucket_d_longitudinal/tier_1_must_read/Kruse_2025_Temporal_Reasoning_Clinical.pdf`
+   - ✅ **DOWNLOADED** - `bucket_d_longitudinal/tier_1_must_read/Kruse_2025_Temporal_Reasoning_Clinical.pdf`
 
 #### ACL 2024
 7. **Paul & West (2024)** - "On Measuring Faithfulness or Self-Consistency"
+   - ⚠️ **NOTE**: Different paper downloaded - Parcalabescu & Frank (2024) "On Measuring Faithfulness or Self-consistency" is in `bucket_a_faithfulness/tier_2_important/Parcalabescu_Frank_2024_On_Measuring_Faithfulness.pdf`
+   - **Still need**: Paul & West (2024) version
    - Search: https://aclanthology.org/volumes/2024.acl-long/
    - Search for: "Paul" AND "West" AND "Faithfulness"
    - Save as: `bucket_a_faithfulness/tier_2_important/Paul_West_2024_On_Measuring_Faithfulness.pdf`
@@ -48,22 +44,16 @@
 
 #### ICLR 2025
 9. **Van der Weij et al. (2025)** - "AI Sandbagging: Language Models Can Strategically Underperform"
-   - Search: ICLR 2025 proceedings (when available)
-   - Save as: `bucket_b_sycophancy/tier_2_important/Van_der_Weij_2025_AI_Sandbagging.pdf`
+   - ✅ **DOWNLOADED** - `bucket_b_sycophancy/tier_2_important/Van_der_Weij_2025_AI_Sandbagging.pdf`
 
 #### AAAI 2020
 10. **Gretz et al. (2020)** - "A Large-Scale Dataset for Argument Quality Ranking"
-    - Search: AAAI 2020 proceedings
-    - Save as: `bucket_b_sycophancy/tier_3_reference/Gretz_2020_Argument_Quality_Dataset.pdf`
+    - ✅ **DOWNLOADED** - `bucket_b_sycophancy/tier_3_reference/Gretz_2020_Argument_Quality_Dataset.pdf`
 
 ### Journal Articles (May Require Institutional Access)
 
 11. **Hager et al. (2024)** - "Evaluation and Mitigation of the Limitations of Large Language Models in Clinical Decision-Making"
-    - Journal: Nature Medicine 2024
-    - May require institutional access
-    - Try: https://www.nature.com/natmed (search for paper)
-    - Alternative: Check if preprint on bioRxiv/medRxiv
-    - Save as: `clinical_domain/tier_1_must_read/Hager_2024_Clinical_Decision_Making.pdf`
+    - ✅ **DOWNLOADED** - `clinical_domain/tier_1_must_read/Hager_2024_Clinical_Decision_Making.pdf`
 
 12. **Lee et al. (2025)** - "When Helpfulness Backfires: LLMs and the Risk of False Medical Information"
     - Journal: Journal of Medical Internet Research
@@ -88,9 +78,7 @@
     - Save as: `bucket_a_faithfulness/tier_2_important/Zhao_2025_LLLMs_Survey.pdf`
 
 16. **BIG-Bench Hard (2023)** - Individual task performance data
-    - Link: https://www.researchgate.net/figure/BIG-Bench-Hard-1827-individual-task-performance_tbl3_372989811
-    - Requires login
-    - Save as: `bucket_a_faithfulness/tier_3_reference/BIG_Bench_Hard_2023_Performance_Data.pdf`
+    - ✅ **DOWNLOADED** - `bucket_a_faithfulness/tier_3_reference/BIG_Bench_Hard_2023.pdf` (BIG-Bench Hard paper)
 
 17. **Jerry Wei's Research (2023)** - Dartmouth College contributions
     - Link: https://www.researchgate.net/scientific-contributions/Jerry-Wei-2152948001
@@ -100,8 +88,7 @@
 ### Technical Reports & Whitepapers
 
 18. **Anthropic (2024)** - "Alignment Faking in Large Language Models"
-    - Search: Anthropic website or arXiv
-    - Save as: `bucket_b_sycophancy/tier_2_important/Anthropic_2024_Alignment_Faking.pdf`
+    - ✅ **DOWNLOADED** - `bucket_b_sycophancy/tier_2_important/Anthropic_2024_Alignment_Faking.pdf`
 
 19. **Meinke et al. (2024)** - "Frontier Models are Capable of In-Context Scheming"
     - Search: Apollo Research website or arXiv
@@ -118,8 +105,7 @@
 ### OpenReview (Some Need Search)
 
 22. **Lundberg et al. (2024)** - "Faithful Group Shapley Value"
-    - Search: https://openreview.net/ (search for paper title)
-    - Save as: `bucket_a_faithfulness/tier_3_reference/Lundberg_2024_Faithful_Group_Shapley.pdf`
+    - ✅ **DOWNLOADED** - `bucket_a_faithfulness/tier_3_reference/Lundberg_2024_Faithful_Group_Shapley.pdf`
 
 ### Preprints
 
@@ -129,8 +115,7 @@
     - Save as: `evaluation_tools/tier_2_important/Cheng_2025_Clinical_AI_Summaries.pdf`
 
 24. **Pi et al. (2025)** - "Pointing to a Llama and Call it a Camel: On the Sycophancy of Multimodal LLMs"
-    - Source: Manuscript under review
-    - Search: Paper title + author name (might be on arXiv)
+    - ✅ **DOWNLOADED** (from Downloads folder, needs to be moved) - arXiv:2509.16149
     - Save as: `bucket_b_sycophancy/tier_3_reference/Pi_2025_Multimodal_Sycophancy.pdf`
 
 ### Articles, Blogs & Web Resources
