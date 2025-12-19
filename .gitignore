@@ -63,3 +63,7 @@ Assignment 2/reliable_clinical_benchmark/Uni-setup/docs/Misc/**
 # Literature Review PDFs - do not commit large PDF files
 Assignment 2/Literature Review/sources/**/*.pdf
 Assignment 2/Literature Review/sources/**/*.html
+
+# Literature Review Misc guides - keep local/untracked
+Assignment 2/Literature Review/sources/Misc/
+Assignment 2/Literature Review/sources/Misc/**
