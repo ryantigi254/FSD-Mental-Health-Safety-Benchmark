@@ -88,8 +88,7 @@ Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/study_a_bias/deepse
 Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/study_a_bias/deepseek_r1_lmstudio/**
 Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/study_a_bias/gpt_oss_lmstudio/
 Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/study_a_bias/gpt_oss_lmstudio/**
-Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/study_a_bias/piaget_local/
-Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/study_a_bias/piaget_local/**
+# Note: piaget_local is tracked (removed from ignore)
 Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/study_a_bias/qwen3_lmstudio/
 Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/study_a_bias/qwen3_lmstudio/**
 
