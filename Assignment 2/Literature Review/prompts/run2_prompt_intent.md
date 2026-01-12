@@ -5,7 +5,7 @@
 **Prompt Summary:**
 - Bridge theory-to-execution for three studies (Faithfulness, Sycophancy, Longitudinal Drift).
 - For each study:
-  1. Summarize dominant methodologies beyond the key paper.
+  1. Summarise dominant methodologies beyond the key paper.
   2. Provide 2–3 metrics (Gold standard + alternatives/novel derivatives).
   3. Supply implementation logic (math derivations / Python pseudocode).
 - Deliverable format: "Researcher’s Implementation Guide" with Theory, Metrics, and Code Specs per study.

@@ -3,7 +3,7 @@
 **Role:** Rigorous NLP researcher curating literature for “Reliable Clinical Reasoning in LLMs.”
 
 **Prompt Summary:**
-- Deliver a prioritized shortlist (20 papers) covering Faithfulness, Sycophancy, Mental-Health Benchmarks, and Longitudinal Drift.
+- Deliver a prioritised shortlist (20 papers) covering Faithfulness, Sycophancy, Mental-Health Benchmarks, and Longitudinal Drift.
 - Apply strict filters:
   - Year ≥ 2022 (LLM era). Exception: seminal rationale paper ERASER (2020).
   - Venues: ACL/EMNLP/NAACL, NeurIPS/ICLR, Nature Medicine, Lancet Digital Health, or high-impact arXiv (2024–2025).

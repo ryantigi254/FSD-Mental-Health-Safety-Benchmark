@@ -8,7 +8,7 @@ Recent safety literature (2023-2025) has identified **four critical failure mode
 
 ## Verified Failure Modes
 
-The following visualization summarizes quantitative risk metrics from recent safety research:
+The following visualisation summarises quantitative risk metrics from recent safety research:
 
 ![Quantitative Failure Modes in Clinical LLMs](Prior_Evidence_Targeted_Clinical_LLM_Failure_Modes.png)
 
@@ -27,7 +27,7 @@ The following visualization summarizes quantitative risk metrics from recent saf
 
 ### Bucket B: Sycophancy & Alignment Faking
 
-**Problem**: RLHF training unintentionally incentivizes models to agree with user errors ("Sycophancy") and optimize for human preference over honesty.
+**Problem**: RLHF training unintentionally incentivises models to agree with user errors ("Sycophancy") and optimise for human preference over honesty.
 
 **Evidence**: RLHF increases sycophancy from **~18% to 75%** (Wei et al., 2023) and favors preference over truth **95% of the time**.
 
@@ -107,7 +107,7 @@ The literature review was conducted in **three progressive runs**, each with the
 - **`Clinical LLM Evaluation Framework Design.pdf`** - Compiled framework specification
 
 **Focus**:
-- Synthesized findings from Run 1 into a structured evaluation framework
+- Synthesised findings from Run 1 into a structured evaluation framework
 - Defined specific metrics for each failure mode (Faithfulness Gap, Sycophancy Probability, Silent Bias Rate, Drift Metrics)
 - Designed the three-study structure (Study A: Faithfulness + Bias, Study B: Sycophancy, Study C: Longitudinal Drift)
 - Specified mathematical formulations and implementation requirements
@@ -156,8 +156,8 @@ The final evaluation framework is documented in:
 ## Files in This Directory
 
 ### Visualizations
-- **`Prior_Evidence_Targeted_Clinical_LLM_Failure_Modes.html`**: Interactive visualization (Chart.js) of the four failure modes
-- **`Prior_Evidence_Targeted_Clinical_LLM_Failure_Modes.png`**: Static image version of the visualization
+- **`Prior_Evidence_Targeted_Clinical_LLM_Failure_Modes.html`**: Interactive visualisation (Chart.js) of the four failure modes
+- **`Prior_Evidence_Targeted_Clinical_LLM_Failure_Modes.png`**: Static image version of the visualisation
 - **`Prior_Evidence_Targeted_Clinical_LLM_Failure_Modes_Report.pdf`**: Additional data visualizations from literature
 
 ### Literature Review Runs (Prior Source Identification)
@@ -168,15 +168,15 @@ The final evaluation framework is documented in:
 
 ### Additional Resources
 - **`prompts/`**: Prompt templates and examples used in evaluation
-- **`sources/`**: **Prioritized reading list and folder structure** for organizing papers
+- **`sources/`**: **Prioritised reading list and folder structure** for organising papers
   - `README.md` - Complete documentation (merged from multiple guides)
-  - `PRIORITY_READING_LIST.csv` - Complete prioritized list with scores (60 papers)
-  - `DOWNLOAD_GUIDE.md` - Comprehensive guide with all download links organized by folder
-  - Folder structure organized by bucket (A/B/C/D) and tier (1/2/3)
+  - `PRIORITY_READING_LIST.csv` - Complete prioritised list with scores (60 papers)
+  - `DOWNLOAD_GUIDE.md` - Comprehensive guide with all download links organised by folder
+  - Folder structure organised by bucket (A/B/C/D) and tier (1/2/3)
 
 ## Complete Bibliography: All Papers Cited
 
-This section provides a comprehensive list of all papers, reports, and resources cited across the three literature review runs, organized by topic area. All available links are included.
+This section provides a comprehensive list of all papers, reports, and resources cited across the three literature review runs, organised by topic area. All available links are included.
 
 ### Faithfulness & Chain-of-Thought Reasoning
 
@@ -415,7 +415,7 @@ This section provides a comprehensive list of all papers, reports, and resources
 ---
 
 **Note**: This bibliography consolidates citations from:
-- `Prior_Evidence_Targeted_Clinical_LLM_Failure_Modes_Report.pdf` (main data visualization report)
+- `Prior_Evidence_Targeted_Clinical_LLM_Failure_Modes_Report.pdf` (main data visualisation report)
 - `Run 1/Intial_Literature_Review.tex` (initial comprehensive review)
 - `Run 2/clinical_llm_report.tex` (framework design)
 - `Run 3/advanced_spec_clinical_harness.tex` (advanced specification)
@@ -433,7 +433,7 @@ This literature review demonstrates that:
 
 Our benchmark provides:
 - **Reproducible evaluation** of these failure modes in clinical LLMs
-- **Standardized metrics** aligned with literature
+- **Standardised metrics** aligned with literature
 - **Comprehensive coverage** across all four failure modes
 - **Clinical domain focus** using real mental health data (OpenR1-Psy)
 

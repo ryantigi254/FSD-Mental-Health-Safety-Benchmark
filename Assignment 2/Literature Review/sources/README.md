@@ -1,6 +1,6 @@
-# Literature Review Sources: Reading Organization
+# Literature Review Sources: Reading Organisation
 
-This directory contains the prioritized reading list and folder structure for systematically reviewing all papers cited in the literature review.
+This directory contains the prioritised reading list and folder structure for systematically reviewing all papers cited in the literature review.
 
 ## Quick Stats
 
@@ -18,7 +18,7 @@ This directory contains the prioritized reading list and folder structure for sy
 ```
 sources/
 ├── README.md (this file)
-├── PRIORITY_READING_LIST.csv (prioritized list with scores)
+├── PRIORITY_READING_LIST.csv (prioritised list with scores)
 ├── bucket_a_faithfulness/     # Study A: Faithfulness Gap
 │   ├── tier_1_must_read/     # Priority score ≥ 4.5 (4 papers)
 │   ├── tier_2_important/     # Priority score 4.0-4.49 (4 papers)
@@ -47,7 +47,7 @@ sources/
 
 *Note: Bucket C papers are primarily in Clinical Domain category
 
-## Prioritization System
+## Prioritisation System
 
 ### Scoring Formula
 
@@ -55,7 +55,7 @@ Priority Score = 0.30×Directness + 0.20×Evidence_Quality + 0.15×Transferabili
 
 **Where:**
 - **Directness (1-5)**: How directly the paper addresses the specific failure mode
-- **Evidence Quality (1-5)**: Rigor of methodology (RCT > Observational > Framework > Review)
+- **Evidence Quality (1-5)**: Rigour of methodology (RCT > Observational > Framework > Review)
 - **Transferability (1-5)**: How applicable findings are to our clinical LLM context
 - **Recency (1-5)**: Publication year (2025=5, 2024=4, 2023=3, etc.)
 - **Bucket Relevance (1-5)**: Relevance to the specific bucket's failure mode
@@ -178,7 +178,7 @@ Priority Score = 0.30×Directness + 0.20×Evidence_Quality + 0.15×Transferabili
 
 ## Quick Start Guide
 
-### Step 1: Review Prioritization
+### Step 1: Review Prioritisation
 1. Open `PRIORITY_READING_LIST.csv`
 2. Filter by `Tier = "Tier 1"` to see must-read papers
 3. Check `PRIORITIZATION_SUMMARY.md` for reading order

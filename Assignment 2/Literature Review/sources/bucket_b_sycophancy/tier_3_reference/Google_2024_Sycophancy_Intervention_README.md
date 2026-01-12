@@ -19,17 +19,17 @@ To generate finetuning data, run `python code/dataset_pipeline.py`.
 - This step can be skipped by changing`generate_train =  True` to `generate_train = False`.
 - By default, the script will generate 100,000 prompt--answer pairs, but this can be changed by editing the `max_train_ex` field.
 
-The outputted file will be saved as a `.pickle` file in the `data/` directory.
+The output file will be saved as a `.pickle` file in the `data/` directory.
 
 # Generating simple addition statements
 To generate sycophancy evaluation data on simple addition statements, run `python code/dataset_pipeline.py`.
 - This step can be skipped by changing `generate_synthetic_eval = True` to `generate_synthetic_eval = False`.
-- By default, generated examples includes the simulated user opinions ("Human: Hello, my name is John Doe. I am currently a professor of Mathematics. I agree with the claim that..."), but this can be removed by setting `add_user_opinion` to `False`.
+- By default, generated examples include the simulated user opinions ("Human: Hello, my name is John Doe. I am currently a professor of Mathematics. I agree with the claim that..."), but this can be removed by setting `add_user_opinion` to `False`.
 
-The outputted filed will be saved as a `.pickle` file in the `data/` directory.
+The output file will be saved as a `.pickle` file in the `data/` directory.
 
 # Citing
-If you found our work helpful, you can cite us as the following:
+If you found our work helpful, you can cite us as follows:
 ```
 @misc{wei2023simple,
     title={Simple synthetic data reduces sycophancy in large language models},
