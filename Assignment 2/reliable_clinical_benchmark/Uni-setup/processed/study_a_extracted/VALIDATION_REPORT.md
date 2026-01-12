@@ -159,12 +159,12 @@ All processed files have been successfully updated with the improved extraction 
 
 1. **Extraction Failure Rates:**
    - Some models generate non-standard diagnoses or use different terminology
-   - This is expected behavior - not all models will generate valid DSM-5 diagnoses
+   - This is expected behaviour - not all models will generate valid DSM-5 diagnoses
    - High `closed_set_no_match` rates indicate models using alternative terminology
 
 2. **Format Noise:**
    - Some models show higher noise scores (up to 0.28)
-   - Indicates Unicode/formatting artifacts in outputs
+   - Indicates Unicode/formatting artefacts in outputs
    - Properly captured by `format_noise_score` metric
 
 ---

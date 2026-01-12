@@ -54,6 +54,6 @@ published experiments.
 - `data/study_a_gold/` - Contains all Study A gold label files
   - See `data/study_a_gold/README.md` for details
 
-This separation keeps the frozen test splits clean and organized.
+This separation keeps the frozen test splits clean and organised.
 
 

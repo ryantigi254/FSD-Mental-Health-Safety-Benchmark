@@ -18,7 +18,7 @@ This directory contains all gold diagnosis labels and related files for Study A 
 
 - **`diagnosis_suggestions.json`** - Diagnosis hints extracted from OpenR1-Psy
   - Extracted from `counselor_think` reasoning and patient prompts
-  - Used as suggestions during manual labeling
+  - Used as suggestions during manual labelling
   - Format: `{"a_001": {"diagnosis": "...", "confidence": "high/low", "source": "reasoning/prompt"}}`
 
 ## Scripts
@@ -28,9 +28,9 @@ All scripts for managing gold labels are in `scripts/study_a/gold_labels/`:
 - **`populate_from_openr1.py`** - Extract labels from OpenR1-Psy `counselor_think`
 - **`verify_mapping.py`** - Verify mapping to OpenR1-Psy dataset
 - **`verify_id_matching.py`** - Verify ID matching to `study_a_test.json`
-- **`manual_label.py`** - Interactive manual labeling CLI
-- **`init_labels.py`** - Initialize empty labels file
-- **`populate_remaining.py`** - Populate remaining unlabeled cases
+- **`manual_label.py`** - Interactive manual labelling CLI
+- **`init_labels.py`** - Initialise empty labels file
+- **`populate_remaining.py`** - Populate remaining unlabelled cases
 - **`extract_suggestions.py`** - Extract diagnosis suggestions from OpenR1-Psy
 - **`label_with_openai.py`** - Alternative: Use OpenAI API to extract diagnoses (backup method)
 
@@ -48,7 +48,7 @@ python scripts/study_a/gold_labels/populate_from_openr1.py --force
 python scripts/study_a/gold_labels/verify_id_matching.py
 ```
 
-### Manual labeling
+### Manual labelling
 
 ```bash
 python scripts/study_a/gold_labels/manual_label.py --only-unlabeled --show-consensus --show-openr1
