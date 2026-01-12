@@ -27,7 +27,7 @@ The process is **fully reproducible**:
 ## Verification
 
 - **Mapping Accuracy**: 100% (300/300 cases matched to OpenR1-Psy)
-- **Label Coverage**: 100% (300/300 cases labeled)
+- **Label Coverage**: 100% (300/300 cases labelled)
 - **Source**: All labels derived from OpenR1-Psy `counselor_think` (gold reasoning), not model predictions
 
 ## Label Distribution
@@ -54,7 +54,7 @@ All gold label files are in `data/study_a_gold/`:
 - **Full Mapping**: `data/study_a_gold/gold_labels_mapping.json`
   - Complete mapping with OpenR1-Psy row indices, post_ids, and prompt previews
 - **Suggestions**: `data/study_a_gold/diagnosis_suggestions.json`
-  - Diagnosis hints extracted from OpenR1-Psy for manual labeling
+  - Diagnosis hints extracted from OpenR1-Psy for manual labelling
 
 ## Scripts
 
@@ -65,8 +65,8 @@ All scripts are in `scripts/study_a/gold_labels/`:
 - **Verification Scripts**:
   - `scripts/study_a/gold_labels/verify_mapping.py` - Verifies mapping to OpenR1-Psy
   - `scripts/study_a/gold_labels/verify_id_matching.py` - Verifies ID matching to `study_a_test.json`
-- **Manual Labeling**: `scripts/study_a/gold_labels/manual_label.py`
-  - Interactive CLI for manual diagnosis labeling
+- **Manual Labelling**: `scripts/study_a/gold_labels/manual_label.py`
+  - Interactive CLI for manual diagnosis labelling
 
 See `data/study_a_gold/README.md` and `scripts/study_a/README.md` for details.
 
@@ -81,7 +81,7 @@ See `data/study_a_gold/README.md` and `scripts/study_a/README.md` for details.
 - PTSD: trauma, flashbacks, nightmares
 - Panic Disorder: panic attacks, sudden fear
 - Social Anxiety: fear of judgment, social situations
-- OCD: obsessive thoughts, compulsive behaviors
+- OCD: obsessive thoughts, compulsive behaviours
 - Bipolar: manic/mania indicators
 - Adjustment Disorder: life changes, stressors
 - ADHD: attention/hyperactivity indicators

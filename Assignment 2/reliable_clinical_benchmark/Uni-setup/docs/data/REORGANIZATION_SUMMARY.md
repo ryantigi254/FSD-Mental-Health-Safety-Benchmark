@@ -1,8 +1,8 @@
-# Study A Gold Labels & Metrics Reorganization
+# Study A Gold Labels & Metrics Reorganisation
 
 ## Summary
 
-Study A gold label and metrics files have been reorganized for better structure and navigation.
+Study A gold label and metrics files have been reorganised for better structure and navigation.
 
 ## New Structure
 
@@ -64,7 +64,7 @@ scripts/
 ## Benefits
 
 1. **Clear Separation**: Gold labels separated from frozen test splits
-2. **Better Organization**: Scripts grouped by function (gold_labels vs metrics)
+2. **Better Organisation**: Scripts grouped by function (gold_labels vs metrics)
 3. **Easier Navigation**: Logical directory structure
 4. **Maintainability**: Related files grouped together
 

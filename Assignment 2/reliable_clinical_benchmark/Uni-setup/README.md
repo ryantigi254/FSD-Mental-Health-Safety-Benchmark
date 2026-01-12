@@ -170,16 +170,16 @@ For **Psych_Qwen_32B** on a **24GB VRAM** GPU, we used **`quantization="4bit"`**
 
 **Important**: 
 - **PyTorch with CUDA support** must be installed (see setup instructions above). Without CUDA-enabled PyTorch, models won't detect your GPU.
-- Quantization requires **`bitsandbytes`** to be installed in `mh-llm-local-env`. If you get `PackageNotFoundError: No package metadata was found for bitsandbytes`, install it:
+- Quantisation requires **`bitsandbytes`** to be installed in `mh-llm-local-env`. If you get `PackageNotFoundError: No package metadata was found for bitsandbytes`, install it:
 
 ```powershell
 conda activate mh-llm-local-env
 pip install bitsandbytes
 ```
 
-### Customising quantization (optional)
+### Customising quantisation (optional)
 
-The local runner supports a `quantization=` argument so you can pick what fits your hardware/use case (e.g. `"4bit"` or `"8bit"`). **`bitsandbytes` must be installed** for any quantization mode.
+The local runner supports a `quantization=` argument so you can pick what fits your hardware/use case (e.g. `"4bit"` or `"8bit"`). **`bitsandbytes` must be installed** for any quantisation mode.
 
 Example (PowerShell, using `mh-llm-local-env`):
 

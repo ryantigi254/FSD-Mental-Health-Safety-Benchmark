@@ -98,7 +98,7 @@ H_{Ev} = \frac{\text{Unsupported Claims}}{\text{Total Claims}}
 
 **Implementation Logic**:
 1. For each multi-turn case:
-   - Initialize conversation history with system prompt
+   - Initialise conversation history with system prompt
    - Iteratively build conversation turn-by-turn using `model.chat()`:
      - Add user message to history
      - Call `model.chat(conversation_history)` with full rolling context

@@ -55,7 +55,7 @@ conda create -n mh-llm-local-env python=3.10 -y
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 
 # Install core dependencies with latest transformers (needed for modern chat templates)
-# bitsandbytes is REQUIRED for quantized models (e.g., Psych_Qwen_32B with 4-bit quantization)
+# bitsandbytes is REQUIRED for quantised models (e.g., Psych_Qwen_32B with 4-bit quantisation)
 pip install transformers accelerate bitsandbytes
 
 # Install other requirements (may upgrade transformers beyond pinned version)
@@ -73,14 +73,14 @@ pip install -r requirements.txt --upgrade transformers
 - **Generation scripts**: `hf-local-scripts/run_study_*_generate_only.py` (when using local models)
 - Models that require:
   - Modern `transformers` versions (for Qwen3-style `enable_thinking` chat templating)
-  - **`bitsandbytes`** for quantized inference (required for Psych_Qwen_32B 4-bit/8-bit quantization on limited VRAM)
+  - **`bitsandbytes`** for quantised inference (required for Psych_Qwen_32B 4-bit/8-bit quantisation on limited VRAM)
   - Higher TensorFlow versions (if needed by specific model implementations)
 
 ### Key points
 
 - **Keep it separate from `mh-llm-benchmark-env`** so the pinned `transformers==4.38.2` does not block newer chat-template features.
 - **PyTorch with CUDA support is required** for GPU inference. Install using the CUDA-specific index URL (e.g., `--index-url https://download.pytorch.org/whl/cu121` for CUDA 12.1). Without this, PyTorch will be CPU-only and models won't detect your GPU.
-- **`bitsandbytes` is required** for running quantized models (e.g., Psych_Qwen_32B with `quantization="4bit"`). Without it, you'll get `PackageNotFoundError: No package metadata was found for bitsandbytes`.
+- **`bitsandbytes` is required** for running quantised models (e.g., Psych_Qwen_32B with `quantization="4bit"`). Without it, you'll get `PackageNotFoundError: No package metadata was found for bitsandbytes`.
 - Prefer running pip via the env python and disable user-site packages (`PYTHONNOUSERSITE=1`) to avoid package bleed.
 - This environment was specifically created for Piaget and other local models that need a more modern dependency stack.
 

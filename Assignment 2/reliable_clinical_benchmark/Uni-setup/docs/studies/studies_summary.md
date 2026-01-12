@@ -91,7 +91,7 @@ Models loaded from `Uni-setup/models/` directory:
 | **PsyLLM** | `PsyLLMGMLLocalRunner` | `psyllm`, `psyllm_gml_local` | [GMLHUHE/PsyLLM](https://huggingface.co/GMLHUHE/PsyLLM) - domain expert, counselling-tuned |
 | **Piaget-8B** | `Piaget8BLocalRunner` | `piaget_local`, `piaget-8b-local` | [gustavecortal/Piaget-8B](https://huggingface.co/gustavecortal/Piaget-8B) |
 | **Psyche-R1** | `PsycheR1LocalRunner` | `psyche_r1_local`, `psyche-r1-local` | [MindIntLab/Psyche-R1](https://huggingface.co/MindIntLab/Psyche-R1) - psychological reasoning |
-| **Psych_Qwen-32B** | `PsychQwen32BLocalRunner` | `psych_qwen_local`, `psych-qwen-32b-local` | [Compumacy/Psych_Qwen_32B](https://huggingface.co/Compumacy/Psych_Qwen_32B) - **4-bit quantized** (24GB VRAM) |
+| **Psych_Qwen-32B** | `PsychQwen32BLocalRunner` | `psych_qwen_local`, `psych-qwen-32b-local` | [Compumacy/Psych_Qwen_32B](https://huggingface.co/Compumacy/Psych_Qwen_32B) - **4-bit quantised** (24GB VRAM) |
 
 ### LM Studio Runners (OpenAI-compatible API)
 
@@ -285,6 +285,6 @@ Uni-setup/
 
 - **Deterministic Splits**: All test splits use `random.seed(42)` for reproducibility
 - **Local Models**: Local HF models default to `models/{ModelName}` directories
-- **Quantization**: Psych_Qwen-32B uses 4-bit quantization by default (24GB VRAM requirement)
+- **Quantisation**: Psych_Qwen-32B uses 4-bit quantisation by default (24GB VRAM requirement)
 - **Smoke Tests**: Use `max_tokens=512` for quick verification; full generations use `max_tokens=8192`
 - **No Real Patient Data**: All personas and test cases are synthetic or derived from public datasets
