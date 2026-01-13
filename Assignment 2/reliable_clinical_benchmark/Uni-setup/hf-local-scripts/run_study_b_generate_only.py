@@ -47,6 +47,21 @@ def _normalize_model_id_for_path(model_id: str, output_dir: Path) -> str:
     Checks if a folder exists with the model_id (or variations) and returns
     the existing folder name. Otherwise returns the normalized model_id.
     """
+    # Explicit aliases to avoid creating "new" folders when an established results folder already exists.
+    # This keeps Study B outputs co-located with Study A outputs for the same model family.
+    alias_map = {
+        # LM Studio naming vs existing results folders
+        "gpt_oss": "gpt-oss-20b",
+        # HF local naming vs existing results folders
+        "piaget_local": "piaget-8b-local",
+        "psych_qwen_local": "psych-qwen-32b-local",
+    }
+    alias_target = alias_map.get(model_id)
+    if alias_target:
+        alias_path = output_dir / alias_target
+        if alias_path.exists() and alias_path.is_dir():
+            return alias_target
+
     # First, try exact match
     exact_path = output_dir / model_id
     if exact_path.exists() and exact_path.is_dir():
