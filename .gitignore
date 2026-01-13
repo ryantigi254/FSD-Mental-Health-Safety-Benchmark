@@ -53,6 +53,16 @@ Assignment 2/reliable_clinical_benchmark/Mac-setup/.coverage
 # Local benchmark coverage (Uni-setup)
 Assignment 2/reliable_clinical_benchmark/Uni-setup/.coverage
 
+# Uni-setup run logs (generated artefacts)
+Assignment 2/reliable_clinical_benchmark/Uni-setup/logs/
+Assignment 2/reliable_clinical_benchmark/Uni-setup/logs/**
+
+# Uni-setup results cache backups / smoke outputs (generated artefacts)
+Assignment 2/reliable_clinical_benchmark/Uni-setup/results/**/study_a_generations.jsonl.bak-*
+Assignment 2/reliable_clinical_benchmark/Uni-setup/results/**/study_b_generations.jsonl.bak-*
+Assignment 2/reliable_clinical_benchmark/Uni-setup/results/**/study_a_generations.smoke-*.jsonl
+Assignment 2/reliable_clinical_benchmark/Uni-setup/results/**/study_b_generations.smoke-*.jsonl
+
 # AI Usage Log - keep untracked until final submission
 Course Material/Misc/AI_USAGE_LOG.md
 
