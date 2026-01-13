@@ -23,10 +23,11 @@ through transformers chat templates or LM Studio chat completion APIs.
 """
 
 import json
+import shutil
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, Iterable, Tuple
 import logging
 
 from ..models.base import ModelRunner
@@ -46,12 +47,114 @@ from ..utils.stats import bootstrap_confidence_interval
 logger = logging.getLogger(__name__)
 
 
+def _compact_cache(cache_path: Path, make_backup: bool = True) -> None:
+    """
+    Compact cache to one entry per:
+      - single-turn: (id, variant) where variant in {control, injected}
+      - multi-turn:  (case_id, turn_num) where variant == multi_turn
+
+    Prefer status=ok, else prefer latest by timestamp. Keeps reruns from accumulating duplicates.
+    """
+    if not cache_path.exists():
+        return
+
+    if make_backup:
+        backup = cache_path.with_suffix(
+            cache_path.suffix + f".bak-{datetime.utcnow().strftime('%Y%m%d%H%M%S')}"
+        )
+        shutil.copy2(cache_path, backup)
+
+    entries = _read_cache(cache_path)
+
+    best_single: Dict[Tuple[str, str], Dict[str, Any]] = {}
+    best_multi: Dict[Tuple[str, int], Dict[str, Any]] = {}
+
+    def _prefer(a: Dict[str, Any], b: Dict[str, Any]) -> Dict[str, Any]:
+        # Prefer ok, else newest timestamp.
+        a_ok = a.get("status") == "ok"
+        b_ok = b.get("status") == "ok"
+        if a_ok and b_ok:
+            return b if b.get("timestamp", "") > a.get("timestamp", "") else a
+        if a_ok and not b_ok:
+            return a
+        if b_ok and not a_ok:
+            return b
+        return b if b.get("timestamp", "") > a.get("timestamp", "") else a
+
+    for e in entries:
+        variant = e.get("variant")
+        if variant in ("control", "injected"):
+            sid = e.get("id")
+            if not sid:
+                continue
+            key = (str(sid), str(variant))
+            current = best_single.get(key)
+            best_single[key] = e if current is None else _prefer(current, e)
+            continue
+
+        if variant == "multi_turn":
+            case_id = e.get("case_id")
+            turn_num = e.get("turn_num")
+            if not case_id or not isinstance(turn_num, int):
+                continue
+            key = (str(case_id), int(turn_num))
+            current = best_multi.get(key)
+            best_multi[key] = e if current is None else _prefer(current, e)
+            continue
+
+    cache_path.unlink(missing_ok=True)
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    with cache_path.open("w", encoding="utf-8") as f:
+        # Deterministic ordering: single-turn first, then multi-turn.
+        for sid in sorted({k[0] for k in best_single.keys()}):
+            for v in ("control", "injected"):
+                row = best_single.get((sid, v))
+                if row is None:
+                    continue
+                f.write(json.dumps(row, ensure_ascii=False))
+                f.write("\n")
+
+        for case_id, turn_num in sorted(best_multi.keys(), key=lambda x: (x[0], x[1])):
+            row = best_multi[(case_id, turn_num)]
+            f.write(json.dumps(row, ensure_ascii=False))
+            f.write("\n")
+
+
+def _existing_ok_single(entries: Iterable[Dict[str, Any]]) -> Dict[str, Dict[str, Dict[str, Any]]]:
+    out: Dict[str, Dict[str, Dict[str, Any]]] = {}
+    for e in entries:
+        if e.get("status") != "ok":
+            continue
+        sid = e.get("id")
+        variant = e.get("variant")
+        if not sid or variant not in ("control", "injected"):
+            continue
+        out.setdefault(str(sid), {})[str(variant)] = e
+    return out
+
+
+def _existing_ok_multi(entries: Iterable[Dict[str, Any]]) -> Dict[str, Dict[int, Dict[str, Any]]]:
+    out: Dict[str, Dict[int, Dict[str, Any]]] = {}
+    for e in entries:
+        if e.get("status") != "ok":
+            continue
+        if e.get("variant") != "multi_turn":
+            continue
+        case_id = e.get("case_id")
+        turn_num = e.get("turn_num")
+        if not case_id or not isinstance(turn_num, int):
+            continue
+        out.setdefault(str(case_id), {})[int(turn_num)] = e
+    return out
+
+
 def _generate_single_turn_study_b(
     model: ModelRunner,
     items: List,
     cache_path: Path,
     run_id: str,
     model_name: str,
+    existing_ok: Optional[Dict[str, Dict[str, Dict[str, Any]]]] = None,
 ) -> None:
     """
     Generate single-turn Study B responses (control + injected variants).
@@ -78,6 +181,8 @@ def _generate_single_turn_study_b(
         ]
 
         for v in variants:
+            if existing_ok and existing_ok.get(str(sid), {}).get(v["variant"]):
+                continue
             status = "ok"
             response_text = ""
             error_message = ""
@@ -116,6 +221,7 @@ def _generate_multi_turn_study_b(
     cache_path: Path,
     run_id: str,
     model_name: str,
+    existing_ok: Optional[Dict[str, Dict[int, Dict[str, Any]]]] = None,
 ) -> None:
     """
     Generate multi-turn Study B responses with proper rolling context.
@@ -139,8 +245,7 @@ def _generate_multi_turn_study_b(
         gold_answer = case.get("gold_answer", "")
         turns = case.get("turns", [])
         
-        # Initialize conversation history with system prompt
-        # The system prompt sets the clinical assistant context
+        # Initialize conversation history with system prompt.
         conversation_history: List[Dict[str, str]] = [
             {
                 "role": "system",
@@ -148,9 +253,11 @@ def _generate_multi_turn_study_b(
             }
         ]
 
-        # Iterative generation: each turn builds on previous context
-        # Multi-turn cases represent a conversation where the user challenges the diagnosis
-        # Each turn is a separate generation call with full conversation history
+        # Iterative generation: each turn builds on previous context.
+        # Resume behaviour:
+        # - If we have an OK cached entry for (case_id, turn_num), we replay it into the rolling
+        #   conversation_history (append assistant cached response) and move on.
+        # - If missing/errored, we generate and write a new entry.
         for turn_num, turn in enumerate(turns, start=1):
             user_msg = (turn or {}).get("message", "")
             if not user_msg:
@@ -158,6 +265,12 @@ def _generate_multi_turn_study_b(
             
             # Add user message to history
             conversation_history.append({"role": "user", "content": user_msg})
+
+            if existing_ok and case_id and existing_ok.get(str(case_id), {}).get(int(turn_num)):
+                cached = existing_ok[str(case_id)][int(turn_num)]
+                cached_resp = cached.get("response_text", "")
+                conversation_history.append({"role": "assistant", "content": str(cached_resp)})
+                continue
 
             status = "ok"
             response_text = ""
@@ -300,6 +413,19 @@ def run_study_b(
         logger.info("Single-pass mode (generate + metrics)")
 
     if generate_only or not from_cache:
+        _compact_cache(cache_path, make_backup=True)
+        existing_single: Dict[str, Dict[str, Dict[str, Any]]] = {}
+        existing_multi: Dict[str, Dict[int, Dict[str, Any]]] = {}
+        if cache_path.exists():
+            entries = _read_cache(cache_path)
+            existing_single = _existing_ok_single(entries)
+            existing_multi = _existing_ok_multi(entries)
+            logger.info(
+                "Resume enabled: found "
+                f"{sum(len(v) for v in existing_single.values())} single-turn + "
+                f"{sum(len(v) for v in existing_multi.values())} multi-turn cached row(s)"
+            )
+
         logger.info(f"Generation-only mode. Writing Study B cache to {cache_path}")
 
         # 1) Single-turn items: control + injected
@@ -309,6 +435,7 @@ def run_study_b(
             cache_path=cache_path,
             run_id=run_id,
             model_name=model_name,
+            existing_ok=existing_single,
         )
 
         # 2) Multi-turn cases (Turn-of-Flip): iterative generation with rolling context
@@ -320,6 +447,7 @@ def run_study_b(
                 cache_path=cache_path,
                 run_id=run_id,
                 model_name=model_name,
+                existing_ok=existing_multi,
             )
 
         if generate_only:
