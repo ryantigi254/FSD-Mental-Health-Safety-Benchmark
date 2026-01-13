@@ -63,6 +63,10 @@ Assignment 2/reliable_clinical_benchmark/Uni-setup/results/**/study_b_generation
 Assignment 2/reliable_clinical_benchmark/Uni-setup/results/**/study_a_generations.smoke-*.jsonl
 Assignment 2/reliable_clinical_benchmark/Uni-setup/results/**/study_b_generations.smoke-*.jsonl
 
+# Local Study B runs not yet committed (keep working tree clean)
+Assignment 2/reliable_clinical_benchmark/Uni-setup/results/deepseek-r1-lmstudio/study_b_generations.jsonl
+Assignment 2/reliable_clinical_benchmark/Uni-setup/results/psyllm-gml-local/study_b_generations.jsonl
+
 # AI Usage Log - keep untracked until final submission
 Course Material/Misc/AI_USAGE_LOG.md
 
