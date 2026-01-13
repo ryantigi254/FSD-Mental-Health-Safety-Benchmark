@@ -52,6 +52,7 @@ def _normalize_model_id_for_path(model_id: str, output_dir: Path) -> str:
     alias_map = {
         # LM Studio naming vs existing results folders
         "gpt_oss": "gpt-oss-20b",
+        "deepseek_r1_lmstudio": "deepseek-r1-lmstudio",
         # HF local naming vs existing results folders
         "piaget_local": "piaget-8b-local",
         "psych_qwen_local": "psych-qwen-32b-local",
@@ -62,17 +63,26 @@ def _normalize_model_id_for_path(model_id: str, output_dir: Path) -> str:
         if alias_path.exists() and alias_path.is_dir():
             return alias_target
 
-    # First, try exact match
+    # Prefer hyphenated folder names if they already exist.
+    # This avoids writing to underscore-named folders like results/deepseek_r1_lmstudio.
+    hyphen_preferred = [
+        model_id.replace("_", "-"),
+        model_id.lower().replace("_", "-"),
+    ]
+    for variant in hyphen_preferred:
+        variant_path = output_dir / variant
+        if variant_path.exists() and variant_path.is_dir():
+            return variant
+
+    # Next, try exact match
     exact_path = output_dir / model_id
     if exact_path.exists() and exact_path.is_dir():
         return model_id
     
-    # Try common variations (underscore vs hyphen)
+    # Then try other common variations (underscore vs hyphen)
     variations = [
-        model_id.replace("_", "-"),
         model_id.replace("-", "_"),
         model_id.lower(),
-        model_id.lower().replace("_", "-"),
         model_id.lower().replace("-", "_"),
     ]
     
