@@ -53,10 +53,12 @@ def get_model_runner(
         return DeepSeekR1Runner(config=config)
     elif model_id_lower in ("deepseek_r1_lmstudio", "deepseek-r1-lmstudio", "deepseek-r1-14b-lmstudio"):
         return DeepSeekR1LMStudioRunner(config=config)
-    elif model_id_lower in ("gpt_oss", "gpt-oss-120b"):
-        return GPTOSSRunner(config=config)
-    elif model_id_lower in ("gpt_oss_lmstudio", "gpt-oss-lmstudio", "gpt-oss-20b"):
+    elif model_id_lower in ("gpt_oss", "gpt_oss_lmstudio", "gpt-oss-lmstudio", "gpt-oss-20b"):
+        # Default GPT-OSS runs are expected to use LM Studio (local OpenAI-compatible server).
         return GPTOSSLMStudioRunner(config=config)
+    elif model_id_lower in ("gpt_oss_remote", "gpt_oss_120b_remote", "gpt-oss-120b"):
+        # Placeholder remote runner (api.example.com) retained for completeness.
+        return GPTOSSRunner(config=config)
     elif model_id_lower in ("qwen3", "qwen3-8b"):
         return Qwen3Runner(config=config)
     elif model_id_lower in ("qwen3_lmstudio", "qwen3-lmstudio", "qwen3-8b-lmstudio"):
