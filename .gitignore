@@ -63,10 +63,6 @@ Assignment 2/reliable_clinical_benchmark/Uni-setup/results/**/study_b_generation
 Assignment 2/reliable_clinical_benchmark/Uni-setup/results/**/study_a_generations.smoke-*.jsonl
 Assignment 2/reliable_clinical_benchmark/Uni-setup/results/**/study_b_generations.smoke-*.jsonl
 
-# Local Study B runs not yet committed (keep working tree clean)
-Assignment 2/reliable_clinical_benchmark/Uni-setup/results/deepseek-r1-lmstudio/study_b_generations.jsonl
-Assignment 2/reliable_clinical_benchmark/Uni-setup/results/psyllm-gml-local/study_b_generations.jsonl
-
 # AI Usage Log - keep untracked until final submission
 Course Material/Misc/AI_USAGE_LOG.md
 
@@ -79,8 +75,13 @@ Assignment 2/Literature Review/sources/**/*.pdf
 Assignment 2/Literature Review/sources/**/*.html
 
 # Literature Review Misc guides - keep local/untracked
+Assignment 2/Literature Review/Misc/
 Assignment 2/Literature Review/sources/Misc/
 Assignment 2/Literature Review/sources/Misc/**
+
+# Literature Review misc (local stash folder) - keep local/untracked
+/Assignment 2/Literature Review/misc/
+/Assignment 2/Literature Review/misc/**
 
 # Literature Review processing outputs and intermediate artefacts - keep local/untracked
 Assignment 2/Literature Review/test_output/
@@ -89,6 +90,14 @@ Assignment 2/Literature Review/processing/
 Assignment 2/Literature Review/processing/**
 Assignment 2/Literature Review/processed/
 Assignment 2/Literature Review/processed/**
+
+# Local paper drafts / PDFs / write-ups (keep local/untracked)
+Assignment 2/papers/
+Assignment 2/papers/**
+
+# Local tooling venvs (keep local/untracked)
+.venv-git-tools/
+.venv-git-tools/**
 
 # Local IDE / Cursor state - do not track
 .cursor/
