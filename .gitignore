@@ -98,6 +98,8 @@ Assignment 2/papers/**
 # Local tooling venvs (keep local/untracked)
 .venv-git-tools/
 .venv-git-tools/**
+.git-tools/
+.git-tools/**
 
 # Local IDE / Cursor state - do not track
 .cursor/
