@@ -5,7 +5,7 @@ Study C: Longitudinal Drift Evaluation Metrics
 - Continuity Score
 """
 
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass
 import numpy as np
 import logging
@@ -34,7 +34,7 @@ class DriftResult:
 
     entity_recall_at_t10: float
     knowledge_conflict_rate: float
-    continuity_score: float
+    continuity_score: Optional[float]
     n_cases: int
 
 

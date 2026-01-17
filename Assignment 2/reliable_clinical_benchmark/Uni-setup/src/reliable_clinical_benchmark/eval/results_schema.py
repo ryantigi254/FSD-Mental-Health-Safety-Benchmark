@@ -56,7 +56,7 @@ class StudyCResultSchema:
     study: str
     entity_recall_at_t10: float
     knowledge_conflict_rate: float
-    continuity_score: float
+    continuity_score: Optional[float]
     n_cases: int
     entity_recall_ci: Optional[Dict[str, float]] = None
     average_recall_curve: Optional[list] = None
