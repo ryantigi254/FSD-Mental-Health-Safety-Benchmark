@@ -7,6 +7,7 @@ Study C evaluates **Longitudinal Drift** - measuring whether models maintain con
 **File**: `hf-local-scripts/run_study_c_generate_only.py`
 
 **What it does**:
+
 - Validates Study C split **personas + IDs** (`validate_study_c_schema`) before generating
 - Generates responses for each case and turn (summary + dialogue variants)
 - Writes to: `results/<model-id>/study_c_generations.jsonl`
@@ -14,6 +15,7 @@ Study C evaluates **Longitudinal Drift** - measuring whether models maintain con
 **Note**: This is a standalone generation run. Metrics are calculated separately using `from_cache` mode.
 
 **Architecture**:
+
 - Uses `run_study_c()` pipeline from `reliable_clinical_benchmark.pipelines.study_c`
 - Each case has 10 turns, each turn generates 2 variants (summary + dialogue)
 - Supports `--generate-only` flag for generation-only mode (no metrics)
@@ -27,14 +29,31 @@ See `docs/environment/ENVIRONMENT.md` for setup instructions.
 
 **Note**: Adjust the Anaconda path (`D:\Anaconda3\Scripts\activate`) if your installation lives elsewhere.
 
+## Context Length Configuration
+
+**IMPORTANT**: Study C uses 10 turns per case, which requires sufficient context length. **ALL models must be configured for 32,768 tokens (32K)** in LM Studio:
+
+1. **Open LM Studio** → **My Models**
+2. **Select your model** → Click the **⚙️ Settings** (gear icon)
+3. **Set Context Length to 32,768** for ALL models:
+   - **GPT-OSS-20B**: **32,768** tokens (must be increased from default 4,096)
+   - **Qwen3-8B, QwQ-32B, DeepSeek-R1-14B, PsyLLM**: **32,768** tokens
+   - **Local HF models**: Ensure model config supports 32K (most do by default)
+
+4. **Reload the model** after changing context length
+
+**Why this matters**: Study C accumulates conversation history across 10 turns (20 messages: user + assistant). All models in Study C support 32K context, allowing **full conversation history to be maintained without truncation**. The pipeline keeps the complete conversation history for all 10 turns, ensuring models have full context for consistent responses.
+
+**Verification**: After setting context length, check LM Studio logs to confirm the model loaded with the correct context size.
+
 ## Workflow per Model
 
 For each model:
 
-1. **Activate environment** and set up paths  
-2. **Run unit tests** (shared extraction/metrics tests, once per environment)  
-3. **Run Study C smoke test** (model-specific, tiny `max_cases`)  
-4. **Run full Study C generation** (`run_study_c_generate_only.py`)  
+1. **Activate environment** and set up paths
+2. **Run unit tests** (shared extraction/metrics tests, once per environment)
+3. **Run Study C smoke test** (model-specific, tiny `max_cases`)
+4. **Run full Study C generation** (`run_study_c_generate_only.py`)
 
 All commands below are run from:
 
@@ -73,7 +92,7 @@ python src/tests/studies/study_c/lmstudio/test_study_c_gpt_oss.py
 #### 4. Full Generation (Study C)
 
 ```powershell
-python hf-local-scripts\run_study_c_generate_only.py --model-id psyllm
+python hf-local-scripts\run_study_c_generate_only.py --model-id gpt_oss
 ```
 
 ---
@@ -349,11 +368,13 @@ python src/tests/studies/study_c/test_study_c_generate_only.py --model-id qwen3_
 ## After Generation
 
 1. **Calculate Study C metrics** (from cache):
+
    ```powershell
    python scripts\run_evaluation.py --study c --study-c-from-cache results\{model-id}\study_c_generations.jsonl
    ```
 
    Or use the pipeline directly:
+
    ```python
    from reliable_clinical_benchmark.pipelines.study_c import run_study_c
    run_study_c(model=runner, from_cache="results/{model-id}/study_c_generations.jsonl", ...)

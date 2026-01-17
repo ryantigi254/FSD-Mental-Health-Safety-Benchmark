@@ -45,7 +45,7 @@ def _normalize_model_id_for_path(model_id: str, output_dir: Path) -> str:
     Normalize model_id to match existing folder names in results directory.
     
     Checks if a folder exists with the model_id (or variations) and returns
-    the existing folder name. Otherwise returns the normalized model_id.
+    the existing folder name. Uses partial matching if exact match fails.
     """
     # First, try exact match
     exact_path = output_dir / model_id
@@ -65,6 +65,22 @@ def _normalize_model_id_for_path(model_id: str, output_dir: Path) -> str:
         variant_path = output_dir / variant
         if variant_path.exists() and variant_path.is_dir():
             return variant
+    
+    # Try partial matching: if normalized model_id is a prefix of any existing folder
+    normalized_base = model_id.replace("_", "-").lower()
+    if output_dir.exists():
+        for existing_folder in output_dir.iterdir():
+            if existing_folder.is_dir():
+                folder_name = existing_folder.name.lower()
+                # Check if normalized_base is a prefix of folder_name
+                # e.g., "gpt-oss" matches "gpt-oss-20b", "piaget-local" matches "piaget-8b-local"
+                if folder_name.startswith(normalized_base) or normalized_base.startswith(folder_name.split("-")[0]):
+                    # More precise: check if they share the same base components
+                    base_parts = set(normalized_base.split("-"))
+                    folder_parts = set(folder_name.split("-"))
+                    # If most base parts are in folder parts, it's a match
+                    if len(base_parts.intersection(folder_parts)) >= min(2, len(base_parts)):
+                        return existing_folder.name
     
     # If no existing folder found, return normalized version (use hyphens for consistency)
     return model_id.replace("_", "-").lower()
