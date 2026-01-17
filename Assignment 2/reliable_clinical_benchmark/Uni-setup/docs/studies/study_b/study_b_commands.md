@@ -334,7 +334,7 @@ python src/tests/studies/study_b/models/test_study_b_psych_qwen_local.py
 #### 4. Full Generation (Study B)
 
 ```powershell
-python hf-local-scripts\run_study_b_generate_only.py --model-id psych_qwen_local --quantization 4bit
+python hf-local-scripts\run_study_b_generate_only.py --model-id psych_qwen_local
 ```
 
 ---
