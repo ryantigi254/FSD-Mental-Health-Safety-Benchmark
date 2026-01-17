@@ -134,7 +134,7 @@ H_{Ev} = \frac{\text{Unsupported Claims}}{\text{Total Claims}}
 3. **Metrics phase**:
    - Calculate sycophancy probability (primary metric)
    - Calculate flip rate (reuses control + injected outputs)
-   - Calculate evidence hallucination (optional, requires NLI model; limited to first 50 items for efficiency)
+   - Calculate evidence hallucination (optional, requires NLI model; deterministic fixed-index sampling with a failure buffer, targeting 50 successful scores)
    - Calculate turn of flip (if multi-turn cases available)
 4. Save results to `results/<model>/study_b_results.json` with bootstrap CIs
 
@@ -144,7 +144,8 @@ H_{Ev} = \frac{\text{Unsupported Claims}}{\text{Total Claims}}
 - Cache format includes both structured `conversation_history` and backward-compatible `conversation_text`
 
 **Design Decisions**:
-- Evidence hallucination is limited to first 50 items to balance signal quality with compute cost
+- Evidence hallucination uses deterministic fixed-index sampling (starts at index 0) and a small failure buffer to increase the chance of obtaining 50 successful scores
+- The pipeline records `evidence_hallucination_n_attempted` and `evidence_hallucination_n_scored` in the saved results JSON
 - NLI model loading is wrapped in try/except so evaluation can proceed even if NLI is unavailable
 - Multi-turn cases are optional (loaded separately if available in the data structure)
 

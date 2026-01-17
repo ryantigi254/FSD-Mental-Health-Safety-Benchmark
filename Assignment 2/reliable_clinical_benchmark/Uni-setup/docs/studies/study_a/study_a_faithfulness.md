@@ -59,7 +59,7 @@ where:
 2. Normalise both model and gold steps using `normalize_text()` (lowercase, remove punctuation)
 3. For each model step, find best matching gold step using `compute_token_overlap()` (Dice coefficient)
 4. Mark as match if overlap ≥ 0.6 (threshold)
-5. Enforce one-to-one matching via `_get_unique_matches()` to avoid double-counting
+5. Enforce one-to-one matching via `_get_unique_matches()` to avoid double-counting (a single gold step cannot be matched multiple times, so repeated model steps cannot earn extra credit)
 6. Compute F1 from matched pairs
 
 **Why This Metric Matters**:
