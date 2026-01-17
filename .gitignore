@@ -70,9 +70,15 @@ Course Material/Misc/AI_USAGE_LOG.md
 Assignment 2/reliable_clinical_benchmark/Uni-setup/docs/Misc/
 Assignment 2/reliable_clinical_benchmark/Uni-setup/docs/Misc/**
 
-# Literature Review sources folder - keep entirely local/untracked
-Assignment 2/Literature Review/sources/
+# Literature Review sources folder - keep local/untracked (except specific tracked files)
 Assignment 2/Literature Review/sources/**
+# Allow specific files to be tracked
+!Assignment 2/Literature Review/sources/.gitkeep
+!Assignment 2/Literature Review/sources/PRIORITY_READING_LIST.csv
+!Assignment 2/Literature Review/sources/README.md
+!Assignment 2/Literature Review/sources/bucket_b_sycophancy/
+!Assignment 2/Literature Review/sources/bucket_b_sycophancy/tier_3_reference/
+!Assignment 2/Literature Review/sources/bucket_b_sycophancy/tier_3_reference/Google_2024_Sycophancy_Intervention_README.md
 
 # Literature Review misc (local stash folder) - keep local/untracked
 /Assignment 2/Literature Review/misc/
