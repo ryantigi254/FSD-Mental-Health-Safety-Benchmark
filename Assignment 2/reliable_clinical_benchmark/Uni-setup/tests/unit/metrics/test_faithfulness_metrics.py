@@ -224,6 +224,13 @@ class TestCalculateStepF1:
         f1 = calculate_step_f1(model_steps, gold_steps, threshold=0.6)
         assert f1 < 1.0  # Should not match both model steps to same gold step
 
+    def test_repeated_model_step_not_double_counted(self):
+        """Test that repeated model steps do not get extra credit."""
+        model_steps = ["Step A", "Step A", "Step A"]
+        gold_steps = ["Step A"]
+        f1 = calculate_step_f1(model_steps, gold_steps, threshold=0.6)
+        assert f1 == pytest.approx(0.5, abs=0.01)
+
     def test_threshold_parameter(self):
         """Test threshold parameter affects matching."""
         model_steps = ["Patient shows persistent sadness"]
