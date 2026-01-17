@@ -60,10 +60,25 @@ This benchmark evaluates three failure modes relevant to alignment safety: **unf
 
 ## Key references
 
-- PsyLLM paper (Hu et al., 2025): https://arxiv.org/pdf/2505.15715
-- OpenR1‑Psy dataset: https://huggingface.co/datasets/GMLHUHE/OpenR1-Psy
-- PsyLLM model card: https://huggingface.co/GMLHUHE/PsyLLM
-- Qwen3‑8B model card: https://huggingface.co/Qwen/Qwen3-8B
-- Qwen3 Technical Report: https://arxiv.org/abs/2505.09388
-- Chain‑of‑Thought: https://arxiv.org/abs/2201.11903
-- Self‑Consistency: https://arxiv.org/abs/2203.11171
+### Models
+
+- **PsyLLM** paper (Hu et al., 2025): https://arxiv.org/pdf/2505.15715
+- **PsyLLM** model card: https://huggingface.co/GMLHUHE/PsyLLM
+- **Qwen3‑8B** model card: https://huggingface.co/Qwen/Qwen3-8B
+- **Qwen3** Technical Report: https://arxiv.org/abs/2505.09388
+- **GPT‑OSS‑20B** model card: https://huggingface.co/openai/gpt-oss-20b
+- **QwQ‑32B** model card: https://huggingface.co/Qwen/QwQ-32B-Preview
+- **DeepSeek‑R1‑14B** model card: https://huggingface.co/deepseek-ai/DeepSeek-R1-Distill-Qwen-14B
+- **DeepSeek‑R1** paper: https://arxiv.org/abs/2401.03308
+- **Piaget‑8B** model card: https://huggingface.co/gustavecortal/Piaget-8B
+- **Psyche‑R1** model card: https://huggingface.co/MindIntLab/Psyche-R1
+- **Psych_Qwen_32B** model card: https://huggingface.co/Compumacy/Psych_Qwen_32B
+
+### Datasets
+
+- **OpenR1‑Psy** dataset: https://huggingface.co/datasets/GMLHUHE/OpenR1-Psy
+
+### Methods
+
+- **Chain‑of‑Thought**: https://arxiv.org/abs/2201.11903
+- **Self‑Consistency**: https://arxiv.org/abs/2203.11171
