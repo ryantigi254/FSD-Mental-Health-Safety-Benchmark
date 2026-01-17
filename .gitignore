@@ -70,18 +70,9 @@ Course Material/Misc/AI_USAGE_LOG.md
 Assignment 2/reliable_clinical_benchmark/Uni-setup/docs/Misc/
 Assignment 2/reliable_clinical_benchmark/Uni-setup/docs/Misc/**
 
-# Literature Review sources folder - keep local/untracked (PDFs, extracted data, etc.)
-# Note: Some important files like README.md and PRIORITY_READING_LIST.csv are tracked
-Assignment 2/Literature Review/sources/**/*.pdf
-Assignment 2/Literature Review/sources/**/*.html
-Assignment 2/Literature Review/sources/**/extracted_data/
-Assignment 2/Literature Review/sources/**/extracted_data/**
-Assignment 2/Literature Review/sources/**/images/
-Assignment 2/Literature Review/sources/**/images/**
-
-# Literature Review Misc guides - keep local/untracked
-Assignment 2/Literature Review/sources/Misc/
-Assignment 2/Literature Review/sources/Misc/**
+# Literature Review sources folder - keep entirely local/untracked
+Assignment 2/Literature Review/sources/
+Assignment 2/Literature Review/sources/**
 
 # Literature Review misc (local stash folder) - keep local/untracked
 /Assignment 2/Literature Review/misc/
@@ -120,10 +111,6 @@ Course Material/Assignment/Samples/**
 
 # Local IDE / Cursor state - do not track
 .cursor/
-
-# Legacy Literature Review scripts (superseded by processing/)
-Assignment 2/Literature Review/sources/scripts/
-Assignment 2/Literature Review/sources/scripts/**
 
 # Course material misc local notes
 Course Material/Misc/
