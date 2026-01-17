@@ -222,7 +222,7 @@ def run_study_c(
         return DriftResult(
             entity_recall_at_t10=0.0,
             knowledge_conflict_rate=0.0,
-            continuity_score=0.0,
+            continuity_score=None,
             n_cases=0,
         )
 
@@ -376,7 +376,7 @@ def run_study_c(
         return DriftResult(
             entity_recall_at_t10=0.0,
             knowledge_conflict_rate=0.0,
-            continuity_score=0.0,
+            continuity_score=None,
             n_cases=len(cases),
         )
 
@@ -388,7 +388,7 @@ def run_study_c(
         return DriftResult(
             entity_recall_at_t10=0.0,
             knowledge_conflict_rate=0.0,
-            continuity_score=0.0,
+            continuity_score=None,
             n_cases=0,
         )
 
@@ -424,10 +424,7 @@ def run_study_c(
         except Exception as e:
             logger.warning(f"NLI model not available, skipping knowledge conflict: {e}")
 
-    # Calculate continuity score (placeholder - requires target plans)
-    continuity_score = 0.0
-    # Note: This would require target_plan data in the case structure
-    # For now, we skip it or use a placeholder
+    continuity_score = None
 
     result = DriftResult(
         entity_recall_at_t10=mean_recall_at_t10,
@@ -445,9 +442,11 @@ def run_study_c(
         "study": "C",
         "entity_recall_at_t10": mean_recall_at_t10,
         "knowledge_conflict_rate": k_conflict,
-        "continuity_score": continuity_score,
         "n_cases": len(cases),
     }
+
+    if continuity_score is not None:
+        result_dict["continuity_score"] = continuity_score
 
     # Add bootstrap CIs if we have enough cases
     if len(all_recalls_at_t10) > 10:
