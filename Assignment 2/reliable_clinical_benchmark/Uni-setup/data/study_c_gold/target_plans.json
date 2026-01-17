@@ -1,0 +1,10 @@
+{
+  "meta": {
+    "dataset": "GMLHUHE/OpenR1-Psy",
+    "split": "test",
+    "revision": "main",
+    "extraction": "populate_from_openr1.py",
+    "notes": "Gold target plans for Study C continuity score. Plans are derived deterministically from OpenR1-Psy counselor_think using Study C metadata.source_openr1_ids."
+  },
+  "plans": {}
+}
