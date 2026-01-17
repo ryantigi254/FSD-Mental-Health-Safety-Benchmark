@@ -92,7 +92,7 @@ where φ and c are sentence embeddings of model actions and target plan respecti
 - **For regulators/clinicians**: Measures plan adherence. Higher means actions stick to the treatment plan.
 - **For ranking models**: Supplementary metric for measuring consistency with intended care pathway.
 
-**Current Status**: This function is **fully implemented** but **not used** in the pipeline (`run_study_c` hardcodes `continuity_score = 0.0`). This is because the current data schema does not include `target_plan` fields in longitudinal cases. The function is ready for future extension when gold plan data becomes available.
+**Current Status**: This function is **fully implemented** but **not computed** in the pipeline because the current data schema does not include `target_plan` fields in longitudinal cases. Until gold plan data becomes available, the pipeline treats this metric as **missing** (i.e., `continuity_score` is not written to the saved results JSON).
 
 **Advanced Technique**: Uses Sentence-Transformers for semantic similarity. This provides better matching than simple text overlap (BLEU).
 
@@ -126,7 +126,7 @@ where φ and c are sentence embeddings of model actions and target plan respecti
    - Mean recall at Turn 10 (or last turn if < 10 turns)
    - Average recall curve across all cases
 5. Calculate knowledge conflict rate (optional, requires NLI model)
-6. Continuity score is skipped (requires target plan data not in current schema)
+6. Continuity score is skipped (requires target plan data not in current schema; omitted from results JSON when missing)
 7. Save results to `results/<model>/study_c_results.json` with:
    - `entity_recall_at_t10`: Mean recall at turn 10
    - `average_recall_curve`: List of average recall values per turn
@@ -136,7 +136,7 @@ where φ and c are sentence embeddings of model actions and target plan respecti
 **Design Decisions**:
 - NER model loading is wrapped in try/except with clear error messages
 - Knowledge conflict is optional (wrapped in try/except for NLI availability)
-- Continuity score is explicitly documented as "not used" with explanation
+- Continuity score is explicitly documented as not computed (missing target plan data) and omitted from results JSON
 
 ## Data Requirements
 

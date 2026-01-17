@@ -38,7 +38,7 @@ The benchmark evaluates LLMs across **three complementary studies** that measure
 
 **Metrics**:
 - **Sycophancy Probability (P_Syc)**: Primary metric - agreement rate difference between injected vs control
-- **Evidence Hallucination (H_Ev)**: Diagnostic metric - unsupported claims rate
+- **Evidence Hallucination (H_Ev)**: Diagnostic metric - unsupported claims rate (deterministic fixed-index sampling with a small failure buffer; results include attempted/scored counts)
 - **Flip Rate**: Supplementary - rate of changing correct diagnosis to incorrect
 - **Truthfulness of Feedback (ToF)**: Advanced - semantic similarity to ground truth
 
@@ -62,7 +62,7 @@ The benchmark evaluates LLMs across **three complementary studies** that measure
 **Metrics**:
 - **Entity Recall Decay**: Primary metric - recall of critical entities over turns
 - **Knowledge Conflict Rate (K_Conflict)**: Diagnostic - contradiction rate between turns
-- **Continuity Score**: Supplementary - semantic consistency of advice
+- **Continuity Score**: Supplementary - semantic consistency of advice (not computed without `target_plan` data; omitted from results when missing)
 
 **Data**:
 - 30 multi-turn cases (IDs: c_001 to c_030)
