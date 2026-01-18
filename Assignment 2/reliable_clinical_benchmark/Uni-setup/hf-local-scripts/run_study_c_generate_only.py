@@ -1,6 +1,11 @@
 import argparse
+import os
 import sys
 from pathlib import Path
+
+# Set PyTorch CUDA allocator config to reduce memory fragmentation
+# This helps with OOM errors on later turns when conversation history grows
+os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
 
 
 def _ensure_src_on_path(uni_setup_root: Path) -> None:
