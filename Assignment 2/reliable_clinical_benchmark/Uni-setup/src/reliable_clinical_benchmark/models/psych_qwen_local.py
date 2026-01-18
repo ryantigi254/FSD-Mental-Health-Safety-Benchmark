@@ -12,6 +12,7 @@ Supports loading either:
 
 import re
 import json
+import logging
 from pathlib import Path
 from typing import Tuple, Optional, Dict
 
@@ -19,6 +20,8 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig
 
 from .base import ModelRunner, GenerationConfig
+
+logger = logging.getLogger(__name__)
 
 
 DEFAULT_TOP_K = 20
@@ -263,6 +266,17 @@ class PsychQwen32BLocalRunner(ModelRunner):
             )
 
         self.model.eval()
+        # Store whether quantization is enabled (quantized models require CUDA, can't use CPU fallback)
+        self._is_quantized = quantization_config is not None
+        # Store init params for CPU fallback reload
+        self._model_name = model_name
+        self._device_map = device_map
+        self._dtype = dtype
+        self._max_memory = max_memory
+        self._offload_folder = offload_folder
+        self._local_files_only = local_files_only
+        self._model_config = model_config
+        self._cpu_model = None  # Lazy-loaded CPU model for fallback
 
     def _build_inputs(self, prompt: str, mode: str = "default") -> Dict[str, torch.Tensor]:
         formatted_prompt = self._format_prompt(prompt, mode)
@@ -320,21 +334,199 @@ class PsychQwen32BLocalRunner(ModelRunner):
 
         return t, t
 
+    def _get_memory_info(self) -> Dict[str, float]:
+        """Get current GPU memory usage in GiB."""
+        if not torch.cuda.is_available():
+            return {"total": 0.0, "allocated": 0.0, "reserved": 0.0, "free": 0.0}
+        
+        total = torch.cuda.get_device_properties(0).total_memory / (1024**3)
+        allocated = torch.cuda.memory_allocated(0) / (1024**3)
+        reserved = torch.cuda.memory_reserved(0) / (1024**3)
+        free = total - reserved
+        
+        return {
+            "total": total,
+            "allocated": allocated,
+            "reserved": reserved,
+            "free": free,
+        }
+
+    def _estimate_generation_memory(self, input_token_count: int, max_new_tokens: int) -> float:
+        """Rough estimate of memory needed for generation in GiB."""
+        # Very rough estimate: ~2 bytes per token for KV cache + activations
+        # This is conservative and model-dependent
+        estimated_gb = (input_token_count + max_new_tokens) * 2 / (1024**3)
+        return estimated_gb
+
+    def _load_cpu_model(self):
+        """Lazy-load a 4-bit quantized CPU model for fallback generation."""
+        if self._cpu_model is not None:
+            return self._cpu_model
+        
+        logger.warning(
+            "Loading 4-bit quantized model on CPU for fallback generation. "
+            "This will be slow but should work with available RAM (~40 GB free). "
+            "4-bit quantization reduces memory to ~16 GB for a 32B model."
+        )
+        
+        # Try to use 4-bit quantization on CPU first (lowest memory usage)
+        # Note: bitsandbytes may not fully support CPU, but we try it first
+        try:
+            from transformers import BitsAndBytesConfig
+            quantization_config = BitsAndBytesConfig(
+                load_in_4bit=True,
+                bnb_4bit_quant_type="nf4",
+                bnb_4bit_use_double_quant=True,
+                bnb_4bit_compute_dtype=torch.float16,
+            )
+            
+            logger.info("Attempting to load with 4-bit quantization on CPU...")
+            self._cpu_model = AutoModelForCausalLM.from_pretrained(
+                self._model_name,
+                device_map="cpu",  # Force CPU
+                quantization_config=quantization_config,
+                config=self._model_config,
+                local_files_only=self._local_files_only,
+            )
+            logger.info("CPU model loaded successfully with 4-bit quantization")
+        except Exception as e:
+            logger.warning(
+                f"4-bit quantization on CPU failed ({e}). "
+                "Falling back to 8-bit quantization..."
+            )
+            try:
+                # Try 8-bit as fallback
+                from transformers import BitsAndBytesConfig
+                quantization_config = BitsAndBytesConfig(
+                    load_in_8bit=True,
+                )
+                logger.info("Attempting to load with 8-bit quantization on CPU...")
+                self._cpu_model = AutoModelForCausalLM.from_pretrained(
+                    self._model_name,
+                    device_map="cpu",  # Force CPU
+                    quantization_config=quantization_config,
+                    config=self._model_config,
+                    local_files_only=self._local_files_only,
+                )
+                logger.info("CPU model loaded successfully with 8-bit quantization")
+            except Exception as e2:
+                logger.warning(
+                    f"8-bit quantization on CPU also failed ({e2}). "
+                    "Falling back to float16 (will use more memory but should still work)."
+                )
+                # Final fallback to float16 if quantization doesn't work on CPU
+                self._cpu_model = AutoModelForCausalLM.from_pretrained(
+                    self._model_name,
+                    device_map="cpu",  # Force CPU
+                    dtype=torch.float16,  # Use float16 as fallback
+                    config=self._model_config,
+                    quantization_config=None,
+                    local_files_only=self._local_files_only,
+                )
+                logger.info("CPU model loaded successfully with float16 (fallback)")
+        
+        self._cpu_model.eval()
+        return self._cpu_model
+
     def generate(self, prompt: str, mode: str = "default") -> str:
         encoded = self._build_inputs(prompt, mode)
         input_token_count = int(encoded["input_ids"].shape[-1])
-
-        gen = self.model.generate(
-            **encoded,
-            max_new_tokens=self.config.max_tokens,
-            do_sample=True,
-            temperature=self.config.temperature,
-            top_p=self.config.top_p,
-            top_k=DEFAULT_TOP_K,
-            repetition_penalty=DEFAULT_REPETITION_PENALTY,
-            eos_token_id=self.tokenizer.eos_token_id,
-            pad_token_id=self.tokenizer.pad_token_id,
+        
+        # Check memory before generation
+        mem_info = self._get_memory_info()
+        estimated_needed = self._estimate_generation_memory(input_token_count, self.config.max_tokens)
+        
+        logger.info(
+            f"Memory before generation: {mem_info['free']:.2f} GiB free / {mem_info['total']:.2f} GiB total "
+            f"(allocated: {mem_info['allocated']:.2f} GiB, reserved: {mem_info['reserved']:.2f} GiB). "
+            f"Estimated needed: ~{estimated_needed:.2f} GiB for {self.config.max_tokens} new tokens"
         )
+        
+        # Dynamically reduce max_new_tokens if memory is tight
+        max_new_tokens = self.config.max_tokens
+        if mem_info["free"] < estimated_needed * 1.5:  # Need 1.5x buffer
+            # Reduce max_new_tokens proportionally
+            reduction_factor = (mem_info["free"] / (estimated_needed * 1.5))
+            max_new_tokens = max(256, int(self.config.max_tokens * reduction_factor))
+            logger.warning(
+                f"Memory tight ({mem_info['free']:.2f} GiB free < {estimated_needed * 1.5:.2f} GiB needed). "
+                f"Reducing max_new_tokens from {self.config.max_tokens} to {max_new_tokens}"
+            )
+
+        # Try GPU generation first
+        try:
+            gen = self.model.generate(
+                **encoded,
+                max_new_tokens=max_new_tokens,
+                do_sample=True,
+                temperature=self.config.temperature,
+                top_p=self.config.top_p,
+                top_k=DEFAULT_TOP_K,
+                repetition_penalty=DEFAULT_REPETITION_PENALTY,
+                eos_token_id=self.tokenizer.eos_token_id,
+                pad_token_id=self.tokenizer.pad_token_id,
+            )
+        except RuntimeError as e:
+            # Check if it's a CUDA OOM error
+            error_str = str(e).lower()
+            if "cuda" in error_str and ("out of memory" in error_str or "oom" in error_str):
+                logger.warning(f"GPU OOM error: {error_str[:200]}")
+                
+                # Since user has plenty of RAM (~40 GB free), try CPU fallback immediately
+                # This is faster than multiple GPU retries that are likely to fail
+                logger.info("GPU OOM detected. With sufficient RAM available, attempting CPU fallback immediately")
+                
+                # For quantized models, reload without quantization on CPU
+                # For non-quantized models, just move to CPU
+                if self._is_quantized:
+                    logger.info("Reloading model on CPU without quantization (this will use RAM but should work)")
+                    cpu_model = self._load_cpu_model()
+                else:
+                    cpu_model = self.model
+                
+                encoded_cpu = {k: v.cpu() for k, v in encoded.items()}
+                try:
+                    logger.info(f"Attempting CPU generation with max_new_tokens={max_new_tokens} (this will be slow but should work with available RAM)")
+                    gen = cpu_model.generate(
+                        **encoded_cpu,
+                        max_new_tokens=max_new_tokens,
+                        do_sample=True,
+                        temperature=self.config.temperature,
+                        top_p=self.config.top_p,
+                        top_k=DEFAULT_TOP_K,
+                        repetition_penalty=DEFAULT_REPETITION_PENALTY,
+                        eos_token_id=self.tokenizer.eos_token_id,
+                        pad_token_id=self.tokenizer.pad_token_id,
+                    )
+                    logger.info("CPU generation succeeded")
+                except Exception as cpu_error:
+                    logger.warning(f"CPU generation failed: {cpu_error}. Trying with reduced max_new_tokens...")
+                    # If CPU also fails, try with reduced tokens
+                    for reduced_tokens in [max_new_tokens // 2, max_new_tokens // 4, 512, 256]:
+                        try:
+                            logger.info(f"Retrying CPU generation with max_new_tokens={reduced_tokens}")
+                            gen = cpu_model.generate(
+                                **encoded_cpu,
+                                max_new_tokens=reduced_tokens,
+                                do_sample=True,
+                                temperature=self.config.temperature,
+                                top_p=self.config.top_p,
+                                top_k=DEFAULT_TOP_K,
+                                repetition_penalty=DEFAULT_REPETITION_PENALTY,
+                                eos_token_id=self.tokenizer.eos_token_id,
+                                pad_token_id=self.tokenizer.pad_token_id,
+                            )
+                            logger.info(f"CPU generation succeeded with reduced max_new_tokens={reduced_tokens}")
+                            break
+                        except Exception as cpu_error2:
+                            if reduced_tokens == 256:
+                                logger.error(f"CPU generation failed even with minimal tokens: {cpu_error2}")
+                                raise cpu_error from cpu_error2
+                            continue
+                    else:
+                        raise cpu_error
+            else:
+                raise
 
         generated_only = gen[0, input_token_count:]
         output = self.tokenizer.decode(generated_only, skip_special_tokens=True)
