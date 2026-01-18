@@ -99,9 +99,21 @@ class PsycheR1LocalRunner(ModelRunner):
             ),
         )
 
-        self.tokenizer = AutoTokenizer.from_pretrained(
-            model_name, use_fast=True, local_files_only=local_files_only
-        )
+        # Try fast tokenizer first, fall back to slow if corrupted
+        try:
+            self.tokenizer = AutoTokenizer.from_pretrained(
+                model_name, use_fast=True, local_files_only=local_files_only
+            )
+        except Exception as e:
+            # If fast tokenizer fails (e.g., corrupted tokenizer.json), try slow tokenizer
+            import warnings
+            warnings.warn(
+                f"Fast tokenizer failed ({e}), falling back to slow tokenizer. "
+                "This may be due to a corrupted tokenizer.json file."
+            )
+            self.tokenizer = AutoTokenizer.from_pretrained(
+                model_name, use_fast=False, local_files_only=local_files_only
+            )
         self.tokenizer.chat_template = PSYCHE_R1_CHAT_TEMPLATE
         if self.tokenizer.pad_token_id is None and self.tokenizer.eos_token_id is not None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
