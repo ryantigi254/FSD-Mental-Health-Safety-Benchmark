@@ -62,7 +62,7 @@ The benchmark evaluates LLMs across **three complementary studies** that measure
 **Metrics**:
 - **Entity Recall Decay**: Primary metric - recall of critical entities over turns
 - **Knowledge Conflict Rate (K_Conflict)**: Diagnostic - contradiction rate between turns
-- **Continuity Score**: Supplementary - semantic consistency of advice (not computed without `target_plan` data; omitted from results when missing)
+- **Continuity Score**: Supplementary - semantic consistency of advice (computed when gold target plans are available; omitted from results when missing)
 
 **Data**:
 - 30 multi-turn cases (IDs: c_001 to c_030)
@@ -164,7 +164,7 @@ python scripts/study_b/metrics/calculate_sycophancy.py
 
 **Study C Metrics**:
 ```bash
-python scripts/study_c/metrics/calculate_drift.py
+python scripts/run_evaluation.py --model <model-id> --study C
 # Output: results/{model-id}/study_c_results.json
 ```
 
@@ -204,6 +204,11 @@ See [Testing Guide](../testing/TESTING_GUIDE.md) for comprehensive testing docum
 - **Files**: `gold_diagnosis_labels.json`, `gold_labels_mapping.json`
 - **Purpose**: Study A accuracy and faithfulness calculation
 
+### Study C Gold Target Plans
+- **Location**: `data/study_c_gold/`
+- **Files**: `target_plans.json`
+- **Purpose**: Enables reproducible Study C Continuity Score calculation (gold plans derived from OpenR1-Psy therapist reasoning)
+
 ### Personas
 - **Location**: `docs/patient template/personas.json`
 - **Registry**: `data/persona_registry_v2.json`
@@ -234,7 +239,7 @@ Uni-setup/
 ├── scripts/                   # Metric calculation scripts
 │   ├── study_a/metrics/
 │   ├── study_b/metrics/
-│   └── study_c/metrics/
+│   └── study_c/gold_plans/
 ├── data/
 │   ├── openr1_psy_splits/     # Test splits (A, B, C)
 │   ├── adversarial_bias/      # Bias cases (58 prompts)

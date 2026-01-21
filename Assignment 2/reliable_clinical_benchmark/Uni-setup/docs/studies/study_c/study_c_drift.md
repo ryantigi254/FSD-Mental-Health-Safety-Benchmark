@@ -6,6 +6,14 @@ This document explains how Study C (Longitudinal Drift) is implemented in code, 
 
 Study C ensures the model maintains a consistent patient representation (e.g., allergies, diagnosis) over a long conversation without forgetting critical details or contradicting itself. The implementation focuses on entity recall decay as the primary metric, with knowledge conflict and continuity as supplementary diagnostics.
 
+## Memory Management and Response Cleaning
+
+**Important Limitation**: Due to GPU memory constraints, responses with excessive repetition (>30% repeated content) are cleaned before being added to conversation history. Raw responses are preserved in saved files and used for all metric calculations.
+
+**Impact**: This cleaning may affect longitudinal drift measurements if critical information appears only in repetitive sections. All models receive identical treatment to maintain fairness.
+
+See `MEMORY_MANAGEMENT_LIMITATIONS.md` for detailed documentation.
+
 ## Metrics and Their Implementations
 
 ### 1. Entity Recall Decay - Primary Metric
@@ -92,7 +100,13 @@ where φ and c are sentence embeddings of model actions and target plan respecti
 - **For regulators/clinicians**: Measures plan adherence. Higher means actions stick to the treatment plan.
 - **For ranking models**: Supplementary metric for measuring consistency with intended care pathway.
 
-**Current Status**: This function is **fully implemented** but **not computed** in the pipeline because the current data schema does not include `target_plan` fields in longitudinal cases. Until gold plan data becomes available, the pipeline treats this metric as **missing** (i.e., `continuity_score` is not written to the saved results JSON).
+**Current Status**: This function is **fully implemented** and is computed when gold target plans are available in `data/study_c_gold/target_plans.json`. If no plan is available for a case (or the file is missing), the pipeline treats this metric as **missing** (i.e., `continuity_score` is not written to the saved results JSON).
+
+**Gold Target Plans**:
+- Gold plans are derived deterministically from OpenR1-Psy `counselor_think` (no API/LLM generation).
+- Use `scripts/study_c/gold_plans/populate_from_openr1.py` to populate/update `data/study_c_gold/target_plans.json`.
+
+**Gold Plan Source**: Target plans are extracted deterministically from OpenR1-Psy using the same dataset used for Study A gold labels, ensuring objectivity and reproducibility. See `data/study_c_gold/README.md` for details.
 
 **Advanced Technique**: Uses Sentence-Transformers for semantic similarity. This provides better matching than simple text overlap (BLEU).
 
@@ -126,7 +140,7 @@ where φ and c are sentence embeddings of model actions and target plan respecti
    - Mean recall at Turn 10 (or last turn if < 10 turns)
    - Average recall curve across all cases
 5. Calculate knowledge conflict rate (optional, requires NLI model)
-6. Continuity score is skipped (requires target plan data not in current schema; omitted from results JSON when missing)
+6. Continuity score is computed if gold target plans are available; omitted from results JSON when missing
 7. Save results to `results/<model>/study_c_results.json` with:
    - `entity_recall_at_t10`: Mean recall at turn 10
    - `average_recall_curve`: List of average recall values per turn
@@ -136,7 +150,7 @@ where φ and c are sentence embeddings of model actions and target plan respecti
 **Design Decisions**:
 - NER model loading is wrapped in try/except with clear error messages
 - Knowledge conflict is optional (wrapped in try/except for NLI availability)
-- Continuity score is explicitly documented as not computed (missing target plan data) and omitted from results JSON
+- Continuity score uses reproducible gold target plans (when available) and is omitted from results JSON when missing
 
 ## Data Requirements
 
