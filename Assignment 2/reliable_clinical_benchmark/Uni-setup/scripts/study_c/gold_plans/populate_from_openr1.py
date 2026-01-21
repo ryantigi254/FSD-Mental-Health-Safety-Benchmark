@@ -5,7 +5,8 @@ by extracting them from OpenR1-Psy gold therapist reasoning.
 
 Key idea:
 - Study C cases include `metadata.source_openr1_ids`, which map back to row indices
-  in the OpenR1-Psy test split.
+  in the OpenR1-Psy dataset. Most indices are in the test split, but a small subset
+  may reference the train split (out-of-bounds for test).
 - We extract plan-of-care summaries from OpenR1-Psy `counselor_think` across the
   full conversation.
 
@@ -110,8 +111,30 @@ def _extract_plan_from_reasoning(text: str) -> str:
     if action_sentences:
         return ". ".join(action_sentences[:3])
 
+    # More lenient fallback: extract substantial sentences even without action verbs
     substantial = [s for s in sentences[:3] if len(s) > 30]
-    return ". ".join(substantial) if substantial else ""
+    if substantial:
+        return ". ".join(substantial)
+    
+    # Final fallback: extract any meaningful sentences (therapeutic content indicators)
+    therapeutic_keywords = [
+        "help", "support", "treatment", "therapy", "counseling", "patient", "client",
+        "feel", "emotion", "thought", "behavior", "pattern", "skill", "strategy",
+        "medication", "medication", "session", "progress", "goal", "plan"
+    ]
+    
+    keyword_sentences = []
+    for sent in sentences[:5]:  # Check first 5 sentences
+        sent_lower = sent.lower()
+        if any(keyword in sent_lower for keyword in therapeutic_keywords) and len(sent.strip()) > 20:
+            keyword_sentences.append(sent.strip())
+    
+    if keyword_sentences:
+        return ". ".join(keyword_sentences[:3])
+    
+    # Last resort: return first 2-3 sentences if they're reasonably long
+    fallback = [s.strip() for s in sentences[:3] if len(s.strip()) > 25]
+    return ". ".join(fallback) if fallback else ""
 
 
 def _collect_full_counselor_think(conversation: List[Dict[str, Any]]) -> str:
@@ -127,11 +150,17 @@ def build_plans(
     *,
     study_c_path: Path,
     openr1_revision: str,
-    split: str,
+    preferred_split: str,
 ) -> Dict[str, Dict[str, Any]]:
     cases = load_study_c_data(str(study_c_path))
 
-    ds = load_dataset("GMLHUHE/OpenR1-Psy", split=split, revision=openr1_revision)
+    # Load both test and train splits (some cases may reference train split)
+    ds_test = load_dataset("GMLHUHE/OpenR1-Psy", split="test", revision=openr1_revision)
+    ds_train = load_dataset("GMLHUHE/OpenR1-Psy", split="train", revision=openr1_revision)
+
+    preferred_split = (preferred_split or "test").lower().strip()
+    if preferred_split not in ("test", "train"):
+        preferred_split = "test"
 
     out: Dict[str, Dict[str, Any]] = {}
 
@@ -142,30 +171,61 @@ def build_plans(
 
         chosen_idx: Optional[int] = None
         plan_text: str = ""
+        used_split: Optional[str] = None
 
         for idx in source_ids:
-            try:
-                row = ds[int(idx)]
-            except Exception:
+            attempts = [preferred_split, "train" if preferred_split == "test" else "test"]
+            row = None
+            current_split = None
+
+            for split_name in attempts:
+                try:
+                    ds = ds_test if split_name == "test" else ds_train
+                    row = ds[int(idx)]
+                    current_split = split_name
+                    break
+                except (IndexError, ValueError, KeyError):
+                    continue
+
+            if row is None or current_split is None:
+                print(
+                    f"  WARNING: {case.id} - OpenR1-Psy index {idx} invalid in both test and train"
+                )
                 continue
 
             convo = row.get("conversation") or []
             if not isinstance(convo, list) or not convo:
+                print(f"  WARNING: {case.id} - OpenR1-Psy index {idx} ({current_split}) has no conversation")
                 continue
 
             reasoning = _collect_full_counselor_think(convo)
             if not reasoning:
+                print(f"  WARNING: {case.id} - OpenR1-Psy index {idx} ({current_split}) has no counselor_think")
                 continue
 
             candidate = _extract_plan_from_reasoning(reasoning)
-            if candidate:
+            if candidate and len(candidate.strip()) > 10:  # Ensure we have meaningful content
                 chosen_idx = int(idx)
                 plan_text = candidate
+                used_split = current_split
                 break
+            elif not candidate:
+                # If extraction failed, try to create a minimal plan from first few sentences
+                sentences = [s.strip() for s in re.split(r"[.!?]\s+", reasoning) if s.strip()]
+                if sentences:
+                    # Take first 2-3 sentences that are substantial
+                    fallback_sentences = [s for s in sentences[:3] if len(s) > 25]
+                    if fallback_sentences:
+                        chosen_idx = int(idx)
+                        plan_text = ". ".join(fallback_sentences[:2])
+                        used_split = current_split
+                        print(f"  NOTE: {case.id} - Using fallback extraction from OpenR1-Psy index {idx} ({current_split})")
+                        break
 
         out[case.id] = {
             "plan": plan_text,
             "source_openr1_id": chosen_idx,
+            "source_split": used_split,  # Track which split was used
         }
 
     return out
@@ -195,7 +255,7 @@ def main() -> int:
         "--split",
         type=str,
         default="test",
-        help="OpenR1-Psy split to use (default: test)",
+        help="Preferred OpenR1-Psy split to try first: test or train (default: test)",
     )
     p.add_argument(
         "--force",
@@ -214,8 +274,18 @@ def main() -> int:
     new_plans = build_plans(
         study_c_path=study_c_path,
         openr1_revision=args.revision,
-        split=args.split,
+        preferred_split=args.split,
     )
+
+    split_counts: Dict[str, int] = {"test": 0, "train": 0, "none": 0}
+    for v in new_plans.values():
+        if not isinstance(v, dict):
+            continue
+        s = v.get("source_split")
+        if s in ("test", "train"):
+            split_counts[str(s)] += 1
+        else:
+            split_counts["none"] += 1
 
     existing: Dict[str, Any] = {
         "meta": {},
@@ -261,10 +331,12 @@ def main() -> int:
     existing_meta.update(
         {
             "dataset": "GMLHUHE/OpenR1-Psy",
-            "split": args.split,
+            "split": "mixed",
+            "preferred_split": args.split,
             "revision": args.revision,
             "updated_utc": datetime.utcnow().isoformat() + "Z",
             "script": "scripts/study_c/gold_plans/populate_from_openr1.py",
+            "source_split_counts": split_counts,
         }
     )
 

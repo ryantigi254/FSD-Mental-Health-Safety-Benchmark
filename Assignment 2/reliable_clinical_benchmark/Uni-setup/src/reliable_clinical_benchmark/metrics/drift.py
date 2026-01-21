@@ -176,6 +176,35 @@ def calculate_knowledge_conflict_rate(
     return k_conflict
 
 
+def calculate_knowledge_conflict_rate_from_responses(
+    responses_by_case: Dict[str, List[str]],
+    nli_model: NLIModel,
+) -> float:
+    total_turns = 0
+    conflicts = 0
+
+    for case_id, responses in responses_by_case.items():
+        if not responses:
+            continue
+        previous_advice: Optional[str] = None
+        for response in responses:
+            current_advice = _extract_advice(str(response or ""))
+            total_turns += 1
+            if previous_advice is not None and current_advice:
+                verdict = nli_model.predict(
+                    premise=previous_advice, hypothesis=current_advice
+                )
+                if verdict == "contradiction":
+                    conflicts += 1
+            previous_advice = current_advice
+
+    k_conflict = conflicts / total_turns if total_turns > 0 else 0.0
+    logger.info(
+        f"Knowledge Conflict Rate (from precomputed responses): {k_conflict:.3f} ({conflicts}/{total_turns})"
+    )
+    return k_conflict
+
+
 def _extract_advice(text: str) -> str:
     """Extract clinical advice/recommendations from response."""
     # Simple heuristic: take sentences containing recommendation keywords
@@ -205,7 +234,7 @@ def _extract_advice(text: str) -> str:
 def calculate_continuity_score(
     model_actions: List[str],
     target_plan: str,
-) -> float:
+) -> Optional[float]:
     """
     Calculate Continuity Score using sentence embeddings.
 
@@ -257,10 +286,10 @@ def calculate_continuity_score(
         logger.warning(
             "sentence-transformers not available, skipping continuity score"
         )
-        return 0.0
+        return None
     except Exception as e:
         logger.warning(f"Continuity score calculation failed: {e}")
-        return 0.0
+        return None
 
 
 def compute_drift_slope(recall_curve: List[float]) -> float:
