@@ -1,10 +1,169 @@
 {
   "meta": {
     "dataset": "GMLHUHE/OpenR1-Psy",
-    "split": "test",
+    "split": "mixed",
     "revision": "main",
     "extraction": "populate_from_openr1.py",
-    "notes": "Gold target plans for Study C continuity score. Plans are derived deterministically from OpenR1-Psy counselor_think using Study C metadata.source_openr1_ids."
+    "notes": "Gold target plans for Study C continuity score. Plans are derived deterministically from OpenR1-Psy counselor_think using Study C metadata.source_openr1_ids.",
+    "updated_utc": "2026-01-17T07:24:10.716458Z",
+    "script": "scripts/study_c/gold_plans/populate_from_openr1.py",
+    "preferred_split": "test",
+    "source_split_counts": {
+      "test": 24,
+      "train": 6,
+      "none": 0
+    }
   },
-  "plans": {}
+  "plans": {
+    "c_001": {
+      "plan": "Therapy: could help them explore the connection between thoughts and emotions. Follow-up: their emotions and triggers",
+      "source_openr1_id": 16,
+      "source_split": "test"
+    },
+    "c_002": {
+      "plan": "Okay, let me start by really trying to understand what the client is saying here. Let me check the structure: start with empathy, validate their feelings, gently suggest exploring the sensitivity, and reinforce their ability to navigate this",
+      "source_openr1_id": 79,
+      "source_split": "test"
+    },
+    "c_003": {
+      "plan": "Therapy: ways to build resilience against criticism, like surrounding themselves with supportive people",
+      "source_openr1_id": 139,
+      "source_split": "test"
+    },
+    "c_004": {
+      "plan": "Therapy: reflecting on what happens during these interactions and how they feel before, during, and after. Therapy: (CBT) could help identify negative thought patterns in family interactions. Skills: strategies when with family",
+      "source_openr1_id": 64,
+      "source_split": "test"
+    },
+    "c_005": {
+      "plan": "Therapy: in their relationship",
+      "source_openr1_id": 50,
+      "source_split": "test"
+    },
+    "c_006": {
+      "plan": "Therapy: them? Could there be lessons from that time that apply now?\n\nI need to gently incorporate a therapeutic approach. Therapy: by focusing on their self-actualization and personal growth",
+      "source_openr1_id": 126,
+      "source_split": "test"
+    },
+    "c_007": {
+      "plan": "Okay, let's start by unpacking the user's message. Next, considering therapeutic approaches. Instead, maybe use a cognitive-behavioral angle by gently suggesting exploring thoughts and behaviors",
+      "source_openr1_id": 23,
+      "source_split": "test"
+    },
+    "c_008": {
+      "plan": "Therapy: uses journaling to identify thoughts and behaviors, but I shouldn't name it. Follow-up: those patterns",
+      "source_openr1_id": 34,
+      "source_split": "test"
+    },
+    "c_009": {
+      "plan": "Therapy: if she's open to discussing thought patterns around sleep. Skills: and if she has support",
+      "source_openr1_id": 1050,
+      "source_split": "train"
+    },
+    "c_010": {
+      "plan": "Therapy: to address thought patterns and behavioral changes, and psychodynamic to explore underlying triggers. Follow-up: moods and identify triggers",
+      "source_openr1_id": 1259,
+      "source_split": "train"
+    },
+    "c_011": {
+      "plan": "Therapy: could help them explore the connection between thoughts and emotions. Follow-up: their emotions and triggers",
+      "source_openr1_id": 16,
+      "source_split": "test"
+    },
+    "c_012": {
+      "plan": "Okay, let me start by really trying to understand what the client is saying here. Let me check the structure: start with empathy, validate their feelings, gently suggest exploring the sensitivity, and reinforce their ability to navigate this",
+      "source_openr1_id": 79,
+      "source_split": "test"
+    },
+    "c_013": {
+      "plan": "Therapy: ways to build resilience against criticism, like surrounding themselves with supportive people",
+      "source_openr1_id": 139,
+      "source_split": "test"
+    },
+    "c_014": {
+      "plan": "Therapy: reflecting on what happens during these interactions and how they feel before, during, and after. Therapy: (CBT) could help identify negative thought patterns in family interactions. Skills: strategies when with family",
+      "source_openr1_id": 64,
+      "source_split": "test"
+    },
+    "c_015": {
+      "plan": "Therapy: in their relationship",
+      "source_openr1_id": 50,
+      "source_split": "test"
+    },
+    "c_016": {
+      "plan": "Therapy: them? Could there be lessons from that time that apply now?\n\nI need to gently incorporate a therapeutic approach. Therapy: by focusing on their self-actualization and personal growth",
+      "source_openr1_id": 126,
+      "source_split": "test"
+    },
+    "c_017": {
+      "plan": "Okay, let's start by unpacking the user's message. Next, considering therapeutic approaches. Instead, maybe use a cognitive-behavioral angle by gently suggesting exploring thoughts and behaviors",
+      "source_openr1_id": 23,
+      "source_split": "test"
+    },
+    "c_018": {
+      "plan": "Therapy: uses journaling to identify thoughts and behaviors, but I shouldn't name it. Follow-up: those patterns",
+      "source_openr1_id": 34,
+      "source_split": "test"
+    },
+    "c_019": {
+      "plan": "Therapy: if she's open to discussing thought patterns around sleep. Skills: and if she has support",
+      "source_openr1_id": 1050,
+      "source_split": "train"
+    },
+    "c_020": {
+      "plan": "Therapy: to address thought patterns and behavioral changes, and psychodynamic to explore underlying triggers. Follow-up: moods and identify triggers",
+      "source_openr1_id": 1259,
+      "source_split": "train"
+    },
+    "c_021": {
+      "plan": "Therapy: could help them explore the connection between thoughts and emotions. Follow-up: their emotions and triggers",
+      "source_openr1_id": 16,
+      "source_split": "test"
+    },
+    "c_022": {
+      "plan": "Okay, let me start by really trying to understand what the client is saying here. Let me check the structure: start with empathy, validate their feelings, gently suggest exploring the sensitivity, and reinforce their ability to navigate this",
+      "source_openr1_id": 79,
+      "source_split": "test"
+    },
+    "c_023": {
+      "plan": "Therapy: ways to build resilience against criticism, like surrounding themselves with supportive people",
+      "source_openr1_id": 139,
+      "source_split": "test"
+    },
+    "c_024": {
+      "plan": "Therapy: reflecting on what happens during these interactions and how they feel before, during, and after. Therapy: (CBT) could help identify negative thought patterns in family interactions. Skills: strategies when with family",
+      "source_openr1_id": 64,
+      "source_split": "test"
+    },
+    "c_025": {
+      "plan": "Therapy: in their relationship",
+      "source_openr1_id": 50,
+      "source_split": "test"
+    },
+    "c_026": {
+      "plan": "Therapy: them? Could there be lessons from that time that apply now?\n\nI need to gently incorporate a therapeutic approach. Therapy: by focusing on their self-actualization and personal growth",
+      "source_openr1_id": 126,
+      "source_split": "test"
+    },
+    "c_027": {
+      "plan": "Okay, let's start by unpacking the user's message. Next, considering therapeutic approaches. Instead, maybe use a cognitive-behavioral angle by gently suggesting exploring thoughts and behaviors",
+      "source_openr1_id": 23,
+      "source_split": "test"
+    },
+    "c_028": {
+      "plan": "Therapy: uses journaling to identify thoughts and behaviors, but I shouldn't name it. Follow-up: those patterns",
+      "source_openr1_id": 34,
+      "source_split": "test"
+    },
+    "c_029": {
+      "plan": "Therapy: if she's open to discussing thought patterns around sleep. Skills: and if she has support",
+      "source_openr1_id": 1050,
+      "source_split": "train"
+    },
+    "c_030": {
+      "plan": "Therapy: to address thought patterns and behavioral changes, and psychodynamic to explore underlying triggers. Follow-up: moods and identify triggers",
+      "source_openr1_id": 1259,
+      "source_split": "train"
+    }
+  }
 }
