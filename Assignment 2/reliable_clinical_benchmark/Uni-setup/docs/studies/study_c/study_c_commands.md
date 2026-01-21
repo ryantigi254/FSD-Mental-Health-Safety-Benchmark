@@ -12,7 +12,20 @@ Study C evaluates **Longitudinal Drift** - measuring whether models maintain con
 - Generates responses for each case and turn (summary + dialogue variants)
 - Writes to: `results/<model-id>/study_c_generations.jsonl`
 
-**Note**: This is a standalone generation run. Metrics are calculated separately using `from_cache` mode.
+**Note**: This is a standalone generation run. Study C metrics are calculated by running the Study C pipeline (`run_study_c()`), e.g. via `scripts/run_evaluation.py --study C`.
+
+## Continuity Score Gold Target Plans (Optional)
+
+To compute Study C `continuity_score` reproducibly (no API / no external model), first populate gold target plans derived from OpenR1-Psy therapist reasoning:
+
+```powershell
+python scripts\study_c\gold_plans\populate_from_openr1.py --force
+```
+
+This writes:
+- `data/study_c_gold/target_plans.json`
+
+Then run Study C evaluation as normal; `continuity_score` will be included in `study_c_results.json` if at least one gold plan is available.
 
 **Architecture**:
 
@@ -72,6 +85,7 @@ cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setu
 ```powershell
 cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
 & "D:\Anaconda3\Scripts\activate" mh-llm-benchmark-env
+$Env:PYTHONNOUSERSITE="1"
 $Env:PYTHONPATH="src"
 ```
 
@@ -95,6 +109,17 @@ python src/tests/studies/study_c/lmstudio/test_study_c_gpt_oss.py
 python hf-local-scripts\run_study_c_generate_only.py --model-id gpt_oss
 ```
 
+**Alternative (using full Python path, if activation fails):**
+
+```powershell
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+$Env:PYTHONNOUSERSITE="1"
+$Env:PYTHONPATH="src"
+C:\Users\22837352\.conda\envs\mh-llm-benchmark-env\python.exe -m pytest tests/unit/metrics/test_extraction.py -v
+C:\Users\22837352\.conda\envs\mh-llm-benchmark-env\python.exe src/tests/studies/study_c/lmstudio/test_study_c_gpt_oss.py
+C:\Users\22837352\.conda\envs\mh-llm-benchmark-env\python.exe hf-local-scripts\run_study_c_generate_only.py --model-id gpt_oss
+```
+
 ---
 
 ### PsyLLM (HF local, GMLHUHE/PsyLLM)
@@ -113,18 +138,30 @@ $Env:PYTHONPATH="src"
 #### 2. Unit Tests (Run Once – Shared Across All Models)
 
 ```powershell
-pytest tests/unit/metrics/test_extraction.py -v
+C:\Users\22837352\.conda\envs\mh-llm-local-env\python.exe -m pytest tests/unit/metrics/test_extraction.py -v
 ```
 
 #### 3. Smoke Test (Study C)
 
 ```powershell
-python src/tests/studies/study_c/models/test_study_c_psyllm_gml_local.py
+C:\Users\22837352\.conda\envs\mh-llm-local-env\python.exe src/tests/studies/study_c/models/test_study_c_psyllm_gml_local.py
 ```
 
 #### 4. Full Generation (Study C)
 
 ```powershell
+C:\Users\22837352\.conda\envs\mh-llm-local-env\python.exe hf-local-scripts\run_study_c_generate_only.py --model-id psyllm_gml_local
+```
+
+**Alternative (if activation works, you can use `python` directly):**
+
+```powershell
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+& "D:\Anaconda3\Scripts\activate" mh-llm-local-env
+$Env:PYTHONNOUSERSITE="1"
+$Env:PYTHONPATH="src"
+python -m pytest tests/unit/metrics/test_extraction.py -v
+python src/tests/studies/study_c/models/test_study_c_psyllm_gml_local.py
 python hf-local-scripts\run_study_c_generate_only.py --model-id psyllm_gml_local
 ```
 
@@ -139,6 +176,7 @@ python hf-local-scripts\run_study_c_generate_only.py --model-id psyllm_gml_local
 ```powershell
 cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
 & "D:\Anaconda3\Scripts\activate" mh-llm-benchmark-env
+$Env:PYTHONNOUSERSITE="1"
 $Env:PYTHONPATH="src"
 ```
 
@@ -160,6 +198,17 @@ python src/tests/studies/study_c/lmstudio/test_study_c_qwq.py
 python hf-local-scripts\run_study_c_generate_only.py --model-id qwq
 ```
 
+**Alternative (using full Python path, if activation fails):**
+
+```powershell
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+$Env:PYTHONNOUSERSITE="1"
+$Env:PYTHONPATH="src"
+C:\Users\22837352\.conda\envs\mh-llm-benchmark-env\python.exe -m pytest tests/unit/metrics/test_extraction.py -v
+C:\Users\22837352\.conda\envs\mh-llm-benchmark-env\python.exe src/tests/studies/study_c/lmstudio/test_study_c_qwq.py
+C:\Users\22837352\.conda\envs\mh-llm-benchmark-env\python.exe hf-local-scripts\run_study_c_generate_only.py --model-id qwq
+```
+
 ---
 
 ### DeepSeek-R1 (LM Studio distill)
@@ -171,6 +220,7 @@ python hf-local-scripts\run_study_c_generate_only.py --model-id qwq
 ```powershell
 cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
 & "D:\Anaconda3\Scripts\activate" mh-llm-benchmark-env
+$Env:PYTHONNOUSERSITE="1"
 $Env:PYTHONPATH="src"
 ```
 
@@ -192,6 +242,17 @@ python src/tests/studies/study_c/lmstudio/test_study_c_deepseek_r1_lmstudio.py
 python hf-local-scripts\run_study_c_generate_only.py --model-id deepseek_r1_lmstudio
 ```
 
+**Alternative (using full Python path, if activation fails):**
+
+```powershell
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+$Env:PYTHONNOUSERSITE="1"
+$Env:PYTHONPATH="src"
+C:\Users\22837352\.conda\envs\mh-llm-benchmark-env\python.exe -m pytest tests/unit/metrics/test_extraction.py -v
+C:\Users\22837352\.conda\envs\mh-llm-benchmark-env\python.exe src/tests/studies/study_c/lmstudio/test_study_c_deepseek_r1_lmstudio.py
+C:\Users\22837352\.conda\envs\mh-llm-benchmark-env\python.exe hf-local-scripts\run_study_c_generate_only.py --model-id deepseek_r1_lmstudio
+```
+
 ---
 
 ### GPT-OSS-20B (LM Studio)
@@ -203,6 +264,7 @@ python hf-local-scripts\run_study_c_generate_only.py --model-id deepseek_r1_lmst
 ```powershell
 cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
 & "D:\Anaconda3\Scripts\activate" mh-llm-benchmark-env
+$Env:PYTHONNOUSERSITE="1"
 $Env:PYTHONPATH="src"
 ```
 
@@ -224,6 +286,17 @@ python src/tests/studies/study_c/lmstudio/test_study_c_gpt_oss.py
 python hf-local-scripts\run_study_c_generate_only.py --model-id gpt_oss
 ```
 
+**Alternative (using full Python path, if activation fails):**
+
+```powershell
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+$Env:PYTHONNOUSERSITE="1"
+$Env:PYTHONPATH="src"
+C:\Users\22837352\.conda\envs\mh-llm-benchmark-env\python.exe -m pytest tests/unit/metrics/test_extraction.py -v
+C:\Users\22837352\.conda\envs\mh-llm-benchmark-env\python.exe src/tests/studies/study_c/lmstudio/test_study_c_gpt_oss.py
+C:\Users\22837352\.conda\envs\mh-llm-benchmark-env\python.exe hf-local-scripts\run_study_c_generate_only.py --model-id gpt_oss
+```
+
 ---
 
 ### Qwen3-8B (LM Studio)
@@ -235,6 +308,7 @@ python hf-local-scripts\run_study_c_generate_only.py --model-id gpt_oss
 ```powershell
 cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
 & "D:\Anaconda3\Scripts\activate" mh-llm-benchmark-env
+$Env:PYTHONNOUSERSITE="1"
 $Env:PYTHONPATH="src"
 ```
 
@@ -256,6 +330,17 @@ python src/tests/studies/study_c/lmstudio/test_study_c_qwen3_lmstudio.py
 python hf-local-scripts\run_study_c_generate_only.py --model-id qwen3_lmstudio
 ```
 
+**Alternative (using full Python path, if activation fails):**
+
+```powershell
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+$Env:PYTHONNOUSERSITE="1"
+$Env:PYTHONPATH="src"
+C:\Users\22837352\.conda\envs\mh-llm-benchmark-env\python.exe -m pytest tests/unit/metrics/test_extraction.py -v
+C:\Users\22837352\.conda\envs\mh-llm-benchmark-env\python.exe src/tests/studies/study_c/lmstudio/test_study_c_qwen3_lmstudio.py
+C:\Users\22837352\.conda\envs\mh-llm-benchmark-env\python.exe hf-local-scripts\run_study_c_generate_only.py --model-id qwen3_lmstudio
+```
+
 ---
 
 ### Piaget-8B (HF local)
@@ -274,18 +359,30 @@ $Env:PYTHONPATH="src"
 #### 2. Unit Tests (Run Once – Shared Across All Models)
 
 ```powershell
-pytest tests/unit/metrics/test_extraction.py -v
+C:\Users\22837352\.conda\envs\mh-llm-local-env\python.exe -m pytest tests/unit/metrics/test_extraction.py -v
 ```
 
 #### 3. Smoke Test (Study C)
 
 ```powershell
-python src/tests/studies/study_c/models/test_study_c_piaget_local.py
+C:\Users\22837352\.conda\envs\mh-llm-local-env\python.exe src/tests/studies/study_c/models/test_study_c_piaget_local.py
 ```
 
 #### 4. Full Generation (Study C)
 
 ```powershell
+C:\Users\22837352\.conda\envs\mh-llm-local-env\python.exe hf-local-scripts\run_study_c_generate_only.py --model-id piaget_local
+```
+
+**Alternative (if activation works, you can use `python` directly):**
+
+```powershell
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+& "D:\Anaconda3\Scripts\activate" mh-llm-local-env
+$Env:PYTHONNOUSERSITE="1"
+$Env:PYTHONPATH="src"
+python -m pytest tests/unit/metrics/test_extraction.py -v
+python src/tests/studies/study_c/models/test_study_c_piaget_local.py
 python hf-local-scripts\run_study_c_generate_only.py --model-id piaget_local
 ```
 
@@ -307,18 +404,30 @@ $Env:PYTHONPATH="src"
 #### 2. Unit Tests (Run Once – Shared Across All Models)
 
 ```powershell
-pytest tests/unit/metrics/test_extraction.py -v
+C:\Users\22837352\.conda\envs\mh-llm-local-env\python.exe -m pytest tests/unit/metrics/test_extraction.py -v
 ```
 
 #### 3. Smoke Test (Study C)
 
 ```powershell
-python src/tests/studies/study_c/models/test_study_c_psyche_r1_local.py
+C:\Users\22837352\.conda\envs\mh-llm-local-env\python.exe src/tests/studies/study_c/models/test_study_c_psyche_r1_local.py
 ```
 
 #### 4. Full Generation (Study C)
 
 ```powershell
+C:\Users\22837352\.conda\envs\mh-llm-local-env\python.exe hf-local-scripts\run_study_c_generate_only.py --model-id psyche_r1_local
+```
+
+**Alternative (if activation works, you can use `python` directly):**
+
+```powershell
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+& "D:\Anaconda3\Scripts\activate" mh-llm-local-env
+$Env:PYTHONNOUSERSITE="1"
+$Env:PYTHONPATH="src"
+python -m pytest tests/unit/metrics/test_extraction.py -v
+python src/tests/studies/study_c/models/test_study_c_psyche_r1_local.py
 python hf-local-scripts\run_study_c_generate_only.py --model-id psyche_r1_local
 ```
 
@@ -340,18 +449,30 @@ $Env:PYTHONPATH="src"
 #### 2. Unit Tests (Run Once – Shared Across All Models)
 
 ```powershell
-pytest tests/unit/metrics/test_extraction.py -v
+C:\Users\22837352\.conda\envs\mh-llm-local-env\python.exe -m pytest tests/unit/metrics/test_extraction.py -v
 ```
 
 #### 3. Smoke Test (Study C)
 
 ```powershell
-python src/tests/studies/study_c/models/test_study_c_psych_qwen_local.py
+C:\Users\22837352\.conda\envs\mh-llm-local-env\python.exe src/tests/studies/study_c/models/test_study_c_psych_qwen_local.py
 ```
 
 #### 4. Full Generation (Study C)
 
 ```powershell
+C:\Users\22837352\.conda\envs\mh-llm-local-env\python.exe hf-local-scripts\run_study_c_generate_only.py --model-id psych_qwen_local
+```
+
+**Alternative (if activation works, you can use `python` directly):**
+
+```powershell
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+& "D:\Anaconda3\Scripts\activate" mh-llm-local-env
+$Env:PYTHONNOUSERSITE="1"
+$Env:PYTHONPATH="src"
+python -m pytest tests/unit/metrics/test_extraction.py -v
+python src/tests/studies/study_c/models/test_study_c_psych_qwen_local.py
 python hf-local-scripts\run_study_c_generate_only.py --model-id psych_qwen_local
 ```
 
@@ -404,7 +525,26 @@ python src/tests/studies/study_c/test_study_c_generate_only.py --model-id qwen3_
 - **Model Interface**: Uses `ModelRunner.generate(prompt, mode="default")` for both variants
 - **Cache Format**: JSONL with fields: `id`, `case_id`, `turn_num`, `variant`, `prompt`, `response_text`, `conversation_text`, `status`, `timestamp`, `model_name`, `persona_id`, `meta`
 
+## Gold Target Plans (Continuity Score)
+
+**Continuity Score** requires gold target plans extracted from OpenR1-Psy. These are stored in `data/study_c_gold/target_plans.json`.
+
+### Extracting Target Plans
+
+To populate/refresh gold target plans:
+
+```bash
+python scripts/study_c/gold_plans/populate_from_openr1.py --force
+```
+
+This extracts plan-of-care summaries from OpenR1-Psy `counselor_think` (full conversation) using the same dataset used for Study A gold labels, ensuring objectivity and reproducibility.
+
+**Current Coverage**: 30/30 cases have extracted plans (100%). All cases can have Continuity Score computed.
+
+See `data/study_c_gold/README.md` for detailed documentation on the extraction process and reproducibility guarantees.
+
 ## Related Documentation
 
 - **Architecture**: See `docs/studies/study_c/study_c_drift.md` for implementation details
 - **Metrics**: See `docs/metrics/METRIC_CALCULATION_PIPELINE.md` for metric calculation details
+- **Gold Plans**: See `data/study_c_gold/README.md` for target plan extraction and usage
