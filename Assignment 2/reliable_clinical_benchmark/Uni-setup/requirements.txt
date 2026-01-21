@@ -36,6 +36,7 @@ python-dotenv==1.0.1
 pydantic==2.6.4
 openai==1.14.0  # For LM Studio API compatibility
 requests==2.31.0
+rapidfuzz>=3.0.0  # Fast fuzzy string matching for repetition detection
 
 # Code quality
 black==24.3.0

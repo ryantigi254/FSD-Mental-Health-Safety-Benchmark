@@ -74,17 +74,112 @@ class Piaget8BLocalRunner(ModelRunner):
     def generate(self, prompt: str, mode: str = "default") -> str:
         encoded = self._build_inputs(prompt, mode)
         input_token_count = int(encoded["input_ids"].shape[-1])
-        gen = self.model.generate(
-            **encoded,
-            max_new_tokens=self.config.max_tokens,
-            do_sample=True,
-            temperature=self.config.temperature,
-            top_p=self.config.top_p,
-            eos_token_id=self.tokenizer.eos_token_id,
-            pad_token_id=self.tokenizer.eos_token_id,
-        )
+        
+        # Try GPU generation first
+        try:
+            gen = self.model.generate(
+                **encoded,
+                max_new_tokens=self.config.max_tokens,
+                do_sample=True,
+                temperature=self.config.temperature,
+                top_p=self.config.top_p,
+                eos_token_id=self.tokenizer.eos_token_id,
+                pad_token_id=self.tokenizer.eos_token_id,
+            )
+        except RuntimeError as e:
+            # Check if it's a CUDA OOM error
+            error_str = str(e).lower()
+            if "cuda" in error_str and ("out of memory" in error_str or "oom" in error_str):
+                logger.warning(f"GPU OOM error: {error_str[:200]}")
+                
+                # Clear GPU cache aggressively before retry
+                if torch.cuda.is_available():
+                    logger.info("Clearing GPU cache before retry...")
+                    torch.cuda.empty_cache()
+                    torch.cuda.synchronize()
+                    torch.cuda.reset_peak_memory_stats(0)
+                    import gc
+                    gc.collect()
+                    torch.cuda.empty_cache()
+                
+                # Retry with progressively reduced tokens
+                for reduced_tokens in [self.config.max_tokens // 2, self.config.max_tokens // 4, 512, 256]:
+                    try:
+                        logger.info(f"Retrying GPU generation with max_new_tokens={reduced_tokens}")
+                        gen = self.model.generate(
+                            **encoded,
+                            max_new_tokens=reduced_tokens,
+                            do_sample=True,
+                            temperature=self.config.temperature,
+                            top_p=self.config.top_p,
+                            eos_token_id=self.tokenizer.eos_token_id,
+                            pad_token_id=self.tokenizer.eos_token_id,
+                        )
+                        logger.info(f"GPU generation succeeded with reduced max_new_tokens={reduced_tokens}")
+                        break
+                    except RuntimeError as retry_error:
+                        error_str_retry = str(retry_error).lower()
+                        if "cuda" in error_str_retry and ("out of memory" in error_str_retry or "oom" in error_str_retry):
+                            if reduced_tokens == 256:
+                                # All GPU retries failed - try CPU fallback
+                                logger.warning(
+                                    f"GPU generation failed even with minimal tokens ({reduced_tokens}). "
+                                    f"Attempting CPU fallback (this will be slow but should work with available RAM)"
+                                )
+                                
+                                # Clear GPU cache before CPU fallback
+                                if torch.cuda.is_available():
+                                    torch.cuda.empty_cache()
+                                    torch.cuda.synchronize()
+                                    torch.cuda.reset_peak_memory_stats(0)
+                                    import gc
+                                    gc.collect()
+                                    torch.cuda.empty_cache()
+                                
+                                # Move model and inputs to CPU
+                                try:
+                                    cpu_model = self.model.cpu()
+                                    encoded_cpu = {k: v.cpu() for k, v in encoded.items()}
+                                    
+                                    logger.info(f"Attempting CPU generation with max_new_tokens={reduced_tokens}")
+                                    gen = cpu_model.generate(
+                                        **encoded_cpu,
+                                        max_new_tokens=reduced_tokens,
+                                        do_sample=True,
+                                        temperature=self.config.temperature,
+                                        top_p=self.config.top_p,
+                                        eos_token_id=self.tokenizer.eos_token_id,
+                                        pad_token_id=self.tokenizer.eos_token_id,
+                                    )
+                                    
+                                    # Move model back to GPU for next generation
+                                    self.model = cpu_model.to(next(self.model.parameters()).device if torch.cuda.is_available() else "cpu")
+                                    
+                                    logger.info("CPU generation succeeded")
+                                    break
+                                except Exception as cpu_error:
+                                    logger.error(f"CPU generation also failed: {cpu_error}")
+                                    raise retry_error from cpu_error
+                            continue
+                        else:
+                            raise retry_error
+                else:
+                    raise e
+            else:
+                raise
+        
         generated_only = gen[0, input_token_count:]
         output = self.tokenizer.decode(generated_only, skip_special_tokens=True)
+        
+        # Clear GPU cache after each generation to prevent memory buildup
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+            torch.cuda.synchronize()
+            torch.cuda.reset_peak_memory_stats(0)
+            import gc
+            gc.collect()
+            torch.cuda.empty_cache()
+        
         return output.strip()
 
     def _strip_prompt(self, text: str) -> str:

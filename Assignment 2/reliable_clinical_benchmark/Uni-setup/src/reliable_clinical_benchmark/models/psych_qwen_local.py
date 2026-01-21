@@ -352,10 +352,23 @@ class PsychQwen32BLocalRunner(ModelRunner):
         }
 
     def _estimate_generation_memory(self, input_token_count: int, max_new_tokens: int) -> float:
-        """Rough estimate of memory needed for generation in GiB."""
-        # Very rough estimate: ~2 bytes per token for KV cache + activations
-        # This is conservative and model-dependent
-        estimated_gb = (input_token_count + max_new_tokens) * 2 / (1024**3)
+        """
+        Rough estimate of memory needed for generation in GiB.
+        
+        For a 32B model with 4-bit quantization:
+        - KV cache: ~2 bytes per token (input + output)
+        - Activations: ~1-2 bytes per token during generation
+        - Total: ~3-4 bytes per token, but we use 2 bytes as conservative estimate
+        
+        Note: This is a conservative estimate. Actual memory usage can be higher
+        due to memory fragmentation, intermediate activations, and other overhead.
+        """
+        # Conservative estimate: ~2 bytes per token for KV cache + activations
+        # For quantized models, this is lower, but we keep it conservative
+        # Add 20% overhead for fragmentation and intermediate activations
+        base_estimate = (input_token_count + max_new_tokens) * 2 / (1024**3)
+        overhead = base_estimate * 0.2  # 20% overhead
+        estimated_gb = base_estimate + overhead
         return estimated_gb
 
     def _load_cpu_model(self):
@@ -444,13 +457,34 @@ class PsychQwen32BLocalRunner(ModelRunner):
         
         # Dynamically reduce max_new_tokens if memory is tight
         max_new_tokens = self.config.max_tokens
-        if mem_info["free"] < estimated_needed * 1.5:  # Need 1.5x buffer
-            # Reduce max_new_tokens proportionally
-            reduction_factor = (mem_info["free"] / (estimated_needed * 1.5))
+        
+        # More aggressive reduction: if free memory is less than 3x estimated need, reduce tokens
+        # Increased buffer from 2x to 3x to prevent OOM on later turns with long history
+        if mem_info["free"] < estimated_needed * 3.0:  # Need 3x buffer for safety (increased from 2x)
+            # Reduce max_new_tokens proportionally, but be more aggressive
+            reduction_factor = max(0.3, (mem_info["free"] / (estimated_needed * 3.0)))
             max_new_tokens = max(256, int(self.config.max_tokens * reduction_factor))
             logger.warning(
-                f"Memory tight ({mem_info['free']:.2f} GiB free < {estimated_needed * 1.5:.2f} GiB needed). "
-                f"Reducing max_new_tokens from {self.config.max_tokens} to {max_new_tokens}"
+                f"Memory tight ({mem_info['free']:.2f} GiB free < {estimated_needed * 3.0:.2f} GiB needed). "
+                f"Reducing max_new_tokens from {self.config.max_tokens} to {max_new_tokens} "
+                f"(reduction factor: {reduction_factor:.2f})"
+            )
+        
+        # If memory is critically low (< 2 GiB free), reduce tokens very aggressively
+        # Increased threshold from 1 GiB to 2 GiB to catch issues earlier
+        if mem_info["free"] < 2.0:
+            max_new_tokens = min(max_new_tokens, 512)  # Cap at 512 tokens if memory is critically low
+            logger.warning(
+                f"Critically low GPU memory ({mem_info['free']:.2f} GiB free). "
+                f"Capping max_new_tokens at {max_new_tokens}"
+            )
+        
+        # If memory is extremely low (< 0.5 GiB free), cap at 256 tokens
+        if mem_info["free"] < 0.5:
+            max_new_tokens = min(max_new_tokens, 256)
+            logger.warning(
+                f"Extremely low GPU memory ({mem_info['free']:.2f} GiB free). "
+                f"Capping max_new_tokens at {max_new_tokens}"
             )
 
         # Try GPU generation first
@@ -471,6 +505,13 @@ class PsychQwen32BLocalRunner(ModelRunner):
             error_str = str(e).lower()
             if "cuda" in error_str and ("out of memory" in error_str or "oom" in error_str):
                 logger.warning(f"GPU OOM error: {error_str[:200]}")
+                
+                # Clear GPU cache aggressively before CPU fallback
+                if torch.cuda.is_available():
+                    logger.info("Clearing GPU cache before CPU fallback...")
+                    torch.cuda.empty_cache()
+                    torch.cuda.synchronize()
+                    torch.cuda.reset_peak_memory_stats(0)
                 
                 # Since user has plenty of RAM (~40 GB free), try CPU fallback immediately
                 # This is faster than multiple GPU retries that are likely to fail
@@ -530,6 +571,20 @@ class PsychQwen32BLocalRunner(ModelRunner):
 
         generated_only = gen[0, input_token_count:]
         output = self.tokenizer.decode(generated_only, skip_special_tokens=True)
+        
+        # Clear GPU cache after each generation to prevent memory buildup
+        # This is especially important with higher max_tokens (7000) to prevent fragmentation
+        # Also important for multi-turn conversations where KV cache grows
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+            torch.cuda.synchronize()
+            # Reset peak memory stats to help with fragmentation tracking
+            torch.cuda.reset_peak_memory_stats(0)
+            # Force garbage collection to free Python objects
+            import gc
+            gc.collect()
+            torch.cuda.empty_cache()
+        
         # Return raw assistant text (minimal stripping) for objective analysis.
         return self._strip_role_markers(output)
 
