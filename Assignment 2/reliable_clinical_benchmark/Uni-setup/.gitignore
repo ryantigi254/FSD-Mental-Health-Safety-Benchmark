@@ -12,3 +12,11 @@ temp/
 # Local scripts not for repo
 scripts/test_extraction.py
 scripts/verify_repetition_removal.py
+
+# Data and Artifacts (large/derived)
+processed/
+results/
+models/
+offload/
+wandb/
+data/
