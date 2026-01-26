@@ -16,9 +16,9 @@ Both environments should be isolated (no base Anaconda writes, no user-site blee
 Create and use this for **evaluation** and **tests**:
 
 ```powershell
-cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+cd "Assignment 2\reliable_clinical_benchmark\Uni-setup"
 conda create -n mh-llm-benchmark-env python=3.10 -y
-& "D:\Anaconda3\Scripts\activate" mh-llm-benchmark-env   # adjust if Anaconda elsewhere
+conda activate mh-llm-benchmark-env   # adjust if Anaconda setup differs
 
 pip install -r requirements.txt
 # spaCy model via scispaCy S3 (matches spaCy 3.6.1)
@@ -44,9 +44,9 @@ Use this when you want to run **local HF runners** that load weights from `Uni-s
 ### Setup
 
 ```powershell
-cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+cd "Assignment 2\reliable_clinical_benchmark\Uni-setup"
 conda create -n mh-llm-local-env python=3.10 -y
-& "D:\Anaconda3\Scripts\activate" mh-llm-local-env   # adjust if Anaconda elsewhere
+conda activate mh-llm-local-env   # adjust if Anaconda setup differs
 
 # Install PyTorch with CUDA support (REQUIRED for GPU inference)
 # Check your CUDA version with: nvidia-smi
