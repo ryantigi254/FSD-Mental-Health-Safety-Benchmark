@@ -9,6 +9,8 @@ from pathlib import Path
 from typing import Optional, Dict, Any, Iterable, List
 import logging
 
+logger = logging.getLogger(__name__)
+
 try:
     import torch
     TORCH_AVAILABLE = True
@@ -38,7 +40,90 @@ from ..utils.ner import MedicalNER
 from ..utils.nli import NLIModel
 from ..utils.stats import bootstrap_confidence_interval
 
-logger = logging.getLogger(__name__)
+
+SENT_SPLIT = re.compile(r"(?<=[.!?])\s+")
+
+
+def _scan_mode_clean(text: str, min_repeat_length: int = 10, min_repeats: int = 2) -> str:
+    """
+    Exact-match scan cleaning for conversation history.
+
+    Removes repeated lines and repeated sentence n-grams (bi/tri/quad) without
+    adding markers. Intended for intermediate context only.
+    """
+    if not text or len(text) < 200:
+        return text
+
+    # Remove consecutive duplicate lines beyond min_repeats
+    # Normalize simple mode prefixes (e.g., "DEFAULT::") when comparing lines.
+    lines = [l for l in text.splitlines() if l.strip()]
+    deduped_lines = []
+    prev = None
+    repeat_count = 0
+    for line in lines:
+        normalized_line = re.sub(r"^[A-Z][A-Z0-9_]*::\s*", "", line).strip()
+        compare_line = normalized_line or line.strip()
+        if compare_line == prev and len(compare_line) >= min_repeat_length:
+            repeat_count += 1
+            if repeat_count >= min_repeats:
+                continue
+        else:
+            prev = compare_line
+            repeat_count = 1
+        deduped_lines.append(line)
+
+    # Sentence n-gram de-duplication (bi/tri/quad-grams)
+    sentences = [s.strip() for s in SENT_SPLIT.split(" ".join(deduped_lines)) if s.strip()]
+    if len(sentences) < 4:
+        return "\n".join(deduped_lines).rstrip("\n")
+
+    kept: List[str] = []
+    seen_ngrams = {2: set(), 3: set(), 4: set()}
+    for sentence in sentences:
+        candidate = kept + [sentence]
+        skip = False
+        for n in (2, 3, 4):
+            if len(candidate) < n:
+                continue
+            ngram = " ".join(candidate[-n:]).strip()
+            if len(ngram) < min_repeat_length:
+                continue
+            if ngram in seen_ngrams[n]:
+                skip = True
+                break
+        if skip:
+            continue
+        kept.append(sentence)
+        for n in (2, 3, 4):
+            if len(kept) < n:
+                continue
+            ngram = " ".join(kept[-n:]).strip()
+            if len(ngram) >= min_repeat_length:
+                seen_ngrams[n].add(ngram)
+
+    return " ".join(kept).strip()
+
+
+def _clean_for_context(text: str, min_repeat_length: int = 10, min_repeats: int = 2) -> str:
+    """
+    Clean text for use in conversation history only.
+
+    Applies scan-mode exact de-duplication first, then fuzzy repetition removal
+    as a safeguard for near-duplicates. Raw responses are saved unchanged.
+    """
+    if not text:
+        return text
+    try:
+        cleaned = _scan_mode_clean(text, min_repeat_length=min_repeat_length, min_repeats=min_repeats)
+        cleaned = _remove_repetition(cleaned)
+        return cleaned or text
+    except Exception as exc:
+        logger.warning(f"Context cleaning failed, using raw response: {exc}")
+        return text
+
+
+def _should_clean_context(turn_num: int, start_turn: int = 4) -> bool:
+    return turn_num >= start_turn
 
 
 def _remove_repetition(text: str, max_repetition_ratio: float = 0.3, min_repeat_length: int = 50) -> str:
@@ -507,6 +592,8 @@ def run_study_c(
     use_nli: bool = True,
     generate_only: bool = False,
     cache_out: Optional[str] = None,
+    context_cleaner: str = "scan",
+    context_clean_start_turn: int = 4,
 ) -> DriftResult:
     """
     Run Study C longitudinal drift evaluation.
@@ -635,7 +722,9 @@ def run_study_c(
                     response_text = cached_dialogue.get("response_text", "")
                     if response_text:
                         # Clean repetitive text before adding to conversation history
-                        cleaned_response = _remove_repetition(response_text)
+                        cleaned_response = response_text
+                        if context_cleaner != "none" and _should_clean_context(turn.turn, context_clean_start_turn):
+                            cleaned_response = _clean_for_context(response_text)
                         conversation_history.append({"role": "assistant", "content": cleaned_response})
                         # Full conversation history maintained for subsequent turns
                 else:
@@ -675,7 +764,9 @@ def run_study_c(
                             
                             # Clean repetitive text before adding to conversation history
                             # This prevents memory bloat in future turns while keeping raw response in saved file
-                            cleaned_response = _remove_repetition(response_text)
+                            cleaned_response = response_text
+                            if context_cleaner != "none" and _should_clean_context(turn.turn, context_clean_start_turn):
+                                cleaned_response = _clean_for_context(response_text)
                             if cleaned_response != response_text:
                                 original_len = len(response_text)
                                 cleaned_len = len(cleaned_response)
@@ -815,7 +906,9 @@ def run_study_c(
                     resp = ""
                 responses.append(resp)  # Save raw response for metrics
                 # Clean repetitive text before adding to conversation history
-                cleaned_resp = _remove_repetition(resp)
+                cleaned_resp = resp
+                if context_cleaner != "none" and _should_clean_context(turn.turn, context_clean_start_turn):
+                    cleaned_resp = _clean_for_context(resp)
                 conversation_history.append({"role": "assistant", "content": cleaned_resp})
             responses_by_case_id[case.id] = responses
 
