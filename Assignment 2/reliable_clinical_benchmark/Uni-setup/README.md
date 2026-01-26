@@ -21,40 +21,6 @@ End-to-end steps for the Uni environment (Windows, x64) to mirror the Mac flow: 
 - **Psyche‑R1 (psychological reasoning)**: [`MindIntLab/Psyche-R1`](https://huggingface.co/MindIntLab/Psyche-R1) — paper: [`arXiv:2508.10848`](https://arxiv.org/pdf/2508.10848)
 - **Psych_Qwen_32B (large psych model)**: [`Compumacy/Psych_Qwen_32B`](https://huggingface.co/Compumacy/Psych_Qwen_32B) — typically run 4‑bit quantised on 24GB VRAM (local weights)
 
-## Benchmark Results (Summary)
-
-### Key Metrics (Implementation-Level)
-- **Faithfulness Gap ($\Delta$)**: `Accuracy(CoT) - Accuracy(No-CoT)`. Measures if "thinking" improves ($\Delta > 0$) or degrades ($\Delta < 0$) clinical accuracy.
-- **Sycophancy Probability ($P_{Syc}$)**: `P(Agree | User Incorrect) - P(Agree | Control)`. Measures susceptibility to user pressure.
-- **Longitudinal Recall (@T10)**: Percentage of initial medical entities remembered after 10 conversation turns.
-
-### Study A: Faithfulness & Reasoning Quality
-| Rank | Model | Gap ($\Delta$) | Acc (CoT) | Acc (Early) | Step-F1 | Bias Rate |
-|---|---|---|---|---|---|---|
-| 1 | psyche-r1-local | -0.020 | 0.117 | 0.137 | 0.002 | 0.714 |
-| 2 | psych-qwen-32b-local | -0.025 | 0.000 | 0.025 | 0.025 | 0.214 |
-| 3 | psyllm-gml-local | -0.103 | 0.000 | 0.103 | 0.103 | 0.250 |
-| 4 | gpt-oss-20b | -0.107 | 0.010 | 0.117 | 0.003 | 0.333 |
-| 5 | piaget-8b-local | -0.128 | 0.003 | 0.131 | 0.014 | 0.182 |
-
-### Study B: Sycophancy
-| Model | $P_{Syc}$ | Flip Rate | Agree (Control) | Agree (Injected) |
-|---|---|---|---|---|
-| qwen3-lmstudio | -0.040 | 0.000 | 0.040 | 0.000 |
-| gpt-oss-20b | -0.062 | 0.000 | 0.062 | 0.000 |
-| psyllm-gml-local | -0.087 | 0.000 | 0.087 | 0.000 |
-| piaget-8b-local | -0.098 | 0.000 | 0.098 | 0.000 |
-
-### Study C: Longitudinal Drift (Recall)
-| Model | Recall @ T10 | Recall @ T5 | Conflict Rate |
-|---|---|---|---|
-| psyllm-gml-local | **0.715** | 0.881 | 0.004 |
-| psyche-r1-local | **0.537** | 0.545 | 0.005 |
-| qwen3-lmstudio | **0.518** | 0.869 | 0.042 |
-
-*Full analysis available in `docs/reports/FINAL_ANALYSIS_REPORT.md` (generated).*
-
-
 ## 2) Create the environments (conda)
 
 Uni-setup uses **two** Python environments:
@@ -147,12 +113,8 @@ $MODEL="gpt-oss-20b"
 # Generate only (writes cache)
 python -c "from reliable_clinical_benchmark.pipelines.study_a import run_study_a; from reliable_clinical_benchmark.models.psyllm import PsyLLMRunner; model_id='$MODEL'; ep='$EP'; m=PsyLLMRunner(model_name=model_id, api_base=ep); run_study_a(model=m, data_dir='data/openr1_psy_splits', output_dir='results', model_name=model_id, generate_only=True, cache_out=f'results/{model_id}/study_a_generations.jsonl')"
 
-# Determine cleaned filename if original doesn't exist
-# Score from cache (raw)
-python scripts/study_a/metrics/calculate_metrics.py
-
-# Score from cache (using cleaned data - RECOMMENDED)
-python scripts/study_a/metrics/calculate_metrics.py --use-cleaned
+# Score from cache (no model calls)
+python -c "from reliable_clinical_benchmark.pipelines.study_a import run_study_a; from reliable_clinical_benchmark.models.psyllm import PsyLLMRunner; model_id='$MODEL'; ep='$EP'; m=PsyLLMRunner(model_name=model_id, api_base=ep); run_study_a(model=m, data_dir='data/openr1_psy_splits', output_dir='results', model_name=model_id, from_cache=f'results/{model_id}/study_a_generations.jsonl')"
 ```
 
 Adjust `max-samples`/`max-cases` flags in the pipeline calls if you want smaller probes first.
@@ -160,38 +122,12 @@ Adjust `max-samples`/`max-cases` flags in the pipeline calls if you want smaller
 ## 7) Study B and C (LM Studio)
 
 ```powershell
-# Study B (sycophancy) - Generate
+# Study B (sycophancy), skip NLI for speed unless you have it
 python -c "from reliable_clinical_benchmark.pipelines.study_b import run_study_b; from reliable_clinical_benchmark.models.psyllm import PsyLLMRunner; model_id='$MODEL'; ep='$EP'; m=PsyLLMRunner(model_name=model_id, api_base=ep); run_study_b(model=m, data_dir='data/openr1_psy_splits', output_dir='results', model_name=model_id, max_samples=10, use_nli=False)"
 
-# Study C (drift) - Generate
+# Study C (drift)
 python -c "from reliable_clinical_benchmark.pipelines.study_c import run_study_c; from reliable_clinical_benchmark.models.psyllm import PsyLLMRunner; model_id='$MODEL'; ep='$EP'; m=PsyLLMRunner(model_name=model_id, api_base=ep); run_study_c(model=m, data_dir='data/openr1_psy_splits', output_dir='results', model_name=model_id, max_cases=3, use_nli=False)"
 ```
-
-### Calculate Metrics (All Studies)
-
-We recommend using the cleaned data for all metric calculations to ensure consistency.
-
-```powershell
-# Study A (Faithfulness) + Bias
-python scripts/study_a/metrics/calculate_bias.py  # First calculate bias
-python scripts/study_a/metrics/calculate_metrics.py --use-cleaned  # Then merge
-
-# Study B (Sycophancy)
-python scripts/study_b/metrics/calculate_metrics.py --use-cleaned
-
-# Study C (Drift)
-python scripts/study_c/metrics/calculate_metrics.py --use-cleaned
-```
-
-### Generate Final Analysis Report
-
-After calculating metrics for all studies, generate the comprehensive findings report:
-
-```powershell
-python scripts/generate_final_report.py
-```
-
-This will create `metric-results/FINAL_ANALYSIS_REPORT.md` with detailed rankings, safety cards, and findings.
 
 ### Using Local HF Models
 
