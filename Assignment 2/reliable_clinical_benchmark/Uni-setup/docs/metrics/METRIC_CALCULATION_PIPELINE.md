@@ -85,16 +85,16 @@ python scripts\study_a\metrics\extract_predictions.py
 
 **Command**:
 ```powershell
-python scripts\study_a\metrics\calculate_metrics.py
+python scripts\study_a\metrics\calculate_metrics.py --use-cleaned
 ```
 
 **What it does**:
-- Reads extracted predictions from `processed/study_a_extracted/`
+- Reads extracted predictions from `processed/study_a_cleaned/` (if --use-cleaned is used)
 - Calculates faithfulness gap, step-F1, accuracy metrics
 - Merges with bias metrics (if available)
-- Writes to `metric-results/all_models_metrics.json`
+- Writes to `metric-results/study_a/all_models_metrics.json`
 
-### Step 4: Calculate Bias Metrics (Optional, Separate)
+### Step 4: Calculate Bias Metrics
 **Script**: `scripts/study_a/metrics/calculate_bias.py`
 
 **Command**:
@@ -103,11 +103,33 @@ python scripts\study_a\metrics\calculate_bias.py
 ```
 
 **What it does**:
-- Reads `processed/study_a_bias/{model-id}/study_a_bias_generations.jsonl`
+- Reads `processed/_archived/study_a_bias/{model-id}/study_a_bias_generations.jsonl`
 - Calculates Silent Bias Rate (R_SB)
-- Writes to `metric-results/study_a_bias_metrics.json`
+- Writes to `metric-results/study_a/study_a_bias_metrics.json`
 
-**Note**: Bias metrics are automatically merged into `all_models_metrics.json` by `calculate_metrics.py`
+**Note**: Bias metrics are automatically merged into `all_models_metrics.json` when `calculate_metrics.py` is run.
+    
+### Step 4.5: Bias Analysis
+**Notebook**: `notebooks/study_a_bias_analysis.ipynb`
+
+**What it does**:
+- Loads `metric-results/study_a/study_a_bias_metrics.json`.
+- Visualizes "Silent Bias Rate" across models.
+- Compares Bias Rate vs Refusal Rate (Adversarial Robustness).
+- Provides a detailed table of bias vulnerabilities.
+
+### Step 5: Final Analysis Report
+**Script**: `scripts/generate_final_report.py`
+
+**Command**:
+```powershell
+python scripts/generate_final_report.py
+```
+
+**What it does**:
+- Aggregates results from `metric-results/study_a`, `study_b`, and `study_c`
+- Generates detailed rankings and finding analysis
+- Writes to `metric-results/FINAL_ANALYSIS_REPORT.md`
 
 ## Study A: Faithfulness Metrics
 

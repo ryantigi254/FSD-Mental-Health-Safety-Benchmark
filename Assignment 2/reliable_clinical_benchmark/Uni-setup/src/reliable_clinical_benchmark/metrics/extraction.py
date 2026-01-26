@@ -11,6 +11,7 @@ def clean_model_output(text: str) -> str:
     if not text:
         return ""
     text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL)
+    text = re.sub(r"</?content>", "", text)
     return text.strip()
 
 
