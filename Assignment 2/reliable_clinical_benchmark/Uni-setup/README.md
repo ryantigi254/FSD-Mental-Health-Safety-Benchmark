@@ -113,8 +113,12 @@ $MODEL="gpt-oss-20b"
 # Generate only (writes cache)
 python -c "from reliable_clinical_benchmark.pipelines.study_a import run_study_a; from reliable_clinical_benchmark.models.psyllm import PsyLLMRunner; model_id='$MODEL'; ep='$EP'; m=PsyLLMRunner(model_name=model_id, api_base=ep); run_study_a(model=m, data_dir='data/openr1_psy_splits', output_dir='results', model_name=model_id, generate_only=True, cache_out=f'results/{model_id}/study_a_generations.jsonl')"
 
-# Score from cache (no model calls)
-python -c "from reliable_clinical_benchmark.pipelines.study_a import run_study_a; from reliable_clinical_benchmark.models.psyllm import PsyLLMRunner; model_id='$MODEL'; ep='$EP'; m=PsyLLMRunner(model_name=model_id, api_base=ep); run_study_a(model=m, data_dir='data/openr1_psy_splits', output_dir='results', model_name=model_id, from_cache=f'results/{model_id}/study_a_generations.jsonl')"
+# Determine cleaned filename if original doesn't exist
+# Score from cache (raw)
+python scripts/study_a/metrics/calculate_metrics.py
+
+# Score from cache (using cleaned data - RECOMMENDED)
+python scripts/study_a/metrics/calculate_metrics.py --use-cleaned
 ```
 
 Adjust `max-samples`/`max-cases` flags in the pipeline calls if you want smaller probes first.
@@ -122,12 +126,38 @@ Adjust `max-samples`/`max-cases` flags in the pipeline calls if you want smaller
 ## 7) Study B and C (LM Studio)
 
 ```powershell
-# Study B (sycophancy), skip NLI for speed unless you have it
+# Study B (sycophancy) - Generate
 python -c "from reliable_clinical_benchmark.pipelines.study_b import run_study_b; from reliable_clinical_benchmark.models.psyllm import PsyLLMRunner; model_id='$MODEL'; ep='$EP'; m=PsyLLMRunner(model_name=model_id, api_base=ep); run_study_b(model=m, data_dir='data/openr1_psy_splits', output_dir='results', model_name=model_id, max_samples=10, use_nli=False)"
 
-# Study C (drift)
+# Study C (drift) - Generate
 python -c "from reliable_clinical_benchmark.pipelines.study_c import run_study_c; from reliable_clinical_benchmark.models.psyllm import PsyLLMRunner; model_id='$MODEL'; ep='$EP'; m=PsyLLMRunner(model_name=model_id, api_base=ep); run_study_c(model=m, data_dir='data/openr1_psy_splits', output_dir='results', model_name=model_id, max_cases=3, use_nli=False)"
 ```
+
+### Calculate Metrics (All Studies)
+
+We recommend using the cleaned data for all metric calculations to ensure consistency.
+
+```powershell
+# Study A (Faithfulness) + Bias
+python scripts/study_a/metrics/calculate_bias.py  # First calculate bias
+python scripts/study_a/metrics/calculate_metrics.py --use-cleaned  # Then merge
+
+# Study B (Sycophancy)
+python scripts/study_b/metrics/calculate_metrics.py --use-cleaned
+
+# Study C (Drift)
+python scripts/study_c/metrics/calculate_metrics.py --use-cleaned
+```
+
+### Generate Final Analysis Report
+
+After calculating metrics for all studies, generate the comprehensive findings report:
+
+```powershell
+python scripts/generate_final_report.py
+```
+
+This will create `metric-results/FINAL_ANALYSIS_REPORT.md` with detailed rankings, safety cards, and findings.
 
 ### Using Local HF Models
 
