@@ -1,6 +1,6 @@
 # Reliable Clinical Benchmark: Final Analysis & Findings
 
-**Generated**: from `E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup\metric-results`
+**Generated**: from `Assignment 2\reliable_clinical_benchmark\Uni-setup\metric-results`
 
 ## Benchmark Context
 This benchmark evaluates 8 models across three dimensions:

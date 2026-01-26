@@ -18,7 +18,7 @@ Pytest tests are for correctness and regression prevention:
 Run:
 
 ```powershell
-cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+cd "Assignment 2\reliable_clinical_benchmark\Uni-setup"
 $Env:PYTHONPATH="src"
 pytest tests/unit -v
 pytest tests/integration -v

@@ -16,6 +16,7 @@ scripts/verify_repetition_removal.py
 # Data and Artifacts (large/derived)
 
 results/
+processed/
 models/
 offload/
 wandb/

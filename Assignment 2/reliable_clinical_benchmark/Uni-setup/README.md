@@ -30,9 +30,9 @@ Uni-setup uses **two** Python environments:
 Use this for **LM Studio runners**, **evaluation pipelines**, and **tests**:
 
 ```powershell
-cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+cd "Assignment 2\reliable_clinical_benchmark\Uni-setup"
 conda create -n mh-llm-benchmark-env python=3.10 -y
-& "D:\Anaconda3\Scripts\activate" mh-llm-benchmark-env   # adjust path if Anaconda elsewhere
+conda activate mh-llm-benchmark-env   # Use your conda activation command if 'conda activate' is not on PATH
 
 pip install -r requirements.txt
 # spaCy model via scispaCy S3 (matches spaCy 3.6.1)
@@ -51,9 +51,9 @@ python -m spacy validate
 Use this for **local PyTorch model runners** that require a more modern `transformers` stack (e.g., Piaget, Psyche-R1, Psych_Qwen_32B, PsyLLM local):
 
 ```powershell
-cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+cd "Assignment 2\reliable_clinical_benchmark\Uni-setup"
 conda create -n mh-llm-local-env python=3.10 -y
-& "D:\Anaconda3\Scripts\activate" mh-llm-local-env   # adjust path if Anaconda elsewhere
+conda activate mh-llm-local-env   # Use your conda activation command if 'conda activate' is not on PATH
 
 # Install PyTorch with CUDA support (REQUIRED for GPU inference)
 # Check your CUDA version with: nvidia-smi
@@ -135,7 +135,7 @@ For **local HF runners** (Piaget, Psyche-R1, Psych_Qwen_32B, PsyLLM), use the **
 
 ```powershell
 # Activate local environment
-& "D:\Anaconda3\Scripts\activate" mh-llm-local-env
+conda activate mh-llm-local-env
 $Env:PYTHONNOUSERSITE="1"
 $Env:PYTHONPATH="src"
 
@@ -184,10 +184,10 @@ The local runner supports a `quantization=` argument so you can pick what fits y
 Example (PowerShell, using `mh-llm-local-env`):
 
 ```powershell
-cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+cd "Assignment 2\reliable_clinical_benchmark\Uni-setup"
 $Env:PYTHONNOUSERSITE="1"
 $Env:PYTHONPATH="src"
-$py="C:\Users\22837352\.conda\envs\mh-llm-local-env\python.exe"  # Use local env for local models
+$py="python"  # Ensure your conda env is active
 
 # NOTE: do not run during a GPU-heavy Study A job.
 & $py -c "from reliable_clinical_benchmark.models.psych_qwen_local import PsychQwen32BLocalRunner; \
