@@ -152,47 +152,73 @@ def main():
         "--bias-dir",
         type=Path,
         default=None,
-        help="Bias generations directory (defaults to Uni-setup/processed/study_a_bias)",
+        help="Bias generations directory (defaults to Uni-setup/processed/_archived/study_a_bias)",
     )
     parser.add_argument(
         "--output-dir",
         type=Path,
         default=None,
-        help="Metric results directory (defaults to Uni-setup/metric-results)",
+        help="Metric results directory (defaults to Uni-setup/metric-results/study_a)",
     )
     args = parser.parse_args()
     
     base_dir = Path(__file__).parent.parent.parent.parent
-    # Default to processed/study_a_bias instead of results
-    bias_dir = args.bias_dir if args.bias_dir else (base_dir / "processed" / "study_a_bias")
-    metric_results_dir = args.output_dir if args.output_dir else (base_dir / "metric-results")
+    # Default to processed/_archived/study_a_bias
+    bias_dir = args.bias_dir if args.bias_dir else (base_dir / "processed" / "_archived" / "study_a_bias")
+    metric_results_dir = args.output_dir if args.output_dir else (base_dir / "metric-results" / "study_a")
     
     metric_results_dir.mkdir(parents=True, exist_ok=True)
     
     bias_summary = {}
+    
+    if not bias_dir.exists():
+        logger.error(f"Bias directory not found: {bias_dir}")
+        return
+        
     model_dirs = [d for d in bias_dir.iterdir() if d.is_dir() and d.name != "__pycache__"]
     
-    print(f"\n{'Model':<30} | {'Total':<6} | {'Biased':<6} | {'Silent':<6} | {'R_SB':<6}")
-    print("-" * 70)
+    print(f"\n{'Model (Dir)':<30} | {'Model (Norm)':<30} | {'R_SB':<6} | {'Biased':<6}")
+    print("-" * 100)
     
     for model_dir in sorted(model_dirs):
         bias_file = model_dir / "study_a_bias_generations.jsonl"
         
+        # Determine cleaned filename if original doesn't exist
+        if not bias_file.exists():
+             bias_file = model_dir / "study_a_bias_generations_cleaned.jsonl"
+        
         if not bias_file.exists():
             continue
         
-        logger.info(f"Processing {model_dir.name}...")
+        # Normalize model name: replace underscores with hyphens
+        # Handle specific edge cases if known, otherwise generic replacement
+        # qwen3_lmstudio -> qwen3-lmstudio
+        # deepseek_r1_lmstudio -> deepseek-r1-lmstudio
+        norm_name = model_dir.name.replace("_", "-")
+        
+        # Fix specific mismatched names if necessary based on known directory listing
+        # psyllm -> psyllm-gml-local (check if this mapping is correct)
+        if norm_name == "psyllm":
+            norm_name = "psyllm-gml-local"
+        elif norm_name == "piaget-local":
+            norm_name = "piaget-8b-local"
+        elif norm_name == "psych-qwen-local":
+            norm_name = "psych-qwen-32b-local"
+        elif norm_name == "gpt-oss-lmstudio":
+             norm_name = "gpt-oss-20b"
+
+        
+        logger.info(f"Processing {model_dir.name} -> {norm_name}...")
         
         try:
             metrics = calculate_bias_from_cache(bias_file)
-            bias_summary[model_dir.name] = metrics
+            bias_summary[norm_name] = metrics
             
             print(
                 f"{model_dir.name:<30} | "
-                f"{metrics['n_total_adversarial']:<6} | "
-                f"{metrics['n_biased_outcomes']:<6} | "
-                f"{metrics['n_silent']:<6} | "
-                f"{metrics['silent_bias_rate']:.4f}"
+                f"{norm_name:<30} | "
+                f"{metrics['silent_bias_rate']:.4f} | "
+                f"{metrics['n_biased_outcomes']}"
             )
         except Exception as e:
             logger.error(f"Error processing {model_dir.name}: {e}", exc_info=True)
