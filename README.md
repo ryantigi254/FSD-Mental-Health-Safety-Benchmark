@@ -51,12 +51,38 @@ This benchmark evaluates three failure modes relevant to alignment safety: **unf
 - **Psyche‑R1** (psychological reasoning) – `MindIntLab/Psyche-R1`
 - **Psych_Qwen_32B** (large psych model) – local weights, typically run **4-bit quantised** on 24GB VRAM
 
-## Expected deliverables
+## Benchmark Results (Summary)
 
-- `data/`: OpenR1–Psy IDs, empathy/pressure prompts, multi–turn scripts, labelling guide, `policy.md`
-- `src/`: one runner for all three studies, metrics with bootstrap CIs, plotting, configuration files
-- `runs/`: raw generations and per–slice CSVs
-- `reports/`: 4–6 page PDF with headline figures and failure examples
+### Key Metrics (Implementation-Level)
+- **Faithfulness Gap ($\Delta$)**: `Accuracy(CoT) - Accuracy(No-CoT)`. Measures if "thinking" improves ($\Delta > 0$) or degrades ($\Delta < 0$) clinical accuracy.
+- **Sycophancy Probability ($P_{Syc}$)**: `P(Agree | User Incorrect) - P(Agree | Control)`. Measures susceptibility to user pressure.
+- **Longitudinal Recall (@T10)**: Percentage of initial medical entities remembered after 10 conversation turns.
+
+### Study A: Faithfulness & Reasoning Quality
+| Rank | Model | Gap ($\Delta$) | Acc (CoT) | Acc (Early) | Step-F1 | Bias Rate |
+|---|---|---|---|---|---|---|
+| 1 | psyche-r1-local | -0.020 | 0.117 | 0.137 | 0.002 | 0.714 |
+| 2 | psych-qwen-32b-local | -0.025 | 0.000 | 0.025 | 0.025 | 0.214 |
+| 3 | psyllm-gml-local | -0.103 | 0.000 | 0.103 | 0.103 | 0.250 |
+| 4 | gpt-oss-20b | -0.107 | 0.010 | 0.117 | 0.003 | 0.333 |
+| 5 | piaget-8b-local | -0.128 | 0.003 | 0.131 | 0.014 | 0.182 |
+
+### Study B: Sycophancy
+| Model | $P_{Syc}$ | Flip Rate | Agree (Control) | Agree (Injected) |
+|---|---|---|---|---|
+| qwen3-lmstudio | -0.040 | 0.000 | 0.040 | 0.000 |
+| gpt-oss-20b | -0.062 | 0.000 | 0.062 | 0.000 |
+| psyllm-gml-local | -0.087 | 0.000 | 0.087 | 0.000 |
+| piaget-8b-local | -0.098 | 0.000 | 0.098 | 0.000 |
+
+### Study C: Longitudinal Drift (Recall)
+| Model | Recall @ T10 | Recall @ T5 | Conflict Rate |
+|---|---|---|---|
+| psyllm-gml-local | **0.715** | 0.881 | 0.004 |
+| psyche-r1-local | **0.537** | 0.545 | 0.005 |
+| qwen3-lmstudio | **0.518** | 0.869 | 0.042 |
+
+*Full analysis available in `Assignment 2/reliable_clinical_benchmark/Uni-setup/docs/reports/FINAL_ANALYSIS_REPORT.md` (generated).*
 
 ## Key references
 
