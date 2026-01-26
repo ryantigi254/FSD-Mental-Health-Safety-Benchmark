@@ -90,11 +90,10 @@ def calculate_metrics_from_cache(
 
         pred_cot = extract_diagnosis_heuristic(cot_resp)
         pred_early = extract_diagnosis_heuristic(early_resp)
-        if pred_cot in ("EXTRACTION_FAILED", "NO_OUTPUT"):
-            continue
-        if pred_early in ("EXTRACTION_FAILED", "NO_OUTPUT"):
-            continue
-
+        
+        # If extraction fails, we still count the sample (it's a model failure, not a data error)
+        # But prediction will be "EXTRACTION_FAILED" which won't match gold
+        
         usable += 1
 
         if _is_correct_diagnosis(pred_cot, gold):
@@ -145,12 +144,38 @@ def calculate_metrics_from_cache(
     }
 
 
+from datetime import datetime
+import argparse
+
 def main():
     """Calculate metrics for all models in results directory."""
-    base_dir = Path(__file__).parent.parent
-    results_dir = base_dir / "results"
-    metric_results_dir = base_dir / "metric-results"
+    parser = argparse.ArgumentParser(description="Calculate Study A (Faithfulness) metrics")
+    parser.add_argument("--use-cleaned", action="store_true",
+                        help="Use cleaned generations instead of raw")
+    parser.add_argument("--model", type=str, help="Process specific model only")
+    parser.add_argument("--output-dir", type=Path, default=None,
+                        help="Output directory for results")
+    
+    args = parser.parse_args()
+    
+    base_dir = Path(__file__).parent.parent.parent.parent
     data_dir = base_dir / "data" / "openr1_psy_splits"
+    
+    if args.use_cleaned:
+        results_dir = base_dir / "processed" / "study_a_cleaned"
+    else:
+        results_dir = base_dir / "results"
+        
+    output_dir = args.output_dir or (base_dir / "metric-results" / "study_a")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    print("=" * 60)
+    print("STUDY A: FAITHFULNESS METRICS")
+    print("=" * 60)
+    print(f"Source:   {results_dir}")
+    print(f"Output:   {output_dir}")
+    print(f"Time:     {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print("=" * 60)
     
     # Load gold data
     study_a_path = data_dir / "study_a_test.json"
@@ -161,11 +186,10 @@ def main():
     vignettes = load_study_a_data(str(study_a_path))
     logger.info(f"Loaded {len(vignettes)} vignettes from {study_a_path}")
     
-    # Create metric-results directory
-    metric_results_dir.mkdir(exist_ok=True)
-    
     # Process each model directory
     model_dirs = [d for d in results_dir.iterdir() if d.is_dir()]
+    if args.model:
+        model_dirs = [d for d in model_dirs if d.name == args.model]
     
     all_metrics = {}
     
@@ -184,7 +208,7 @@ def main():
             all_metrics[model_name] = metrics
             
             # Save individual model metrics
-            model_metrics_path = metric_results_dir / f"{model_name}_metrics.json"
+            model_metrics_path = output_dir / f"{model_name}_metrics.json"
             with open(model_metrics_path, "w", encoding="utf-8") as f:
                 json.dump(metrics, f, indent=2, ensure_ascii=False)
             
@@ -197,7 +221,7 @@ def main():
             logger.error(f"Error calculating metrics for {model_name}: {e}", exc_info=True)
     
     # Load bias metrics if available
-    bias_metrics_path = metric_results_dir / "study_a_bias_metrics.json"
+    bias_metrics_path = output_dir / "study_a_bias_metrics.json"
     bias_metrics = {}
     if bias_metrics_path.exists():
         with open(bias_metrics_path, "r", encoding="utf-8") as f:
@@ -219,16 +243,15 @@ def main():
             all_metrics[model_name]["n_total_adversarial"] = 0
     
     # Save combined metrics
-    combined_path = metric_results_dir / "all_models_metrics.json"
+    combined_path = output_dir / "all_models_metrics.json"
     with open(combined_path, "w", encoding="utf-8") as f:
         json.dump(all_metrics, f, indent=2, ensure_ascii=False)
     
-    logger.info(f"Saved metrics to {metric_results_dir}")
+    logger.info(f"Saved metrics to {output_dir}")
     logger.info(f"Processed {len(all_metrics)} models")
     
     if bias_metrics:
         logger.info(f"Merged bias metrics for {len([m for m in all_metrics.values() if m.get('n_total_adversarial', 0) > 0])} models")
-
 
 if __name__ == "__main__":
     main()
