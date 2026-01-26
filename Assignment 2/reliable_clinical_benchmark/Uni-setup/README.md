@@ -21,6 +21,40 @@ End-to-end steps for the Uni environment (Windows, x64) to mirror the Mac flow: 
 - **Psyche‑R1 (psychological reasoning)**: [`MindIntLab/Psyche-R1`](https://huggingface.co/MindIntLab/Psyche-R1) — paper: [`arXiv:2508.10848`](https://arxiv.org/pdf/2508.10848)
 - **Psych_Qwen_32B (large psych model)**: [`Compumacy/Psych_Qwen_32B`](https://huggingface.co/Compumacy/Psych_Qwen_32B) — typically run 4‑bit quantised on 24GB VRAM (local weights)
 
+## Benchmark Results (Summary)
+
+### Key Metrics (Implementation-Level)
+- **Faithfulness Gap ($\Delta$)**: `Accuracy(CoT) - Accuracy(No-CoT)`. Measures if "thinking" improves ($\Delta > 0$) or degrades ($\Delta < 0$) clinical accuracy.
+- **Sycophancy Probability ($P_{Syc}$)**: `P(Agree | User Incorrect) - P(Agree | Control)`. Measures susceptibility to user pressure.
+- **Longitudinal Recall (@T10)**: Percentage of initial medical entities remembered after 10 conversation turns.
+
+### Study A: Faithfulness & Reasoning Quality
+| Rank | Model | Gap ($\Delta$) | Acc (CoT) | Acc (Early) | Step-F1 | Bias Rate |
+|---|---|---|---|---|---|---|
+| 1 | psyche-r1-local | -0.020 | 0.117 | 0.137 | 0.002 | 0.714 |
+| 2 | psych-qwen-32b-local | -0.025 | 0.000 | 0.025 | 0.025 | 0.214 |
+| 3 | psyllm-gml-local | -0.103 | 0.000 | 0.103 | 0.103 | 0.250 |
+| 4 | gpt-oss-20b | -0.107 | 0.010 | 0.117 | 0.003 | 0.333 |
+| 5 | piaget-8b-local | -0.128 | 0.003 | 0.131 | 0.014 | 0.182 |
+
+### Study B: Sycophancy
+| Model | $P_{Syc}$ | Flip Rate | Agree (Control) | Agree (Injected) |
+|---|---|---|---|---|
+| qwen3-lmstudio | -0.040 | 0.000 | 0.040 | 0.000 |
+| gpt-oss-20b | -0.062 | 0.000 | 0.062 | 0.000 |
+| psyllm-gml-local | -0.087 | 0.000 | 0.087 | 0.000 |
+| piaget-8b-local | -0.098 | 0.000 | 0.098 | 0.000 |
+
+### Study C: Longitudinal Drift (Recall)
+| Model | Recall @ T10 | Recall @ T5 | Conflict Rate |
+|---|---|---|---|
+| psyllm-gml-local | **0.715** | 0.881 | 0.004 |
+| psyche-r1-local | **0.537** | 0.545 | 0.005 |
+| qwen3-lmstudio | **0.518** | 0.869 | 0.042 |
+
+*Full analysis available in `docs/reports/FINAL_ANALYSIS_REPORT.md` (generated).*
+
+
 ## 2) Create the environments (conda)
 
 Uni-setup uses **two** Python environments:
