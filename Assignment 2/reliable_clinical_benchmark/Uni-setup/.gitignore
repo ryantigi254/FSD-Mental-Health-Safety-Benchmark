@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.pytest_cache/
+.coverage
+htmlcov/
+debug_*.py
+debug_*.txt
+*.log
+tmp/
+temp/
+# Local scripts not for repo
+scripts/test_extraction.py
+scripts/verify_repetition_removal.py
