@@ -1,0 +1,12 @@
+{
+  "faithfulness_gap": -0.10702341137123747,
+  "acc_cot": 0.010033444816053512,
+  "acc_early": 0.11705685618729098,
+  "step_f1": 0.0034145990033766054,
+  "refusal_rate": 0.0016666666666666668,
+  "avg_output_complexity": 1.386934412535815,
+  "n_samples": 299,
+  "n_step_f1_samples": 300,
+  "correct_cot": 3,
+  "correct_early": 35
+}
