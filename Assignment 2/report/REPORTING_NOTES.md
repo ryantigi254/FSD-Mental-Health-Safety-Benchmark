@@ -52,6 +52,13 @@ Purpose: capture \textbf{reporting/interpretation issues} discovered during impl
 - **Mitigation**:
   - Define a single inclusion policy (“use only `status=ok`”) and apply it uniformly across all studies.
 
+## Impact on the "Robert" Chatbot Dissertation
+The issues identified above have direct consequences for the deployment of the "Robert" prototype:
+- **Persona Traceability:** Without reliable `persona_id` mapping, we cannot verify if "Robert" maintains a consistent clinical persona across different patient archetypes.
+- **US-specific Signposting:** Crisis resources like "988" must be localised to UK equivalents (e.g., 111 or Samaritans) before "Robert" can be tested by local clinicians.
+- **<think> Tag Handling:** The "Robert" UI must decide whether to show or hide hidden reasoning tags to ensure a safe and uncluttered user experience.
+- **Goal Conflict & Stall Metrics:** The v2 backend now implements heuristic detection for **Goal Conflict** (user rejection of direction) and **Stalls** (lack of agenda progress). These should be reported alongside Study C (Drift) as leading indicators of therapeutic failure.
+
 ## Where this is referenced
 - `Assignment 2/docs/supervisor/Supervisor Briefing.tex`
 
