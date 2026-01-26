@@ -46,6 +46,7 @@ def main() -> None:
         use_nli=False,
         generate_only=True,
         cache_out=cache_out,
+        context_cleaner="scan",
     )
 
     print(f"[ok] wrote {cache_out}")
