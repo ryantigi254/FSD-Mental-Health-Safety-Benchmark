@@ -5,6 +5,8 @@ from pathlib import Path
 from reliable_clinical_benchmark.models.base import GenerationConfig
 from reliable_clinical_benchmark.models.lmstudio_qwen3 import Qwen3LMStudioRunner
 from reliable_clinical_benchmark.pipelines.study_a import run_study_a
+from reliable_clinical_benchmark.pipelines.study_b import run_study_b
+from reliable_clinical_benchmark.pipelines.study_c import run_study_c
 
 
 def _ensure_src_on_path(uni_setup_root: Path) -> None:
@@ -47,6 +49,7 @@ def main() -> None:
     p_prompt.add_argument("prompt")
     p_prompt.add_argument("--mode", choices=["cot", "direct"], default="cot")
 
+    # Study A arguments
     p_study_a = sub.add_parser("study-a", parents=[common])
     p_study_a.add_argument("--max-samples", type=int, default=None)
     p_study_a.add_argument(
@@ -73,6 +76,45 @@ def main() -> None:
         help="Path to write cache JSONL (generation-only mode).",
     )
 
+    # Study B arguments
+    p_study_b = sub.add_parser("study-b", parents=[common])
+    p_study_b.add_argument("--max-samples", type=int, default=None)
+    p_study_b.add_argument(
+        "--data-dir",
+        default=str(uni_setup_root / "data" / "openr1_psy_splits"),
+    )
+    p_study_b.add_argument(
+        "--output-dir",
+        default=str(uni_setup_root / "results"),
+    )
+    p_study_b.add_argument(
+        "--generate-only",
+        action="store_true",
+        help="Write generations JSONL only (no metrics).",
+    )
+    p_study_b.add_argument(
+        "--from-cache",
+        default=None,
+        help="Path to cache JSONL (metrics-from-cache mode).",
+    )
+    p_study_b.add_argument(
+        "--cache-out",
+        default=None,
+        help="Path to write cache JSONL (generation-only mode).",
+    )
+
+    # Study C arguments
+    p_study_c = sub.add_parser("study-c", parents=[common])
+    p_study_c.add_argument("--max-cases", type=int, default=None)
+    p_study_c.add_argument(
+        "--data-dir",
+        default=str(uni_setup_root / "data" / "openr1_psy_splits"),
+    )
+    p_study_c.add_argument(
+        "--output-dir",
+        default=str(uni_setup_root / "results"),
+    )
+
     args = parser.parse_args()
 
     # Reuse Qwen3 runner as generic LM Studio runner
@@ -90,20 +132,44 @@ def main() -> None:
         print(runner.generate(args.prompt, mode=args.mode))
         return
 
-    cache_out = args.cache_out
-    if cache_out is None and args.generate_only:
-        cache_out = str(Path(args.output_dir) / args.model_name / "study_a_generations.jsonl")
+    if args.cmd == "study-a":
+        cache_out = args.cache_out
+        if cache_out is None and args.generate_only:
+            cache_out = str(Path(args.output_dir) / args.model_name / "study_a_generations.jsonl")
 
-    run_study_a(
-        model=runner,
-        data_dir=args.data_dir,
-        max_samples=args.max_samples,
-        output_dir=args.output_dir,
-        model_name=args.model_name,
-        generate_only=bool(args.generate_only),
-        from_cache=args.from_cache,
-        cache_out=cache_out,
-    )
+        run_study_a(
+            model=runner,
+            data_dir=args.data_dir,
+            max_samples=args.max_samples,
+            output_dir=args.output_dir,
+            model_name=args.model_name,
+            generate_only=bool(args.generate_only),
+            from_cache=args.from_cache,
+            cache_out=cache_out,
+        )
+    elif args.cmd == "study-b":
+        cache_out = args.cache_out
+        if cache_out is None and args.generate_only:
+            cache_out = str(Path(args.output_dir) / args.model_name / "study_b_generations.jsonl")
+
+        run_study_b(
+            model=runner,
+            data_dir=args.data_dir,
+            max_samples=args.max_samples,
+            output_dir=args.output_dir,
+            model_name=args.model_name,
+            generate_only=bool(args.generate_only),
+            from_cache=args.from_cache,
+            cache_out=cache_out,
+        )
+    elif args.cmd == "study-c":
+        run_study_c(
+            model=runner,
+            data_dir=args.data_dir,
+            max_cases=args.max_cases,
+            output_dir=args.output_dir,
+            model_name=args.model_name,
+        )
 
 
 if __name__ == "__main__":
