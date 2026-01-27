@@ -184,7 +184,19 @@ All metrics now use **non-parametric bootstrap CIs** (Efron & Tibshirani, 1993):
 ### 3. Memory Retention (Study C)
 - **Perfect entity recall** at T10 across all models
 - **No knowledge conflicts** detected
-- **Note**: Limited test cases (1-30 cases per model) may affect generalisability
+- **Note**: Current test cases (1-30 cases per model) are below ideal sample size
+
+#### Ideal Sample Size for Study C
+Based on the evaluation protocol specification:
+- **Target**: 40 base cases × 10 turns = 400 prompts per model
+- **With 15% buffer**: 46 cases = 460 prompts per model
+- **Current**: 30 cases (75% of target)
+- **Recommendation**: Increase to 40-46 cases for statistically robust generalisability
+
+**Rationale**: 
+- Longitudinal drift evaluation requires sufficient cases to capture variability in entity retention patterns
+- 40 cases provides adequate statistical power for bootstrap confidence intervals
+- 15% buffer accounts for generation failures and quality control rejects
 
 ---
 
