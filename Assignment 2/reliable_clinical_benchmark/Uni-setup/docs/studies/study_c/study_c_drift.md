@@ -34,7 +34,12 @@ See `MEMORY_MANAGEMENT_LIMITATIONS.md` for detailed documentation.
    - Append turn message to conversation context
    - Ask model to summarise: `model.generate(summary_prompt, mode="summary")`
    - Extract entities from summary using `MedicalNER`
-   - Compute recall: `len(gold_entities & summary_entities) / len(gold_entities)`
+   - Compute recall using **Fuzzy Matching with Semantic Validation**:
+     - **Exact Match**: Case-insensitive string match.
+     - **Substring Match**: E.g., "depression" matches "major depressive disorder".
+     - **Jaccard Similarity**: ≥60% word overlap for multi-word entities.
+     - **Semantic Validation**: Crucially, all matches are validated against the actual `response_text` to ensuring the entity is genuinely present.
+   - Compute ratio: `matched_count / len(gold_entities)`
 3. Return list of recall values (one per turn)
 
 **Why This Metric Matters**:
