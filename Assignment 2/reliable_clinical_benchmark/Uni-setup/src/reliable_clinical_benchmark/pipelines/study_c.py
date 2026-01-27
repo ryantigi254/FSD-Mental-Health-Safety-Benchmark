@@ -271,53 +271,40 @@ def _remove_repetition_rapidfuzz(text: str, max_repetition_ratio: float, min_rep
                         )
                         return text
     
-    # Strategy 3: Detect very long repeated substrings using rapidfuzz
-    # Use rapidfuzz's partial_ratio for substring matching
+    # Strategy 3: Detect very long repeated substrings (Optimized for speed)
+    # Instead of fuzzy matching every substring, look for exact repeats of significant length
+    # This avoids the O(N^3) complexity of the previous approach
+    
     text_normalized = utils.default_process(text)
     n = len(text_normalized)
     
-    # Check for repeated substrings of substantial length
-    # Use sliding window to find repeated chunks
-    for substr_len in range(min(200, n // 4), min_repeat_length - 1, -20):  # Check in steps
-        for i in range(n - substr_len * 2):
-            substr = text_normalized[i:i + substr_len]
-            
-            # Count occurrences using rapidfuzz partial_ratio (for substring matching)
-            matches = []
-            search_start = i + substr_len
-            while search_start < n - substr_len:
-                # Use partial_ratio to find similar substrings
-                similarity = fuzz.partial_ratio(substr, text_normalized[search_start:], score_cutoff=95)
-                if similarity >= 95:
-                    # Find exact position
-                    check_substr = text_normalized[search_start:search_start + substr_len]
-                    if fuzz.ratio(substr, check_substr, score_cutoff=95) >= 95:
-                        matches.append(search_start)
-                        search_start += substr_len  # Skip past this match
-                    else:
-                        search_start += 1
-                else:
-                    search_start += 1
-            
-            # If substring appears 3+ times consecutively, it's excessive repetition
-            if len(matches) >= 2:  # Original + 2 repeats = 3 total occurrences
-                # Check if matches are consecutive (within small margin)
-                if len(matches) >= 2:
-                    gaps = [matches[i+1] - matches[i] for i in range(len(matches)-1)]
-                    if all(gap <= substr_len + 50 for gap in gaps):  # Allow small gaps
-                        # This is consecutive repetition - truncate before first repeat
-                        truncate_pos = matches[0]
-                        # Convert normalized position back to original text position (approximate)
-                        original_pos = int(truncate_pos * len(text) / len(text_normalized))
-                        text = text[:original_pos].rstrip()
-                        text += "\n\n[Repetitive content removed]"
-                        logger.info(
-                            f"Removed repeated substring of length {substr_len} chars "
-                            f"(appeared {len(matches) + 1} times consecutively, similarity >95%)"
-                        )
-                        return text
+    # Check for repeated substrings of substantial length (start large)
+    # Only check for exact matches, which is much faster and sufficient for loop detection
+    checklist = range(min(400, n // 3), min_repeat_length - 1, -50)
     
-    # No excessive repetition detected - return original
+    for substr_len in checklist:
+        seen = {}
+        for i in range(0, n - substr_len + 1, 10): # Step 10 for speed
+            chunk = text_normalized[i:i + substr_len]
+            if chunk in seen:
+                # Found a potential repeat
+                prev_i = seen[chunk]
+                # Verify it's not overlapping
+                if i >= prev_i + substr_len:
+                    # Found a repeat! Truncate.
+                     # Convert normalized position back to original text position (approximate)
+                    original_pos = int(i * len(text) / len(text_normalized))
+                    text = text[:original_pos].rstrip()
+                    text += "\n\n[Repetitive content removed]"
+                    logger.info(
+                        f"Removed repeated substring of length {substr_len} chars "
+                        f"(exact match found at index {i})"
+                    )
+                    return text
+            else:
+                seen[chunk] = i
+    
+    return text
     return original_text
 
 

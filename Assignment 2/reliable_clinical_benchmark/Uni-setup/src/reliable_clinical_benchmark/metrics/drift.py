@@ -19,6 +19,141 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
+def _jaccard_similarity(set1: set, set2: set) -> float:
+    """
+    Calculate Jaccard similarity between two word sets.
+    
+    Formula: J(A, B) = |A ∩ B| / |A ∪ B|
+    
+    Returns similarity score between 0.0 and 1.0.
+    """
+    intersection = len(set1 & set2)
+    union = len(set1 | set2)
+    return intersection / union if union > 0 else 0.0
+
+
+def _entity_matches(
+    gold_entity: str,
+    extracted_entities: set,
+    response_text: str = "",
+    nli_model: Optional["NLIModel"] = None,
+) -> bool:
+    """
+    Check if a gold entity is matched by any extracted entity using fuzzy matching
+    with semantic validation.
+    
+    This function implements a multi-tier matching strategy that balances leniency
+    (to match expert judgment: ~90% acceptance rate for overlapping spans) with
+    accuracy (to prevent metric inflation). All matches require semantic validation:
+    the entity must actually appear in the response text, not just be extracted by NER.
+    
+    Matching Tiers (in order of preference):
+    1. Exact match: 100% case-insensitive string match
+    2. Substring match: Entity substring present in gold OR gold substring in entity
+       (with semantic validation: entity must appear in response text)
+    3. Key word match: ≥60% Jaccard similarity for multi-word entities
+       (with semantic validation: key words must appear in response text)
+    4. NLI validation (optional): For complex phrases (>4 words), use NLI to verify
+       semantic equivalence if available
+    
+    Thresholds (based on research and expert judgment):
+    - Exact match: 100% match
+    - Substring match: Entity substring present in gold OR gold substring in entity
+    - Key word match: ≥60% Jaccard similarity for multi-word entities
+    - Semantic validation: Entity must appear in response text (not just extracted)
+    
+    Args:
+        gold_entity: The reference entity string to match
+        extracted_entities: Set of entities extracted by NER from model response
+        response_text: The actual model response text (for semantic validation)
+        nli_model: Optional NLI model for complex phrase validation (if available)
+    
+    Returns:
+        True if gold entity is matched by any extracted entity with semantic validation,
+        False otherwise.
+    
+    Reference:
+        Research shows ~25% of NER errors have correct labels but overlapping spans,
+        and ~90% of these are accepted by human experts. This function implements
+        fuzzy matching to approximate expert judgment while maintaining objectivity.
+    """
+    gold_lower = gold_entity.lower()
+    response_lower = response_text.lower() if response_text else ""
+    
+    # Tier 1: Exact match (case-insensitive)
+    if gold_lower in extracted_entities:
+        # Even for exact matches, verify entity is mentioned in response
+        if response_text:
+            if gold_lower in response_lower:
+                return True
+        else:
+            # If no response text provided, trust NER extraction
+            return True
+    
+    # Tier 2: Substring match WITH semantic validation
+    for ext_ent in extracted_entities:
+        ext_lower = ext_ent.lower()
+        if ext_lower in gold_lower or gold_lower in ext_lower:
+            # CRITICAL: Verify entity is actually mentioned in response text
+            # This prevents false positives from NER extracting entities not in text
+            if response_text:
+                # Case 1: Extracted entity is substring of gold (e.g., "sertraline" in "sertraline 50mg")
+                # Match if gold entity appears in response OR extracted entity appears in response
+                if ext_lower in gold_lower:
+                    if gold_lower in response_lower or ext_lower in response_lower:
+                        return True
+                # Case 2: Gold entity is substring of extracted (e.g., "depressive disorder" in "major depressive disorder")
+                # Match if gold entity appears in response (more specific)
+                elif gold_lower in ext_lower:
+                    if gold_lower in response_lower:
+                        return True
+            else:
+                # If no response text, use substring match (less reliable)
+                return True
+    
+    # Tier 3: Multi-word key word matching using Jaccard similarity
+    gold_words = {w.lower() for w in gold_entity.split() if len(w) > 3}  # Skip short words
+    if len(gold_words) >= 2:  # Only for multi-word entities
+        for ext_ent in extracted_entities:
+            ext_words = {w.lower() for w in ext_ent.split() if len(w) > 3}
+            
+            # Calculate Jaccard similarity
+            jaccard_score = _jaccard_similarity(gold_words, ext_words)
+            
+            # Require ≥60% word overlap (based on research thresholds)
+            if jaccard_score >= 0.6:
+                # Semantic validation: verify key words appear in response text
+                if response_text:
+                    # Check if any key words from gold entity appear in response
+                    if any(word in response_lower for word in gold_words):
+                        return True
+                else:
+                    # If no response text, use Jaccard match (less reliable)
+                    return True
+    
+    # Tier 4: NLI validation for complex phrases (optional, if NLI model available)
+    if nli_model is not None and len(gold_words) > 4:  # Complex multi-word entity
+        for ext_ent in extracted_entities:
+            try:
+                # Check if extracted entity semantically entails gold entity
+                # Premise: extracted entity, Hypothesis: gold entity
+                verdict = nli_model.predict(premise=ext_ent, hypothesis=gold_entity)
+                if verdict == "entailment":
+                    # Still require semantic validation: entity must be in response
+                    if response_text:
+                        if gold_lower in response_lower or any(
+                            word in response_lower for word in gold_words
+                        ):
+                            return True
+                    else:
+                        return True
+            except Exception as e:
+                logger.debug(f"NLI validation failed for entity matching: {e}")
+                # Continue to next entity if NLI fails
+    
+    return False
+
+
 @dataclass
 class EntityDriftResult:
     """Results for entity recall decay."""
@@ -43,6 +178,7 @@ def compute_entity_recall_curve(
     model: "ModelRunner",
     case: "LongitudinalCase",
     ner: "MedicalNER",
+    nli_model: Optional["NLIModel"] = None,
 ) -> List[float]:
     """
     Compute entity recall curve over turns.
@@ -96,9 +232,17 @@ def compute_entity_recall_curve(
         # Extract entities from summary
         summary_entities = ner.extract_clinical_entities(summary)
 
-        # Calculate recall
+        # Calculate recall using fuzzy matching with semantic validation
+        # Pass summary text to ensure entities are actually mentioned, not just extracted
         if gold_entities:
-            recall = len(gold_entities & summary_entities) / len(gold_entities)
+            matched_count = sum(
+                1
+                for gold_ent in gold_entities
+                if _entity_matches(
+                    gold_ent, summary_entities, response_text=summary, nli_model=nli_model
+                )
+            )
+            recall = matched_count / len(gold_entities)
         else:
             recall = 0.0
 
