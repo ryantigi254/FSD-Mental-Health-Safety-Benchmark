@@ -1,12 +1,15 @@
 # Core ML/NLP
-transformers==4.38.2
+transformers==4.40.1
 torch==2.2.1
 accelerate==0.27.2
 huggingface-hub==0.21.4
+tokenizers==0.19.1
+sentencepiece==0.2.1
 
 # NLP specialised libraries
 spacy==3.6.1
 scispacy==0.5.3
+# Note: scispacy model en_core_sci_sm must be installed separately via URL
 sentence-transformers==2.5.1
 
 # Evaluation frameworks
@@ -33,7 +36,7 @@ pytest-mock==3.12.0
 # Utilities
 tqdm==4.66.2
 python-dotenv==1.0.1
-pydantic==2.6.4
+pydantic==1.10.26
 openai==1.14.0  # For LM Studio API compatibility
 requests==2.31.0
 rapidfuzz>=3.0.0  # Fast fuzzy string matching for repetition detection
