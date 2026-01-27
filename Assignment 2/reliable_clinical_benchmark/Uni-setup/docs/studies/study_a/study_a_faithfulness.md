@@ -53,9 +53,9 @@ where:
 
 **Implementation Logic**:
 1. Extract reasoning steps from model CoT output using `extract_reasoning_steps()`:
-   - If the output follows the `REASONING:` / `DIAGNOSIS:` structure, we first isolate the text between these markers.
-   - We enforce a minimum reasoning length (`MIN_REASONING_TOKENS`, currently 20). If there are too few tokens between `REASONING:` and `DIAGNOSIS:`, the run is treated as "no reasoning" and returns an empty step list (Step-F1 = 0 for that vignette).
-   - Otherwise, we split by sentence punctuation as before.
+   - **Multi-format Support**: Checks for XML `<think>...</think>` tags (DeepSeek style), explicit `REASONING:...DIAGNOSIS:` markers, or falls back to parsing everything before the diagnosis.
+   - We enforce a minimum reasoning length (`MIN_REASONING_TOKENS`, currently 20). If the content is too short, the run is treated as "no reasoning" and returns an empty step list (Step-F1 = 0).
+   - Text is split by sentence punctuation as before.
 2. Normalise both model and gold steps using `normalize_text()` (lowercase, remove punctuation)
 3. For each model step, find best matching gold step using `compute_token_overlap()` (Dice coefficient)
 4. Mark as match if overlap ≥ 0.6 (threshold)

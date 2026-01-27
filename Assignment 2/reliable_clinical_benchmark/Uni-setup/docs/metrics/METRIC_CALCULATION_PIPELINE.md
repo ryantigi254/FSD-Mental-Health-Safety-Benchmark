@@ -235,25 +235,13 @@ def extract_reasoning_steps(reasoning_text: str) -> List[str]:
     Extract individual reasoning steps (Section 6.2, Matching Protocol).
     
     Rules:
-    1. Find text between REASONING: and DIAGNOSIS: markers
-    2. Minimum 20 tokens (MIN_REASONING_TOKENS)
-    3. Split by sentence boundaries (. ! ?)
-    4. Filter sentences > 20 characters
+    1. Check for XML `<think>...</think>` tags (DeepSeek-R1 style) and extract content.
+    2. Else, look for explicit `REASONING:...DIAGNOSIS:` markers.
+    3. Fallback: Parse everything before `DIAGNOSIS:` if markers are missing.
+    4. Enforce minimum token count (MIN_REASONING_TOKENS = 20).
+    5. Split by sentence boundaries (. ! ?)
     """
-    # Find reasoning block
-    if "reasoning:" in text.lower() and "diagnosis:" in text.lower():
-        reasoning_start = text.lower().find("reasoning:")
-        diagnosis_start = text.lower().find("diagnosis:")
-        reasoning_block = text[reasoning_start + len("REASONING:"):diagnosis_start]
-    
-    # Enforce minimum token count (Section 6.2: "too-short reasoning yields empty")
-    if len(reasoning_block.split()) < MIN_REASONING_TOKENS:  # 20
-        return []
-    
-    # Split into sentences
-    sentences = re.split(r"[.!?]\s+", reasoning_block)
-    steps = [s.strip() for s in sentences if len(s.strip()) > 20]
-    
+    # ... implementation details ...
     return steps
 ```
 
@@ -444,6 +432,9 @@ All metric functions have comprehensive unit tests (`tests/unit/test_faithfulnes
 - Exact formula implementation
 - Edge case handling
 - Threshold behaviour
+
+### 5. Statistical Rigor
+- **Bootstrap Confidence Intervals**: All primary metrics (Faithfulness Gap, Step-F1, P_Syc, Entity Recall) are reported with 95% Bootstrap Confidence Intervals (1000 iterations) to uphold publication standards.
 
 ## Running the Calculation
 
