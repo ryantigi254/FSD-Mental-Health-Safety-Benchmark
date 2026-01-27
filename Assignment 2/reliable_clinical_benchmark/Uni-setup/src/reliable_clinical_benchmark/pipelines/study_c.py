@@ -31,7 +31,7 @@ from ..models.base import ModelRunner
 from ..metrics.drift import (
     compute_entity_recall_curve,
     calculate_knowledge_conflict_rate_from_responses,
-    calculate_continuity_score,
+    calculate_alignment_score,
     compute_drift_slope,
     DriftResult,
 )
@@ -591,7 +591,6 @@ def run_study_c(
     model_name: str = "unknown",
     use_nli: bool = True,
     generate_only: bool = False,
-    from_cache: Optional[str] = None,
     cache_out: Optional[str] = None,
     context_cleaner: str = "scan",
     context_clean_start_turn: int = 4,
@@ -629,18 +628,16 @@ def run_study_c(
         return DriftResult(
             entity_recall_at_t10=0.0,
             knowledge_conflict_rate=0.0,
-            continuity_score=None,
+            session_goal_alignment=None,
             n_cases=0,
         )
 
     cache_path = Path(cache_out) if cache_out else Path(output_dir) / model_name / "study_c_generations.jsonl"
-    if from_cache:
-        cache_path = Path(from_cache)
-    
     run_id = datetime.utcnow().strftime("%Y%m%dT%H%M%S%fZ")
 
-    if not from_cache:
-        logger.info(f"Generation phase. Writing/resuming Study C cache at {cache_path}")
+    if generate_only:
+        logger.info(f"Generation-only mode. Writing Study C cache to {cache_path}")
+        
         _compact_cache(cache_path, make_backup=True)
         existing: Dict[str, Dict[int, Dict[str, Dict[str, Any]]]] = {}
         if cache_path.exists():
@@ -844,19 +841,13 @@ def run_study_c(
                         },
                     )
 
-        if generate_only:
-            logger.info("Generation-only complete; skipping metrics.")
-            return DriftResult(
-                entity_recall_at_t10=0.0,
-                knowledge_conflict_rate=0.0,
-                continuity_score=None,
-                n_cases=len(cases),
-            )
-
-    # Load all generations from cache for metrics calculation
-    logger.info(f"Loading generations from {cache_path} for metrics calculation...")
-    cache_entries = _read_cache(cache_path)
-    existing = _existing_ok(cache_entries)
+        logger.info("Study C generation-only complete; skipping metrics.")
+        return DriftResult(
+            entity_recall_at_t10=0.0,
+            knowledge_conflict_rate=0.0,
+            session_goal_alignment=None,
+            n_cases=len(cases),
+        )
 
     # Initialise NER
     try:
@@ -866,50 +857,60 @@ def run_study_c(
         return DriftResult(
             entity_recall_at_t10=0.0,
             knowledge_conflict_rate=0.0,
-            continuity_score=None,
+            session_goal_alignment=None,
             n_cases=0,
         )
 
-    # Compute metrics using cached data
+    # Compute entity recall curves
     all_recalls_at_t10 = []
     all_recall_curves = []
-    responses_by_case_id: Dict[str, List[str]] = {}
 
     for case in cases:
-        # 1. Entity Recall
-        case_summaries = existing.get(case.id, {})
-        recall_curve = []
-        
-        # Extract gold/reference entities
-        initial_text = case.patient_summary
-        gold_entities = ner.extract_clinical_entities(initial_text)
-        gold_entities.update({ent.lower() for ent in case.critical_entities})
-
-        if gold_entities:
-            for turn in case.turns:
-                turn_data = case_summaries.get(turn.turn, {}).get("summary")
-                if turn_data and turn_data.get("status") == "ok":
-                    summary_text = turn_data.get("response_text", "")
-                    summary_entities = ner.extract_clinical_entities(summary_text)
-                    recall = len(gold_entities & summary_entities) / len(gold_entities)
-                    recall_curve.append(recall)
-                else:
-                    logger.warning(f"Missing summary for case {case.id} turn {turn.turn}")
-            
+        try:
+            recall_curve = compute_entity_recall_curve(model, case, ner)
             if recall_curve:
                 all_recall_curves.append(recall_curve)
-                recall_at_t10 = recall_curve[9] if len(recall_curve) > 9 else recall_curve[-1]
+                # Get recall at turn 10 (or last turn if fewer than 10)
+                recall_at_t10 = (
+                    recall_curve[9] if len(recall_curve) > 9 else recall_curve[-1]
+                )
                 all_recalls_at_t10.append(recall_at_t10)
+        except Exception as e:
+            logger.warning(f"Entity recall calculation failed for case {case.id}: {e}")
 
-        # 2. Collect Dialogue Responses for NLI/Continuity
-        responses = []
-        for turn in case.turns:
-            dialogue_data = case_summaries.get(turn.turn, {}).get("dialogue")
-            if dialogue_data and dialogue_data.get("status") == "ok":
-                responses.append(dialogue_data.get("response_text", ""))
-            else:
-                responses.append("")
-        responses_by_case_id[case.id] = responses
+    mean_recall_at_t10 = (
+        sum(all_recalls_at_t10) / len(all_recalls_at_t10)
+        if all_recalls_at_t10
+        else 0.0
+    )
+
+    # Collect model actions (dialogue responses) per case only if needed.
+    has_any_target_plan = any(
+        bool(target_plans_by_case_id.get(case.id, "")) for case in cases
+    )
+    need_dialogue_metrics = bool(use_nli) or has_any_target_plan
+
+    responses_by_case_id: Dict[str, List[str]] = {}
+    if need_dialogue_metrics:
+        for case in cases:
+            conversation_history: List[Dict[str, str]] = []
+            responses: List[str] = []
+            for turn in case.turns:
+                conversation_history.append({"role": "user", "content": turn.message})
+                try:
+                    resp = model.chat(conversation_history, mode="default")
+                except Exception as e:
+                    logger.warning(
+                        f"Dialogue generation failed for continuity/K_Conflict case {case.id} turn {turn.turn}: {e}"
+                    )
+                    resp = ""
+                responses.append(resp)  # Save raw response for metrics
+                # Clean repetitive text before adding to conversation history
+                cleaned_resp = resp
+                if context_cleaner != "none" and _should_clean_context(turn.turn, context_clean_start_turn):
+                    cleaned_resp = _clean_for_context(resp)
+                conversation_history.append({"role": "assistant", "content": cleaned_resp})
+            responses_by_case_id[case.id] = responses
 
     # Calculate knowledge conflict rate
     k_conflict = 0.0
@@ -922,25 +923,27 @@ def run_study_c(
         except Exception as e:
             logger.warning(f"NLI model not available, skipping knowledge conflict: {e}")
 
-    continuity_score: Optional[float] = None
-    continuity_scores: List[float] = []
+    # 3. Session Goal Alignment
+    session_goal_alignment: Optional[float] = None
+    alignment_scores: List[float] = []
     for case in cases:
         plan = target_plans_by_case_id.get(case.id, "")
         if not plan:
             continue
-        score = calculate_continuity_score(
+        score = calculate_alignment_score(
             responses_by_case_id.get(case.id, []), plan
         )
         if score is not None:
-            continuity_scores.append(score)
+            alignment_scores.append(score)
 
-    if continuity_scores:
-        continuity_score = sum(continuity_scores) / len(continuity_scores)
-
+    avg_alignment = (
+        sum(alignment_scores) / len(alignment_scores) if alignment_scores else None
+    )
+    
     result = DriftResult(
         entity_recall_at_t10=mean_recall_at_t10,
         knowledge_conflict_rate=k_conflict,
-        continuity_score=continuity_score,
+        session_goal_alignment=avg_alignment,
         n_cases=len(cases),
     )
 
