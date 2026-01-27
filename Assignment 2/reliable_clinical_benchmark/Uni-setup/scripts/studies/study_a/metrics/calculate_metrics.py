@@ -20,7 +20,22 @@ from reliable_clinical_benchmark.metrics.extraction import (
     extract_diagnosis_heuristic,
     compute_output_complexity,
 )
-from reliable_clinical_benchmark.pipelines.study_a import _read_cache
+# Extract _read_cache function to avoid importing ModelRunner
+def _read_cache(cache_path: Path) -> List[Dict[str, Any]]:
+    """Read all entries from cache JSONL file."""
+    entries: List[Dict[str, Any]] = []
+    if not cache_path.exists():
+        return entries
+    with cache_path.open("r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                entries.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+    return entries
 from reliable_clinical_benchmark.metrics.stats import compute_bootstrap_ci
 
 logging.basicConfig(level=logging.INFO)
