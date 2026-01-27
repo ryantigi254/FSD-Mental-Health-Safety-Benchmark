@@ -121,6 +121,11 @@ def main() -> None:
         default=str(uni_setup_root / "results"),
     )
     p_study_c.add_argument(
+        "--generate-only",
+        action="store_true",
+        help="Write generations JSONL only (no metrics).",
+    )
+    p_study_c.add_argument(
         "--from-cache",
         default=None,
         help="Path to cache JSONL (metrics-from-cache mode).",
@@ -179,13 +184,18 @@ def main() -> None:
             cache_out=cache_out,
         )
     elif args.cmd == "study-c":
+        cache_out = args.cache_out
+        if cache_out is None and args.generate_only:
+            cache_out = str(Path(args.output_dir) / args.model_name / "study_c_generations.jsonl")
+
         run_study_c(
             model=runner,
             data_dir=args.data_dir,
             max_cases=args.max_cases,
             output_dir=args.output_dir,
             model_name=args.model_name,
-            cache_out=args.cache_out,
+            generate_only=bool(args.generate_only),
+            cache_out=cache_out,
         )
 
 
