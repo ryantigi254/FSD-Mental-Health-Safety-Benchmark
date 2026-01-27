@@ -16,45 +16,38 @@ Usage:
 
 import json
 import re
+import os
 import sys
+import json
+import re
 import numpy as np
 import logging
 from pathlib import Path
 from typing import Dict, List, Any, Set, Tuple, Optional
 from dataclasses import dataclass, field
-import logging
 from datetime import datetime
 
-# Add src to path
-# Add src to path
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent / "src"))
+# Robustly add src to path
+current_file = Path(__file__).resolve()
+src_path = current_file.parent.parent.parent.parent.parent / "src"
+sys.path.insert(0, str(src_path))
 
-from reliable_clinical_benchmark.metrics.drift import calculate_alignment_score
-# Import stats directly to avoid spacy dependency
-import sys
-stats_path = Path(__file__).parent.parent.parent.parent.parent / "src" / "reliable_clinical_benchmark" / "utils" / "stats.py"
-if stats_path.exists():
-    import importlib.util
-    spec = importlib.util.spec_from_file_location("stats", stats_path)
-    stats_module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(stats_module)
-    bootstrap_confidence_interval = stats_module.bootstrap_confidence_interval
-else:
-    # Fallback
-    def bootstrap_confidence_interval(data, n_iterations=1000, confidence_level=0.95, statistic_fn=None):
-        import numpy as np
-        if not data:
-            return 0.0, 0.0, 0.0
-        if statistic_fn is None:
-            statistic_fn = np.mean
-        data = np.array(data)
-        point_estimate = statistic_fn(data)
-        bootstrap_stats = [statistic_fn(np.random.choice(data, size=len(data), replace=True)) for _ in range(n_iterations)]
-        bootstrap_stats = np.array(bootstrap_stats)
-        alpha = 1 - confidence_level
-        lower = np.percentile(bootstrap_stats, (alpha / 2) * 100)
-        upper = np.percentile(bootstrap_stats, (1 - alpha / 2) * 100)
-        return point_estimate, lower, upper
+from reliable_clinical_benchmark.metrics.drift import calculate_alignment_score, _entity_matches
+from reliable_clinical_benchmark.utils.stats import bootstrap_confidence_interval
+
+# Import NER lazily
+try:
+    from reliable_clinical_benchmark.utils.ner import MedicalNER
+    NER_AVAILABLE = True
+except ImportError as e:
+    logger.warning(f"MedicalNER not available: {e}. Entity recall will be 0.0")
+    NER_AVAILABLE = False
+    # Create a dummy NER class
+    class MedicalNER:
+        def extract_entities(self, text):
+            return set()
+        def extract_clinical_entities(self, text):
+            return set()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -86,13 +79,17 @@ except ImportError as e:
 
 
 
-def calculate_entity_recall(reference_entities: Set[str], current_entities: Set[str]) -> float:
-    """Calculate recall of reference entities in current response."""
+def calculate_entity_recall(reference_entities: Set[str], current_entities: Set[str], response_text: str = "") -> float:
+    """Calculate recall of reference entities in current response using fuzzy matching."""
     if not reference_entities:
-        return 1.0  # No entities to track
+        return 0.0  # Fix: Return 0.0 if no entities to track (avoid inflated 1.0)
     
-    recalled = reference_entities.intersection(current_entities)
-    return len(recalled) / len(reference_entities)
+    matched_count = 0
+    for gold in reference_entities:
+        if _entity_matches(gold, current_entities, response_text=response_text):
+            matched_count += 1
+            
+    return matched_count / len(reference_entities)
 
 
 # ============================================================
@@ -279,7 +276,7 @@ def calculate_metrics_for_model(
             curr_clean = strip_thinking(curr_raw)
             curr_entities = ner_model.extract_entities(curr_clean)
             
-            recall = calculate_entity_recall(reference_entities, curr_entities)
+            recall = calculate_entity_recall(reference_entities, curr_entities, response_text=curr_clean)
             recall_curve.append(recall)
             
             # Check for contradictions with previous turn
