@@ -21,7 +21,7 @@
     "knowledge_conflict_rate": 0.0,
     "contradictions_found": 0,
     "avg_turns_per_case": 10.0,
-    "session_goal_alignment": 0.2037306363383929,
+    "session_goal_alignment": 0.29373987863461176,
     "tdr": -0.0348680619858766
   },
   {
@@ -46,7 +46,7 @@
     "knowledge_conflict_rate": 0.003703703703703704,
     "contradictions_found": 1,
     "avg_turns_per_case": 10.0,
-    "session_goal_alignment": 0.17742493078112603,
+    "session_goal_alignment": 0.26627542575200397,
     "tdr": -0.04313276520985322
   },
   {
@@ -71,7 +71,7 @@
     "knowledge_conflict_rate": 0.003703703703703704,
     "contradictions_found": 1,
     "avg_turns_per_case": 10.0,
-    "session_goal_alignment": 0.1424084479610125,
+    "session_goal_alignment": 0.22337212612231572,
     "tdr": -0.03404777198735352
   },
   {
@@ -96,7 +96,7 @@
     "knowledge_conflict_rate": 0.0,
     "contradictions_found": 0,
     "avg_turns_per_case": 10.0,
-    "session_goal_alignment": 0.1294229203214248,
+    "session_goal_alignment": 0.20761678914229076,
     "tdr": -0.03799711953309686
   },
   {
@@ -121,7 +121,7 @@
     "knowledge_conflict_rate": 0.0,
     "contradictions_found": 0,
     "avg_turns_per_case": 10.0,
-    "session_goal_alignment": 0.21516957382361093,
+    "session_goal_alignment": 0.2971612562735875,
     "tdr": -0.051674675224869134
   },
   {
@@ -146,7 +146,7 @@
     "knowledge_conflict_rate": 0.0,
     "contradictions_found": 0,
     "avg_turns_per_case": 10.0,
-    "session_goal_alignment": 0.19072509283820788,
+    "session_goal_alignment": 0.2804781377315521,
     "tdr": -0.04057975765674535
   },
   {
@@ -171,7 +171,7 @@
     "knowledge_conflict_rate": 0.0,
     "contradictions_found": 0,
     "avg_turns_per_case": 10.0,
-    "session_goal_alignment": 0.19716743286699057,
+    "session_goal_alignment": 0.2748197416464488,
     "tdr": -0.04189308399813816
   }
 ]
