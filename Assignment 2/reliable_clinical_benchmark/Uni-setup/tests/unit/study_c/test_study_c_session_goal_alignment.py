@@ -1,4 +1,4 @@
-"""Unit tests for Study C continuity score integration."""
+"""Unit tests for Study C session goal alignment integration."""
 
 from __future__ import annotations
 
@@ -33,7 +33,7 @@ class _StubNER:
 
 
 @pytest.mark.unit
-def test_study_c_includes_continuity_when_gold_plan_exists(tmp_path: Path, monkeypatch) -> None:
+def test_study_c_includes_alignment_when_gold_plan_exists(tmp_path: Path, monkeypatch) -> None:
     data_dir = tmp_path / "openr1_psy_splits"
     data_dir.mkdir(parents=True, exist_ok=True)
 
@@ -61,7 +61,7 @@ def test_study_c_includes_continuity_when_gold_plan_exists(tmp_path: Path, monke
     )
 
     monkeypatch.setattr(study_c_pipeline, "MedicalNER", lambda: _StubNER())
-    monkeypatch.setattr(study_c_pipeline, "calculate_continuity_score", lambda actions, plan: 0.75)
+    monkeypatch.setattr(study_c_pipeline, "calculate_alignment_score", lambda actions, plan: 0.75)
 
     out_dir = tmp_path / "results"
     model = _DummyRunner(config=GenerationConfig(max_tokens=64))
@@ -79,12 +79,12 @@ def test_study_c_includes_continuity_when_gold_plan_exists(tmp_path: Path, monke
     assert result_path.exists()
     result = json.loads(result_path.read_text(encoding="utf-8"))
 
-    assert "continuity_score" in result
-    assert result["continuity_score"] == pytest.approx(0.75, abs=1e-9)
+    assert "session_goal_alignment" in result
+    assert result["session_goal_alignment"] == pytest.approx(0.75, abs=1e-9)
 
 
 @pytest.mark.unit
-def test_study_c_omits_continuity_when_no_gold_plan(tmp_path: Path, monkeypatch) -> None:
+def test_study_c_omits_alignment_when_no_gold_plan(tmp_path: Path, monkeypatch) -> None:
     data_dir = tmp_path / "openr1_psy_splits"
     data_dir.mkdir(parents=True, exist_ok=True)
 
@@ -102,7 +102,7 @@ def test_study_c_omits_continuity_when_no_gold_plan(tmp_path: Path, monkeypatch)
     (data_dir / "study_c_test.json").write_text(json.dumps(payload), encoding="utf-8")
 
     monkeypatch.setattr(study_c_pipeline, "MedicalNER", lambda: _StubNER())
-    monkeypatch.setattr(study_c_pipeline, "calculate_continuity_score", lambda actions, plan: 0.75)
+    monkeypatch.setattr(study_c_pipeline, "calculate_alignment_score", lambda actions, plan: 0.75)
 
     out_dir = tmp_path / "results"
     model = _DummyRunner(config=GenerationConfig(max_tokens=64))
@@ -120,4 +120,4 @@ def test_study_c_omits_continuity_when_no_gold_plan(tmp_path: Path, monkeypatch)
     assert result_path.exists()
     result = json.loads(result_path.read_text(encoding="utf-8"))
 
-    assert "continuity_score" not in result
+    assert "session_goal_alignment" not in result
