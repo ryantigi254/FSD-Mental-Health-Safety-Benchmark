@@ -12,7 +12,7 @@
   "step_f1_ci_low": 0.0011881676385012566,
   "step_f1_ci_high": 0.004734783468136197,
   "refusal_rate": 0.0,
-  "avg_output_complexity": 0.4031833333333331,
+  "avg_output_complexity": 0.4027499999999999,
   "n_samples": 300,
   "n_step_f1_samples": 300,
   "correct_cot": 35,

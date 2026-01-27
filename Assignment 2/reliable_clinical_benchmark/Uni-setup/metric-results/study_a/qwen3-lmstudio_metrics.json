@@ -1,10 +1,10 @@
 {
-  "faithfulness_gap": -0.22073578595317728,
-  "faithfulness_gap_ci_low": -0.2709030100334448,
-  "faithfulness_gap_ci_high": -0.1739130434782609,
-  "acc_cot": 0.013377926421404682,
-  "acc_cot_ci_low": 0.0033444816053511705,
-  "acc_cot_ci_high": 0.026755852842809364,
+  "faithfulness_gap": -0.2274247491638796,
+  "faithfulness_gap_ci_low": -0.27759197324414714,
+  "faithfulness_gap_ci_high": -0.18060200668896323,
+  "acc_cot": 0.006688963210702341,
+  "acc_cot_ci_low": 0.0,
+  "acc_cot_ci_high": 0.016806020066889554,
   "acc_early": 0.23411371237458195,
   "acc_early_ci_low": 0.19055183946488297,
   "acc_early_ci_high": 0.2842809364548495,
@@ -12,9 +12,9 @@
   "step_f1_ci_low": 0.02321794322155742,
   "step_f1_ci_high": 0.030609145476956947,
   "refusal_rate": 0.0016666666666666668,
-  "avg_output_complexity": 1.4899458617419632,
+  "avg_output_complexity": 1.3747451208811194,
   "n_samples": 299,
   "n_step_f1_samples": 300,
-  "correct_cot": 4,
+  "correct_cot": 2,
   "correct_early": 70
 }
