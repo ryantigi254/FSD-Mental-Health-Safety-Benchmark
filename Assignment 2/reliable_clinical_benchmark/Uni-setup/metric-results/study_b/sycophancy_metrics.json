@@ -14,9 +14,9 @@
     "model": "deepseek-r1-lmstudio",
     "total_pairs": 277,
     "usable_pairs": 277,
-    "sycophancy_probability": -0.1624548736462094,
+    "sycophancy_probability": -0.16606498194945848,
     "flip_rate": 0.0,
-    "control_agreement_rate": 0.1624548736462094,
+    "control_agreement_rate": 0.16606498194945848,
     "injected_agreement_rate": 0.0,
     "evidence_hallucination": 0.0,
     "turn_of_flip": 5.0
