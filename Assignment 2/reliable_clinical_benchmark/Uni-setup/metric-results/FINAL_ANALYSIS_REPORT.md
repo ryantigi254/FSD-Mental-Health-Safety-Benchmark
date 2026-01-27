@@ -1,6 +1,6 @@
 # Reliable Clinical Benchmark: Final Analysis & Findings
 
-**Generated**: from `Assignment 2\reliable_clinical_benchmark\Uni-setup\metric-results`
+**Generated**: from `E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup\metric-results`
 
 ## Benchmark Context
 This benchmark evaluates 8 models across three dimensions:
@@ -21,13 +21,14 @@ Threshold: Δ > 0.10 (Functional Reasoning). Positive Δ means CoT improves accu
 | Rank | Model | Gap (Δ) | Acc (CoT) | Acc (Early) | Step-F1 | Bias Rate | N |
 |---|---|---|---|---|---|---|---|
 | 1 | psyche-r1-local | -0.020 | 0.117 | 0.137 | 0.002 | 0.714 | 300 |
-| 2 | psych-qwen-32b-local | -0.025 | 0.000 | 0.025 | 0.014 | 0.214 | 276 |
-| 3 | psyllm-gml-local | -0.103 | 0.000 | 0.103 | 0.097 | 0.250 | 300 |
-| 4 | gpt-oss-20b | -0.107 | 0.010 | 0.117 | 0.003 | 0.333 | 299 |
-| 5 | piaget-8b-local | -0.128 | 0.003 | 0.131 | 0.014 | 0.182 | 298 |
-| 6 | qwq | -0.145 | 0.024 | 0.169 | 0.011 | 0.273 | 296 |
-| 7 | deepseek-r1-lmstudio | -0.190 | 0.000 | 0.190 | 0.013 | 0.143 | 295 |
-| 8 | qwen3-lmstudio | -0.227 | 0.007 | 0.234 | 0.009 | 0.273 | 299 |
+| 2 | psych-qwen-32b-local | -0.022 | 0.004 | 0.025 | 0.014 | 0.214 | 276 |
+| 3 | deepseek-r1-distill-qwen-7b | -0.081 | 0.010 | 0.091 | 0.010 | 0.000 | 298 |
+| 4 | gpt-oss-20b | -0.104 | 0.013 | 0.117 | 0.003 | 0.333 | 299 |
+| 5 | psyllm-gml-local | -0.113 | 0.000 | 0.113 | 0.097 | 0.250 | 300 |
+| 6 | piaget-8b-local | -0.134 | 0.003 | 0.138 | 0.014 | 0.182 | 298 |
+| 7 | qwq | -0.135 | 0.034 | 0.169 | 0.011 | 0.273 | 296 |
+| 8 | deepseek-r1-lmstudio | -0.190 | 0.003 | 0.193 | 0.013 | 0.143 | 295 |
+| 9 | qwen3-lmstudio | -0.221 | 0.013 | 0.234 | 0.009 | 0.273 | 299 |
 
 #### 🔍 Key Findings: The 'Reasoning Tax'
 1. **Negative Gaps Dominant**: Contrary to claims by reasoning model providers (DeepSeek, OpenAI o1), **reasoning consistently hurt performance** in this clinical setting. Most models showed a negative Faithfulness Gap (e.g., DeepSeek-R1 at -0.318), meaning the model was *more* accurate when forced to answer immediately than when allowed to 'think'.
@@ -46,9 +47,10 @@ Measure: Propensity to agree with user's incorrect diagnosis. Lower is better (c
 | psyllm-gml-local | -0.087 | 0.000 | 0.087 | 0.000 |
 | piaget-8b-local | -0.098 | 0.000 | 0.098 | 0.000 |
 | psych-qwen-32b-local | -0.109 | 0.000 | 0.109 | 0.000 |
+| deepseek-r1-distill-qwen-7b | -0.109 | 0.000 | 0.109 | 0.000 |
 | qwq | -0.116 | 0.000 | 0.116 | 0.000 |
 | psyche-r1-local | -0.126 | 0.000 | 0.126 | 0.000 |
-| deepseek-r1-lmstudio | -0.162 | 0.000 | 0.162 | 0.000 |
+| deepseek-r1-lmstudio | -0.166 | 0.000 | 0.166 | 0.000 |
 
 #### 🔍 Key Findings
 1. **Resistance to Pressure**: Most models showed negative or low P_Syc scores, indicating they did not blindly jump to agree with the 'injected' incorrect opinion. This is a positive sign for clinical robustness.
@@ -61,13 +63,13 @@ Measure: Ability to 'remember' medical entities (conditions, meds) mentioned in 
 
 | Model | Recall @ T10 | Recall @ T5 | Conflict Rate |
 |---|---|---|---|
-| psyllm-gml-local | **0.715** | 0.881 | 0.004 |
-| psyche-r1-local | **0.537** | 0.545 | 0.005 |
-| qwen3-lmstudio | **0.518** | 0.869 | 0.042 |
-| qwq | **0.491** | 0.668 | 0.033 |
-| gpt-oss-20b | **0.432** | 0.770 | 0.016 |
-| psych-qwen-32b-local | **0.374** | 0.616 | 0.000 |
-| deepseek-r1-lmstudio | **0.366** | 0.895 | 0.033 |
+| psyllm-gml-local | **0.166** | 0.391 | 0.004 |
+| qwen3-lmstudio | **0.138** | 0.482 | 0.042 |
+| deepseek-r1-lmstudio | **0.117** | 0.449 | 0.033 |
+| gpt-oss-20b | **0.117** | 0.379 | 0.016 |
+| qwq | **0.107** | 0.229 | 0.033 |
+| psyche-r1-local | **0.049** | 0.079 | 0.005 |
+| psych-qwen-32b-local | **0.041** | 0.131 | 0.000 |
 
 #### 🔍 Key Findings
 1. **Domain Expertise Wins**: `psyllm-gml-local` achieved the highest T10 recall (0.715). Being a 'domain expert' model, it likely has better attention mechanisms or training data focus on medical terminology retention compared to generalist reasoners.
