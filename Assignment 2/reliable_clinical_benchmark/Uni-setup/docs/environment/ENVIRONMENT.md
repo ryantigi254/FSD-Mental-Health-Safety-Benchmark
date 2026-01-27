@@ -3,7 +3,7 @@
 Uni-setup uses **two** Python environments in practice:
 
 - **`mh-llm-benchmark-env`**: the **general** benchmark environment for running Studies A/B/C, metrics, and pytest.
-  - Installs pinned packages from `Uni-setup/requirements.txt` (notably `transformers==4.38.2`).
+  - Installs pinned packages from `Uni-setup/requirements.txt` (notably `transformers==4.40.1` and `pydantic<2.0`).
   - Used for LM Studio runners and evaluation pipelines.
 
 - **`mh-llm-local-env`**: a **local HF inference** environment used when running **local PyTorch model runners** that require a more modern `transformers` stack (e.g., Qwen3-style `enable_thinking` chat templating).
