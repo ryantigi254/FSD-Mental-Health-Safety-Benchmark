@@ -1,6 +1,10 @@
 import argparse
 import sys
+import warnings
 from pathlib import Path
+
+# Suppress spacy FutureWarnings about regex set unions in newer Python versions
+warnings.filterwarnings("ignore", category=FutureWarning, module="spacy")
 
 from reliable_clinical_benchmark.models.base import GenerationConfig
 from reliable_clinical_benchmark.models.lmstudio_qwen3 import Qwen3LMStudioRunner
@@ -114,6 +118,16 @@ def main() -> None:
         "--output-dir",
         default=str(uni_setup_root / "results"),
     )
+    p_study_c.add_argument(
+        "--from-cache",
+        default=None,
+        help="Path to cache JSONL (metrics-from-cache mode).",
+    )
+    p_study_c.add_argument(
+        "--cache-out",
+        default=None,
+        help="Path to write cache JSONL (generation-only mode).",
+    )
 
     args = parser.parse_args()
 
@@ -169,6 +183,8 @@ def main() -> None:
             max_cases=args.max_cases,
             output_dir=args.output_dir,
             model_name=args.model_name,
+            from_cache=args.from_cache,
+            cache_out=args.cache_out,
         )
 
 
