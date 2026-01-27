@@ -126,12 +126,12 @@ K_{\text{Conflict}} = \frac{\text{Count}(\text{NLI}(T_i, T_{i-1}) = \text{Contra
   \item NLI models can have false positives (detecting contradictions where there are none). Current threshold (exact \texttt{"contradiction"} match) is conservative.
 \end{itemize}
 
-\subsection*{3. Continuity Score --- Supplementary Metric}
+\subsection*{3. Session Goal Alignment --- Supplementary Metric}
 \textbf{Function:} \texttt{calculate\_continuity\_score()} in \texttt{metrics/drift.py}
 
 \textbf{LaTeX formula:}
 \[
-\text{Continuity Score} = \frac{\boldsymbol{\phi} \cdot \boldsymbol{c}}{\|\boldsymbol{\phi}\|_2 \|\boldsymbol{c}\|_2}
+\text{Alignment Score} = \frac{\boldsymbol{\phi} \cdot \boldsymbol{c}}{\|\boldsymbol{\phi}\|_2 \|\boldsymbol{c}\|_2}
 \]
 
 where $\phi$ and $c$ are sentence embeddings of model actions and target plan respectively.
@@ -189,7 +189,7 @@ where $\phi$ and $c$ are sentence embeddings of model actions and target plan re
     \item Average recall curve across all cases.
   \end{itemize}
   \item Calculate knowledge conflict rate (optional; requires NLI model).
-  \item Continuity score is skipped (requires target plan data not in current schema).
+  \item Session goal alignment is skipped (requires target plan data not in current schema).
   \item Save results to \texttt{results/<model>/study\_c\_results.json} with:
   \begin{itemize}
     \item \texttt{entity\_recall\_at\_t10}: mean recall at Turn 10
@@ -203,7 +203,7 @@ where $\phi$ and $c$ are sentence embeddings of model actions and target plan re
 \begin{itemize}
   \item NER model loading is wrapped in try/except with clear error messages.
   \item Knowledge conflict is optional (wrapped in try/except for NLI availability).
-  \item Continuity score is explicitly documented as ``not used'' with explanation.
+  \item Session goal alignment is explicitly documented as ``not used'' with explanation.
 \end{itemize}
 
 \section*{Data requirements}
@@ -225,8 +225,8 @@ The LaTeX spec mentions two additional advanced metrics that are \textbf{not imp
   \end{itemize}
   \item \textbf{Token-based Drift Rate}:
   \begin{itemize}
-    \item Measures drift as a function of token count rather than turn number
-    \item Formula: \texttt{Drift Rate = d(Recall) / d(Tokens)}
+    \item Measures drift as a function of token count
+    \item Formula: $TDR = \beta$ where $\text{Recall}_t = \alpha + \beta t + \epsilon$
     \item Why not implemented: requires tracking token counts per turn
   \end{itemize}
 \end{enumerate}

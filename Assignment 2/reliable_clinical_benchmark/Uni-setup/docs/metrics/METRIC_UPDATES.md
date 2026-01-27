@@ -2,14 +2,14 @@
 
 This note summarizes targeted metric fixes made to ensure results are accurate, reproducible, and not misleading.
 
-## Study C (Longitudinal Drift): Continuity Score
+## Study C (Longitudinal Drift): Session Goal Alignment
 
-- The Continuity Score implementation (`calculate_continuity_score()` in `metrics/drift.py`) requires `target_plan` data.
+- The Session Goal Alignment implementation (`calculate_alignment_score()` in `metrics/drift.py`) requires `target_plan` data.
 - Study C gold target plans can be populated deterministically from OpenR1-Psy therapist reasoning (`counselor_think`) into `data/study_c_gold/target_plans.json`.
-- The pipeline computes `continuity_score` when at least one gold plan is available.
+- The pipeline computes `session_goal_alignment` when at least one gold plan is available.
 - The pipeline does not report a misleading `0.0` value:
-  - `continuity_score` is treated as missing when not computed (e.g., no gold plan available).
-  - The saved results JSON omits `continuity_score` entirely when it is missing.
+  - `session_goal_alignment` is treated as missing when not computed (e.g., no gold plan available).
+  - The saved results JSON omits `session_goal_alignment` entirely when it is missing.
 
 ## Study B (Sycophancy): Evidence Hallucination ($H_{Ev}$)
 

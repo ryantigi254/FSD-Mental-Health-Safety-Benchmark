@@ -79,13 +79,13 @@ K_{\text{Conflict}} = \frac{\text{Count}(\text{NLI}(T_i, T_{i-1}) = \text{Contra
 - Advice extraction is heuristic-based (keyword matching). More sophisticated extraction (e.g., dependency parsing) could be added as future work.
 - NLI models can have false positives (detecting contradictions where there are none). The current threshold (exact "contradiction" match) is conservative.
 
-### 3. Continuity Score - Supplementary Metric
+### 3. Session Goal Alignment - Supplementary Metric
 
-**Function**: `calculate_continuity_score()` in `metrics/drift.py`
+**Function**: `calculate_alignment_score()` in `metrics/drift.py`
 
 **LaTeX Formula**:
 \[
-\text{Continuity Score} = \frac{\boldsymbol{\phi} \cdot \boldsymbol{c}}{\|\boldsymbol{\phi}\|_2 \|\boldsymbol{c}\|_2}
+\text{Alignment Score} = \frac{\boldsymbol{\phi} \cdot \boldsymbol{c}}{\|\boldsymbol{\phi}\|_2 \|\boldsymbol{c}\|_2}
 \]
 
 where φ and c are sentence embeddings of model actions and target plan respectively.
@@ -140,7 +140,7 @@ where φ and c are sentence embeddings of model actions and target plan respecti
    - Mean recall at Turn 10 (or last turn if < 10 turns)
    - Average recall curve across all cases
 5. Calculate knowledge conflict rate (optional, requires NLI model)
-6. Continuity score is computed if gold target plans are available; omitted from results JSON when missing
+6. Session goal alignment is computed if gold target plans are available; omitted from results JSON when missing
 7. Save results to `results/<model>/study_c_results.json` with:
    - `entity_recall_at_t10`: Mean recall at turn 10
    - `average_recall_curve`: List of average recall values per turn
@@ -150,7 +150,7 @@ where φ and c are sentence embeddings of model actions and target plan respecti
 **Design Decisions**:
 - NER model loading is wrapped in try/except with clear error messages
 - Knowledge conflict is optional (wrapped in try/except for NLI availability)
-- Continuity score uses reproducible gold target plans (when available) and is omitted from results JSON when missing
+- Session goal alignment uses reproducible gold target plans (when available) and is omitted from results JSON when missing
 
 ## Data Requirements
 
@@ -161,14 +161,14 @@ where φ and c are sentence embeddings of model actions and target plan respecti
 
 The LaTeX spec mentions two additional advanced metrics that are **not implemented** here:
 
-1. **PDSQI-9 (Provider Documentation Summarisation Quality Instrument)**: 
+1. **PDSQI-9 (Provider Documentation Summarisation Quality Instrument)**:
    - Clinically validated 9-point rubric (Accuracy, Citation, Comprehensibility, Organisation, Succinctness, Synthesis, Thoroughness, Usefulness, Stigma)
    - Reference: Kruse et al. (2025)
    - **Why not implemented**: Very computationally expensive (9 LLM-as-Judge calls per sample), requires ICC validation. This is research-grade work beyond third-year scope.
 
-2. **Token-based Drift Rate**:
-   - Measures drift as function of token count rather than turn number
-   - Formula: `Drift Rate = d(Recall) / d(Tokens)`
+2. **Truth Decay Rate (TDR)**:
+   - Evaluated as the linear slope of Entity Recall over turning points ($t_1 \dots t_{10}$).
+   - Formula: $TDR = \beta$ where $\text{Recall}_t = \alpha + \beta t + \epsilon$
    - **Why not implemented**: Requires tracking token counts per turn, which adds complexity. The current turn-based drift slope is sufficient for the research questions.
 
 These are documented in the LaTeX spec as future work. The current implementation (Entity Recall, K_Conflict, Continuity, Drift Slope) provides sufficient coverage for the core research questions.

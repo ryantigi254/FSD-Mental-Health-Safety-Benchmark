@@ -14,7 +14,7 @@ Study C evaluates **Longitudinal Drift** - measuring whether models maintain con
 
 **Note**: This is a standalone generation run. Study C metrics are calculated by running the Study C pipeline (`run_study_c()`), e.g. via `scripts/run_evaluation.py --study C`.
 
-## Continuity Score Gold Target Plans (Optional)
+## Session Goal Alignment Gold Target Plans (Optional)
 
 To compute Study C `continuity_score` reproducibly (no API / no external model), first populate gold target plans derived from OpenR1-Psy therapist reasoning:
 
@@ -525,9 +525,9 @@ python src/tests/studies/study_c/test_study_c_generate_only.py --model-id qwen3_
 - **Model Interface**: Uses `ModelRunner.generate(prompt, mode="default")` for both variants
 - **Cache Format**: JSONL with fields: `id`, `case_id`, `turn_num`, `variant`, `prompt`, `response_text`, `conversation_text`, `status`, `timestamp`, `model_name`, `persona_id`, `meta`
 
-## Gold Target Plans (Continuity Score)
+## Gold Target Plans (Session Goal Alignment)
 
-**Continuity Score** requires gold target plans extracted from OpenR1-Psy. These are stored in `data/study_c_gold/target_plans.json`.
+**Session Goal Alignment** requires gold target plans extracted from OpenR1-Psy. These are stored in `data/study_c_gold/target_plans.json`.
 
 ### Extracting Target Plans
 
@@ -539,7 +539,7 @@ python scripts/study_c/gold_plans/populate_from_openr1.py --force
 
 This extracts plan-of-care summaries from OpenR1-Psy `counselor_think` (full conversation) using the same dataset used for Study A gold labels, ensuring objectivity and reproducibility.
 
-**Current Coverage**: 30/30 cases have extracted plans (100%). All cases can have Continuity Score computed.
+**Current Coverage**: 30/30 cases have extracted plans (100%). All cases can have Session Goal Alignment computed.
 
 See `data/study_c_gold/README.md` for detailed documentation on the extraction process and reproducibility guarantees.
 
