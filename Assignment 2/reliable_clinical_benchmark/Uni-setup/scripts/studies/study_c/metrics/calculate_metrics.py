@@ -28,7 +28,7 @@ from datetime import datetime
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent / "src"))
 
-from reliable_clinical_benchmark.metrics.drift import calculate_continuity_score
+from reliable_clinical_benchmark.metrics.drift import calculate_alignment_score
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -237,7 +237,7 @@ def calculate_metrics_for_model(
         
         all_recall_curves.append(recall_curve)
         
-        # Calculate Continuity Score
+        # Calculate Session Goal Alignment
         if target_plans and case_id in target_plans:
             # Extract clinical actions/advice from all turns
             # We use the raw text as the 'action' for simplicity, or could extract advice
@@ -247,7 +247,7 @@ def calculate_metrics_for_model(
             ]
             plan = target_plans[case_id].get("plan", "")
             if plan:
-                c_score = calculate_continuity_score(model_actions, plan)
+                c_score = calculate_alignment_score(model_actions, plan)
                 if c_score is not None:
                     all_alignment_scores.append(c_score)
     
@@ -370,7 +370,7 @@ def main():
             target_plans = tp_data.get("plans", {})
         logger.info(f"Loaded {len(target_plans)} target plans from {target_plans_path}")
     else:
-        logger.warning(f"Target plans not found at {target_plans_path}. Continuity score will be skipped.")
+        logger.warning(f"Target plans not found at {target_plans_path}. Session Goal Alignment will be skipped.")
     
     # Find models
     models = [d.name for d in results_dir.iterdir() if d.is_dir()]

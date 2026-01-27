@@ -2,9 +2,6 @@ import argparse
 import sys
 from pathlib import Path
 
-from reliable_clinical_benchmark.models.base import GenerationConfig
-from reliable_clinical_benchmark.models.psych_qwen_local import PsychQwen32BLocalRunner
-from reliable_clinical_benchmark.pipelines.study_a import run_study_a
 
 
 def _ensure_src_on_path(uni_setup_root: Path) -> None:
@@ -16,6 +13,11 @@ def _ensure_src_on_path(uni_setup_root: Path) -> None:
 def main() -> None:
     uni_setup_root = Path(__file__).resolve().parents[1]
     _ensure_src_on_path(uni_setup_root)
+
+    # Import after sys.path is updated
+    from reliable_clinical_benchmark.models.base import GenerationConfig
+    from reliable_clinical_benchmark.models.psych_qwen_local import PsychQwen32BLocalRunner
+    from reliable_clinical_benchmark.pipelines.study_a import run_study_a
 
     # Allow shared args before/after the subcommand.
     common = argparse.ArgumentParser(add_help=False)
