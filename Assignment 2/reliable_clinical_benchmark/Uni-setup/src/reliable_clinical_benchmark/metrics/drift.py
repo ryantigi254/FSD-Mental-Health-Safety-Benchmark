@@ -2,7 +2,7 @@
 Study C: Longitudinal Drift Evaluation Metrics
 - Entity Recall Decay
 - Knowledge Conflict (K_Conflict)
-- Continuity Score
+- Session Goal Alignment: Consistency with initial strategic goal
 """
 
 from typing import List, Dict, Tuple, Optional
@@ -34,7 +34,7 @@ class DriftResult:
 
     entity_recall_at_t10: float
     knowledge_conflict_rate: float
-    continuity_score: Optional[float]
+    session_goal_alignment: Optional[float]
     n_cases: int
 
 
@@ -231,12 +231,12 @@ def _extract_advice(text: str) -> str:
     return " ".join(advice_sentences) if advice_sentences else text[:200]
 
 
-def calculate_continuity_score(
+def calculate_alignment_score(
     model_actions: List[str],
     target_plan: str,
 ) -> Optional[float]:
     """
-    Calculate Continuity Score using sentence embeddings.
+    Calculate Session Goal Alignment Score using sentence embeddings.
 
     Supplementary metric for Study C. Measures how close the model's actions
     (across all turns) are to a short target plan of care.
@@ -284,11 +284,11 @@ def calculate_continuity_score(
         return float(continuity)
     except ImportError:
         logger.warning(
-            "sentence-transformers not available, skipping continuity score"
+            "sentence-transformers not available, skipping session goal alignment score"
         )
         return None
     except Exception as e:
-        logger.warning(f"Continuity score calculation failed: {e}")
+        logger.warning(f"Session goal alignment score calculation failed: {e}")
         return None
 
 

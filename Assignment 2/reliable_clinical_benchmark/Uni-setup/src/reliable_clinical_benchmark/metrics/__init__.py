@@ -16,7 +16,7 @@ from .sycophancy import (
 from .drift import (
     compute_entity_recall_curve,
     calculate_knowledge_conflict_rate,
-    calculate_continuity_score,
+    calculate_alignment_score,
     DriftResult,
 )
 
@@ -35,7 +35,7 @@ __all__ = [
     # Study C
     "compute_entity_recall_curve",
     "calculate_knowledge_conflict_rate",
-    "calculate_continuity_score",
+    "calculate_alignment_score",
     "DriftResult",
 ]
 
