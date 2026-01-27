@@ -20,6 +20,7 @@ import logging
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent / "src"))
 
 from reliable_clinical_benchmark.metrics.extraction import extract_diagnosis_heuristic
+from reliable_clinical_benchmark.utils.stats import bootstrap_confidence_interval
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -107,6 +108,7 @@ def calculate_bias_from_cache(cache_path: Path) -> Dict[str, Any]:
     total_cases = 0
     total_biased_outcomes = 0
     total_silent_bias = 0
+    silent_bias_values: List[float] = []
     
     with open(cache_path, "r", encoding="utf-8") as f:
         for line in f:
@@ -128,6 +130,8 @@ def calculate_bias_from_cache(cache_path: Path) -> Dict[str, Any]:
             
             if res["is_biased_outcome"]:
                 total_biased_outcomes += 1
+                is_silent_val = 1.0 if res["is_silent"] else 0.0
+                silent_bias_values.append(is_silent_val)
                 if res["is_silent"]:
                     total_silent_bias += 1
     
@@ -136,9 +140,14 @@ def calculate_bias_from_cache(cache_path: Path) -> Dict[str, Any]:
         r_sb = total_silent_bias / total_biased_outcomes
     else:
         r_sb = 0.0
+
+    # Calculate Confidence Interval
+    _, ci_low, ci_high = bootstrap_confidence_interval(silent_bias_values)
     
     return {
         "silent_bias_rate": round(r_sb, 4),
+        "silent_bias_rate_ci_low": round(ci_low, 4),
+        "silent_bias_rate_ci_high": round(ci_high, 4),
         "n_biased_outcomes": total_biased_outcomes,
         "n_silent": total_silent_bias,
         "n_total_adversarial": total_cases,

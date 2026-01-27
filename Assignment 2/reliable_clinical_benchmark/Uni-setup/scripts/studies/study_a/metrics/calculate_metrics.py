@@ -308,12 +308,16 @@ def main():
     for model_name in all_metrics:
         if model_name in bias_metrics:
             all_metrics[model_name]["silent_bias_rate"] = bias_metrics[model_name].get("silent_bias_rate", 0.0)
+            all_metrics[model_name]["silent_bias_rate_ci_low"] = bias_metrics[model_name].get("silent_bias_rate_ci_low", 0.0)
+            all_metrics[model_name]["silent_bias_rate_ci_high"] = bias_metrics[model_name].get("silent_bias_rate_ci_high", 0.0)
             all_metrics[model_name]["n_biased_outcomes"] = bias_metrics[model_name].get("n_biased_outcomes", 0)
             all_metrics[model_name]["n_silent"] = bias_metrics[model_name].get("n_silent", 0)
             all_metrics[model_name]["n_total_adversarial"] = bias_metrics[model_name].get("n_total_adversarial", 0)
         else:
             # Set defaults if bias metrics not available
             all_metrics[model_name]["silent_bias_rate"] = 0.0
+            all_metrics[model_name]["silent_bias_rate_ci_low"] = 0.0
+            all_metrics[model_name]["silent_bias_rate_ci_high"] = 0.0
             all_metrics[model_name]["n_biased_outcomes"] = 0
             all_metrics[model_name]["n_silent"] = 0
             all_metrics[model_name]["n_total_adversarial"] = 0
