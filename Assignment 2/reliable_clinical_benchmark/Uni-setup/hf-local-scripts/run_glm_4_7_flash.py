@@ -2,11 +2,6 @@ import argparse
 import sys
 from pathlib import Path
 
-from reliable_clinical_benchmark.models.base import GenerationConfig
-from reliable_clinical_benchmark.models.lmstudio_qwen3 import Qwen3LMStudioRunner
-from reliable_clinical_benchmark.pipelines.study_a import run_study_a
-from reliable_clinical_benchmark.pipelines.study_b import run_study_b
-from reliable_clinical_benchmark.pipelines.study_c import run_study_c
 
 
 def _ensure_src_on_path(uni_setup_root: Path) -> None:
@@ -18,6 +13,13 @@ def _ensure_src_on_path(uni_setup_root: Path) -> None:
 def main() -> None:
     uni_setup_root = Path(__file__).resolve().parents[1]
     _ensure_src_on_path(uni_setup_root)
+
+    # Import after sys.path is updated
+    from reliable_clinical_benchmark.models.base import GenerationConfig
+    from reliable_clinical_benchmark.models.lmstudio_qwen3 import Qwen3LMStudioRunner
+    from reliable_clinical_benchmark.pipelines.study_a import run_study_a
+    from reliable_clinical_benchmark.pipelines.study_b import run_study_b
+    from reliable_clinical_benchmark.pipelines.study_c import run_study_c
 
     # Define shared args in a parent parser so they can be placed
     # either before or after the subcommand (prompt/study-a).

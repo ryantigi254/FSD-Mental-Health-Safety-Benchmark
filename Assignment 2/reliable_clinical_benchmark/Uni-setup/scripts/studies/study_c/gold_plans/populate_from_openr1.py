@@ -108,33 +108,83 @@ def _extract_plan_from_reasoning(text: str) -> str:
         if any(v in sent_lower for v in action_verbs) and 20 <= len(sent) <= 300:
             action_sentences.append(sent)
 
-    if action_sentences:
-        return ". ".join(action_sentences[:3])
-
-    # More lenient fallback: extract substantial sentences even without action verbs
+    # Fallback collectors
     substantial = [s for s in sentences[:3] if len(s) > 30]
-    if substantial:
-        return ". ".join(substantial)
     
-    # Final fallback: extract any meaningful sentences (therapeutic content indicators)
     therapeutic_keywords = [
         "help", "support", "treatment", "therapy", "counseling", "patient", "client",
         "feel", "emotion", "thought", "behavior", "pattern", "skill", "strategy",
         "medication", "medication", "session", "progress", "goal", "plan"
     ]
-    
     keyword_sentences = []
-    for sent in sentences[:5]:  # Check first 5 sentences
+    for sent in sentences[:5]:
         sent_lower = sent.lower()
         if any(keyword in sent_lower for keyword in therapeutic_keywords) and len(sent.strip()) > 20:
             keyword_sentences.append(sent.strip())
+
+    # Post-extraction selection to remove meta-talk and artifacts
+    final_output = ""
+    if plan_parts:
+        final_output = ". ".join(plan_parts[:5])
+    elif action_sentences:
+        final_output = ". ".join(action_sentences[:3])
+    elif substantial:
+        final_output = ". ".join(substantial)
+    elif keyword_sentences:
+        final_output = ". ".join(keyword_sentences[:3])
+    else:
+        fallback = [s.strip() for s in sentences[:3] if len(s.strip()) > 25]
+        final_output = ". ".join(fallback) if fallback else ""
+
+    if not final_output:
+        return ""
+
+    # Function to check if a sentence is meta-talk
+    def is_meta(s: str) -> bool:
+        s = s.strip().lower()
+        if not s: return True
+        # Remove patterns that are explicitly meta-reasoning
+        patterns = [
+            r"^(?:okay|alright|so|now|first|then|finally|next),?\s*(?:let's|let (?:us|me)|i (?:will|should|need to|must|want to)|we (?:will|should))",
+            r"^(?:next|then|firstly|secondly),?\s+(?:considering|regarding|following|based on)\b",
+            r"^(?:considering|based on|given|following|regarding|considering)\b",
+            r"^(?:the|my) (?:goal|plan|approach|strategy|process|structure) is\b",
+            r"^(?:let me|i will|i should|i need to) (?:check|ensure|make sure|start|begin|try|use|incorporate|focus on|explore|suggest|unpack|provide)\b",
+            r"^i (?:think|believe|feel) (?:that )?",
+            r"^(?:instead|maybe|perhaps|additionally),?\s+(?:use|try|suggest|focus on|incorporate)\b",
+            r"^let me (?:start|begin|unpack)\b",
+            r"^i (?:should|need to|will) (?:gently|simply|just)\b",
+        ]
+        return any(re.search(p, s) for p in patterns)
+
+    # Split into discrete sentences for cleaning
+    sentences_to_clean = [s.strip() for s in re.split(r"(?<=[.!?])\s+", final_output) if s.strip()]
     
-    if keyword_sentences:
-        return ". ".join(keyword_sentences[:3])
+    # Filter out any meta-sentences
+    cleaned_sentences = [s for s in sentences_to_clean if not is_meta(s)]
     
-    # Last resort: return first 2-3 sentences if they're reasonably long
-    fallback = [s.strip() for s in sentences[:3] if len(s.strip()) > 25]
-    return ". ".join(fallback) if fallback else ""
+    if not cleaned_sentences:
+        return ""
+
+    final_output = " ".join(cleaned_sentences)
+    
+    # Capitalize first letter if it was lowercased by sub
+    if final_output and final_output[0].islower():
+        final_output = final_output[0].upper() + final_output[1:]
+
+    # 2. Remove filler phrases
+    fillers = [
+        r"\b(?:gently|simply|just|really)\b",
+        r"\b(?:try to|attempt to|look at)\b",
+    ]
+    for pattern in fillers:
+        final_output = re.sub(pattern, "", final_output, flags=re.IGNORECASE).strip()
+
+    # 3. Final polish: remove double spaces, fix punctuation
+    final_output = re.sub(r'\s+', ' ', final_output)
+    final_output = re.sub(r'\s+\.', '.', final_output)
+    
+    return final_output
 
 
 def _collect_full_counselor_think(conversation: List[Dict[str, Any]]) -> str:
