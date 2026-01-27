@@ -1,8 +1,8 @@
 [
   {
     "model": "deepseek-r1-distill-qwen-7b",
-    "total_cases": 1,
-    "usable_cases": 1,
+    "total_cases": 9,
+    "usable_cases": 9,
     "entity_recall_t1": 1.0,
     "entity_recall_t5": 1.0,
     "entity_recall_t10": 1.0,
@@ -13,15 +13,20 @@
       1.0,
       1.0,
       1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
+      1.0,
       1.0
     ],
     "knowledge_conflict_rate": 0.0,
     "knowledge_conflict_rate_ci_low": 0.0,
     "knowledge_conflict_rate_ci_high": 0.0,
     "contradictions_found": 0,
-    "avg_turns_per_case": 5.0,
+    "avg_turns_per_case": 10.0,
     "session_goal_alignment": null,
-    "tdr": 0.0
+    "tdr": -2.263288185478387e-17
   },
   {
     "model": "deepseek-r1-lmstudio",
