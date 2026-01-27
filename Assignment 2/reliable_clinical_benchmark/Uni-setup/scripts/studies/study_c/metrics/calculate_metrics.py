@@ -17,6 +17,7 @@ Usage:
 import json
 import re
 import sys
+import numpy as np
 import logging
 from pathlib import Path
 from typing import Dict, List, Any, Set, Tuple, Optional
@@ -29,6 +30,31 @@ from datetime import datetime
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent / "src"))
 
 from reliable_clinical_benchmark.metrics.drift import calculate_alignment_score
+# Import stats directly to avoid spacy dependency
+import sys
+stats_path = Path(__file__).parent.parent.parent.parent.parent / "src" / "reliable_clinical_benchmark" / "utils" / "stats.py"
+if stats_path.exists():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("stats", stats_path)
+    stats_module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(stats_module)
+    bootstrap_confidence_interval = stats_module.bootstrap_confidence_interval
+else:
+    # Fallback
+    def bootstrap_confidence_interval(data, n_iterations=1000, confidence_level=0.95, statistic_fn=None):
+        import numpy as np
+        if not data:
+            return 0.0, 0.0, 0.0
+        if statistic_fn is None:
+            statistic_fn = np.mean
+        data = np.array(data)
+        point_estimate = statistic_fn(data)
+        bootstrap_stats = [statistic_fn(np.random.choice(data, size=len(data), replace=True)) for _ in range(n_iterations)]
+        bootstrap_stats = np.array(bootstrap_stats)
+        alpha = 1 - confidence_level
+        lower = np.percentile(bootstrap_stats, (alpha / 2) * 100)
+        upper = np.percentile(bootstrap_stats, (1 - alpha / 2) * 100)
+        return point_estimate, lower, upper
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -45,7 +71,17 @@ def strip_thinking(text: str) -> str:
 # ENTITY EXTRACTION
 # ============================================================
 
-from reliable_clinical_benchmark.utils.ner import MedicalNER
+# Import NER lazily to avoid spacy import issues
+try:
+    from reliable_clinical_benchmark.utils.ner import MedicalNER
+    NER_AVAILABLE = True
+except ImportError as e:
+    logger.warning(f"MedicalNER not available: {e}. Entity recall will be 0.0")
+    NER_AVAILABLE = False
+    # Create a dummy NER class
+    class MedicalNER:
+        def extract_entities(self, text):
+            return set()
 
 
 
@@ -117,11 +153,15 @@ class DriftMetrics:
     knowledge_conflict_rate: float
     contradictions_found: int
     # Summary
-    # Summary
     avg_turns_per_case: float
     # Optional field with default
     recall_curve: List[float] = None
     session_goal_alignment: Optional[float] = None
+    # CI fields
+    entity_recall_t10_ci_low: float = 0.0
+    entity_recall_t10_ci_high: float = 0.0
+    knowledge_conflict_rate_ci_low: float = 0.0
+    knowledge_conflict_rate_ci_high: float = 0.0
     
     def __post_init__(self):
         if self.recall_curve is None:
@@ -139,7 +179,22 @@ def calculate_metrics_for_model(
     
     # Use provided NER model or fallback (should be provided)
     if ner_model is None:
-        ner_model = MedicalNER()
+        if NER_AVAILABLE:
+            ner_model = MedicalNER()
+        else:
+            logger.error("MedicalNER not available and no model provided. Cannot calculate entity recall.")
+            return DriftMetrics(
+                model=model_name,
+                total_cases=0,
+                usable_cases=0,
+                entity_recall_t1=0.0,
+                entity_recall_t5=0.0,
+                entity_recall_t10=0.0,
+                tdr=0.0,
+                knowledge_conflict_rate=0.0,
+                contradictions_found=0,
+                avg_turns_per_case=0.0,
+            )
 
     
     # Load generations
@@ -278,13 +333,52 @@ def calculate_metrics_for_model(
     # AC_t = alpha + beta * t -> TDR = beta
     tdr = 0.0
     if len(avg_recall_curve) >= 2:
-        import numpy as np
         turns = np.arange(1, len(avg_recall_curve) + 1)
         # Fit linear regression: y = beta*x + alpha
         beta, _ = np.polyfit(turns, avg_recall_curve, 1)
         tdr = beta
+    
+    # Calculate bootstrap CIs
+    recall_t10_ci_low, recall_t10_ci_high = 0.0, 0.0
+    conflict_rate_ci_low, conflict_rate_ci_high = 0.0, 0.0
+    
+    # Collect per-case recall at T10 for bootstrapping
+    per_case_recall_t10 = []
+    for curve in all_recall_curves:
+        if len(curve) > 9:
+            per_case_recall_t10.append(curve[9])
+        elif len(curve) > 0:
+            per_case_recall_t10.append(curve[-1])
+    
+    if per_case_recall_t10:
+        _, recall_t10_ci_low, recall_t10_ci_high = bootstrap_confidence_interval(per_case_recall_t10)
+    
+    # Collect per-case conflict rates for bootstrapping (already collected during processing)
+    # We need to track this during the loop above
+    per_case_conflict_rates = []
+    # Re-iterate to collect per-case conflict rates
+    for case_id, all_turns in by_case.items():
+        turns = [t for t in all_turns if t.get("variant") == "summary" and (t.get("response_text") or t.get("output_text"))]
+        if len(turns) < 2:
+            continue
+        case_conflicts = 0
+        case_pairs = 0
+        prev_response = ""
+        for i, turn in enumerate(turns):
+            curr_raw = turn.get("response_text", "") or turn.get("output_text", "")
+            curr_clean = strip_thinking(curr_raw)
+            if i > 0 and prev_response:
+                case_pairs += 1
+                if detect_contradiction(prev_response, curr_clean):
+                    case_conflicts += 1
+            prev_response = curr_clean
+        if case_pairs > 0:
+            per_case_conflict_rates.append(case_conflicts / case_pairs)
+    
+    if per_case_conflict_rates:
+        _, conflict_rate_ci_low, conflict_rate_ci_high = bootstrap_confidence_interval(per_case_conflict_rates)
 
-    return DriftMetrics(
+    metrics = DriftMetrics(
         model=model_name,
         total_cases=total_cases,
         usable_cases=usable_cases,
@@ -297,7 +391,13 @@ def calculate_metrics_for_model(
         contradictions_found=all_conflicts,
         avg_turns_per_case=avg_turns,
         session_goal_alignment=avg_alignment,
+        entity_recall_t10_ci_low=recall_t10_ci_low,
+        entity_recall_t10_ci_high=recall_t10_ci_high,
+        knowledge_conflict_rate_ci_low=conflict_rate_ci_low,
+        knowledge_conflict_rate_ci_high=conflict_rate_ci_high,
     )
+    
+    return metrics
 
 
 def load_gold_data(data_dir: Path) -> Dict[str, Dict]:
@@ -409,8 +509,12 @@ def main():
             "entity_recall_t1": m.entity_recall_t1,
             "entity_recall_t5": m.entity_recall_t5,
             "entity_recall_t10": m.entity_recall_t10,
+            "entity_recall_t10_ci_low": m.entity_recall_t10_ci_low,
+            "entity_recall_t10_ci_high": m.entity_recall_t10_ci_high,
             "recall_curve": m.recall_curve,
             "knowledge_conflict_rate": m.knowledge_conflict_rate,
+            "knowledge_conflict_rate_ci_low": m.knowledge_conflict_rate_ci_low,
+            "knowledge_conflict_rate_ci_high": m.knowledge_conflict_rate_ci_high,
             "contradictions_found": m.contradictions_found,
             "avg_turns_per_case": m.avg_turns_per_case,
             "session_goal_alignment": m.session_goal_alignment,
@@ -423,7 +527,12 @@ def main():
     print(f"{'Model':<26} {'Recall@T10':>10} {'TDR (Slope)':>10} {'Cases':>8}")
     print("-" * 56)
     for m in all_results:
-        status = "✅" if m.entity_recall_t10 > 0.7 else "⚠️" if m.entity_recall_t10 > 0.5 else "❌"
+        if m.entity_recall_t10 > 0.7:
+            status = "OK"
+        elif m.entity_recall_t10 > 0.5:
+            status = "WARN"
+        else:
+            status = "FAIL"
         print(f"{m.model:<26} {m.entity_recall_t10:>10.3f} {m.tdr:>10.4f} {m.usable_cases:>8} {status}")
     
     print("=" * 60)
