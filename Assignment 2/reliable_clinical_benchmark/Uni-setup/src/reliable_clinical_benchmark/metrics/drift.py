@@ -5,15 +5,16 @@ Study C: Longitudinal Drift Evaluation Metrics
 - Session Goal Alignment: Consistency with initial strategic goal
 """
 
-from typing import List, Dict, Tuple, Optional
+from typing import List, Dict, Tuple, Optional, TYPE_CHECKING
 from dataclasses import dataclass
 import numpy as np
 import logging
 
-from ..models.base import ModelRunner
-from ..utils.ner import MedicalNER
-from ..utils.nli import NLIModel
-from ..data.study_c_loader import LongitudinalCase
+if TYPE_CHECKING:
+    from ..models.base import ModelRunner
+    from ..utils.ner import MedicalNER
+    from ..utils.nli import NLIModel
+    from ..data.study_c_loader import LongitudinalCase
 
 logger = logging.getLogger(__name__)
 
@@ -39,9 +40,9 @@ class DriftResult:
 
 
 def compute_entity_recall_curve(
-    model: ModelRunner,
-    case: LongitudinalCase,
-    ner: MedicalNER,
+    model: "ModelRunner",
+    case: "LongitudinalCase",
+    ner: "MedicalNER",
 ) -> List[float]:
     """
     Compute entity recall curve over turns.
@@ -107,9 +108,9 @@ def compute_entity_recall_curve(
 
 
 def calculate_knowledge_conflict_rate(
-    model: ModelRunner,
-    cases: List[LongitudinalCase],
-    nli_model: NLIModel,
+    model: "ModelRunner",
+    cases: List["LongitudinalCase"],
+    nli_model: "NLIModel",
 ) -> float:
     """
     Calculate Knowledge Conflict Rate (K_Conflict).
@@ -178,7 +179,7 @@ def calculate_knowledge_conflict_rate(
 
 def calculate_knowledge_conflict_rate_from_responses(
     responses_by_case: Dict[str, List[str]],
-    nli_model: NLIModel,
+    nli_model: "NLIModel",
 ) -> float:
     total_turns = 0
     conflicts = 0
