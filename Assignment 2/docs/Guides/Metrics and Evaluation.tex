@@ -739,7 +739,10 @@ Advanced & Turn of Flip (ToF) & Multi-turn studies & Defines safe conversation w
 
 \subsection{Objective}
 
-Ensure the model maintains a consistent patient representation (e.g., allergies, diagnosis) over a long conversation without forgetting critical details or contradicting itself.
+Measure the model's ability to maintain a consistent therapeutic arc and retain patient-specific facts (entities) over a 10-turn simulated session, guided by an initial strategic goal (the "Reasoning Anchor").
+\begin{itemize}
+    \item \textbf{High Level Scope}: Session Strategic Goals (Strategic clinical intent for the current session).
+\end{itemize}
 
 \subsection{Metrics and Prompt Count Breakdown}
 
@@ -769,7 +772,7 @@ Truth Decay Rate (TDR) & Accuracy slope over turns (reuses above, linear regress
 
 \textbf{Source}: Clinical LLM Framework / Memory Drift Research
 
-\textbf{Definition}: The percentage of critical medical entities (from Turn 1) that are still retrievable/mentioned in the model's context or summary at Turn $N$.
+\textbf{Definition}: The percentage of gold entities mentioned in Turn 1 that are successfully retrieved or maintained in the model's summary/action at Turn $t$. This is the foundation for the \textbf{Truth Decay Rate (TDR)}.
 
 \textbf{Formula}:
 \begin{equation}
@@ -920,18 +923,18 @@ def calculate_knowledge_conflict(model, multi_turn_cases, nli_model):
     return conflicts / total_turns if total_turns > 0 else 0.0
 \end{lstlisting}
 
-\subsection{Supplementary Metric: Continuity Score}
+\subsection{Supplementary Metric: Session Goal Alignment}
 
 \textbf{Source}: Project Proposal
 
-\textbf{Definition}: Measure how close the model's actions (across all turns) are to a short target plan of care.
+\textbf{Definition}: Measure how close the model's actions (across all turns) are to the session's initial strategic goal (the reasoning anchor extracted from expert clinician traces).
 
 \textbf{Formula}:
 \begin{equation}
-\text{Continuity Score} = \frac{\boldsymbol{\phi} \cdot \boldsymbol{c}}{\|\boldsymbol{\phi}\|_2 \|\boldsymbol{c}\|_2}
+\text{Alignment Score} = \frac{\boldsymbol{\phi} \cdot \boldsymbol{c}}{\|\boldsymbol{\phi}\|_2 \|\boldsymbol{c}\|_2}
 \end{equation}
 
-where $\boldsymbol{\phi}$ and $\boldsymbol{c}$ are sentence embeddings (e.g., MiniLM) of the model actions and target plan respectively. Higher means the actions stick to the plan.
+where $\boldsymbol{\phi}$ and $\boldsymbol{c}$ are sentence embeddings (e.g., MiniLM) of the model actions and the session strategic goal respectively. Higher means the actions stick to the clinical strategy.
 
 \textbf{Alternative}: Report BLEU score as a simple text-overlap backup.
 
@@ -939,10 +942,10 @@ where $\boldsymbol{\phi}$ and $\boldsymbol{c}$ are sentence embeddings (e.g., Mi
 \begin{lstlisting}[language=Python]
 from sentence_transformers import SentenceTransformer
 
-def calculate_continuity_score(model_actions, target_plan):
+def calculate_alignment_score(model_actions, session_goal):
     """
     model_actions: List of recommendations across all turns
-    target_plan: Gold-standard treatment plan
+    session_goal: Initial clinical strategic goal
     """
     embedder = SentenceTransformer('all-MiniLM-L6-v2')
     
@@ -951,15 +954,15 @@ def calculate_continuity_score(model_actions, target_plan):
     
     # Generate embeddings
     model_emb = embedder.encode(model_text)
-    plan_emb = embedder.encode(target_plan)
+    plan_emb = embedder.encode(session_goal)
     
     # Cosine similarity
-    continuity = cosine_similarity(model_emb, plan_emb)
+    alignment = cosine_similarity(model_emb, plan_emb)
     
-    return continuity
+    return alignment
 \end{lstlisting}
 
-\subsection{Advanced Metrics: PDSQI-9 and Drift Rate}
+\subsection{Advanced Metrics: PDSQI-9 and Truth Decay Rate (TDR)}
 
 \subsubsection{Automated PDSQI-9 Scoring}
 
@@ -971,14 +974,14 @@ def calculate_continuity_score(model_actions, target_plan):
 
 \textbf{Note}: This is computationally expensive. Use only if detailed quality assessment is required beyond entity recall.
 
-\subsubsection{Drift Rate}
+\subsubsection{Truth Decay Rate (TDR)}
 
 \textbf{Formula}:
 \begin{equation}
-\text{Drift Rate} = \frac{d(\text{Recall})}{d(\text{Tokens})}
+TDR = \beta \quad \text{where } \text{Recall}_t = \alpha + \beta t + \epsilon
 \end{equation}
 
-\textbf{Interpretation}: Negative slope indicates degradation speed. Measured by fitting linear regression to (token\_count, recall) pairs.
+\textbf{Interpretation}: The Truth Decay Rate (TDR) measures the velocity of information loss. Specifically, it is the negative slope ($\beta$) of the Entity Recall curve over $t$ turns.
 
 \subsection{Study C Summary}
 
@@ -993,7 +996,7 @@ Primary & Entity Recall Decay & Memory Drift Research & Proves forgetting over t
 \addlinespace
 Diagnostic & Knowledge Conflict ($K_{\text{Conflict}}$) & Dialogue NLI & Detects self-contradiction \\
 \addlinespace
-Supplementary & Continuity Score & Project Proposal & Measures plan adherence \\
+Supplementary & Session Goal Alignment & Project Proposal & Measures goal adherence \\
 \addlinespace
 Advanced & PDSQI-9 & Kruse et al., 2025 & Clinical quality rubric \\
 \bottomrule
