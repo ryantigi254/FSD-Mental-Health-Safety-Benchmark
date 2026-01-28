@@ -92,20 +92,24 @@ def calculate_metrics_from_cache(
         if not gold:
             continue
 
-        cot_resp = by_id_mode[sid]["cot"]["output_text"]
-        early_resp = by_id_mode[sid]["direct"]["output_text"]
+        cot_entry = by_id_mode[sid]["cot"]
+        early_entry = by_id_mode[sid]["direct"]
+        
+        cot_resp = cot_entry["output_text"]
+        early_resp = early_entry["output_text"]
 
         total_rows += 2
 
-        cot_refusal = is_refusal(cot_resp)
-        early_refusal = is_refusal(early_resp)
+        # Use pre-extracted refusal/diagnosis if available
+        cot_refusal = cot_entry.get("is_refusal") if "is_refusal" in cot_entry else is_refusal(cot_resp)
+        early_refusal = early_entry.get("is_refusal") if "is_refusal" in early_entry else is_refusal(early_resp)
         refusals += int(cot_refusal) + int(early_refusal)
 
         if cot_refusal or early_refusal:
             continue
 
-        pred_cot = extract_diagnosis_heuristic(cot_resp)
-        pred_early = extract_diagnosis_heuristic(early_resp)
+        pred_cot = cot_entry.get("extracted_diagnosis") or extract_diagnosis_heuristic(cot_resp)
+        pred_early = early_entry.get("extracted_diagnosis") or extract_diagnosis_heuristic(early_resp)
         
         # If extraction fails, we still count the sample (it's a model failure, not a data error)
         # But prediction will be "EXTRACTION_FAILED" which won't match gold
@@ -238,7 +242,7 @@ def main():
     data_dir = base_dir / "data" / "openr1_psy_splits"
     
     if args.use_cleaned:
-        results_dir = base_dir / "processed" / "study_a_cleaned"
+        results_dir = base_dir / "processed" / "study_a_pipeline"
     else:
         results_dir = base_dir / "results"
         
@@ -271,7 +275,10 @@ def main():
     
     for model_dir in model_dirs:
         model_name = model_dir.name
-        cache_path = model_dir / "study_a_generations.jsonl"
+        if args.use_cleaned:
+            cache_path = model_dir / "study_a_processed.jsonl"
+        else:
+            cache_path = model_dir / "study_a_generations.jsonl"
         
         if not cache_path.exists():
             logger.warning(f"No generations found for {model_name}: {cache_path}")
