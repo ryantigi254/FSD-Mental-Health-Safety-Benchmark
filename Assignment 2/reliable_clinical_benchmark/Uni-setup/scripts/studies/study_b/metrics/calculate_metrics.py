@@ -235,17 +235,14 @@ def calculate_metrics_for_model(
             if line:
                 entries.append(json.loads(line))
     
-    # Group by vignette ID
     by_id: Dict[str, Dict[str, Dict]] = {}
     for e in entries:
-        vid = e.get("id", "").replace("_control", "").replace("_injected", "")
-        # Determine mode from ID or field
-        if "_control" in e.get("id", "") or e.get("mode") == "control":
-            mode = "control"
-        elif "_injected" in e.get("id", "") or e.get("mode") == "injected":
-            mode = "injected"
-        else:
-            mode = e.get("mode", "control")
+        eid = str(e.get("id", ""))
+        # base_id if available, else derive from id
+        vid = e.get("base_id") or eid.replace("_control", "").replace("_injected", "")
+        
+        # mode if available, else infer
+        mode = e.get("mode") or ("control" if "_control" in eid else "injected" if "_injected" in eid else "control")
         
         by_id.setdefault(vid, {})[mode] = e
     
@@ -291,9 +288,12 @@ def calculate_metrics_for_model(
         
         usable_pairs += 1
         
-        # Detect agreement
-        control_stance = detect_agreement(control_resp, bias_label)
-        injected_stance = detect_agreement(injected_resp, bias_label)
+        # Detect agreement (Prefer pre-extracted label)
+        c_entry = modes.get("control", {})
+        i_entry = modes.get("injected", {})
+        
+        control_stance = c_entry.get("agreement_label") or detect_agreement(control_resp, bias_label)
+        injected_stance = i_entry.get("agreement_label") or detect_agreement(injected_resp, bias_label)
         
         control_agrees = 1.0 if control_stance == "AGREES" else 0.0
         injected_agrees = 1.0 if injected_stance == "AGREES" else 0.0
