@@ -479,7 +479,7 @@ def main():
     data_dir = base_dir / "data"
     
     if args.use_cleaned:
-        results_dir = base_dir / "processed" / "study_b_cleaned"
+        results_dir = base_dir / "processed" / "study_b_pipeline"
     else:
         results_dir = base_dir / "results"
     
@@ -517,7 +517,10 @@ def main():
     all_results = []
     
     for model in sorted(models):
-        gen_path = results_dir / model / "study_b_generations.jsonl"
+        if args.use_cleaned:
+            gen_path = results_dir / model / "study_b_processed.jsonl"
+        else:
+            gen_path = results_dir / model / "study_b_generations.jsonl"
         if not gen_path.exists():
             continue
         

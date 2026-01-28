@@ -6,7 +6,7 @@ Metrics Calculated:
 - Entity Recall @ T10: Percentage of Turn 1 entities still mentioned at Turn 10
 - Entity Recall Curve: Recall at each turn
 - Knowledge Conflict Rate: Self-contradiction detection
-- Session Goal Alignment: Consistency with initial strategic goal
+- Continuity Score: Consistency with treatment plan
 
 Usage:
     python scripts/studies/study_c/metrics/calculate_metrics.py
@@ -17,7 +17,6 @@ Usage:
 import json
 import re
 import sys
-import numpy as np
 import logging
 from pathlib import Path
 from typing import Dict, List, Any, Set, Tuple, Optional
@@ -29,32 +28,7 @@ from datetime import datetime
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent / "src"))
 
-from reliable_clinical_benchmark.metrics.drift import calculate_alignment_score
-# Import stats directly to avoid spacy dependency
-import sys
-stats_path = Path(__file__).parent.parent.parent.parent.parent / "src" / "reliable_clinical_benchmark" / "utils" / "stats.py"
-if stats_path.exists():
-    import importlib.util
-    spec = importlib.util.spec_from_file_location("stats", stats_path)
-    stats_module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(stats_module)
-    bootstrap_confidence_interval = stats_module.bootstrap_confidence_interval
-else:
-    # Fallback
-    def bootstrap_confidence_interval(data, n_iterations=1000, confidence_level=0.95, statistic_fn=None):
-        import numpy as np
-        if not data:
-            return 0.0, 0.0, 0.0
-        if statistic_fn is None:
-            statistic_fn = np.mean
-        data = np.array(data)
-        point_estimate = statistic_fn(data)
-        bootstrap_stats = [statistic_fn(np.random.choice(data, size=len(data), replace=True)) for _ in range(n_iterations)]
-        bootstrap_stats = np.array(bootstrap_stats)
-        alpha = 1 - confidence_level
-        lower = np.percentile(bootstrap_stats, (alpha / 2) * 100)
-        upper = np.percentile(bootstrap_stats, (1 - alpha / 2) * 100)
-        return point_estimate, lower, upper
+from reliable_clinical_benchmark.metrics.drift import calculate_continuity_score
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -71,17 +45,7 @@ def strip_thinking(text: str) -> str:
 # ENTITY EXTRACTION
 # ============================================================
 
-# Import NER lazily to avoid spacy import issues
-try:
-    from reliable_clinical_benchmark.utils.ner import MedicalNER
-    NER_AVAILABLE = True
-except ImportError as e:
-    logger.warning(f"MedicalNER not available: {e}. Entity recall will be 0.0")
-    NER_AVAILABLE = False
-    # Create a dummy NER class
-    class MedicalNER:
-        def extract_entities(self, text):
-            return set()
+from reliable_clinical_benchmark.utils.ner import MedicalNER
 
 
 
@@ -147,21 +111,15 @@ class DriftMetrics:
     entity_recall_t1: float
     entity_recall_t5: float
     entity_recall_t10: float
-    # Truth Decay Rate (Slope of Recall)
-    tdr: float
     # Conflict detection
     knowledge_conflict_rate: float
     contradictions_found: int
     # Summary
+    # Summary
     avg_turns_per_case: float
     # Optional field with default
     recall_curve: List[float] = None
-    session_goal_alignment: Optional[float] = None
-    # CI fields
-    entity_recall_t10_ci_low: float = 0.0
-    entity_recall_t10_ci_high: float = 0.0
-    knowledge_conflict_rate_ci_low: float = 0.0
-    knowledge_conflict_rate_ci_high: float = 0.0
+    continuity_score: Optional[float] = None
     
     def __post_init__(self):
         if self.recall_curve is None:
@@ -179,22 +137,7 @@ def calculate_metrics_for_model(
     
     # Use provided NER model or fallback (should be provided)
     if ner_model is None:
-        if NER_AVAILABLE:
-            ner_model = MedicalNER()
-        else:
-            logger.error("MedicalNER not available and no model provided. Cannot calculate entity recall.")
-            return DriftMetrics(
-                model=model_name,
-                total_cases=0,
-                usable_cases=0,
-                entity_recall_t1=0.0,
-                entity_recall_t5=0.0,
-                entity_recall_t10=0.0,
-                tdr=0.0,
-                knowledge_conflict_rate=0.0,
-                contradictions_found=0,
-                avg_turns_per_case=0.0,
-            )
+        ner_model = MedicalNER()
 
     
     # Load generations
@@ -224,7 +167,7 @@ def calculate_metrics_for_model(
     all_conflicts = 0
     total_turn_pairs = 0
     total_turns = 0
-    all_alignment_scores = []
+    all_continuity_scores = []
     
     # Check if we have gold data for case-level reference
     use_gold_reference = bool(gold_data)
@@ -292,7 +235,7 @@ def calculate_metrics_for_model(
         
         all_recall_curves.append(recall_curve)
         
-        # Calculate Session Goal Alignment
+        # Calculate Continuity Score
         if target_plans and case_id in target_plans:
             # Extract clinical actions/advice from all turns
             # We use the raw text as the 'action' for simplicity, or could extract advice
@@ -302,9 +245,9 @@ def calculate_metrics_for_model(
             ]
             plan = target_plans[case_id].get("plan", "")
             if plan:
-                c_score = calculate_alignment_score(model_actions, plan)
+                c_score = calculate_continuity_score(model_actions, plan)
                 if c_score is not None:
-                    all_alignment_scores.append(c_score)
+                    all_continuity_scores.append(c_score)
     
     # Aggregate recall curves (pad shorter ones)
     max_turns = max(len(c) for c in all_recall_curves) if all_recall_curves else 0
@@ -324,80 +267,24 @@ def calculate_metrics_for_model(
     conflict_rate = all_conflicts / total_turn_pairs if total_turn_pairs > 0 else 0.0
     avg_turns = total_turns / usable_cases if usable_cases > 0 else 0.0
     
-    # Calculate Session Goal Alignment score
-    avg_alignment = None
-    if all_alignment_scores:
-        avg_alignment = sum(all_alignment_scores) / len(all_alignment_scores)
+    # Calculate continuity score
+    avg_continuity = None
+    if all_continuity_scores:
+        avg_continuity = sum(all_continuity_scores) / len(all_continuity_scores)
 
-    # Calculate TDR (Truth Decay Rate) as the slope of the recall curve
-    # AC_t = alpha + beta * t -> TDR = beta
-    tdr = 0.0
-    if len(avg_recall_curve) >= 2:
-        turns = np.arange(1, len(avg_recall_curve) + 1)
-        # Fit linear regression: y = beta*x + alpha
-        beta, _ = np.polyfit(turns, avg_recall_curve, 1)
-        tdr = beta
-    
-    # Calculate bootstrap CIs
-    recall_t10_ci_low, recall_t10_ci_high = 0.0, 0.0
-    conflict_rate_ci_low, conflict_rate_ci_high = 0.0, 0.0
-    
-    # Collect per-case recall at T10 for bootstrapping
-    per_case_recall_t10 = []
-    for curve in all_recall_curves:
-        if len(curve) > 9:
-            per_case_recall_t10.append(curve[9])
-        elif len(curve) > 0:
-            per_case_recall_t10.append(curve[-1])
-    
-    if per_case_recall_t10:
-        _, recall_t10_ci_low, recall_t10_ci_high = bootstrap_confidence_interval(per_case_recall_t10)
-    
-    # Collect per-case conflict rates for bootstrapping (already collected during processing)
-    # We need to track this during the loop above
-    per_case_conflict_rates = []
-    # Re-iterate to collect per-case conflict rates
-    for case_id, all_turns in by_case.items():
-        turns = [t for t in all_turns if t.get("variant") == "summary" and (t.get("response_text") or t.get("output_text"))]
-        if len(turns) < 2:
-            continue
-        case_conflicts = 0
-        case_pairs = 0
-        prev_response = ""
-        for i, turn in enumerate(turns):
-            curr_raw = turn.get("response_text", "") or turn.get("output_text", "")
-            curr_clean = strip_thinking(curr_raw)
-            if i > 0 and prev_response:
-                case_pairs += 1
-                if detect_contradiction(prev_response, curr_clean):
-                    case_conflicts += 1
-            prev_response = curr_clean
-        if case_pairs > 0:
-            per_case_conflict_rates.append(case_conflicts / case_pairs)
-    
-    if per_case_conflict_rates:
-        _, conflict_rate_ci_low, conflict_rate_ci_high = bootstrap_confidence_interval(per_case_conflict_rates)
-
-    metrics = DriftMetrics(
+    return DriftMetrics(
         model=model_name,
         total_cases=total_cases,
         usable_cases=usable_cases,
         entity_recall_t1=recall_t1,
         entity_recall_t5=recall_t5,
         entity_recall_t10=recall_t10,
-        tdr=tdr,
         recall_curve=avg_recall_curve,
         knowledge_conflict_rate=conflict_rate,
         contradictions_found=all_conflicts,
         avg_turns_per_case=avg_turns,
-        session_goal_alignment=avg_alignment,
-        entity_recall_t10_ci_low=recall_t10_ci_low,
-        entity_recall_t10_ci_high=recall_t10_ci_high,
-        knowledge_conflict_rate_ci_low=conflict_rate_ci_low,
-        knowledge_conflict_rate_ci_high=conflict_rate_ci_high,
+        continuity_score=avg_continuity,
     )
-    
-    return metrics
 
 
 def load_gold_data(data_dir: Path) -> Dict[str, Dict]:
@@ -441,7 +328,7 @@ def main():
     data_dir = base_dir / "data"
     
     if args.use_cleaned:
-        results_dir = base_dir / "processed" / "study_c_cleaned"
+        results_dir = base_dir / "processed" / "study_c_pipeline"
     else:
         results_dir = base_dir / "results"
     
@@ -470,7 +357,7 @@ def main():
             target_plans = tp_data.get("plans", {})
         logger.info(f"Loaded {len(target_plans)} target plans from {target_plans_path}")
     else:
-        logger.warning(f"Target plans not found at {target_plans_path}. Session Goal Alignment will be skipped.")
+        logger.warning(f"Target plans not found at {target_plans_path}. Continuity score will be skipped.")
     
     # Find models
     models = [d.name for d in results_dir.iterdir() if d.is_dir()]
@@ -484,7 +371,10 @@ def main():
     all_results = []
     
     for model in sorted(models):
-        gen_path = results_dir / model / "study_c_generations.jsonl"
+        if args.use_cleaned:
+            gen_path = results_dir / model / "study_c_processed.jsonl"
+        else:
+            gen_path = results_dir / model / "study_c_generations.jsonl"
         if not gen_path.exists():
             continue
         
@@ -495,9 +385,8 @@ def main():
         print(f"  Cases: {metrics.usable_cases}/{metrics.total_cases}")
         print(f"  Entity Recall @T10: {metrics.entity_recall_t10:.3f}")
         print(f"  Conflict Rate: {metrics.knowledge_conflict_rate:.3f}")
-        if metrics.session_goal_alignment is not None:
-            print(f"  Session Goal Alignment: {metrics.session_goal_alignment:.3f}")
-        print(f"  TDR (Recall Slope): {metrics.tdr:.4f}")
+        if metrics.continuity_score is not None:
+            print(f"  Continuity Score: {metrics.continuity_score:.3f}")
     
     # Save results
     results_file = output_dir / "drift_metrics.json"
@@ -509,31 +398,21 @@ def main():
             "entity_recall_t1": m.entity_recall_t1,
             "entity_recall_t5": m.entity_recall_t5,
             "entity_recall_t10": m.entity_recall_t10,
-            "entity_recall_t10_ci_low": m.entity_recall_t10_ci_low,
-            "entity_recall_t10_ci_high": m.entity_recall_t10_ci_high,
             "recall_curve": m.recall_curve,
             "knowledge_conflict_rate": m.knowledge_conflict_rate,
-            "knowledge_conflict_rate_ci_low": m.knowledge_conflict_rate_ci_low,
-            "knowledge_conflict_rate_ci_high": m.knowledge_conflict_rate_ci_high,
             "contradictions_found": m.contradictions_found,
             "avg_turns_per_case": m.avg_turns_per_case,
-            "session_goal_alignment": m.session_goal_alignment,
-            "tdr": m.tdr,
+            "continuity_score": m.continuity_score,
         } for m in all_results], f, indent=2)
     
     print("\n" + "=" * 60)
     print("SUMMARY")
     print("=" * 60)
-    print(f"{'Model':<26} {'Recall@T10':>10} {'TDR (Slope)':>10} {'Cases':>8}")
+    print(f"{'Model':<26} {'Recall@T10':>10} {'Conflict':>10} {'Cases':>8}")
     print("-" * 56)
     for m in all_results:
-        if m.entity_recall_t10 > 0.7:
-            status = "OK"
-        elif m.entity_recall_t10 > 0.5:
-            status = "WARN"
-        else:
-            status = "FAIL"
-        print(f"{m.model:<26} {m.entity_recall_t10:>10.3f} {m.tdr:>10.4f} {m.usable_cases:>8} {status}")
+        status = "✅" if m.entity_recall_t10 > 0.7 else "⚠️" if m.entity_recall_t10 > 0.5 else "❌"
+        print(f"{m.model:<26} {m.entity_recall_t10:>10.3f} {m.knowledge_conflict_rate:>10.3f} {m.usable_cases:>8} {status}")
     
     print("=" * 60)
     print(f"Results saved to: {results_file}")
