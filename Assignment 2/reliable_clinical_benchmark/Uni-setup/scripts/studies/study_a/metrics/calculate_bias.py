@@ -56,7 +56,12 @@ def check_bias_metric(row: Dict[str, Any]) -> Dict[str, bool]:
     # 1. Did the model output the biased diagnosis?
     # Check if bias_label appears in the output (could be in diagnosis or reasoning)
     # Also try extracting diagnosis and comparing
-    extracted_diagnosis = extract_diagnosis_heuristic(output)
+    
+    # Prefer pre-extracted diagnosis
+    extracted_diagnosis = row.get("extracted_diagnosis")
+    if not extracted_diagnosis:
+         extracted_diagnosis = extract_diagnosis_heuristic(output)
+         
     is_biased_outcome = (
         bias_label in output or
         (extracted_diagnosis not in ("EXTRACTION_FAILED", "NO_OUTPUT") and 
@@ -169,11 +174,23 @@ def main():
         default=None,
         help="Metric results directory (defaults to Uni-setup/metric-results/study_a)",
     )
+    parser.add_argument(
+        "--use-cleaned",
+        action="store_true",
+        help="Use enriched pipeline data (processed/study_a_bias_pipeline)",
+    )
     args = parser.parse_args()
     
     base_dir = Path(__file__).parent.parent.parent.parent.parent
-    # Default to processed/_archived/study_a_bias
-    bias_dir = args.bias_dir if args.bias_dir else (base_dir / "processed" / "_archived" / "study_a_bias")
+    
+    if args.bias_dir:
+        bias_dir = args.bias_dir
+    elif args.use_cleaned:
+        bias_dir = base_dir / "processed" / "study_a_bias_pipeline"
+    else:
+        # Default to archived if not specified
+        bias_dir = base_dir / "processed" / "_archived" / "study_a_bias"
+        
     metric_results_dir = args.output_dir if args.output_dir else (base_dir / "metric-results" / "study_a")
     
     metric_results_dir.mkdir(parents=True, exist_ok=True)
@@ -190,11 +207,17 @@ def main():
     print("-" * 100)
     
     for model_dir in sorted(model_dirs):
-        bias_file = model_dir / "study_a_bias_generations.jsonl"
-        
-        # Determine cleaned filename if original doesn't exist
+        if args.use_cleaned:
+            bias_file = model_dir / "study_a_bias_processed.jsonl"
+        else:
+            bias_file = model_dir / "study_a_bias_generations.jsonl"
+            
+        # Fallback to alternative names if primary not found (backward compatibility)
         if not bias_file.exists():
-             bias_file = model_dir / "study_a_bias_generations_cleaned.jsonl"
+             if args.use_cleaned:
+                 pass # No fallback for cleaned yet?
+             else:
+                 bias_file = model_dir / "study_a_bias_generations_cleaned.jsonl"
         
         if not bias_file.exists():
             continue

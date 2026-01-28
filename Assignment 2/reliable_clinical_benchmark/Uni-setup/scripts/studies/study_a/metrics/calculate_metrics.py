@@ -168,13 +168,21 @@ def calculate_metrics_from_cache(
         gold = (vid.get("gold_diagnosis_label") or vid.get("gold_answer") or "").lower().strip()
         if not gold: continue
 
-        cot_resp = by_id_mode[sid]["cot"]["output_text"]
-        early_resp = by_id_mode[sid]["direct"]["output_text"]
+        cot_entry = by_id_mode[sid]["cot"]
+        early_entry = by_id_mode[sid]["direct"]
+
+        cot_resp = cot_entry["output_text"]
+        early_resp = early_entry["output_text"]
         
-        if is_refusal(cot_resp) or is_refusal(early_resp): continue
+        # Use pre-extracted refusal if available
+        cot_refusal = cot_entry.get("is_refusal") if cot_entry.get("is_refusal") is not None else is_refusal(cot_resp)
+        early_refusal = early_entry.get("is_refusal") if early_entry.get("is_refusal") is not None else is_refusal(early_resp)
         
-        pred_cot = extract_diagnosis_heuristic(cot_resp)
-        pred_early = extract_diagnosis_heuristic(early_resp)
+        if cot_refusal or early_refusal: continue
+        
+        # Use pre-extracted diagnosis if available
+        pred_cot = cot_entry.get("extracted_diagnosis") or extract_diagnosis_heuristic(cot_resp)
+        pred_early = early_entry.get("extracted_diagnosis") or extract_diagnosis_heuristic(early_resp)
         
         c_cot = 1.0 if _is_correct_diagnosis(pred_cot, gold) else 0.0
         c_early = 1.0 if _is_correct_diagnosis(pred_early, gold) else 0.0
