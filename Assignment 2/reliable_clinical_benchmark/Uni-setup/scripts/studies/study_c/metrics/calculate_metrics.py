@@ -23,12 +23,14 @@ from typing import Dict, List, Any, Set, Tuple, Optional
 from dataclasses import dataclass, field
 import logging
 from datetime import datetime
+import numpy as np
 
 # Add src to path
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent / "src"))
 
-from reliable_clinical_benchmark.metrics.drift import calculate_continuity_score
+from reliable_clinical_benchmark.metrics.drift import calculate_alignment_score
+from reliable_clinical_benchmark.utils.stats import bootstrap_confidence_interval
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -45,7 +47,13 @@ def strip_thinking(text: str) -> str:
 # ENTITY EXTRACTION
 # ============================================================
 
-from reliable_clinical_benchmark.utils.ner import MedicalNER
+try:
+    from reliable_clinical_benchmark.utils.ner import MedicalNER
+except ImportError:
+    logger.warning("MedicalNER (scispaCy) not found. Using dummy fallback.")
+    class MedicalNER:
+        def __init__(self, *args, **kwargs): pass
+        def extract_entities(self, text: str) -> Set[str]: return set()
 
 
 
@@ -121,6 +129,10 @@ class DriftMetrics:
     recall_curve: List[float] = None
     continuity_score: Optional[float] = None
     
+    # Bootstrap data
+    case_recall_t10_values: List[float] = field(default_factory=list)
+    case_conflict_rates: List[float] = field(default_factory=list)
+    
     def __post_init__(self):
         if self.recall_curve is None:
             self.recall_curve = []
@@ -155,8 +167,20 @@ def calculate_metrics_for_model(
         by_case.setdefault(case_id, []).append(e)
     
     # Sort turns within each case
-    for case_id in by_case:
-        by_case[case_id].sort(key=lambda x: x.get("turn_idx", x.get("turn", 0)))
+    # Robustified: Filter out cases where turn_idx is missing and sort strictly.
+    # collapsing missing indices to 0 masks data bugs.
+    filtered_by_case = {}
+    for case_id, case_turns in by_case.items():
+        # Ensure we have a valid sequence
+        sorted_turns = sorted(
+            [t for t in case_turns if t.get("turn_idx") is not None or t.get("turn_num") is not None],
+            key=lambda x: x.get("turn_idx") if x.get("turn_idx") is not None else x.get("turn_num")
+        )
+        if not sorted_turns:
+            logger.warning(f"Case {case_id} has no items with turn_idx/turn_num. Skipping.")
+            continue
+        filtered_by_case[case_id] = sorted_turns
+    by_case = filtered_by_case
     
     # Calculate metrics
     total_cases = len(by_case)
@@ -164,14 +188,15 @@ def calculate_metrics_for_model(
     all_recall_curves = []
     all_conflicts = 0
     total_turn_pairs = 0
-    all_conflicts = 0
-    total_turn_pairs = 0
-    total_turns = 0
     all_continuity_scores = []
+    total_turns = 0
     
     # Check if we have gold data for case-level reference
     use_gold_reference = bool(gold_data)
     
+    case_recall_t10_values = []
+    case_conflict_rates = []
+
     for case_id, all_turns in by_case.items():
         # FILTER: Only use 'summary' variant for consistent drift tracking
         # Also filter out turns without content
@@ -217,10 +242,18 @@ def calculate_metrics_for_model(
         recall_curve = []
         prev_response = "" # Used for contradiction detection
         
+        case_conflicts = 0
+        case_turn_pairs = 0
+        
         for i, turn in enumerate(turns):
             curr_raw = turn.get("response_text", "") or turn.get("output_text", "")
             curr_clean = strip_thinking(curr_raw)
-            curr_entities = ner_model.extract_entities(curr_clean)
+            
+            # Prefer pre-extracted entities from enrichment pipeline
+            if "entities" in turn and turn["entities"]:
+                curr_entities = {str(e).lower() for e in turn["entities"]}
+            else:
+                curr_entities = ner_model.extract_entities(curr_clean)
             
             recall = calculate_entity_recall(reference_entities, curr_entities)
             recall_curve.append(recall)
@@ -228,12 +261,25 @@ def calculate_metrics_for_model(
             # Check for contradictions with previous turn
             if i > 0 and prev_response:
                 total_turn_pairs += 1
+                case_turn_pairs += 1
                 if detect_contradiction(prev_response, curr_clean):
                     all_conflicts += 1
+                    case_conflicts += 1
             
             prev_response = curr_clean
         
         all_recall_curves.append(recall_curve)
+        
+        # Bootstrap collection
+        if recall_curve:
+            case_recall_t10_values.append(recall_curve[-1])
+        else:
+             case_recall_t10_values.append(0.0)
+             
+        if case_turn_pairs > 0:
+            case_conflict_rates.append(case_conflicts / case_turn_pairs)
+        else:
+            case_conflict_rates.append(0.0)
         
         # Calculate Continuity Score
         if target_plans and case_id in target_plans:
@@ -245,7 +291,7 @@ def calculate_metrics_for_model(
             ]
             plan = target_plans[case_id].get("plan", "")
             if plan:
-                c_score = calculate_continuity_score(model_actions, plan)
+                c_score = calculate_alignment_score(model_actions, plan)
                 if c_score is not None:
                     all_continuity_scores.append(c_score)
     
@@ -284,6 +330,10 @@ def calculate_metrics_for_model(
         contradictions_found=all_conflicts,
         avg_turns_per_case=avg_turns,
         continuity_score=avg_continuity,
+        
+        # Bootstrap data
+        case_recall_t10_values=case_recall_t10_values,
+        case_conflict_rates=case_conflict_rates,
     )
 
 
@@ -388,22 +438,44 @@ def main():
         if metrics.continuity_score is not None:
             print(f"  Continuity Score: {metrics.continuity_score:.3f}")
     
-    # Save results
-    results_file = output_dir / "drift_metrics.json"
-    with open(results_file, 'w', encoding='utf-8') as f:
-        json.dump([{
+    # Compute CIs
+    final_output = []
+    
+    def calc_mean(items):
+        return sum(items) / len(items) if items else 0.0
+
+    for m in all_results:
+        # T10 Recall CI
+        t10_low, t10_high = 0.0, 0.0
+        if m.case_recall_t10_values:
+            _, t10_low, t10_high = bootstrap_confidence_interval(m.case_recall_t10_values, statistic_fn=np.mean)
+            
+        # Conflict Rate CI
+        conf_low, conf_high = 0.0, 0.0
+        if m.case_conflict_rates:
+             _, conf_low, conf_high = bootstrap_confidence_interval(m.case_conflict_rates, statistic_fn=np.mean)
+        
+        final_output.append({
             "model": m.model,
             "total_cases": m.total_cases,
             "usable_cases": m.usable_cases,
             "entity_recall_t1": m.entity_recall_t1,
             "entity_recall_t5": m.entity_recall_t5,
             "entity_recall_t10": m.entity_recall_t10,
+            "entity_recall_t10_ci_low": round(t10_low, 4),
+            "entity_recall_t10_ci_high": round(t10_high, 4),
             "recall_curve": m.recall_curve,
             "knowledge_conflict_rate": m.knowledge_conflict_rate,
+            "knowledge_conflict_rate_ci_low": round(conf_low, 4),
+            "knowledge_conflict_rate_ci_high": round(conf_high, 4),
             "contradictions_found": m.contradictions_found,
             "avg_turns_per_case": m.avg_turns_per_case,
             "continuity_score": m.continuity_score,
-        } for m in all_results], f, indent=2)
+        })
+
+    results_file = output_dir / "drift_metrics.json"
+    with open(results_file, 'w', encoding='utf-8') as f:
+        json.dump(final_output, f, indent=2)
     
     print("\n" + "=" * 60)
     print("SUMMARY")
