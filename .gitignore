@@ -130,3 +130,5 @@ Course Material/Misc/**
 # Other local files
 Repo Readiness (GitHub).md
 WARP.md
+
+!Assignment 2/reliable_clinical_benchmark/Uni-setup/results/**/study_a_bias_generations.jsonl
