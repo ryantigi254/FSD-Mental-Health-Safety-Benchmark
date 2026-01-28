@@ -18,6 +18,7 @@ scripts/reporting/convert_notebooks_and_patch.py
 # Data and Artifacts (large/derived)
 
 results/
+!results/**/study_a_bias*.jsonl
 processed/
 models/
 offload/
