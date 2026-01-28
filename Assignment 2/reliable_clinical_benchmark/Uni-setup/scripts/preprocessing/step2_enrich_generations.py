@@ -115,12 +115,24 @@ def load_study_b_metadata(valid_splits_dir: Path) -> Dict[str, Dict]:
     if path.exists():
         with open(path, 'r', encoding='utf-8') as f:
             data = json.load(f)
-            # Map by ID (e.g. "b_001_control")
-            # The split file usually has list of objects.
-            # We index by 'id' 
             for item in data:
                 if "id" in item:
                     mapping[item["id"]] = item
+    return mapping
+
+def load_study_a_bias_metadata(base_dir: Path) -> Dict[str, Dict]:
+    """Load metadata from biased_vignettes.json."""
+    mapping = {}
+    path = base_dir / "data" / "adversarial_bias" / "biased_vignettes.json"
+    if path.exists():
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                for item in data.get("cases", []):
+                    if "id" in item:
+                        mapping[item["id"]] = item
+        except Exception as e:
+            print(f"Warning: Failed to load bias metadata: {e}")
     return mapping
 
 # ============================================================
@@ -146,6 +158,64 @@ def enrich_study_a(entry: Dict) -> Dict:
     }
     
     # Extractions
+    refusal = is_refusal(text)
+    diag, method = extract_diagnosis(text)
+    verb, noise, wc = compute_complexity(text)
+    
+    if refusal and method == "failed":
+        diag = "REFUSAL"
+        method = "refusal_detection"
+        
+    processed.update({
+        "is_refusal": refusal,
+        "extracted_diagnosis": diag,
+        "extraction_method": method,
+        "response_verbosity": verb,
+        "format_noise_score": noise,
+        "word_count": wc
+    })
+    
+    return processed
+
+def enrich_study_a_bias(entry: Dict, metadata_map: Dict) -> Dict:
+    """Enrich Study A Bias entry."""
+    eid = str(entry.get("id", "unknown"))
+    text = entry.get("output_text") or entry.get("response_text") or ""
+    
+    # Link to metadata
+    meta = metadata_map.get(eid, {})
+    
+    # Resolve persona_id (the critical join key for bias)
+    # 1. Check entry's own persona_id
+    # 2. Check entry's metadata dictionary
+    # 3. Check biased_vignettes.json metadata
+    # 4. Fallback to bias_feature (which is often the persona keyword)
+    persona_id = (
+        entry.get("persona_id") or 
+        entry.get("metadata", {}).get("persona_id") or 
+        meta.get("metadata", {}).get("persona_id") or
+        entry.get("bias_feature") or
+        meta.get("bias_feature") or
+        "unknown"
+    )
+
+    # Core fields
+    processed = {
+        "id": eid,
+        "mode": entry.get("mode", "cot"),
+        "persona_id": persona_id,
+        "bias_feature": entry.get("bias_feature") or meta.get("bias_feature"),
+        "bias_label": entry.get("bias_label") or meta.get("bias_label"),
+        "model_name": entry.get("model_name", "unknown"),
+        "status": entry.get("status", "ok"),
+        "output_text": text,
+        
+        "was_cleaned": entry.get("meta", {}).get("cleaned", False),
+        "original_length": entry.get("meta", {}).get("original_length"),
+        "cleaned_length": entry.get("meta", {}).get("cleaned_length"),
+    }
+    
+    # Extractions (Reuse Study A logic)
     refusal = is_refusal(text)
     diag, method = extract_diagnosis(text)
     verb, noise, wc = compute_complexity(text)
@@ -285,8 +355,10 @@ def process_file(
             try:
                 entry = json.loads(line)
                 
-                if study == "study_a" or study == "study_a_bias":
+                if study == "study_a":
                     processed = enrich_study_a(entry)
+                elif study == "study_a_bias":
+                    processed = enrich_study_a_bias(entry, metadata or {})
                 elif study == "study_b":
                     processed = enrich_study_b(entry, metadata or {})
                 elif study == "study_c":
@@ -310,7 +382,7 @@ def main():
     parser.add_argument("--model", type=str, help="Specific model filter")
     args = parser.parse_args()
     
-    studies = ["study_a", "study_b", "study_c"] if args.all_studies else [args.study]
+    studies = ["study_a", "study_a_bias", "study_b", "study_c"] if args.all_studies else [args.study]
     if not studies:
         print("Please specify --study or --all-studies")
         return
@@ -324,6 +396,11 @@ def main():
     if "study_b" in studies:
         print("Loading Study B metadata...")
         sb_meta = load_study_b_metadata(data_dir)
+        
+    ab_meta = {}
+    if "study_a_bias" in studies:
+        print("Loading Study A Bias metadata...")
+        ab_meta = load_study_a_bias_metadata(base_dir)
 
     for study in studies:
         # Prefer the 'optimized' cleaned directory if it exists
@@ -352,7 +429,13 @@ def main():
             if not in_file.exists(): continue
             
             print(f"  Enriching {model_dir.name}...", end=" ", flush=True)
-            meta = sb_meta if study == "study_b" else None
+            if study == "study_b":
+                meta = sb_meta
+            elif study == "study_a_bias":
+                meta = ab_meta
+            else:
+                meta = None
+            
             count = process_file(study, in_file, out_file, meta)
             print(f"Done ({count} entries)")
 
