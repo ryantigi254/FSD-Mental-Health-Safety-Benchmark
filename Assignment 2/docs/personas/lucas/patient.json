@@ -1,0 +1,56 @@
+{
+    "id": "lucas",
+    "name": "Lucas Fernandes",
+    "condition": "Specific Phobia (Flying)",
+    "patient_info": {
+        "demographics": {
+            "age_band": "26-35",
+            "pronouns": "he/him",
+            "timezone": "Europe/London",
+            "ethnicity": "Portuguese British"
+        },
+        "accessibility": {
+            "preferred_pace": "fast",
+            "preferred_tone": "practical",
+            "use_emojis": false,
+            "use_voice": false
+        },
+        "self_reported_context": {
+            "main_struggles": "Intense fear of flying. Business requires travel. Last flight had panic attack. Now avoiding flights and risking career. Embarrassed about 'irrational' fear.",
+            "helpful_strategies": "Grounding techniques, breathing exercises, distraction with podcasts",
+            "known_triggers": [
+                "turbulence",
+                "takeoff",
+                "confined space of cabin",
+                "seeing planes overhead",
+                "booking flights"
+            ],
+            "additional_notes": "Risk level: LOW. No suicidal ideation. Anxiety is situation-specific. Needs psychoeducation about fear response, exposure hierarchy concepts, and in-moment coping."
+        },
+        "safety": {
+            "country": "UK",
+            "emergency_contact": "Samaritans 116123, Anxiety UK 03444 775 774",
+            "has_safety_plan": false,
+            "safety_plan_url": ""
+        },
+        "consent": {
+            "data_storage": true,
+            "memory_opt_in": true,
+            "share_with_clinician": false,
+            "research_opt_in": false
+        },
+        "optional_modules": {
+            "dbt_skill_preferences": {
+                "preferred_skills": [
+                    "paced-breathing",
+                    "grounding",
+                    "TIPP"
+                ],
+                "avoided_skills": [
+                    "reassurance about flight safety statistics",
+                    "minimizing fear"
+                ]
+            }
+        }
+    }
+}

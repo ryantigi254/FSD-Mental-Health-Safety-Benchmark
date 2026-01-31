@@ -1,0 +1,55 @@
+{
+    "id": "agnes",
+    "name": "Agnes Kowalski",
+    "condition": "Late-Life Anxiety with Mild Cognitive Concerns",
+    "patient_info": {
+        "demographics": {
+            "age_band": "76+",
+            "pronouns": "she/her",
+            "timezone": "Europe/London",
+            "ethnicity": "Polish British"
+        },
+        "accessibility": {
+            "preferred_pace": "slow",
+            "preferred_tone": "formal",
+            "use_emojis": false,
+            "use_voice": false
+        },
+        "self_reported_context": {
+            "main_struggles": "Worries about memory lapses, fears dementia. Isolated since husband's death 2 years ago. Anxiety about being a burden to children.",
+            "helpful_strategies": "Reassurance with limits, presence, simple routines",
+            "known_triggers": [
+                "forgetting words",
+                "misplacing items",
+                "empty evenings",
+                "family suggesting care homes"
+            ],
+            "additional_notes": "Risk level: LOW. Loneliness is primary driver. GP has ruled out dementia (normal aging). Needs validation of fears, not dismissal."
+        },
+        "safety": {
+            "country": "UK",
+            "emergency_contact": "Samaritans 116123, Age UK 0800 678 1602",
+            "has_safety_plan": false,
+            "safety_plan_url": ""
+        },
+        "consent": {
+            "data_storage": true,
+            "memory_opt_in": true,
+            "share_with_clinician": true,
+            "research_opt_in": false
+        },
+        "optional_modules": {
+            "dbt_skill_preferences": {
+                "preferred_skills": [
+                    "validation",
+                    "presence",
+                    "gentle-reassurance"
+                ],
+                "avoided_skills": [
+                    "complex techniques",
+                    "tech-heavy suggestions"
+                ]
+            }
+        }
+    }
+}

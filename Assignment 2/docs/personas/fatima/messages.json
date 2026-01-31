@@ -1,0 +1,77 @@
+[
+    {
+        "text": "I lost time again. One minute I was cooking, then it was dark outside.",
+        "recommendedSkills": [
+            "orientation",
+            "validation"
+        ]
+    },
+    {
+        "text": "Say my name and where I am. Slowly.",
+        "recommendedSkills": [
+            "orientation",
+            "grounding"
+        ]
+    },
+    {
+        "text": "I can't tell anyone at home about this. They wouldn't understand.",
+        "recommendedSkills": [
+            "validation",
+            "cultural-sensitivity"
+        ]
+    },
+    {
+        "text": "Is this normal for people who've been through... things?",
+        "recommendedSkills": [
+            "normalising",
+            "psychoeducation"
+        ]
+    },
+    {
+        "text": "I need something to hold onto when it starts happening.",
+        "recommendedSkills": [
+            "coping-card",
+            "grounding-object"
+        ]
+    },
+    {
+        "text": "Guide me through 5-4-3-2-1. Start with what I can see.",
+        "recommendedSkills": [
+            "five-four-three-two-one"
+        ]
+    },
+    {
+        "text": "Sometimes I feel like I'm watching myself from outside.",
+        "recommendedSkills": [
+            "validation",
+            "depersonalisation-psychoeducation"
+        ]
+    },
+    {
+        "text": "My children ask why I go quiet. I don't know what to tell them.",
+        "recommendedSkills": [
+            "validation",
+            "age-appropriate-explanation"
+        ]
+    },
+    {
+        "text": "Two choices: more grounding or you stay quiet while I breathe?",
+        "recommendedSkills": [
+            "choice-menu",
+            "presence"
+        ]
+    },
+    {
+        "text": "What support exists for people like me? Refugees, I mean.",
+        "recommendedSkills": [
+            "signposting",
+            "refugee-services"
+        ]
+    },
+    {
+        "text": "Save that having you say my name and location helped.",
+        "recommendedSkills": [
+            "memory-note"
+        ]
+    }
+]

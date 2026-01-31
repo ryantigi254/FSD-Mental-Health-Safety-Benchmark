@@ -1,0 +1,94 @@
+[
+    {
+        "text": "she didn't know who I was today. again.",
+        "recommendedSkills": [
+            "validation"
+        ]
+    },
+    {
+        "text": "I feel guilty for feeling angry at her—she can't help it",
+        "recommendedSkills": [
+            "validation",
+            "normalizing"
+        ]
+    },
+    {
+        "text": "I haven't had a full night's sleep in weeks",
+        "recommendedSkills": [
+            "validation",
+            "exhaustion-acknowledgment"
+        ]
+    },
+    {
+        "text": "don't tell me to 'take a break'—there's no one else",
+        "recommendedSkills": [
+            "presence",
+            "reality-acknowledgment"
+        ]
+    },
+    {
+        "text": "can you just acknowledge how hard this is?",
+        "recommendedSkills": [
+            "validation",
+            "reflective-listening"
+        ]
+    },
+    {
+        "text": "my wife thinks I prioritise mum over her. she's right but I can't stop",
+        "recommendedSkills": [
+            "validation",
+            "conflict-acknowledgment"
+        ]
+    },
+    {
+        "text": "what's STOP again? need something quick when I'm about to lose it",
+        "recommendedSkills": [
+            "dbt-stop"
+        ]
+    },
+    {
+        "text": "30 seconds of breathing. count with me.",
+        "recommendedSkills": [
+            "paced-breathing"
+        ]
+    },
+    {
+        "text": "why do I feel so empty? I'm not depressed, I'm just... nothing",
+        "recommendedSkills": [
+            "psychoeducation",
+            "burnout-explanation"
+        ]
+    },
+    {
+        "text": "two choices: quick grounding or help me plan one thing for myself this week",
+        "recommendedSkills": [
+            "choice-menu",
+            "self-care-planning"
+        ]
+    },
+    {
+        "text": "what carer support services exist? short answer",
+        "recommendedSkills": [
+            "crisis-signposting",
+            "resources"
+        ]
+    },
+    {
+        "text": "save that the breathing helped when I was spiraling",
+        "recommendedSkills": [
+            "memory-note"
+        ]
+    },
+    {
+        "text": "remind me of your boundaries—you're not a social worker, right?",
+        "recommendedSkills": [
+            "boundaries"
+        ]
+    },
+    {
+        "text": "close with something real. no platitudes.",
+        "recommendedSkills": [
+            "closure"
+        ]
+    }
+]
