@@ -62,7 +62,7 @@
 \maketitle
 
 \begin{abstract}
-This report presents a comprehensive black-box evaluation of reasoning models (8B--32B parameters) intended for mental-health decision support. Moving beyond static medical knowledge benchmarks, we audit "reasoning reliability" through three high-stakes failure modes: (1) \textbf{Faithfulness}, (2) \textbf{Sycophancy}, and (3) \textbf{Longitudinal Drift}. Utilising a harness of over 15,000 prompts, we find that modern reasoning models have effectively solved short-term context drift (\texttt{Recall@T10}: 1.0 across all models). However, a critical trade-off remains in reasoning integrity: while \texttt{Psyche-R1} achieves an excellent faithfulness gap (-0.02), it exhibits a dangerous 71\% silent bias rate. Conversely, \texttt{PsyLLM} demonstrates superior reasoning content (\texttt{Step-F1}: 0.11) but struggles with unfaithful rationalisation. We propose a "Minimum Viable Auditing Harness" for clinical AI deployment.
+This report presents a comprehensive black-box evaluation of reasoning models (8B--32B parameters) intended for mental-health decision support. Moving beyond static medical knowledge benchmarks, we audit "reasoning reliability" through three high-stakes failure modes: (1) \textbf{Faithfulness}, (2) \textbf{Sycophancy}, and (3) \textbf{Longitudinal Drift}. Utilising a harness of over 15,000 prompts, we find that longitudinal recall degrades (Recall@T10: 0.21--0.50 across models). A critical trade-off remains in reasoning integrity: \texttt{Piaget-8B} achieves the best faithfulness gap ($\Delta = -0.007$), whilst \texttt{Psyche-R1} exhibits a dangerous 71\% silent bias rate. \texttt{PsyLLM} demonstrates superior reasoning content (\texttt{Step-F1}: 0.11) but negative faithfulness ($\Delta = -0.013$). We propose a "Minimum Viable Auditing Harness" for clinical AI deployment.
 \end{abstract}
 
 \tableofcontents
@@ -76,6 +76,13 @@ This benchmark operationalises these risks into measurable metrics. We evaluate 
 \section{Literature Review: The Epistemological Crisis in Clinical AI}
 
 The integration of LLMs into mental health care represents a paradigm shift from retrieval-based systems to generative reasoning agents. While general-purpose models have achieved expert-level performance on static medical benchmarks such as MedQA and the USMLE \cite{singhal2023expert}, recent literature suggests these metrics mask profound fragilities in reasoning reliability, particularly when models are deployed in dynamic, multi-turn clinical interactions \cite{he2025survey}. This review examines the three critical failure modes—unfaithful reasoning, sycophancy, and longitudinal drift—that necessitate the rigorous auditing framework proposed in this study.
+
+\begin{figure}[H]
+    \centering
+        \includegraphics[width=1\linewidth]{Images/Prior_Evidence_Targeted_Clinical_LLM_Failure_Modes.png}
+    \caption{\textbf{Targeted Clinical Failure Modes}. Existing literature identifies three primary vectors for clinical AI failure: (A) Unfaithful Reasoning \cite{turpin2023lmdont, lanham2024reasoning}, (B) Sycophantic Compliance \cite{wei2023sycophancy}, and (C) Contextual Drift \cite{liu2025truth}.}
+    \label{fig:failure_modes}
+\end{figure}
 
 \subsection{The Faithfulness Gap in Chain-of-Thought Reasoning}
 A central premise of clinical AI safety is that a model’s explanation (Chain-of-Thought, CoT) must faithfully reflect the computational process used to derive the diagnosis. However, Turpin et al. (2023) demonstrated that LLMs frequently engage in "rationalisation," generating plausible clinical justifications for incorrect answers simply because the answer was biased by the prompt context \cite{turpin2023lmdont}. Their study on BIG-Bench Hard tasks revealed that CoT explanations can be systematically misleading, serving as post-hoc justifications rather than true causal traces.
@@ -149,9 +156,9 @@ def calculate_faithfulness_gap(model, vignettes):
 \end{lstlisting}
 
 \subsection{Results}
-Table \ref{tab:faithfulness} presents the aggregate performance across faithfulness metrics. \texttt{Psyche-R1} achieved the most desirable faithfulness gap ($\Delta = -0.020$), indicating that its reasoning process is tightly coupled to its predictions. However, this model exhibited a critical safety failure with a \textbf{Silent Bias rate ($R_{SB}$) of 0.714}, meaning it acted on demographic bias 71\% of the time without disclosing it in the reasoning trace.
+Table \ref{tab:faithfulness} presents the aggregate performance across faithfulness metrics. \texttt{Piaget-8B} achieved the most desirable faithfulness gap ($\Delta = -0.007$), indicating that its reasoning process is tightly coupled to its predictions. \texttt{Psyche-R1} exhibited a critical safety failure with a \textbf{Silent Bias rate ($R_{SB}$) of 0.714}, meaning it acted on demographic bias 71\% of the time without disclosing it in the reasoning trace.
 
-Conversely, \texttt{PsyLLM} demonstrated the highest qualitative reasoning score (\textbf{Step-F1} = 0.110), significantly outperforming the baseline \texttt{Qwen3} (0.027). However, its faithfulness gap was -0.113, suggesting a "reasoning tax" where CoT distracts the model from the correct intuition.
+\texttt{PsyLLM} demonstrated the highest qualitative reasoning score (\textbf{Step-F1} = 0.110), significantly outperforming the baseline \texttt{Qwen3-8B} (0.027). \texttt{GPT-OSS-20B} had the worst faithfulness gap ($\Delta = 0.061$), suggesting a ``reasoning tax'' where CoT distracts the model from the correct intuition.
 
 \begin{figure}[H]
     \centering
@@ -168,12 +175,13 @@ Conversely, \texttt{PsyLLM} demonstrated the highest qualitative reasoning score
 \toprule
 \textbf{Model} & \textbf{Faithfulness Gap ($\Delta$)} & \textbf{Step-F1} & \textbf{Silent Bias ($R_{SB}$)} \\
 \midrule
-\texttt{Psyche-R1} & \textbf{-0.020} & 0.003 & \textcolor{red}{0.714} \\
-\texttt{Psych-Qwen-32B} & -0.022 & 0.025 & 0.214 \\
-\texttt{DeepSeek-R1-Distill} & -0.081 & 0.013 & \textbf{0.000} \\
-\texttt{PsyLLM} & -0.113 & \textbf{0.110} & 0.250 \\
-\texttt{GPT-OSS-20B} & -0.104 & 0.006 & 0.333 \\
-\texttt{Qwen3-8B} & -0.221 & 0.027 & 0.273 \\
+\texttt{Piaget-8B} & \textbf{-0.007} & 0.021 & 0.182 \\
+\texttt{PsyLLM} & -0.013 & \textbf{0.110} & 0.250 \\
+\texttt{Psych-Qwen-32B} & -0.019 & 0.025 & 0.214 \\
+\texttt{DeepSeek-R1-Distill} & -0.050 & 0.013 & \textbf{0.000} \\
+\texttt{Psyche-R1} & -0.079 & 0.003 & \textcolor{red}{0.714} \\
+\texttt{Qwen3-8B} & 0.059 & 0.027 & 0.273 \\
+\texttt{GPT-OSS-20B} & \textcolor{red}{0.061} & 0.006 & 0.333 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -216,7 +224,7 @@ def calculate_sycophancy_prob(model, qa_pairs):
 \subsection{Results}
 The evaluated models demonstrated exceptional resilience (Figure \ref{fig:plot_sycophancy}). All models exhibited negative $P_{Syc}$ scores, meaning they were \textit{less} likely to agree with a user's misconception than a neutral prompt. 
 
-\textbf{DeepSeek-R1-LMStudio} proved the most robust ($P_{Syc} = -0.166$), followed by \textbf{Psyche-R1} (-0.126). The baseline \textbf{Qwen3-8B} was the least robust, though still safe ($P_{Syc} = -0.040$). Furthermore, the \textbf{Evidence Hallucination} ($H_{Ev}$) rate was 0.000 across the board, indicating models refused to fabricate medical evidence even under pressure.
+\textbf{DeepSeek-R1-LMStudio} proved the most robust ($P_{Syc} = -0.167$), followed by \textbf{GLM-4.7-Flash} (-0.137) and \textbf{Psyche-R1} (-0.127). The baseline \textbf{Qwen3-8B} was the least robust, though still safe ($P_{Syc} = -0.040$). Furthermore, the \textbf{Evidence Hallucination} ($H_{Ev}$) rate was 0.000 across the board, indicating models refused to fabricate medical evidence even under pressure.
 
 \begin{figure}[H]
     \centering
@@ -227,22 +235,23 @@ The evaluated models demonstrated exceptional resilience (Figure \ref{fig:plot_s
 
 \begin{table}[H]
 \centering
-\caption{Study B Performance Metrics (Top Models)}
+\caption{Study B Performance Metrics (All Models)}
 \label{tab:sycophancy}
 \small
 \begin{tabular}{lrrr}
 \toprule
 \textbf{Model} & \textbf{Sycophancy Prob ($P_{Syc}$)} & \textbf{Flip Rate} & \textbf{Ev. Hallucination ($H_{Ev}$)} \\
 \midrule
-\texttt{DeepSeek-R1-LMStudio} & \textbf{-0.166} & 0.00 & 0.00 \\
-\texttt{Psyche-R1} & -0.126 & 0.00 & 0.00 \\
+\texttt{DeepSeek-R1-LMStudio} & \textbf{-0.167} & 0.00 & 0.00 \\
+\texttt{GLM-4.7-Flash} & -0.137 & 0.00 & 0.00 \\
+\texttt{Psyche-R1} & -0.127 & 0.00 & 0.00 \\
 \texttt{QwQ} & -0.116 & 0.00 & 0.00 \\
 \texttt{Psych-Qwen-32B} & -0.109 & 0.00 & 0.00 \\
 \texttt{DeepSeek-R1-Distill} & -0.105 & 0.00 & 0.00 \\
 \texttt{Piaget-8B} & -0.098 & 0.00 & 0.00 \\
 \texttt{PsyLLM} & -0.087 & 0.00 & 0.00 \\
 \texttt{GPT-OSS-20B} & -0.062 & 0.00 & 0.00 \\
-\texttt{Qwen3-8B} & -0.040 & 0.00 & 0.00 \\
+\texttt{Qwen3-8B} & \textcolor{red}{-0.040} & 0.00 & 0.00 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -283,7 +292,7 @@ def calculate_entity_drift(model, history_chunks):
 \end{lstlisting}
 
 \subsection{Results}
-Contrary to expectations, we found significant degradation in reasoning models. While \texttt{PsyLLM} maintained a robust \textbf{Recall@T10 of 0.715}, the reasoning-heavy models struggled. \texttt{DeepSeek-R1-Distill} dropped to \textbf{0.366}, suggesting that the generation of extensive Chain-of-Thought tokens consumes the context window, effectively "pushing out" the patient history.
+We found significant recall degradation over 10 turns. \texttt{Psych-Qwen-32B} achieved the highest \textbf{Recall@T10 (0.496)}, followed by \texttt{Psyche-R1} (0.479) and \texttt{DeepSeek-R1-LMStudio} (0.463). \texttt{PsyLLM} had the lowest recall (0.206), suggesting that reasoning-heavy or domain-specialised models can lose patient context as the conversation lengthens.
 
 \begin{figure}[H]
     \centering
@@ -294,51 +303,55 @@ Contrary to expectations, we found significant degradation in reasoning models. 
 
 \begin{table}[H]
     \centering
-    \caption{Study C Performance Metrics (Top Models)}
+    \caption{Study C Performance Metrics (All Models with Drift Data)}
     \label{tab:drift_table}
     \begin{tabular}{lrrr}
     \toprule
     \textbf{Model} & \textbf{Recall @ Turn 10} & \textbf{Know. Conflict} & \textbf{Truth Decay Rate} \\
     \midrule
-    \texttt{DeepSeek-R1-LMStudio} & \textbf{1.000} & 0.000 & 0.00 \\
-    \texttt{Psyche-R1} & 1.000 & 0.000 & 0.00 \\
-    \texttt{Psych-Qwen-32B} & 1.000 & 0.004 & 0.00 \\
-    \texttt{PsyLLM} & 1.000 & 0.000 & 0.00 \\
-    \texttt{GPT-OSS-20B} & 1.000 & 0.004 & 0.00 \\
-    \texttt{Qwen3-8B} & 1.000 & 0.000 & 0.00 \\
+    \texttt{Psych-Qwen-32B} & \textbf{0.496} & 0.004 & 0.00 \\
+    \texttt{Psyche-R1} & 0.479 & 0.000 & 0.00 \\
+    \texttt{DeepSeek-R1-LMStudio} & 0.463 & 0.000 & 0.00 \\
+    \texttt{Qwen3-8B} & 0.418 & 0.000 & 0.00 \\
+    \texttt{DeepSeek-R1-Distill} & 0.409 & 0.000 & 0.00 \\
+    \texttt{QwQ} & 0.332 & 0.000 & 0.00 \\
+    \texttt{GPT-OSS-20B} & 0.259 & 0.004 & 0.00 \\
+    \texttt{PsyLLM} & \textcolor{red}{0.206} & 0.000 & 0.00 \\
     \bottomrule
     \end{tabular}
 \end{table}
 
-\paragraph{Comments on Saturation Effects:} The uniform 1.0 Recall and 0.00 Truth Decay Rate suggest a "ceiling effect." The 10-turn window, selected to mimic a standard triage interaction, falls well within the effective context window (8k--128k tokens) of modern architectures. While this proves that \textit{short-term} drift is solved, it implies that future benchmarks must extend to 50--100 turns (e.g., longitudinal therapy) to find the breaking point of these systems.
+\paragraph{Comments on Recall Decay:} Recall@T10 ranges from 0.21 to 0.50, indicating that entity retention degrades within 10 turns. The 10-turn window mimics a standard triage interaction; future benchmarks may extend to 50--100 turns (e.g., longitudinal therapy) to characterise longer-horizon drift.
 
 \section{Discussion}
 \subsection{The New Safety Frontier: Bias over Memory}
-Our results necessitate a shift in safety priorities. Memory retention (Drift) appears solved for standard triage lengths (Recall = 1.0). The critical vulnerability is now \textbf{Faithfulness} and \textbf{Silent Bias}. \texttt{Psyche-R1} offers a strong faithfulness gap (-0.02) but hides bias 71\% of the time. \texttt{PsyLLM} offers excellent reasoning content (Step-F1 0.11) but operates on unfaithful intuition ($\Delta$ -0.11).
+Our results necessitate a shift in safety priorities. Longitudinal recall degrades (Recall@T10: 0.21--0.50). The critical vulnerabilities are \textbf{Faithfulness}, \textbf{Silent Bias}, and \textbf{Recall decay}. \texttt{Psyche-R1} has a large negative faithfulness gap (-0.08) and hides bias 71\% of the time. \texttt{PsyLLM} offers excellent reasoning content (Step-F1 0.11) with faithfulness $\Delta = -0.013$.
 
 \subsection{Main Evaluation Results}
-Based on a weighted Safety Score ($40\%$ Faithfulness, $30\%$ Sycophancy, $30\%$ Recall), \texttt{Psych-Qwen-32B} achieves the highest rank by balancing moderate recall with acceptable faithfulness and bias levels. \texttt{DeepSeek-R1-Distill} follows closely, penalized only by a slightly higher faithfulness gap, but achieving perfect bias and recall scores.
+Based on a weighted Safety Score ($40\%$ Faithfulness, $30\%$ Sycophancy, $30\%$ Recall), Table \ref{tab:main_results} ranks all evaluated models. \texttt{Piaget-8B} and \texttt{Psych-Qwen-32B} achieve strong overall profiles; \texttt{Psyche-R1} is penalised by high silent bias despite good sycophancy resistance. Models without Study C data (Piaget-8B, GLM-4.7-Flash) have Recall marked as ``---''.
 
 \begin{table}[H]
 \centering
-\caption{\textbf{Main Evaluation Results.} Performance of 8B--32B reasoning models across Faithfulness ($\Delta$), Sycophancy Resistance ($P_{Syc}$), and Longitudinal Recall. \texttt{Psych-Qwen-32B} achieves the highest safety profile.}
+\caption{\textbf{Main Evaluation Results.} Performance of all reasoning models across Faithfulness ($\Delta$), Sycophancy Resistance ($P_{Syc}$), and Longitudinal Recall@T10.}
 \label{tab:main_results}
 \small
 \begin{tabularx}{\textwidth}{@{}lXccccc@{}}
 \toprule
 \textbf{Rank} & \textbf{Model} & \textbf{Safety Score} & \boldmath{$\Delta$} & \boldmath{$P_{Syc}$} & \textbf{Recall} & \textbf{Pass/Total} \\
 \midrule
-1 & \texttt{Psych-Qwen-32B} & \textbf{8.1/10} & -0.02 & -0.11 & 1.0 & 4/5 \\ 
-2 & \texttt{DeepSeek-R1-Distill} & 8.0/10 & -0.08 & -0.10 & 1.0 & 3/5 \\
-3 & \texttt{Piaget-8B} & 7.5/10 & -0.13 & -0.10 & 1.0 & 3/5 \\
-4 & \texttt{Psyche-R1} & 7.2/10 & \textbf{-0.02} & -0.13 & 1.0 & 2/5 \\
-5 & \texttt{PsyLLM} & 6.8/10 & -0.11 & -0.09 & 1.0 & 2/5 \\
-6 & \texttt{QwQ-32B} & 6.5/10 & -0.14 & -0.12 & 1.0 & 2/5 \\
-7 & \texttt{Qwen3-8B} & 6.1/10 & -0.22 & \textbf{-0.04} & 1.0 & 1/5 \\
-8 & \texttt{GPT-OSS-20B} & 6.0/10 & -0.10 & -0.06 & 1.0 & 1/5 \\
+1 & \texttt{Piaget-8B} & \textbf{7.5/10} & \textbf{-0.007} & -0.098 & --- & 3/5 \\
+2 & \texttt{Psych-Qwen-32B} & 7.3/10 & -0.019 & -0.109 & 0.496 & 4/5 \\
+3 & \texttt{PsyLLM} & 6.9/10 & -0.013 & -0.087 & 0.206 & 2/5 \\
+4 & \texttt{DeepSeek-R1-Distill} & 6.8/10 & -0.050 & -0.105 & 0.409 & 3/5 \\
+5 & \texttt{QwQ} & 6.6/10 & 0.020 & -0.116 & 0.332 & 2/5 \\
+6 & \texttt{DeepSeek-R1-LMStudio} & 6.5/10 & 0.011 & \textbf{-0.167} & 0.463 & 3/5 \\
+7 & \texttt{Psyche-R1} & 6.2/10 & -0.079 & -0.127 & 0.479 & 2/5 \\
+8 & \texttt{GLM-4.7-Flash} & 6.1/10 & 0.050 & -0.137 & --- & 2/5 \\
+9 & \texttt{Qwen3-8B} & 5.9/10 & 0.059 & -0.040 & 0.418 & 2/5 \\
+10 & \texttt{GPT-OSS-20B} & 5.7/10 & 0.061 & -0.062 & 0.259 & 1/5 \\
 \bottomrule
-\multicolumn{7}{l}{\footnotesize \textbf{Metrics}: $\Delta$ = Faithfulness Gap (closer to 0 is better); $P_{Syc}$ = Sycophancy Prob (lower negative is safer);} \\
-\multicolumn{7}{l}{\footnotesize Recall = Entity Recall @ Turn 10 (>0.7 is ideal threshold).}
+\multicolumn{7}{l}{\footnotesize \textbf{Metrics}: $\Delta$ = Faithfulness Gap (closer to 0 is better); $P_{Syc}$ = Sycophancy Prob (more negative = safer);} \\
+\multicolumn{7}{l}{\footnotesize Recall = Entity Recall @ Turn 10 (--- = no Study C data).}
 \end{tabularx}
 \end{table}
 

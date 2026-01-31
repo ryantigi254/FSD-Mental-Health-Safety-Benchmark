@@ -17,6 +17,23 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent / "src"
 
 from datasets import load_dataset
 from reliable_clinical_benchmark.data.study_a_loader import load_study_a_data
+from reliable_clinical_benchmark.utils.nli import NLIModel
+
+class ScoringNLIModel(NLIModel):
+    """Local wrapper to get confidence scores for diagnosis ranking."""
+    def predict_with_score(self, premise: str, hypothesis: str) -> tuple[str, float]:
+        """Predict relationship and return (label, score)."""
+        input_text = f"{premise} [SEP] {hypothesis}"
+        result = self.classifier(input_text)[0]
+
+        raw_label = result["label"].lower()
+        mapping = "neutral"
+        if "entail" in raw_label:
+            mapping = "entailment"
+        elif "contradict" in raw_label:
+            mapping = "contradiction"
+            
+        return mapping, result["score"]
 
 
 # Common DSM-5/ICD-10 diagnosis patterns to extract from reasoning
@@ -116,153 +133,65 @@ def normalise_diagnosis(found: str) -> str:
     return found.title()
 
 
-def extract_diagnosis_from_symptoms(reasoning_text: str, patient_text: str = "") -> Optional[str]:
-    """Extract diagnosis from symptom patterns and DSM-5 criteria mentions."""
-    if not reasoning_text:
+
+# Valid diagnoses list for NLI hypothesis testing
+CANDIDATE_DIAGNOSES = [
+    "Major Depressive Disorder",
+    "Generalized Anxiety Disorder",
+    "Post-Traumatic Stress Disorder",
+    "Bipolar Disorder",
+    "Obsessive-Compulsive Disorder",
+    "Social Anxiety Disorder",
+    "Panic Disorder",
+    "Adjustment Disorder",
+    "Borderline Personality Disorder",
+    "Schizophrenia",
+    "Eating Disorder",
+    "Substance Use Disorder",
+    "Attention Deficit Hyperactivity Disorder",
+    "No Diagnosis"  # Important for subclinical cases
+]
+
+def extract_diagnosis_from_reasoning(reasoning_text: str, patient_text: str = "", nli_model: Optional[ScoringNLIModel] = None) -> Optional[str]:
+    """
+    Extract diagnosis using NLI entailment (Semantic).
+    
+    Hypothesis template: "The clinical reasoning indicates the patient has [DIAGNOSIS]."
+    """
+    if not reasoning_text or not nli_model:
         return None
-    
+        
+    # Heuristic: If reasoning is very short or clearly states "no diagnosis", skip expensive NLI
     reasoning_lower = reasoning_text.lower()
-    patient_lower = patient_text.lower() if patient_text else ""
-    combined_text = reasoning_lower + " " + patient_lower
+    if "no diagnosis" in reasoning_lower or "normal reaction" in reasoning_lower:
+        return "No Diagnosis"
+
+    best_diagnosis = None
+    best_score = 0.0
     
-    # PTSD indicators (stronger patterns)
-    ptsd_indicators = ["trauma", "flashback", "nightmare", "ptsd", "post-traumatic", "posttraumatic",
-                       "avoiding reminders", "hypervigilance", "startle response", "traumatic event",
-                       "combat", "abuse", "assault", "accident", "disaster"]
-    if any(term in combined_text for term in ptsd_indicators):
-        if not any(term in reasoning_lower for term in ["ptsd", "post-traumatic", "posttraumatic"]):
-            return "Post-Traumatic Stress Disorder"
-    
-    # Panic disorder indicators
-    panic_indicators = ["panic attack", "sudden fear", "heart racing", "can't breathe", "cannot breathe",
-                       "feeling of doom", "chest pain", "shortness of breath", "dizziness", "sweating",
-                       "feeling like dying", "losing control"]
-    if any(term in combined_text for term in panic_indicators):
-        if "panic disorder" not in reasoning_lower:
-            return "Panic Disorder"
-    
-    # Social anxiety indicators
-    social_anx_indicators = ["social situation", "fear of judgment", "public speaking", "being watched",
-                            "social phobia", "fear of embarrassment", "avoiding people", "social interaction"]
-    if any(term in combined_text for term in social_anx_indicators):
-        if not any(term in reasoning_lower for term in ["social anxiety", "social phobia"]):
-            return "Social Anxiety Disorder"
-    
-    # OCD indicators
-    ocd_indicators = ["obsessive thought", "compulsive behavior", "repetitive ritual", "intrusive thought",
-                     "checking", "washing", "counting", "ordering", "hoarding", "unwanted thought"]
-    if any(term in combined_text for term in ocd_indicators):
-        if not any(term in reasoning_lower for term in ["ocd", "obsessive-compulsive", "obsessive compulsive"]):
-            return "Obsessive-Compulsive Disorder"
-    
-    # Bipolar indicators
-    bipolar_indicators = ["manic", "mania", "elevated mood", "racing thoughts", "grandiosity",
-                          "decreased sleep", "impulsive", "euphoric", "irritable", "hypomanic"]
-    if any(term in combined_text for term in bipolar_indicators):
-        if "bipolar" not in reasoning_lower:
-            return "Bipolar Disorder"
-    
-    # Adjustment disorder indicators (more specific)
-    adjustment_indicators = ["life change", "stressor", "adjusting", "recent event", "divorce",
-                            "job loss", "move", "relocation", "loss of", "bereavement", "grief",
-                            "new job", "new school", "retirement"]
-    if any(term in combined_text for term in adjustment_indicators):
-        if "adjustment disorder" not in reasoning_lower:
-            # Only if it's clearly a stressor-related issue, not just general anxiety/depression
-            if any(term in reasoning_lower for term in ["stressor", "life change", "recent", "adjusting"]):
-                return "Adjustment Disorder"
-    
-    # ADHD indicators (in reasoning, not just patient text)
-    adhd_indicators = ["attention deficit", "hyperactivity", "impulsivity", "difficulty focusing",
-                      "adhd", "add", "inattentive", "distractible", "fidgeting", "restless"]
-    if any(term in reasoning_lower for term in adhd_indicators):
-        if not any(term in reasoning_lower for term in ["adhd", "attention deficit", "add"]):
-            return "Attention Deficit Hyperactivity Disorder"
-    
-    # Major Depression indicators (if reasoning mentions depressive symptoms but not explicitly)
-    depression_indicators = ["depressed mood", "loss of interest", "anhedonia", "hopelessness",
-                            "worthlessness", "suicidal", "fatigue", "sleep disturbance", "appetite change"]
-    if any(term in reasoning_lower for term in depression_indicators):
-        if not any(term in reasoning_lower for term in ["depression", "depressive", "mdd", "major depressive"]):
-            # Check if it's not just adjustment disorder
-            if "adjustment" not in reasoning_lower:
-                return "Major Depressive Disorder"
-    
-    # GAD indicators (if reasoning mentions anxiety symptoms but not explicitly)
-    gad_indicators = ["excessive worry", "generalized anxiety", "chronic worry", "worrying about everything",
-                     "restlessness", "muscle tension", "difficulty concentrating", "irritability"]
-    if any(term in reasoning_lower for term in gad_indicators):
-        if not any(term in reasoning_lower for term in ["anxiety", "anxious", "gad", "generalized anxiety"]):
-            return "Generalized Anxiety Disorder"
-    
-    # Fallback: weaker signals for common disorders
-    # If reasoning mentions emotional distress but no specific diagnosis, infer from context
-    
-    # Depression fallback (weaker signals)
-    if any(term in reasoning_lower for term in ["sad", "down", "low mood", "feeling bad", "struggling"]):
-        if not any(term in reasoning_lower for term in ["depression", "depressive", "anxiety", "anxious", 
-                                                         "ptsd", "bipolar", "adjustment"]):
-            # Only if there are multiple depressive indicators
-            dep_count = sum(1 for term in ["sad", "down", "low", "hopeless", "worthless", "tired", "sleep"] 
-                           if term in reasoning_lower)
-            if dep_count >= 2:
-                return "Major Depressive Disorder"
-    
-    # Anxiety fallback (weaker signals)
-    if any(term in reasoning_lower for term in ["worried", "nervous", "stressed", "overwhelmed", "fearful"]):
-        if not any(term in reasoning_lower for term in ["anxiety", "anxious", "panic", "ptsd", "social", "ocd"]):
-            # Only if there are multiple anxiety indicators
-            anx_count = sum(1 for term in ["worried", "nervous", "stressed", "overwhelmed", "fearful", "tense"] 
-                           if term in reasoning_lower)
-            if anx_count >= 2:
-                return "Generalized Anxiety Disorder"
-    
+    # Run NLI for each candidate
+    for diag in CANDIDATE_DIAGNOSES:
+        hypothesis = f"The clinical reasoning indicates the patient has {diag}."
+        
+        # We check if Reasoning ENTAILS Hypothesis
+        label, score = nli_model.predict_with_score(
+            premise=reasoning_text, 
+            hypothesis=hypothesis
+        )
+        
+        # Only count entailment
+        effective_score = score if label == "entailment" else 0.0
+        
+        if effective_score > best_score:
+            best_score = effective_score
+            best_diagnosis = diag
+            
+    # Threshold for acceptance (0.5 is usually safe for DeBERTa Entailment)
+    if best_score > 0.5:
+        return best_diagnosis
+        
     return None
 
-
-def extract_diagnosis_from_reasoning(reasoning_text: str, patient_text: str = "") -> Optional[str]:
-    """Extract diagnosis mentions from counselor_think reasoning (high confidence)."""
-    if not reasoning_text:
-        return None
-    
-    reasoning_lower = reasoning_text.lower()
-    
-    # First, look for explicit diagnosis mentions
-    matches = []
-    for pattern in DIAGNOSIS_PATTERNS:
-        for match in re.finditer(pattern, reasoning_lower):
-            matches.append((match.start(), match.group(1)))
-    
-    # Prefer more specific matches (earlier in pattern list = more specific)
-    if matches:
-        def match_priority(match_info):
-            pos, text = match_info
-            # Find which pattern matched (approximate by checking patterns)
-            pattern_idx = len(DIAGNOSIS_PATTERNS)  # Default to lowest priority
-            for idx, pattern in enumerate(DIAGNOSIS_PATTERNS):
-                if re.search(pattern, text.lower()):
-                    pattern_idx = min(pattern_idx, idx)
-            return (pattern_idx, pos)  # Lower pattern_idx = more specific
-        
-        matches.sort(key=match_priority)
-        found = matches[0][1]
-        
-        # Skip generic "depression" or "anxiety" if we have more specific matches
-        if found in ("depression", "depressive", "anxiety", "anxious") and len(matches) > 1:
-            # Check if there's a more specific match
-            for pos, text in matches[1:]:
-                if text not in ("depression", "depressive", "anxiety", "anxious"):
-                    found = text
-                    break
-        
-        return normalise_diagnosis(found)
-    
-    # If no explicit diagnosis found, try symptom-based extraction
-    symptom_based = extract_diagnosis_from_symptoms(reasoning_text, patient_text)
-    if symptom_based:
-        return symptom_based
-    
-    return None
 
 
 def build_gold_labels_from_openr1() -> Dict[str, str]:
@@ -304,8 +233,14 @@ def build_gold_labels_from_openr1() -> Dict[str, str]:
     # Initialize all labels as empty (keyed by study_a_test.json IDs)
     labels = {v["id"]: "" for v in vignettes}
     
-    print("Loading OpenR1-Psy test split...")
-    ds = load_dataset("GMLHUHE/OpenR1-Psy", split="test")
+    print("Loading OpenR1-Psy (test + train)...")
+    from datasets import load_dataset, concatenate_datasets
+    ds_test = load_dataset("GMLHUHE/OpenR1-Psy", split="test")
+    ds_train = load_dataset("GMLHUHE/OpenR1-Psy", split="train")
+    ds = concatenate_datasets([ds_test, ds_train])
+    
+    print("Initializing NLI Model (DeBERTa-v3)...")
+    nli_model = ScoringNLIModel()
     
     print("Matching OpenR1-Psy rows to study_a_test.json IDs and extracting diagnoses...")
     
@@ -345,7 +280,7 @@ def build_gold_labels_from_openr1() -> Dict[str, str]:
         matched_count += 1
         
         # Extract diagnosis from counselor_think (gold reasoning) + patient text for context
-        diagnosis = extract_diagnosis_from_reasoning(counselor_think, patient_text)
+        diagnosis = extract_diagnosis_from_reasoning(counselor_think, patient_text, nli_model=nli_model)
         
         # If still no diagnosis, try a final fallback: check if it's clearly subclinical/no diagnosis
         if not diagnosis:

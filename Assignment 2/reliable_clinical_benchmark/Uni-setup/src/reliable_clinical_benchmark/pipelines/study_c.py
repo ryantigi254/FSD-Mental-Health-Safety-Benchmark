@@ -628,7 +628,7 @@ def run_study_c(
         return DriftResult(
             entity_recall_at_t10=0.0,
             knowledge_conflict_rate=0.0,
-            continuity_score=None,
+            session_goal_alignment=None,
             n_cases=0,
         )
 
@@ -845,7 +845,7 @@ def run_study_c(
         return DriftResult(
             entity_recall_at_t10=0.0,
             knowledge_conflict_rate=0.0,
-            continuity_score=None,
+            session_goal_alignment=None,
             n_cases=len(cases),
         )
 
@@ -857,7 +857,7 @@ def run_study_c(
         return DriftResult(
             entity_recall_at_t10=0.0,
             knowledge_conflict_rate=0.0,
-            continuity_score=None,
+            session_goal_alignment=None,
             n_cases=0,
         )
 
@@ -941,7 +941,7 @@ def run_study_c(
     result = DriftResult(
         entity_recall_at_t10=mean_recall_at_t10,
         knowledge_conflict_rate=k_conflict,
-        continuity_score=continuity_score,
+        session_goal_alignment=continuity_score,
         n_cases=len(cases),
     )
 
