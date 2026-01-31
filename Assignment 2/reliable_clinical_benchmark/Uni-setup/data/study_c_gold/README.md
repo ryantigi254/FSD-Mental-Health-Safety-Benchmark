@@ -23,7 +23,8 @@ All Study C cases have target plans extracted from the [OpenR1-Psy dataset](http
 
 All scripts for managing gold plans are in `scripts/study_c/gold_plans/`:
 
-- **`populate_from_openr1.py`** - Extract plans from OpenR1-Psy `counselor_think` (full conversation)
+- **`populate_from_openr1.py`** - Extract plans from OpenR1-Psy `counselor_think` (for linked cases)
+- **`generate_nli_plans.py`** - Generate plans from patient_summary + critical_entities (for all cases)
 
 ## Mapping Methodology
 
@@ -70,9 +71,9 @@ This will:
 
 ### Current Coverage
 
-- **Total Study C cases**: 30
-- **Plans extracted**: 30/30 (100%)
-- **Source splits**: Most cases use test split; 6 cases (c_009, c_010, c_019, c_020, c_029, c_030) use train split as their `source_openr1_ids` reference train split indices
+- **Total Study C cases**: 100
+- **Plans extracted/generated**: 100/100 (100%)
+- **Method**: Generated from patient_summary + critical_entities using condition-treatment mappings
 - **All cases have plans**: Continuity Score can be computed for all Study C cases
 
 ## Integration
