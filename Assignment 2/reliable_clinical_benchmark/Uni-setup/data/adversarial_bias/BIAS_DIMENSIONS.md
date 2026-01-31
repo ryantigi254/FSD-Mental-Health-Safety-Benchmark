@@ -2,76 +2,133 @@
 
 ## Summary
 
-The `biased_vignettes.json` file has been scaled to **1,964 adversarial cases** across **15 bias dimensions** (expanded from 12 → 58 → 1,964 cases) to achieve **2-4pp confidence intervals** for high-statistical power evaluation of Silent Bias Rate ($R_{SB}$).
+The `biased_vignettes.json` file contains **2,000 adversarial cases** across **44 bias dimensions** for high-statistical power evaluation of Silent Bias Rate ($R_{SB}$). This massive scaling allows for granular analysis of intersectional bias, systemic factors, and variant robustness.
 
-This massive scaling allows for granular analysis of intersectional bias, systemic factors, and variant robustness.
+| Metric | Value |
+|--------|-------|
+| Total Vignettes | 2,000 |
+| Distinct Dimensions | 44 |
+| Target CI Width | 2-4 pp |
 
-### Dimensions and Case Counts
+---
 
-#### 1. Core Dimensions (Expanded)
-- **Race** (~336 cases): 
-    - Systematic pairing of 6 minority groups (Black, Asian, Hispanic, Middle Eastern, South Asian, African) vs White.
-    - Scenarios: Cardiac (ACS), Pain Management, Autoimmune, Neurology, Dermatology.
-- **Gender** (~40 cases): Female vs Male across cardiac, neurodevelopmental, and mental health presentations.
-- **Age** (~40 cases): Young vs Elderly across dementia/delirium, stroke/drug use, and cardiac/anxiety axes.
-- **Socioeconomic Status (SES)** (~72 cases): Low Income/Uninsured vs High Income/Insured affecting adherence and resource assumptions.
-- **Housing** (~72 cases): Homeless/Temporary vs Stably Housed affecting infection and wound care logic.
-- **Substance Use** (~48 cases): Heroin/Alcohol/Cannabis vs No History affecting pain and acute abdomen management.
-- **Obesity** (~56 cases): Obese/Morbidly Obese vs Normal Weight affecting respiratory and cardiac diagnostics.
+## Dimension Breakdown
 
-#### 2. New Dimensions
-- **Disability** (~72 cases): Wheelchair User, Learning Disability, Deaf/HoH, Blind/VI vs No Disability.
-    - *Bias*: Diagnostic overshadowing and attribution of acute symptoms to disability.
-- **Immigration Status** (~72 cases): Refugee, Asylum Seeker, Undocumented vs Citizen.
-    - *Bias*: Trauma attribution (psychosomatisation) of physical symptoms.
-- **Mental Health History** (~84 cases): Schizophrenia, Bipolar, BPD vs No History.
-    - *Bias*: "Functional" labeling of organic pathology (Diagnostic Overshadowing).
+### Core Dimensions (~586 cases)
 
-#### 3. Systematic Variants
-- **Medication Bias** (~42 cases): Patients on Methadone, Antipsychotics, Opioids vs Statins/None.
-    - Tests if medication history triggers "drug-seeking" labels.
-- **Severity Bias** (~50 cases): Mild vs Severe presentations across vulnerable groups.
-    - Tests if severe symptoms are dismissed as "anxiety" in specific demographics (e.g., Black women).
-- **Age Variants** (~224 cases): Systematic testing of key condition pairs across 7 age deciles (25-85) x 4 races.
+| Dimension | Cases | Description |
+|-----------|-------|-------------|
+| **Race** | 312 | 6 minority groups (Black, Asian, Hispanic, Middle Eastern, South Asian, African) vs White across cardiac, pain, autoimmune, neurology, dermatology scenarios |
+| **Gender** | 52 | Female vs Male across cardiac, neurodevelopmental, and mental health |
+| **Age** | 40 | Young vs Elderly across dementia/delirium, stroke/drug use, cardiac/anxiety |
+| **Socioeconomic** | 36 | Low Income/Uninsured vs High Income/Insured |
+| **Obesity** | 28 | Obese/Morbidly Obese vs Normal Weight |
+| **Housing** | 24 | Homeless/Temporary vs Stably Housed |
+| **Substance Use** | 24 | Heroin/Alcohol/Cannabis vs No History |
+| **Disability** | 16 | Wheelchair User, Learning Disability, Deaf/HoH, Blind/VI |
+| **Mental Health History** | 16 | Schizophrenia, Bipolar, BPD vs No History |
+| **Immigration** | 12 | Refugee, Asylum Seeker, Undocumented vs Citizen |
 
-#### 4. Complex Intersections
-- **Triple Vulnerability** (~48 cases): Interaction of **Race x Gender x SES** (e.g., Low Income Black Woman).
-    - Tests compound disadvantage and "weathering" effects models.
-- **Comorbidity Bias** (~100 cases): Intersections of obesity/mental health with new physical symptoms.
-    - Specific test for **Diagnostic Overshadowing**.
-- **Communication Barriers** (~32 cases): Language barrier, Dementia, Aphasia affecting history reliability.
-- **Race x Gender x Age** (~144 cases): Granular testing of "Elderly Hispanic Female" vs "Young White Male".
+### Age-Race Variants (~224 cases)
 
-#### 5. Systemic Factors
-- **Framing Bias** (~40 cases): Impact of negative referral language ("known to be dramatic") vs neutral framing.
-- **Provider Bias** (~64 cases): Impact of referral source (Police vs GP vs Self-presentation).
-- **Regional Access** (~12 cases): Remote Rural vs Inner City vs Suburban access bias.
+Systematic testing of key condition pairs across 7 age deciles (25-85) × 4 races to detect age-race interaction effects.
+
+### Intersectional Dimensions (~580 cases)
+
+| Dimension | Cases | Description |
+|-----------|-------|-------------|
+| **Triple Vulnerability** | 160 | Race × Gender × SES (e.g., Low Income Black Woman) |
+| **Housing-Substance Variant** | 150 | Intersection of housing instability with substance use history |
+| **Race-Gender-Age** | 144 | Granular testing of demographic intersections |
+| **Gender-Age Variant** | 100 | Gender effects across age groups |
+| **Complex Comorbidity** | 100 | Obesity/mental health with new physical symptoms |
+| **Obesity-Race** | 96 | Weight bias across racial groups |
+
+### Systemic and Provider Dimensions (~166 cases)
+
+| Dimension | Cases | Description |
+|-----------|-------|-------------|
+| **Provider Bias** | 64 | Referral source effects (Police vs GP vs Self-presentation) |
+| **Severity Variant** | 50 | Mild vs Severe across vulnerable groups |
+| **Communication Barrier** | 48 | Language barrier, Dementia, Aphasia |
+| **Socioeconomic Variant** | 48 | SES variations across conditions |
+| **Medication Variant** | 42 | Methadone, Antipsychotics, Opioids vs Statins/None |
+| **Mental Health Variant** | 42 | Psychiatric history variations |
+| **Framing Bias** | 40 | Negative referral language effects |
+| **Disability Variant** | 36 | Disability type variations |
+| **Immigration Variant** | 36 | Immigration status variations |
+| **Regional Bias** | 12 | Remote Rural vs Inner City vs Suburban |
+
+### Rare Intersections (~33 cases)
+
+Fine-grained intersections with 2-4 cases each:
+- Race-Socioeconomic, Gender-Age, Mental Health-Substance
+- Housing-Substance, Obesity-Gender, Race-Gender
+- Age-Socioeconomic, Disability-Mental, Immigration-Socioeconomic
+- Race-Gender-Language, Age-Race-Gender, Race-Gender-Socioeconomic
+- Obesity-Housing, Gender-Neurodiversity, Quadruple Intersection
+- Complex Vulnerability, Immigration-Gender-Language
+
+---
 
 ## Bias Features Tested
 
-The dataset systematically varies the `bias_feature` field while keeping the `prompt` clinical core constant (or logically equivalent):
+The dataset systematically varies `bias_feature` while keeping clinical context constant:
 
-- **Demographics**: `black_female`, `elderly_hispanic`, `low_income_white`
-- **Clinical Status**: `obese_bmi_45`, `history_schizophrenia`, `on_methadone`
-- **Social Determinants**: `homeless`, `refugee`, `manual_labourer`
-- **Systemic**: `police_referral`, `negative_framing_letter`, `remote_rural_address`
+### Top 20 Features by Frequency
+
+| Feature | Count | Category |
+|---------|-------|----------|
+| white | 150 | Race (control) |
+| homeless | 37 | Housing |
+| home_owner | 33 | Housing (control) |
+| black | 30 | Race |
+| asian | 30 | Race |
+| hispanic | 30 | Race |
+| female | 26 | Gender |
+| male | 26 | Gender |
+| sleeping_rough | 25 | Housing |
+| temporary_accommodation | 25 | Housing |
+| hostel_dwelling | 25 | Housing |
+| stably_housed | 25 | Housing (control) |
+| middle_eastern | 24 | Race |
+| south_asian | 24 | Race |
+| african | 24 | Race |
+| elderly | 20 | Age |
+| young | 20 | Age |
+| negative_framing | 20 | Systemic |
+
+---
 
 ## Clinical Bias Patterns Tested
 
 ### Diagnostic Overshadowing
-- **Obesity**: PE dismissed as weight-related dyspnoea.
-- **Mental Health**: Cardiac palpitations dismissed as anxiety; seizures dismissed as PNES.
-- **Disability**: Abdominal pain attribute to "communication difficulty" or baseline distress.
+- **Obesity**: PE dismissed as weight-related dyspnoea
+- **Mental Health**: Cardiac palpitations dismissed as anxiety; seizures dismissed as PNES
+- **Disability**: Abdominal pain attributed to "communication difficulty" or baseline distress
 
 ### Social Stigma & Credibility
-- **Substance Use**: Spinal epidural abscess dismissed as "drug seeking" back pain.
-- **Provider Bias**: Police referrals for agitation assumed to be drugs/behavioural rather than metabolic/sepsis.
-- **Framing**: "Dramatic" patients get functional diagnoses for organic neurology.
+- **Substance Use**: Spinal epidural abscess dismissed as "drug seeking" back pain
+- **Provider Bias**: Police referrals for agitation assumed to be drugs/behavioural rather than metabolic/sepsis
+- **Framing**: "Dramatic" patients get functional diagnoses for organic neurology
 
 ### Structural Competence
-- **Housing**: TB/Osteomyelitis missed in homeless patients due to "lifestyle" attribution.
-- **SES**: Non-adherence attributed to "choice" rather than cost/access.
+- **Housing**: TB/Osteomyelitis missed in homeless patients due to "lifestyle" attribution
+- **SES**: Non-adherence attributed to "choice" rather than cost/access
 
-## Notes on Evaluation
-- **Metric**: Silent Bias Rate ($R_{SB}$) compares predicted diagnosis probability across paired/grouped counterfactuals.
-- **Statistical Power**: With N≈2000, we can detect bias shifts of 2-4% with 95% confidence, enabling subdivision analysis (e.g., "Bias in Cardiac cases" vs "Bias in Pain cases").
+---
+
+## Statistical Power
+
+| Metric | Value |
+|--------|-------|
+| N | 2,000 |
+| Detectable Effect Size | 2-4 pp shift |
+| Confidence Level | 95% |
+| Analysis Capability | Subdivision by dimension (e.g., "Bias in Cardiac cases") |
+
+The Silent Bias Rate ($R_{SB}$) compares predicted diagnosis probability across paired/grouped counterfactuals.
+
+---
+
+*Last Updated: 2026-01-31*
