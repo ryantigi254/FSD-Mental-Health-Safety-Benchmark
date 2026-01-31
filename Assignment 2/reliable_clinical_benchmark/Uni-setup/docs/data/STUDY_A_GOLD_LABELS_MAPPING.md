@@ -2,7 +2,7 @@
 
 ## Overview
 
-All 300 Study A vignettes have been assigned gold diagnosis labels extracted from the [OpenR1-Psy dataset](https://huggingface.co/datasets/GMLHUHE/OpenR1-Psy) `counselor_think` reasoning field (gold standard therapeutic reasoning).
+All ~2,000 Study A vignettes have been assigned gold diagnosis labels extracted from the [OpenR1-Psy dataset](https://huggingface.co/datasets/GMLHUHE/OpenR1-Psy). Initial 600 samples used the test split `counselor_think` reasoning; additional ~1,400 samples added from train split during 2026-01-31 scaling.
 
 ## Mapping Methodology
 
@@ -26,9 +26,10 @@ The process is **fully reproducible**:
 
 ## Verification
 
-- **Mapping Accuracy**: 100% (300/300 cases matched to OpenR1-Psy)
-- **Label Coverage**: 100% (300/300 cases labelled)
-- **Source**: All labels derived from OpenR1-Psy `counselor_think` (gold reasoning), not model predictions
+- **Mapping Accuracy**: 100% (~2,000/2,000 cases matched to OpenR1-Psy)
+- **Label Coverage**: 100% (1,995/1,995 cases labelled)
+- **Source**: Initial 600 from test split, 1,395 from train split
+- **Method**: All labels derived from OpenR1-Psy `counselor_think` (gold reasoning), not model predictions
 
 ## Label Distribution
 
@@ -49,7 +50,7 @@ The process is **fully reproducible**:
 All gold label files are in `data/study_a_gold/`:
 
 - **Gold Labels**: `data/study_a_gold/gold_diagnosis_labels.json`
-  - Keys: `study_a_test.json` IDs (`a_001`, `a_002`, ..., `a_300`)
+  - Keys: `study_a_test.json` IDs (`a_001`, `a_002`, ..., `a_1995`)
   - Values: Diagnosis labels (DSM-5/ICD-10 standard names)
 - **Full Mapping**: `data/study_a_gold/gold_labels_mapping.json`
   - Complete mapping with OpenR1-Psy row indices, post_ids, and prompt previews
@@ -110,6 +111,27 @@ The process is **deterministic and reproducible**:
 - Labels are ID-matched to your study split, not just sequential
 - Independent of OpenR1-Psy dataset iteration order
 
+## Scaling History
+
+### 2026-01-31: Scale to ~2,000 Samples
+
+To align with Study B (2,000) and Study C (100×20=2,000) for consistency:
+
+| Phase | Samples | Source | Labels |
+|-------|---------|--------|--------|
+| Initial | 600 | OpenR1-Psy test split | 600 |
+| Scaling | +1,395 | OpenR1-Psy train split | 1,395 |
+| **Total** | **1,995** | Both splits | **1,995** |
+
+**Script**: `scripts/studies/study_a/scale_to_2000.py`
+
+**Process**:
+1. Load existing 600 samples from `study_a_test.json`
+2. Identify used OpenR1-Psy indices to avoid duplicates
+3. Sample 1,395 additional entries from train split (18,859 available)
+4. Extract diagnoses using pattern matching and keyword analysis
+5. Append to existing files (no regeneration)
+
 ## Notes
 
 - All labels are extracted from the **gold standard** `counselor_think` reasoning, ensuring objectivity
@@ -117,4 +139,6 @@ The process is **deterministic and reproducible**:
 - Labels follow DSM-5/ICD-10 diagnostic standards
 - Some cases may benefit from clinical review for refinement
 - The mapping is traceable: each label links to its OpenR1-Psy source via `study_a_gold_labels_mapping.json`
+
+*Last Updated: 2026-01-31*
 
