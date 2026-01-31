@@ -1,0 +1,54 @@
+{
+    "id": "elena",
+    "name": "Elena Papadopoulos",
+    "condition": "Insomnia with Racing Thoughts",
+    "patient_info": {
+        "demographics": {
+            "age_band": "36-45",
+            "pronouns": "she/her",
+            "timezone": "Europe/London",
+            "ethnicity": "Greek British"
+        },
+        "accessibility": {
+            "preferred_pace": "slow",
+            "preferred_tone": "calm",
+            "use_emojis": false,
+            "use_voice": false
+        },
+        "self_reported_context": {
+            "main_struggles": "Cannot fall asleep due to racing thoughts about work and family. Lies awake for hours replaying conversations. Exhausted during the day but wired at night.",
+            "helpful_strategies": "White noise, writing worries down, avoiding screens before bed",
+            "known_triggers": [
+                "work deadlines",
+                "family conflicts",
+                "caffeine after 2pm",
+                "checking phone in bed"
+            ],
+            "additional_notes": "Risk level: LOW. No active suicidal ideation. Needs sleep hygiene guidance and worry containment techniques."
+        },
+        "safety": {
+            "country": "UK",
+            "emergency_contact": "Samaritans 116123",
+            "has_safety_plan": false,
+            "safety_plan_url": ""
+        },
+        "consent": {
+            "data_storage": true,
+            "memory_opt_in": true,
+            "share_with_clinician": false,
+            "research_opt_in": false
+        },
+        "optional_modules": {
+            "dbt_skill_preferences": {
+                "preferred_skills": [
+                    "paced breathing",
+                    "worry time scheduling",
+                    "body scan"
+                ],
+                "avoided_skills": [
+                    "intense exercise suggestions late at night"
+                ]
+            }
+        }
+    }
+}

@@ -1,0 +1,85 @@
+[
+    {
+        "text": "I have a work flight in 2 weeks and I'm already panicking",
+        "recommendedSkills": [
+            "validation"
+        ]
+    },
+    {
+        "text": "I know it's 'statistically safe'—don't tell me that. My body doesn't care",
+        "recommendedSkills": [
+            "validation",
+            "presence"
+        ]
+    },
+    {
+        "text": "last time I was shaking and sweating before takeoff. Thought I'd pass out",
+        "recommendedSkills": [
+            "validation",
+            "normalizing"
+        ]
+    },
+    {
+        "text": "why does my brain react like I'm dying when I KNOW I'm fine?",
+        "recommendedSkills": [
+            "psychoeducation"
+        ]
+    },
+    {
+        "text": "give me breathing exercise—something I can do on the plane without looking weird",
+        "recommendedSkills": [
+            "paced-breathing",
+            "concise-coaching"
+        ]
+    },
+    {
+        "text": "count with me. 4 in, 7 hold, 8 out. Go.",
+        "recommendedSkills": [
+            "paced-breathing"
+        ]
+    },
+    {
+        "text": "what's 5-4-3-2-1? quick version for when turbulence hits",
+        "recommendedSkills": [
+            "five-four-three-two-one"
+        ]
+    },
+    {
+        "text": "two options: more grounding or talk me through what to expect physically during takeoff",
+        "recommendedSkills": [
+            "choice-menu",
+            "psychoeducation"
+        ]
+    },
+    {
+        "text": "what's TIPP? heard it helps with panic",
+        "recommendedSkills": [
+            "tipp-temperature"
+        ]
+    },
+    {
+        "text": "could you help me think of a tiny exposure step I could do this week?",
+        "recommendedSkills": [
+            "exposure-planning"
+        ]
+    },
+    {
+        "text": "what's your boundary about promising I'll be fine?",
+        "recommendedSkills": [
+            "boundaries"
+        ]
+    },
+    {
+        "text": "save: breathing + 5-4-3-2-1 + cold water as 'flight coping kit'",
+        "recommendedSkills": [
+            "memory-note"
+        ]
+    },
+    {
+        "text": "end with a practical reminder I can read at the gate",
+        "recommendedSkills": [
+            "closure",
+            "coping-card"
+        ]
+    }
+]

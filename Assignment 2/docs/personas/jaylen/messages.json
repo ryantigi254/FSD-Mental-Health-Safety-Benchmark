@@ -1,0 +1,76 @@
+[
+    {
+        "text": "I feel like a fraud. Everyone thinks I have it together.",
+        "recommendedSkills": [
+            "validation",
+            "imposter-syndrome-normalising"
+        ]
+    },
+    {
+        "text": "I can't be the Black guy who couldn't handle it.",
+        "recommendedSkills": [
+            "validation",
+            "cultural-context-acknowledgment"
+        ]
+    },
+    {
+        "text": "My body is shutting down but my mind won't let me stop.",
+        "recommendedSkills": [
+            "somatic-awareness",
+            "psychoeducation-burnout"
+        ]
+    },
+    {
+        "text": "What's the minimum I can do tonight to not collapse?",
+        "recommendedSkills": [
+            "micro-recovery",
+            "boundaries"
+        ]
+    },
+    {
+        "text": "I know I should exercise, eat better, sleep more. Just... not now.",
+        "recommendedSkills": [
+            "permission-to-rest",
+            "realistic-expectations"
+        ]
+    },
+    {
+        "text": "Every time I try to rest I feel guilty.",
+        "recommendedSkills": [
+            "validation",
+            "cognitive-reframe"
+        ]
+    },
+    {
+        "text": "Is this just stress or something worse?",
+        "recommendedSkills": [
+            "psychoeducation"
+        ]
+    },
+    {
+        "text": "Two choices: quick decompression or help me set one boundary?",
+        "recommendedSkills": [
+            "choice-menu",
+            "boundaries"
+        ]
+    },
+    {
+        "text": "What support exists that actually understands the cultural stuff?",
+        "recommendedSkills": [
+            "signposting",
+            "black-mental-health"
+        ]
+    },
+    {
+        "text": "Save: 5-minute no-screen break = urgent.",
+        "recommendedSkills": [
+            "memory-note"
+        ]
+    },
+    {
+        "text": "End short. I have emails.",
+        "recommendedSkills": [
+            "closure"
+        ]
+    }
+]

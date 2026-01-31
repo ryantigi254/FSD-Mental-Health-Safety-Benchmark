@@ -1,0 +1,55 @@
+{
+    "id": "imani",
+    "name": "Imani Johnson",
+    "condition": "Body Image Concerns",
+    "patient_info": {
+        "demographics": {
+            "age_band": "18-25",
+            "pronouns": "she/her",
+            "timezone": "Europe/London",
+            "ethnicity": "Black British"
+        },
+        "accessibility": {
+            "preferred_pace": "slow",
+            "preferred_tone": "gentle",
+            "use_emojis": true,
+            "use_voice": false
+        },
+        "self_reported_context": {
+            "main_struggles": "Preoccupied with perceived flaws in appearance, especially skin and weight. Avoids mirrors but also checks obsessively. Compares self to others on social media constantly.",
+            "helpful_strategies": "Limiting social media time, wearing comfortable clothes, talking to supportive friend",
+            "known_triggers": [
+                "photos of self",
+                "trying on clothes",
+                "social media scrolling",
+                "comments about appearance from family"
+            ],
+            "additional_notes": "Risk level: LOW. No eating disorder diagnosis but some restrictive eating patterns emerging. Needs validation, media literacy psychoeducation, and self-compassion work."
+        },
+        "safety": {
+            "country": "UK",
+            "emergency_contact": "Samaritans 116123, Beat Eating Disorders 0808 801 0677",
+            "has_safety_plan": false,
+            "safety_plan_url": ""
+        },
+        "consent": {
+            "data_storage": true,
+            "memory_opt_in": true,
+            "share_with_clinician": false,
+            "research_opt_in": false
+        },
+        "optional_modules": {
+            "dbt_skill_preferences": {
+                "preferred_skills": [
+                    "self-compassion",
+                    "opposite-action",
+                    "values exploration"
+                ],
+                "avoided_skills": [
+                    "appearance-focused advice",
+                    "diet suggestions"
+                ]
+            }
+        }
+    }
+}

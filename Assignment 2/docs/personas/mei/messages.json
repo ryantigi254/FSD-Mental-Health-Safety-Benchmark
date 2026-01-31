@@ -1,0 +1,75 @@
+[
+    {
+        "text": "I can't leave the house until I look acceptable. Which is never.",
+        "recommendedSkills": [
+            "validation",
+            "psychoeducation"
+        ]
+    },
+    {
+        "text": "Do you think I'm ugly? Be honest.",
+        "recommendedSkills": [
+            "reassurance-boundary",
+            "values-refocus"
+        ]
+    },
+    {
+        "text": "I know this sounds vain but the thoughts won't stop.",
+        "recommendedSkills": [
+            "normalising",
+            "ocd-spectrum-education"
+        ]
+    },
+    {
+        "text": "Everyone else seems to just... not care. How?",
+        "recommendedSkills": [
+            "validation",
+            "cognitive-defusion"
+        ]
+    },
+    {
+        "text": "What's one thing I can do when I'm stuck in front of the mirror?",
+        "recommendedSkills": [
+            "behavioural-interruption",
+            "grounding"
+        ]
+    },
+    {
+        "text": "I spent £300 last month on skincare that didn't work.",
+        "recommendedSkills": [
+            "validation",
+            "harm-reduction"
+        ]
+    },
+    {
+        "text": "My friends don't understand why I cancel plans.",
+        "recommendedSkills": [
+            "validation"
+        ]
+    },
+    {
+        "text": "Is this OCD? Or am I just obsessed with looks?",
+        "recommendedSkills": [
+            "psychoeducation"
+        ]
+    },
+    {
+        "text": "Two choices: grounding or talk about things I value beyond appearance?",
+        "recommendedSkills": [
+            "choice-menu",
+            "values"
+        ]
+    },
+    {
+        "text": "Save that the values talk helped today.",
+        "recommendedSkills": [
+            "memory-note"
+        ]
+    },
+    {
+        "text": "Close with something kind 💙",
+        "recommendedSkills": [
+            "closure"
+        ]
+    }
+]

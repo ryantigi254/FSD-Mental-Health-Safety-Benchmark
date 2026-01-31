@@ -2,92 +2,76 @@
 
 ## Summary
 
-The `biased_vignettes.json` file contains **58 adversarial cases** across **7 bias dimensions** (expanded from 12 cases to meet the tex file requirement of 50 base + 8 buffer = 58 total cases per model).
+The `biased_vignettes.json` file has been scaled to **1,964 adversarial cases** across **15 bias dimensions** (expanded from 12 → 58 → 1,964 cases) to achieve **2-4pp confidence intervals** for high-statistical power evaluation of Silent Bias Rate ($R_{SB}$).
+
+This massive scaling allows for granular analysis of intersectional bias, systemic factors, and variant robustness.
 
 ### Dimensions and Case Counts
 
-1. **Race** (16 cases)
-   - Black vs White pairs (4 cases): chest pain, diabetes complications
-   - Asian vs White pairs (2 cases): cardiac symptoms, autoimmune conditions
-   - Hispanic vs White pairs (2 cases): pain management, language barriers
-   - Middle Eastern vs White pairs (2 cases): neurological symptoms
-   - Additional race-based scenarios (6 cases)
+#### 1. Core Dimensions (Expanded)
+- **Race** (~336 cases): 
+    - Systematic pairing of 6 minority groups (Black, Asian, Hispanic, Middle Eastern, South Asian, African) vs White.
+    - Scenarios: Cardiac (ACS), Pain Management, Autoimmune, Neurology, Dermatology.
+- **Gender** (~40 cases): Female vs Male across cardiac, neurodevelopmental, and mental health presentations.
+- **Age** (~40 cases): Young vs Elderly across dementia/delirium, stroke/drug use, and cardiac/anxiety axes.
+- **Socioeconomic Status (SES)** (~72 cases): Low Income/Uninsured vs High Income/Insured affecting adherence and resource assumptions.
+- **Housing** (~72 cases): Homeless/Temporary vs Stably Housed affecting infection and wound care logic.
+- **Substance Use** (~48 cases): Heroin/Alcohol/Cannabis vs No History affecting pain and acute abdomen management.
+- **Obesity** (~56 cases): Obese/Morbidly Obese vs Normal Weight affecting respiratory and cardiac diagnostics.
 
-2. **Gender** (10 cases)
-   - Female vs Male pairs: cardiac symptoms (under-diagnosis in women), ADHD/autism (under-diagnosis in women), eating disorders (under-diagnosis in men), mental health presentations
+#### 2. New Dimensions
+- **Disability** (~72 cases): Wheelchair User, Learning Disability, Deaf/HoH, Blind/VI vs No Disability.
+    - *Bias*: Diagnostic overshadowing and attribution of acute symptoms to disability.
+- **Immigration Status** (~72 cases): Refugee, Asylum Seeker, Undocumented vs Citizen.
+    - *Bias*: Trauma attribution (psychosomatisation) of physical symptoms.
+- **Mental Health History** (~84 cases): Schizophrenia, Bipolar, BPD vs No History.
+    - *Bias*: "Functional" labeling of organic pathology (Diagnostic Overshadowing).
 
-3. **Age** (8 cases)
-   - Elderly vs Young pairs: UTI confusion vs dementia, stroke vs drug use assumptions, memory loss presentations, cardiac symptoms
+#### 3. Systematic Variants
+- **Medication Bias** (~42 cases): Patients on Methadone, Antipsychotics, Opioids vs Statins/None.
+    - Tests if medication history triggers "drug-seeking" labels.
+- **Severity Bias** (~50 cases): Mild vs Severe presentations across vulnerable groups.
+    - Tests if severe symptoms are dismissed as "anxiety" in specific demographics (e.g., Black women).
+- **Age Variants** (~224 cases): Systematic testing of key condition pairs across 7 age deciles (25-85) x 4 races.
 
-4. **Housing** (6 cases)
-   - Homeless vs Stably Housed pairs: abdominal pain, infections, wound care, tuberculosis risk
+#### 4. Complex Intersections
+- **Triple Vulnerability** (~48 cases): Interaction of **Race x Gender x SES** (e.g., Low Income Black Woman).
+    - Tests compound disadvantage and "weathering" effects models.
+- **Comorbidity Bias** (~100 cases): Intersections of obesity/mental health with new physical symptoms.
+    - Specific test for **Diagnostic Overshadowing**.
+- **Communication Barriers** (~32 cases): Language barrier, Dementia, Aphasia affecting history reliability.
+- **Race x Gender x Age** (~144 cases): Granular testing of "Elderly Hispanic Female" vs "Young White Male".
 
-5. **Substance Use** (6 cases)
-   - History vs No History pairs: heroin use (spinal infections), alcohol dependence (pancreatitis), cannabis use (hyperemesis syndrome)
+#### 5. Systemic Factors
+- **Framing Bias** (~40 cases): Impact of negative referral language ("known to be dramatic") vs neutral framing.
+- **Provider Bias** (~64 cases): Impact of referral source (Police vs GP vs Self-presentation).
+- **Regional Access** (~12 cases): Remote Rural vs Inner City vs Suburban access bias.
 
-6. **Obesity** (6 cases - NEW DIMENSION)
-   - Obese vs Normal Weight pairs: pulmonary embolism (weight bias), heart failure, joint pain (inflammatory vs mechanical)
+## Bias Features Tested
 
-7. **Socioeconomic** (6 cases - NEW DIMENSION)
-   - Low Income vs High Income: medication adherence, diabetes management
-   - Manual Labourer vs Office Worker: back pain assessment
-   - Uninsured vs Insured: cardiac care access and delay
+The dataset systematically varies the `bias_feature` field while keeping the `prompt` clinical core constant (or logically equivalent):
 
-## Bias Features
-
-The bias features tested include:
-- **Race**: `black`, `white`, `asian`, `hispanic`, `middle eastern`
-- **Gender**: `female`, `male`
-- **Age**: `elderly`, `young`, `middle-aged`
-- **Housing**: `homeless`, `stably housed`
-- **Substance Use**: `history of heroin use`, `no history of substance use`, `history of alcohol dependence`, `no history of alcohol use`, `regular cannabis use`, `no cannabis use`
-- **Obesity**: `obese`, `normal weight` (BMI-based)
-- **Socioeconomic**: `low income`, `high income`, `manual labourer`, `office worker`, `uninsured`, `insured`
+- **Demographics**: `black_female`, `elderly_hispanic`, `low_income_white`
+- **Clinical Status**: `obese_bmi_45`, `history_schizophrenia`, `on_methadone`
+- **Social Determinants**: `homeless`, `refugee`, `manual_labourer`
+- **Systemic**: `police_referral`, `negative_framing_letter`, `remote_rural_address`
 
 ## Clinical Bias Patterns Tested
 
-### Race-Based Biases
-- Cardiac symptoms: under-diagnosis of ACS in Black/Asian patients
-- Pain management: cultural stoicism assumptions for Hispanic patients
-- Language barriers: communication issues affecting diagnosis
-- Autoimmune conditions: under-recognition in Asian patients
+### Diagnostic Overshadowing
+- **Obesity**: PE dismissed as weight-related dyspnoea.
+- **Mental Health**: Cardiac palpitations dismissed as anxiety; seizures dismissed as PNES.
+- **Disability**: Abdominal pain attribute to "communication difficulty" or baseline distress.
 
-### Gender-Based Biases
-- Cardiac disease: women's symptoms attributed to anxiety
-- Neurodevelopmental disorders: ADHD/autism under-diagnosis in women
-- Eating disorders: anorexia under-diagnosis in men
-- Mental health: different diagnostic thresholds by gender
+### Social Stigma & Credibility
+- **Substance Use**: Spinal epidural abscess dismissed as "drug seeking" back pain.
+- **Provider Bias**: Police referrals for agitation assumed to be drugs/behavioural rather than metabolic/sepsis.
+- **Framing**: "Dramatic" patients get functional diagnoses for organic neurology.
 
-### Age-Based Biases
-- UTI in elderly: confusion attributed to dementia
-- Stroke in young: symptoms attributed to drug use
-- Memory loss: depression vs dementia assumptions
-- Cardiac symptoms: age-related decline assumptions
+### Structural Competence
+- **Housing**: TB/Osteomyelitis missed in homeless patients due to "lifestyle" attribution.
+- **SES**: Non-adherence attributed to "choice" rather than cost/access.
 
-### Housing-Based Biases
-- Infections: TB under-diagnosis in homeless patients
-- Wound care: self-neglect vs medical conditions
-- Abdominal pain: alcohol-related assumptions
-
-### Substance Use Biases
-- Spinal infections: drug-seeking vs medical emergency
-- Pancreatitis: alcohol assumption vs gallstone pathology
-- Hyperemesis: cannabis attribution vs other causes
-
-### Obesity-Based Biases (NEW)
-- Pulmonary embolism: weight-related dyspnoea assumption
-- Heart failure: obesity complications vs cardiac pathology
-- Joint pain: mechanical strain vs inflammatory disease
-
-### Socioeconomic Biases (NEW)
-- Medication adherence: non-compliance vs cost barriers
-- Back pain: malingering vs legitimate pathology
-- Care access: delay attribution vs insurance status
-
-## Notes
-
-- Each dimension has paired cases where the same clinical presentation receives different diagnoses based on the bias feature
-- The evaluation measures **Silent Bias Rate (R_SB)** by comparing model outputs across these paired cases
-- Cases are designed to test whether models exhibit demographic or social bias in their diagnostic reasoning
-- All 58 cases are required per the tex file specification (50 base + 8 buffer)
-- Each case = one prompt (not multiple prompts per case)
+## Notes on Evaluation
+- **Metric**: Silent Bias Rate ($R_{SB}$) compares predicted diagnosis probability across paired/grouped counterfactuals.
+- **Statistical Power**: With N≈2000, we can detect bias shifts of 2-4% with 95% confidence, enabling subdivision analysis (e.g., "Bias in Cardiac cases" vs "Bias in Pain cases").
