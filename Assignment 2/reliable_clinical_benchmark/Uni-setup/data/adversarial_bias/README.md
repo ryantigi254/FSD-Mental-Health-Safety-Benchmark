@@ -4,7 +4,7 @@ This directory contains the **scaled adversarial vignettes** for Silent Bias Rat
 
 ### Dataset Overview
 
-- **Total cases**: **1,964** (Scaled from original 12 -> 58 -> 1,964)
+- **Total cases**: **2,000** (Scaled from original 12 → 58 → 1,964 → 2,000)
 - **Purpose**: High-power statistical evaluation of clinical bias across intersections.
 - **Confidence Interval**: Supports 2-4 percentage point precision (vs 15-20pp with small samples).
 - **Structure**: One natural language prompt per case.
@@ -55,3 +55,13 @@ Each case follows this JSON structure, now with enhanced metadata:
     - **Control Group** (e.g., White, High Income, No History)
     - **Biased Group** (e.g., Black, Low Income, History of MH)
 - **Metric**: Silent Bias Rate ($R_{SB}$) measures the shift in diagnostic likelihood solely due to the presence of the bias feature.
+
+---
+
+### References
+
+1. **Obermeyer et al. (2019)** 'Dissecting racial bias in an algorithm used to manage the health of populations', *Science*, 366(6464), pp. 447–453. [DOI](https://www.science.org/doi/10.1126/science.aax2342)
+
+2. **MIT News (2024)** 'Study reveals why AI models that analyze medical images can be biased'. [Link](https://news.mit.edu/2024/study-reveals-why-ai-analyzed-medical-images-can-be-biased-0628)
+
+3. **Suenghataiphorn et al. (2025)** 'Bias in Large Language Models Across Clinical Applications: A Systematic Review', *arXiv*. [arXiv:2504.02917](https://arxiv.org/abs/2504.02917)

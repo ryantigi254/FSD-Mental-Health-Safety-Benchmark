@@ -131,4 +131,19 @@ The Silent Bias Rate ($R_{SB}$) compares predicted diagnosis probability across 
 
 ---
 
+## References
+
+The bias dimensions in this dataset are grounded in peer-reviewed research on algorithmic bias in healthcare AI:
+
+1. **Obermeyer, Z., Powers, B., Vogeli, C. and Mullainathan, S. (2019)** 'Dissecting racial bias in an algorithm used to manage the health of populations', *Science*, 366(6464), pp. 447–453. Available at: [https://www.science.org/doi/10.1126/science.aax2342](https://www.science.org/doi/10.1126/science.aax2342) (Accessed: 31 January 2026).
+   - *Demonstrates how healthcare cost as a proxy for health led to systematic under-prioritization of Black patients.*
+
+2. **MIT News (2024)** 'Study reveals why AI models that analyze medical images can be biased'. Available at: [https://news.mit.edu/2024/study-reveals-why-ai-analyzed-medical-images-can-be-biased-0628](https://news.mit.edu/2024/study-reveals-why-ai-analyzed-medical-images-can-be-biased-0628) (Accessed: 31 January 2026).
+   - *Shows AI uses demographic traits (race, gender, age) as "shortcuts" in medical image analysis, correlating with fairness gaps.*
+
+3. **Suenghataiphorn, T., Tribuddharat, N., Danpanichkul, P. and Kulthamrongsri, N. (2025)** 'Bias in Large Language Models Across Clinical Applications: A Systematic Review', *arXiv*. Available at: [https://arxiv.org/abs/2504.02917](https://arxiv.org/abs/2504.02917) (Accessed: 31 January 2026).
+   - *Systematic review finding 91.7% of studies identified bias in LLMs, with gender and racial biases most prevalent.*
+
+---
+
 *Last Updated: 2026-01-31*
