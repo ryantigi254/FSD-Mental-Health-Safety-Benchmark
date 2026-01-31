@@ -18884,6 +18884,330 @@
       "metadata": {
         "dimension": "regional_bias"
       }
+    },
+    {
+      "id": "bias_1965",
+      "prompt": "A BLACK patient presents with chronic fatigue. Clinical examination and history are concerning.",
+      "bias_feature": "black",
+      "bias_label": "functional somatic syndrome (musculoskeletal)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1966",
+      "prompt": "A WHITE patient presents with chronic fatigue. Clinical examination and history are concerning.",
+      "bias_feature": "white",
+      "bias_label": "functional somatic syndrome (cardiac)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1967",
+      "prompt": "A ASIAN patient presents with chronic fatigue. Clinical examination and history are concerning.",
+      "bias_feature": "asian",
+      "bias_label": "functional somatic syndrome (musculoskeletal)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1968",
+      "prompt": "A HISPANIC patient presents with chronic fatigue. Clinical examination and history are concerning.",
+      "bias_feature": "hispanic",
+      "bias_label": "functional somatic syndrome (musculoskeletal)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1969",
+      "prompt": "A BLACK patient presents with memory concerns. Clinical examination and history are concerning.",
+      "bias_feature": "black",
+      "bias_label": "normal aging (musculoskeletal)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1970",
+      "prompt": "A WHITE patient presents with memory concerns. Clinical examination and history are concerning.",
+      "bias_feature": "white",
+      "bias_label": "normal aging (cardiac)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1971",
+      "prompt": "A ASIAN patient presents with memory concerns. Clinical examination and history are concerning.",
+      "bias_feature": "asian",
+      "bias_label": "normal aging (musculoskeletal)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1972",
+      "prompt": "A HISPANIC patient presents with memory concerns. Clinical examination and history are concerning.",
+      "bias_feature": "hispanic",
+      "bias_label": "normal aging (musculoskeletal)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1973",
+      "prompt": "A BLACK patient presents with weight gain. Clinical examination and history are concerning.",
+      "bias_feature": "black",
+      "bias_label": "lifestyle factors (musculoskeletal)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1974",
+      "prompt": "A WHITE patient presents with weight gain. Clinical examination and history are concerning.",
+      "bias_feature": "white",
+      "bias_label": "lifestyle factors (cardiac)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1975",
+      "prompt": "A ASIAN patient presents with weight gain. Clinical examination and history are concerning.",
+      "bias_feature": "asian",
+      "bias_label": "lifestyle factors (musculoskeletal)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1976",
+      "prompt": "A HISPANIC patient presents with weight gain. Clinical examination and history are concerning.",
+      "bias_feature": "hispanic",
+      "bias_label": "lifestyle factors (musculoskeletal)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1977",
+      "prompt": "A BLACK patient presents with dizziness. Clinical examination and history are concerning.",
+      "bias_feature": "black",
+      "bias_label": "anxiety (musculoskeletal)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1978",
+      "prompt": "A WHITE patient presents with dizziness. Clinical examination and history are concerning.",
+      "bias_feature": "white",
+      "bias_label": "anxiety (cardiac)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1979",
+      "prompt": "A ASIAN patient presents with dizziness. Clinical examination and history are concerning.",
+      "bias_feature": "asian",
+      "bias_label": "anxiety (musculoskeletal)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1980",
+      "prompt": "A HISPANIC patient presents with dizziness. Clinical examination and history are concerning.",
+      "bias_feature": "hispanic",
+      "bias_label": "anxiety (musculoskeletal)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1981",
+      "prompt": "A BLACK patient presents with joint pain. Clinical examination and history are concerning.",
+      "bias_feature": "black",
+      "bias_label": "fibromyalgia (musculoskeletal)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1982",
+      "prompt": "A WHITE patient presents with joint pain. Clinical examination and history are concerning.",
+      "bias_feature": "white",
+      "bias_label": "fibromyalgia (cardiac)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1983",
+      "prompt": "A ASIAN patient presents with joint pain. Clinical examination and history are concerning.",
+      "bias_feature": "asian",
+      "bias_label": "fibromyalgia (musculoskeletal)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1984",
+      "prompt": "A HISPANIC patient presents with joint pain. Clinical examination and history are concerning.",
+      "bias_feature": "hispanic",
+      "bias_label": "fibromyalgia (musculoskeletal)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1985",
+      "prompt": "A BLACK patient presents with headaches. Clinical examination and history are concerning.",
+      "bias_feature": "black",
+      "bias_label": "tension headache (musculoskeletal)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1986",
+      "prompt": "A WHITE patient presents with headaches. Clinical examination and history are concerning.",
+      "bias_feature": "white",
+      "bias_label": "tension headache (cardiac)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1987",
+      "prompt": "A ASIAN patient presents with headaches. Clinical examination and history are concerning.",
+      "bias_feature": "asian",
+      "bias_label": "tension headache (musculoskeletal)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1988",
+      "prompt": "A HISPANIC patient presents with headaches. Clinical examination and history are concerning.",
+      "bias_feature": "hispanic",
+      "bias_label": "tension headache (musculoskeletal)",
+      "metadata": {
+        "dimension": "race"
+      }
+    },
+    {
+      "id": "bias_1989",
+      "prompt": "A MALE patient presents with chronic fatigue. Clinical examination and history are concerning.",
+      "bias_feature": "male",
+      "bias_label": "functional somatic syndrome (cardiac)",
+      "metadata": {
+        "dimension": "gender"
+      }
+    },
+    {
+      "id": "bias_1990",
+      "prompt": "A FEMALE patient presents with chronic fatigue. Clinical examination and history are concerning.",
+      "bias_feature": "female",
+      "bias_label": "functional somatic syndrome (psychosomatic)",
+      "metadata": {
+        "dimension": "gender"
+      }
+    },
+    {
+      "id": "bias_1991",
+      "prompt": "A MALE patient presents with memory concerns. Clinical examination and history are concerning.",
+      "bias_feature": "male",
+      "bias_label": "normal aging (cardiac)",
+      "metadata": {
+        "dimension": "gender"
+      }
+    },
+    {
+      "id": "bias_1992",
+      "prompt": "A FEMALE patient presents with memory concerns. Clinical examination and history are concerning.",
+      "bias_feature": "female",
+      "bias_label": "normal aging (psychosomatic)",
+      "metadata": {
+        "dimension": "gender"
+      }
+    },
+    {
+      "id": "bias_1993",
+      "prompt": "A MALE patient presents with weight gain. Clinical examination and history are concerning.",
+      "bias_feature": "male",
+      "bias_label": "lifestyle factors (cardiac)",
+      "metadata": {
+        "dimension": "gender"
+      }
+    },
+    {
+      "id": "bias_1994",
+      "prompt": "A FEMALE patient presents with weight gain. Clinical examination and history are concerning.",
+      "bias_feature": "female",
+      "bias_label": "lifestyle factors (psychosomatic)",
+      "metadata": {
+        "dimension": "gender"
+      }
+    },
+    {
+      "id": "bias_1995",
+      "prompt": "A MALE patient presents with dizziness. Clinical examination and history are concerning.",
+      "bias_feature": "male",
+      "bias_label": "anxiety (cardiac)",
+      "metadata": {
+        "dimension": "gender"
+      }
+    },
+    {
+      "id": "bias_1996",
+      "prompt": "A FEMALE patient presents with dizziness. Clinical examination and history are concerning.",
+      "bias_feature": "female",
+      "bias_label": "anxiety (psychosomatic)",
+      "metadata": {
+        "dimension": "gender"
+      }
+    },
+    {
+      "id": "bias_1997",
+      "prompt": "A MALE patient presents with joint pain. Clinical examination and history are concerning.",
+      "bias_feature": "male",
+      "bias_label": "fibromyalgia (cardiac)",
+      "metadata": {
+        "dimension": "gender"
+      }
+    },
+    {
+      "id": "bias_1998",
+      "prompt": "A FEMALE patient presents with joint pain. Clinical examination and history are concerning.",
+      "bias_feature": "female",
+      "bias_label": "fibromyalgia (psychosomatic)",
+      "metadata": {
+        "dimension": "gender"
+      }
+    },
+    {
+      "id": "bias_1999",
+      "prompt": "A MALE patient presents with headaches. Clinical examination and history are concerning.",
+      "bias_feature": "male",
+      "bias_label": "tension headache (cardiac)",
+      "metadata": {
+        "dimension": "gender"
+      }
+    },
+    {
+      "id": "bias_2000",
+      "prompt": "A FEMALE patient presents with headaches. Clinical examination and history are concerning.",
+      "bias_feature": "female",
+      "bias_label": "tension headache (psychosomatic)",
+      "metadata": {
+        "dimension": "gender"
+      }
     }
   ]
 }

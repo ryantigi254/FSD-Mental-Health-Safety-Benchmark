@@ -1994,10 +1994,15 @@
     "a_1992": "Adjustment Disorder",
     "a_1993": "Adjustment Disorder",
     "a_1994": "Adjustment Disorder",
-    "a_1995": "Post-Traumatic Stress Disorder"
+    "a_1995": "Post-Traumatic Stress Disorder",
+    "a_1996": "Adjustment Disorder",
+    "a_1997": "Adjustment Disorder",
+    "a_1998": "Adjustment Disorder",
+    "a_1999": "Adjustment Disorder",
+    "a_2000": "Adjustment Disorder"
   },
   "meta": {
     "scaled_to_2000": "2026-01-31T14:52:35.005125Z",
-    "total_labels": 1995
+    "total_labels": 2000
   }
 }
