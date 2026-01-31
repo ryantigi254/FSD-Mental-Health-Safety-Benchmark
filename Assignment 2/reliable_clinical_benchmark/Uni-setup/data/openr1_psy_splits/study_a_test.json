@@ -47301,11 +47301,71 @@
         "source_split": "train",
         "added_during_scaling": true
       }
+    },
+    {
+      "id": "a_1996",
+      "prompt": "I have always been forced to play the piano by my mother, who was a good piano player herself. She made me enter contests and learn new pieces, which I would have to memorize and perform in front of a judge. This would make me extremely nervous, upset, and worried, to the point that I would become hysterical before the performance.",
+      "gold_answer": "",
+      "gold_reasoning": [],
+      "metadata": {
+        "source_openr1_ids": [
+          1803
+        ],
+        "source_split": "train"
+      }
+    },
+    {
+      "id": "a_1997",
+      "prompt": "Hello, psychological counselor, I have encountered some marriage problems recently and would like to ask you for advice.",
+      "gold_answer": "",
+      "gold_reasoning": [],
+      "metadata": {
+        "source_openr1_ids": [
+          9437
+        ],
+        "source_split": "train"
+      }
+    },
+    {
+      "id": "a_1998",
+      "prompt": "I learned that not being able to sleep is one of the symptoms of my problem. I can't afford to be sick, as I'm finally in school, which is what I wanted, and I have my son. I think starting counseling now might help me figure out how to deal with it.",
+      "gold_answer": "",
+      "gold_reasoning": [],
+      "metadata": {
+        "source_openr1_ids": [
+          3047
+        ],
+        "source_split": "train"
+      }
+    },
+    {
+      "id": "a_1999",
+      "prompt": "I just feel so overwhelmed and exhausted. No matter how hard I try, it's like I'm stuck in this endless cycle of tasks and problems. I've tried different therapies, self-help books, even meditation—but nothing seems to work for long. It's like I'm running in circles, and I'm just... tired. Hopeless, even.",
+      "gold_answer": "",
+      "gold_reasoning": [],
+      "metadata": {
+        "source_openr1_ids": [
+          14393
+        ],
+        "source_split": "train"
+      }
+    },
+    {
+      "id": "a_2000",
+      "prompt": "Hello, I am Xiaoqiang. Recently, my relationship with my parents has become increasingly tense, and I don’t know what to do.",
+      "gold_answer": "",
+      "gold_reasoning": [],
+      "metadata": {
+        "source_openr1_ids": [
+          9397
+        ],
+        "source_split": "train"
+      }
     }
   ],
   "meta": {
     "scaled_to_2000": "2026-01-31T14:52:35.005125Z",
-    "total_samples": 1995,
+    "total_samples": 2000,
     "scaling_script": "scripts/studies/study_a/scale_to_2000.py"
   }
 }
