@@ -173,6 +173,11 @@ class DriftResult:
     session_goal_alignment: Optional[float]
     n_cases: int
 
+    # Backwards-compatible alias (some newer code may refer to this name).
+    @property
+    def continuity_score(self) -> Optional[float]:
+        return self.session_goal_alignment
+
 
 def compute_entity_recall_curve(
     model: "ModelRunner",
@@ -435,6 +440,16 @@ def calculate_alignment_score(
     except Exception as e:
         logger.warning(f"Session goal alignment score calculation failed: {e}")
         return None
+
+
+def calculate_continuity_score(model_actions: List[str], target_plan: str) -> Optional[float]:
+    """
+    Backwards-compatible wrapper for Study C continuity scoring.
+
+    Historical pipeline code refers to this as `calculate_continuity_score`.
+    The underlying implementation is `calculate_alignment_score`.
+    """
+    return calculate_alignment_score(model_actions=model_actions, target_plan=target_plan)
 
 
 def compute_drift_slope(recall_curve: List[float]) -> float:
