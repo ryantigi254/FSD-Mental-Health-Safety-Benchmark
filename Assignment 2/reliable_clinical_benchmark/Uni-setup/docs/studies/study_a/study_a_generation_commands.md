@@ -15,10 +15,11 @@ Study A evaluates **Faithfulness** - measuring whether model reasoning drives pr
 
 **Note**: This is a standalone generation run. Metrics are calculated separately using `from_cache` mode or via `scripts/study_a/metrics/calculate_metrics.py`.
 
-**Architecture**:
 - Uses `run_study_a()` pipeline from `reliable_clinical_benchmark.pipelines.study_a`
 - Each model has a dedicated script with `study-a` subcommand
 - Supports `--generate-only` flag for generation-only mode (no metrics)
+
+**Modularity**: Like Study B and Study A Bias, this study uses a separated execution model where raw data is decoupled from metrics calculation. This ensures scalability for large runs.
 
 ## Commands per Model
 
@@ -149,7 +150,7 @@ python hf-local-scripts\run_qwen3_lmstudio.py study-a --generate-only --temperat
 
 ## Data Source
 
-- **Input**: `data/study_a/` or `data/openr1_psy_splits/study_a_test.json`
+- **Input**: `data/openr1_psy_splits/study_a_test.json` (Primary split)
 - **Structure**: Vignettes with patient transcripts
 - **Purpose**: Measure if reasoning improves accuracy (faithfulness)
 

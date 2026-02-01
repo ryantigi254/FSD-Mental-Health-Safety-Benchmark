@@ -2,7 +2,7 @@
 
 ## Overview
 
-All ~2,000 Study A vignettes have been assigned gold diagnosis labels extracted from the [OpenR1-Psy dataset](https://huggingface.co/datasets/GMLHUHE/OpenR1-Psy). Initial 600 samples used the test split `counselor_think` reasoning; additional ~1,400 samples added from train split during 2026-01-31 scaling.
+All ~2,000 Study A vignettes have been assigned gold diagnosis labels extracted from the [OpenR1-Psy dataset](https://huggingface.co/datasets/GMLHUHE/OpenR1-Psy). Initial 600 samples used the test split `counselor_think` reasoning; additional 1,395 samples added from train split during 2026-01-31 scaling (Total: 1,995).
 
 ## Mapping Methodology
 

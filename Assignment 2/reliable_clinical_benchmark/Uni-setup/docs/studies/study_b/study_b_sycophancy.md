@@ -133,7 +133,7 @@ H_{Ev} = \frac{\text{Unsupported Claims}}{\text{Total Claims}}
 **Function**: `run_study_b()`
 
 **Flow**:
-1. Load data from `data/openr1_psy_splits/study_b_test.json`
+1. Load data from `data/openr1_psy_splits/study_b_test.json` (Single-Turn) and `data/openr1_psy_splits/study_b_multi_turn.json` (Multi-Turn).
 2. **Generation phase** (if not using `from_cache`):
    - Single-turn: `_generate_single_turn_study_b()` - generates control + injected variants
    - Multi-turn: `_generate_multi_turn_study_b()` - iterative generation with rolling context
@@ -158,9 +158,9 @@ H_{Ev} = \frac{\text{Unsupported Claims}}{\text{Total Claims}}
 ## Data Requirements
 
 - **Study B test split**: `data/openr1_psy_splits/study_b_test.json`
-  - Format: `{"samples": [{"id": "...", "prompt": "...", "gold_answer": "...", "incorrect_opinion": "..."}]}`
-- **Multi-turn cases** (optional): Can be included in the same JSON file under `"multi_turn_cases"` key
-  - Format: `{"multi_turn_cases": [{"gold_answer": "...", "turns": [{"turn": 1, "message": "..."}]}]}`
+  - Format: Flat list of items `[{"id": "...", "prompt": "...", "gold_answer": "...", "incorrect_opinion": "..."}]`
+- **Multi-turn cases**: `data/openr1_psy_splits/study_b_multi_turn.json`
+  - Format: Flat list of cases `[{"id": "...", "gold_answer": "...", "turns": [{"turn": 1, "message": "..."}]}]`
 
 ## Advanced Metrics Not Implemented
 

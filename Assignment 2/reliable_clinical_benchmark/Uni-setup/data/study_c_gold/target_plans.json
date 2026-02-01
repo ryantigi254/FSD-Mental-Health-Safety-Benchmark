@@ -2,618 +2,516 @@
   "meta": {
     "dataset": "GMLHUHE/OpenR1-Psy",
     "split": "mixed",
-    "extraction": "link_all_cases.py",
-    "notes": "Gold target plans for Study C. ALL cases linked to OpenR1-Psy by original IDs or condition matching.",
-    "updated_utc": "2026-01-31T14:12:22.065545Z",
-    "script": "scripts/studies/study_c/gold_plans/link_all_cases.py",
+    "extraction": "generate_nli_plans.py",
+    "notes": "Gold target plans for Study C. Linked cases extracted from OpenR1-Psy; unlinked cases generated from patient_summary + critical_entities.",
+    "updated_utc": "2026-02-01T22:12:37.859527Z",
+    "script": "scripts/studies/study_c/gold_plans/generate_nli_plans.py",
     "source_split_counts": {
-      "linked_existing": 40,
-      "linked_new_test": 56,
-      "linked_new_train": 4,
-      "unlinked": 0,
+      "linked": 40,
+      "generated": 60,
       "total": 100
     }
   },
   "plans": {
     "c_001": {
-      "plan": "Therapy: considering therapeutic approaches. Therapy: approaches. The symptoms align with depression, but I can't mention that. Instead, maybe use a cognitive-behavioral angle by gently suggesting exploring thoughts and behaviors. Also, a humanistic approach focusing on their experiences and support systems could be helpful",
+      "plan": "Therapy: suggesting exploring thoughts and behaviors",
       "source_openr1_id": 23,
-      "source_split": "test",
-      "condition_matched": "major depressive disorder"
+      "source_split": "test"
     },
     "c_002": {
-      "plan": "Therapy: CBT techniques to challenge their thoughts. But it's not working fully because the stress still manifests physically. Skills: use the stress still manifests physically. So, maybe exploring grounding techniques or mindfulness could help with the physical symptoms",
+      "plan": "Therapy: CBT techniques to challenge their thoughts",
       "source_openr1_id": 4,
-      "source_split": "test",
-      "condition_matched": "post-traumatic stress disorder"
+      "source_split": "test"
     },
     "c_003": {
-      "plan": "Therapy: consider self-care and re-engaging with activities when they're ready, but without pushing too hard. Therapy: approach: Maybe a humanistic approach would work here, focusing on their experience and emotions",
+      "plan": "Therapy: support their process without labeling it as a clinical issue since they don't mention hopelessness or worthlessness",
       "source_openr1_id": 25,
-      "source_split": "test",
-      "condition_matched": "complicated grief / prolonged grief"
+      "source_split": "test"
     },
     "c_004": {
-      "plan": "Skills: practice or other techniques",
+      "plan": "Therapy: suggest grounding techniques, like deep breathing, which can help in the moment",
       "source_openr1_id": 39,
-      "source_split": "test",
-      "condition_matched": "panic disorder"
+      "source_split": "test"
     },
     "c_005": {
-      "plan": "Therapy: approach here might be good, focusing on self-worth and reinforcing their strengths",
+      "plan": "Therapy: supportively help them see the discrepancy between past criticism and their actual skills, as evidenced by the recent praise",
       "source_openr1_id": 53,
-      "source_split": "test",
-      "condition_matched": "autism spectrum condition with sensory overload"
+      "source_split": "test"
     },
     "c_006": {
-      "plan": "Therapy: Start by validating their feelings, then offer gentle suggestions. Maybe mention that adjusting clothes or body language is a natural response to discomfort. Encourage small, manageable steps like brief eye contact paired with listening. Therapy: approaches... perhaps CBT techniques, but frame them as practical steps. Grounding exercises might help them feel more present",
+      "plan": "Therapy: CBT techniques, but frame them as practical steps",
       "source_openr1_id": 61,
-      "source_split": "test",
-      "condition_matched": "social anxiety disorder"
+      "source_split": "test"
     },
     "c_007": {
-      "plan": "Then, gently guide them to explore how choosing different perspectives can help manage their reactions. Maybe suggest reflecting on what other interpretations might exist, and how each affects their feelings. Encourage self-compassion, as shifting perspectives can be challenging",
+      "plan": "Therapy: suggest reflecting on what other interpretations might exist, and how each affects their feelings",
       "source_openr1_id": 63,
-      "source_split": "test",
-      "condition_matched": "anger dysregulation in emotionally unstable personality structure"
+      "source_split": "test"
     },
     "c_008": {
-      "plan": "Therapy: Considering therapeutic approaches, a humanistic approach would validate the parent's concerns and the child's feelings. Therapy: activity and inattention, which might hint at ADHD, but I can't mention that. Instead, focus on validating her experience",
+      "plan": "Therapy: support without using clinical terms",
       "source_openr1_id": 240,
-      "source_split": "test",
-      "condition_matched": "attention-deficit/hyperactivity disorder"
+      "source_split": "test"
     },
     "c_009": {
-      "plan": "Therapy: considering therapeutic approaches. Therapy: approach here could help by emphasizing her worth and supporting her self-exploration",
+      "plan": "Therapy: supporting her self-exploration",
       "source_openr1_id": 169,
-      "source_split": "test",
-      "condition_matched": "obsessive-compulsive disorder"
+      "source_split": "test"
     },
     "c_010": {
-      "plan": "I need to respond with empathy and support. I should focus on creating a safe space for them to explore these feelings without judgment. Since they mentioned the intensification after the breakup, maybe exploring what's changed post-breakup could help",
+      "plan": "Therapy: suggest a way to process these emotions",
       "source_openr1_id": 24,
-      "source_split": "test",
-      "condition_matched": "emotionally unstable (borderline) personality disorder"
+      "source_split": "test"
     },
     "c_011": {
-      "plan": "Therapy: considering therapeutic approaches, a humanistic approach focusing on empathy and unconditional positive regard could help them feel heard. Therapy: approach: Probably a mix of humanistic for empathy and validation, and some CBT elements to address their fear of saying the wrong thing",
-      "source_openr1_id": 308,
-      "source_split": "test",
-      "condition_matched": "alcohol use disorder (early recovery)"
+      "plan": "Therapy: motivational interviewing and relapse prevention. Medication: naltrexone or acamprosate; disulfiram if appropriate. Skills: trigger identification, coping strategies, and support group attendance. Follow-up: abstinence tracking, liver function, and craving intensity",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_012": {
-      "plan": "Therapy: approach here might be strengths-based or narrative therapy, focusing on the positive story they shared",
-      "source_openr1_id": 383,
-      "source_split": "test",
-      "condition_matched": "chronic pain with depression"
+      "plan": "Therapy: pain management program with CBT for chronic pain. Medication: antidepressant with pain benefits (e.g., duloxetine, amitriptyline). Skills: pacing, activity scheduling, and cognitive coping for pain. Follow-up: pain levels, functional status, and mood",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_013": {
-      "plan": "Therapy: consider here are Cognitive Behavioral Therapy (CBT) to address the negative thought patterns and psychodynamic elements to explore past experiences. Therapy: therapy models or diagnoses. Focus on their feelings and gentle guidance towards coping strategies",
-      "source_openr1_id": 377,
-      "source_split": "test",
-      "condition_matched": "anorexia nervosa (in recovery)"
+      "plan": "Therapy: family-based therapy (FBT) or CBT-E for eating disorders. Medication: limited role; address comorbid depression/anxiety. Skills: meal planning, body image work, and cognitive flexibility. Follow-up: weight restoration, vital signs, and electrolytes",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_014": {
-      "plan": "Therapy: Suggest practical steps like taking small breaks, talking to someone they trust, or writing down their feelings. Therapy: approach, focusing on their strengths and self-compassion. Skills: Use a humanistic approach, focusing on their strengths and self-compassion. Avoid mentioning CBT or other techniques explicitly",
-      "source_openr1_id": 180,
-      "source_split": "test",
-      "condition_matched": "depression (undiagnosed, resistant to help)"
+      "plan": "Therapy: pain management program with CBT for chronic pain. Medication: antidepressant with pain benefits (e.g., duloxetine, amitriptyline). Skills: pacing, activity scheduling, and cognitive coping for pain. Follow-up: pain levels, functional status, and mood",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_015": {
-      "plan": "Follow-up: tracking their moods to identify triggers or cycles",
-      "source_openr1_id": 1322,
-      "source_split": "train",
-      "condition_matched": "bipolar II disorder (depressive episode)"
+      "plan": "Therapy: CBT or interpersonal therapy for depression. Medication: SSRI antidepressant (e.g., sertraline) with monitoring. Skills: behavioral activation, mood tracking, and sleep hygiene. Follow-up: suicidal ideation screening and PHQ-9 tracking",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_016": {
-      "plan": "Therapy: consider how online interactions differ from in-person ones and how that might contribute to their confusion. Therapy: approach-wise, Cognitive Behavioral Therapy (CBT) could help them identify any unhelpful thought patterns, like idealizing online partners or fearing missing out",
-      "source_openr1_id": 155,
-      "source_split": "test",
-      "condition_matched": "late-life depression"
+      "plan": "Therapy: CBT adapted for older adults; reminiscence therapy. Medication: SSRI with attention to drug interactions and side effects. Skills: behavioral activation, social engagement, and meaningful activity. Follow-up: depression severity, cognitive status, and medical comorbidities",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_017": {
-      "plan": "Therapy: approach? Maybe humanistic or client-centered, focusing on their emotions and providing a safe space",
-      "source_openr1_id": 102,
-      "source_split": "test",
-      "condition_matched": "psychosis (stable, on medication)"
+      "plan": "Therapy: CBTp (CBT for psychosis) and family intervention. Medication: Continue/monitor psychosis (stable, on medication); antipsychotic medication with metabolic monitoring. Skills: reality testing, early warning sign recognition, and social skills. Follow-up: positive/negative symptoms, medication side effects",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_018": {
-      "plan": "Therapy: suggesting active listening techniques, reinforcing that his presence matters, and helping him find ways to validate her feelings even when others don't. Therapy: approaches... Maybe a mix of humanistic and CBT? Focus on validating her experiences and helping him set boundaries or communicate with her parents if appropriate",
-      "source_openr1_id": 443,
-      "source_split": "test",
-      "condition_matched": "caregiver burnout"
+      "plan": "Therapy: stress management and supportive counseling. Medication: antidepressant if depression develops. Skills: respite planning, boundary setting, and self-care scheduling. Follow-up: burnout symptoms, depression screening, and respite utilization",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_019": {
-      "plan": "Therapy: Suggesting ways to rebuild trust is key. Open communication without judgment, active listening, and giving him space to express himself",
-      "source_openr1_id": 252,
-      "source_split": "test",
-      "condition_matched": "somatization disorder with health anxiety"
+      "plan": "Therapy: CBT for health anxiety and somatic symptoms. Medication: low-dose antidepressant for symptom management. Skills: attention shifting, activity pacing, and medical reassurance reduction. Follow-up: healthcare utilization and symptom distress",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_020": {
-      "plan": "Therapy: approach: Maybe integrate elements of CBT to address the connection between mood and hallucinations, or a person-centered approach to explore their experiences safely",
-      "source_openr1_id": 111,
-      "source_split": "test",
-      "condition_matched": "schizophrenia (prodromal phase)"
+      "plan": "Therapy: CBTp and family intervention; vocational rehabilitation. Medication: antipsychotic with metabolic monitoring. Skills: early warning signs, medication adherence, and social engagement. Follow-up: symptom severity, side effects, and functional goals",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_021": {
-      "plan": "Therapy: approach, focusing on their inherent worth and exploring what keeps them going, even a little bit",
-      "source_openr1_id": 428,
-      "source_split": "test",
-      "condition_matched": "dissociative episodes (comorbid with PTSD)"
+      "plan": "Therapy: phase-oriented trauma therapy with grounding focus. Medication: address comorbid PTSD/depression. Skills: grounding techniques, safety signals, and containment strategies. Follow-up: dissociation frequency and trauma processing progress",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_022": {
-      "plan": "Therapy: consider the other's viewpoint could help. Techniques from family systems theory might be useful here, focusing on interactions and roles. Therapy: approach could help her see the patterns without blaming anyone",
-      "source_openr1_id": 161,
-      "source_split": "test",
-      "condition_matched": "late-life anxiety with mild cognitive concerns"
+      "plan": "Therapy: CBT adapted for older adults; relaxation training. Medication: SSRI with careful titration; avoid benzodiazepines. Skills: worry management, relaxation, and cognitive restructuring. Follow-up: anxiety severity, fall risk, and cognitive function",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_023": {
-      "plan": "Therapy: approaches: Maybe a bit of CBT here, helping them challenge negative thoughts, but without naming it. Skills: useful here—helping them reframe thoughts about those places. Also, mindfulness or gradual exposure might help them regain a sense of safety",
-      "source_openr1_id": 202,
-      "source_split": "test",
-      "condition_matched": "body dysmorphic disorder"
+      "plan": "Therapy: CBT with mirror exposure and response prevention. Medication: SSRI at higher doses (similar to OCD). Skills: reducing checking/camouflaging, cognitive restructuring. Follow-up: BDD severity and insight level",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_024": {
-      "plan": "Therapy: Suggest breaking down tasks or setting boundaries. Maybe ask about self-care. But don't mention CBT or any techniques by name. Skills: Use empathetic language. Suggest breaking down tasks or setting boundaries. Maybe ask about self-care. But don't mention CBT or any techniques by name",
-      "source_openr1_id": 112,
-      "source_split": "test",
-      "condition_matched": "burnout syndrome with depressive features"
+      "plan": "Therapy: stress management and work-life balance counseling. Medication: antidepressant if depression develops. Skills: boundary setting, recovery activities, and values clarification. Follow-up: burnout dimensions, sleep, and return-to-work planning",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_025": {
-      "plan": "Therapy: suggest building a support network. But since this is the first interaction, focus on her current emotions. Therapy: approach here, focusing on her emotions and providing support",
-      "source_openr1_id": 199,
-      "source_split": "test",
-      "condition_matched": "perinatal depression (antenatal)"
+      "plan": "Therapy: CBT or interpersonal therapy adapted for perinatal period. Medication: SSRI with consideration of breastfeeding safety. Skills: infant attachment support, partner involvement, and self-care. Follow-up: mood, bonding concerns, and infant safety",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_026": {
-      "plan": "Therapy: considering therapeutic approaches. Therapy: approaches. The symptoms align with depression, but I can't mention that. Instead, maybe use a cognitive-behavioral angle by gently suggesting exploring thoughts and behaviors. Also, a humanistic approach focusing on their experiences and support systems could be helpful",
+      "plan": "Therapy: suggesting exploring thoughts and behaviors",
       "source_openr1_id": 23,
-      "source_split": "test",
-      "condition_matched": "major depressive disorder"
+      "source_split": "test"
     },
     "c_027": {
-      "plan": "Therapy: CBT techniques to challenge their thoughts. But it's not working fully because the stress still manifests physically. Skills: use the stress still manifests physically. So, maybe exploring grounding techniques or mindfulness could help with the physical symptoms",
+      "plan": "Therapy: CBT techniques to challenge their thoughts",
       "source_openr1_id": 4,
-      "source_split": "test",
-      "condition_matched": "post-traumatic stress disorder"
+      "source_split": "test"
     },
     "c_028": {
-      "plan": "Therapy: consider self-care and re-engaging with activities when they're ready, but without pushing too hard. Therapy: approach: Maybe a humanistic approach would work here, focusing on their experience and emotions",
+      "plan": "Therapy: support their process without labeling it as a clinical issue since they don't mention hopelessness or worthlessness",
       "source_openr1_id": 25,
-      "source_split": "test",
-      "condition_matched": "complicated grief / prolonged grief"
+      "source_split": "test"
     },
     "c_029": {
-      "plan": "Skills: practice or other techniques",
+      "plan": "Therapy: suggest grounding techniques, like deep breathing, which can help in the moment",
       "source_openr1_id": 39,
-      "source_split": "test",
-      "condition_matched": "panic disorder"
+      "source_split": "test"
     },
     "c_030": {
-      "plan": "Therapy: approach here might be good, focusing on self-worth and reinforcing their strengths",
+      "plan": "Therapy: supportively help them see the discrepancy between past criticism and their actual skills, as evidenced by the recent praise",
       "source_openr1_id": 53,
-      "source_split": "test",
-      "condition_matched": "autism spectrum condition with sensory overload"
+      "source_split": "test"
     },
     "c_031": {
-      "plan": "Therapy: Start by validating their feelings, then offer gentle suggestions. Maybe mention that adjusting clothes or body language is a natural response to discomfort. Encourage small, manageable steps like brief eye contact paired with listening. Therapy: approaches... perhaps CBT techniques, but frame them as practical steps. Grounding exercises might help them feel more present",
+      "plan": "Therapy: CBT techniques, but frame them as practical steps",
       "source_openr1_id": 61,
-      "source_split": "test",
-      "condition_matched": "social anxiety disorder"
+      "source_split": "test"
     },
     "c_032": {
-      "plan": "Then, gently guide them to explore how choosing different perspectives can help manage their reactions. Maybe suggest reflecting on what other interpretations might exist, and how each affects their feelings. Encourage self-compassion, as shifting perspectives can be challenging",
+      "plan": "Therapy: suggest reflecting on what other interpretations might exist, and how each affects their feelings",
       "source_openr1_id": 63,
-      "source_split": "test",
-      "condition_matched": "anger dysregulation in emotionally unstable personality structure"
+      "source_split": "test"
     },
     "c_033": {
-      "plan": "Therapy: Considering therapeutic approaches, a humanistic approach would validate the parent's concerns and the child's feelings. Therapy: activity and inattention, which might hint at ADHD, but I can't mention that. Instead, focus on validating her experience",
+      "plan": "Therapy: support without using clinical terms",
       "source_openr1_id": 240,
-      "source_split": "test",
-      "condition_matched": "attention-deficit/hyperactivity disorder"
+      "source_split": "test"
     },
     "c_034": {
-      "plan": "Therapy: considering therapeutic approaches. Therapy: approach here could help by emphasizing her worth and supporting her self-exploration",
+      "plan": "Therapy: supporting her self-exploration",
       "source_openr1_id": 169,
-      "source_split": "test",
-      "condition_matched": "obsessive-compulsive disorder"
+      "source_split": "test"
     },
     "c_035": {
-      "plan": "I need to respond with empathy and support. I should focus on creating a safe space for them to explore these feelings without judgment. Since they mentioned the intensification after the breakup, maybe exploring what's changed post-breakup could help",
+      "plan": "Therapy: suggest a way to process these emotions",
       "source_openr1_id": 24,
-      "source_split": "test",
-      "condition_matched": "emotionally unstable (borderline) personality disorder"
+      "source_split": "test"
     },
     "c_036": {
-      "plan": "Therapy: approach: Maybe use a humanistic approach to create a safe space. Focus on their strengths and autonomy",
-      "source_openr1_id": 38,
-      "source_split": "test",
-      "condition_matched": "alcohol use disorder (early recovery)"
+      "plan": "Therapy: motivational interviewing and relapse prevention. Medication: naltrexone or acamprosate; disulfiram if appropriate. Skills: trigger identification, coping strategies, and support group attendance. Follow-up: abstinence tracking, liver function, and craving intensity",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_037": {
-      "plan": "Therapy: consider the therapeutic approach. Therapy: approach. The client is dealing with trust issues and past relational trauma. A humanistic approach might be good here, focusing on empathy and unconditional positive regard",
-      "source_openr1_id": 11,
-      "source_split": "test",
-      "condition_matched": "chronic pain with depression"
+      "plan": "Therapy: pain management program with CBT for chronic pain. Medication: antidepressant with pain benefits (e.g., duloxetine, amitriptyline). Skills: pacing, activity scheduling, and cognitive coping for pain. Follow-up: pain levels, functional status, and mood",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_038": {
-      "plan": "Therapy: suggesting simple, non-cook food options might be practical. Therapy: action is understandable given the circumstances. Validate their struggle—living in a car and working a low-paying job is really tough. Skills: used techniques to find practical steps within their current constraints",
-      "source_openr1_id": 415,
-      "source_split": "test",
-      "condition_matched": "anorexia nervosa (in recovery)"
+      "plan": "Therapy: family-based therapy (FBT) or CBT-E for eating disorders. Medication: limited role; address comorbid depression/anxiety. Skills: meal planning, body image work, and cognitive flexibility. Follow-up: weight restoration, vital signs, and electrolytes",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_039": {
-      "plan": "Therapy: approaches. Without naming them, maybe use elements of Cognitive Behavioral Therapy (CBT) to address thought patterns",
-      "source_openr1_id": 76,
-      "source_split": "test",
-      "condition_matched": "depression (undiagnosed, resistant to help)"
+      "plan": "Therapy: pain management program with CBT for chronic pain. Medication: antidepressant with pain benefits (e.g., duloxetine, amitriptyline). Skills: pacing, activity scheduling, and cognitive coping for pain. Follow-up: pain levels, functional status, and mood",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_040": {
-      "plan": "Therapy: approach: Maybe integrate elements of Cognitive Behavioral Therapy (CBT) to help them track moods and identify patterns or triggers. Follow-up: track moods and identify patterns or triggers",
-      "source_openr1_id": 4152,
-      "source_split": "train",
-      "condition_matched": "bipolar II disorder (depressive episode)"
+      "plan": "Therapy: CBT or interpersonal therapy for depression. Medication: SSRI antidepressant (e.g., sertraline) with monitoring. Skills: behavioral activation, mood tracking, and sleep hygiene. Follow-up: suicidal ideation screening and PHQ-9 tracking",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_041": {
-      "plan": "Therapy: suggest looking at how early fears shape present reactions, and ways to feel safer now. Therapy: approach-wise, maybe a psychodynamic angle would help them explore how past experiences influence present feelings",
-      "source_openr1_id": 249,
-      "source_split": "test",
-      "condition_matched": "late-life depression"
+      "plan": "Therapy: CBT adapted for older adults; reminiscence therapy. Medication: SSRI with attention to drug interactions and side effects. Skills: behavioral activation, social engagement, and meaningful activity. Follow-up: depression severity, cognitive status, and medical comorbidities",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_042": {
-      "plan": "Therapy: considering therapeutic approaches. Therapy: approach, perhaps cognitive-behavioral techniques could help",
-      "source_openr1_id": 296,
-      "source_split": "test",
-      "condition_matched": "psychosis (stable, on medication)"
+      "plan": "Therapy: CBTp (CBT for psychosis) and family intervention. Medication: Continue/monitor psychosis (stable, on medication); antipsychotic medication with metabolic monitoring. Skills: reality testing, early warning sign recognition, and social skills. Follow-up: positive/negative symptoms, medication side effects",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_043": {
-      "plan": "Therapy: suggesting they notice negative thought patterns when trying to trust others. But frame it as understanding how past experiences shape current reactions",
-      "source_openr1_id": 1,
-      "source_split": "test",
-      "condition_matched": "caregiver burnout"
+      "plan": "Therapy: stress management and supportive counseling. Medication: antidepressant if depression develops. Skills: respite planning, boundary setting, and self-care scheduling. Follow-up: burnout symptoms, depression screening, and respite utilization",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_044": {
-      "plan": "Therapy: approaches: This sounds like a situation where Cognitive Behavioral Therapy (CBT) might help them challenge the blame and reframe their thoughts",
-      "source_openr1_id": 373,
-      "source_split": "test",
-      "condition_matched": "somatization disorder with health anxiety"
+      "plan": "Therapy: CBT for health anxiety and somatic symptoms. Medication: low-dose antidepressant for symptom management. Skills: attention shifting, activity pacing, and medical reassurance reduction. Follow-up: healthcare utilization and symptom distress",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_045": {
-      "plan": "Therapy: suggesting she join a session with his therapist, if he consents, could help. Also, support groups for families dealing with mental illness might be useful. Need to keep the response within 150 words, compassionate and actionable without jargon. Therapy: actical advice. Since she mentioned delusions, it's important to address safety without using clinical terms",
-      "source_openr1_id": 222,
-      "source_split": "test",
-      "condition_matched": "schizophrenia (prodromal phase)"
+      "plan": "Therapy: CBTp and family intervention; vocational rehabilitation. Medication: antipsychotic with metabolic monitoring. Skills: early warning signs, medication adherence, and social engagement. Follow-up: symptom severity, side effects, and functional goals",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_046": {
-      "plan": "Therapy: suggest practical steps like breaking study sessions into smaller parts or mindfulness exercises. Therapy: acting his studies. Maybe he's experiencing physical symptoms like trouble focusing or sleeping",
-      "source_openr1_id": 156,
-      "source_split": "test",
-      "condition_matched": "dissociative episodes (comorbid with PTSD)"
+      "plan": "Therapy: phase-oriented trauma therapy with grounding focus. Medication: address comorbid PTSD/depression. Skills: grounding techniques, safety signals, and containment strategies. Follow-up: dissociation frequency and trauma processing progress",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_047": {
-      "plan": "Therapy: suggest exploring thoughts affecting their sleep and small steps to improve their routine. That's framing CBT principles without the jargon. Therapy: approach to subtly incorporate. Cognitive Behavioral Therapy (CBT) is effective for anxiety and insomnia. Techniques like challenging negative thoughts or establishing a bedtime routine could be helpful",
-      "source_openr1_id": 208,
-      "source_split": "test",
-      "condition_matched": "late-life anxiety with mild cognitive concerns"
+      "plan": "Therapy: CBT adapted for older adults; relaxation training. Medication: SSRI with careful titration; avoid benzodiazepines. Skills: worry management, relaxation, and cognitive restructuring. Follow-up: anxiety severity, fall risk, and cognitive function",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_048": {
-      "plan": "Therapy: suggest that nurturing the feelings of warmth from the dream can help them approach their family and marriage challenges with more confidence. Therapy: approach-wise, psychodynamic elements could be useful here, focusing on uncovering unconscious thoughts",
-      "source_openr1_id": 262,
-      "source_split": "test",
-      "condition_matched": "body dysmorphic disorder"
+      "plan": "Therapy: CBT with mirror exposure and response prevention. Medication: SSRI at higher doses (similar to OCD). Skills: reducing checking/camouflaging, cognitive restructuring. Follow-up: BDD severity and insight level",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_049": {
-      "plan": "Therapy: Start with empathy, invite them to elaborate, offer collaboration, and reassure support. Make sure it's warm and approachable. Therapy: approach without naming it. Let's see... Maybe a humanistic approach, focusing on their strengths and self-efficacy. Skills: user mentioned forgetting words after three days, which is normal due to the forgetting curve. They might not be using effective study techniques like spaced repetition",
-      "source_openr1_id": 167,
-      "source_split": "test",
-      "condition_matched": "burnout syndrome with depressive features"
+      "plan": "Therapy: stress management and work-life balance counseling. Medication: antidepressant if depression develops. Skills: boundary setting, recovery activities, and values clarification. Follow-up: burnout dimensions, sleep, and return-to-work planning",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_050": {
-      "plan": "The partner's feelings of insecurity and needing space suggest she might feel overwhelmed or unsupported, even if he perceives closeness. It's important to encourage open communication between them, perhaps suggesting they explore their fears and needs together",
-      "source_openr1_id": 78,
-      "source_split": "test",
-      "condition_matched": "perinatal depression (antenatal)"
+      "plan": "Therapy: CBT or interpersonal therapy adapted for perinatal period. Medication: SSRI with consideration of breastfeeding safety. Skills: infant attachment support, partner involvement, and self-care. Follow-up: mood, bonding concerns, and infant safety",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_051": {
-      "plan": "Therapy: considering therapeutic approaches. Therapy: approaches. The symptoms align with depression, but I can't mention that. Instead, maybe use a cognitive-behavioral angle by gently suggesting exploring thoughts and behaviors. Also, a humanistic approach focusing on their experiences and support systems could be helpful",
+      "plan": "Therapy: suggesting exploring thoughts and behaviors",
       "source_openr1_id": 23,
-      "source_split": "test",
-      "condition_matched": "major depressive disorder"
+      "source_split": "test"
     },
     "c_052": {
-      "plan": "Therapy: CBT techniques to challenge their thoughts. But it's not working fully because the stress still manifests physically. Skills: use the stress still manifests physically. So, maybe exploring grounding techniques or mindfulness could help with the physical symptoms",
+      "plan": "Therapy: CBT techniques to challenge their thoughts",
       "source_openr1_id": 4,
-      "source_split": "test",
-      "condition_matched": "post-traumatic stress disorder"
+      "source_split": "test"
     },
     "c_053": {
-      "plan": "Therapy: consider self-care and re-engaging with activities when they're ready, but without pushing too hard. Therapy: approach: Maybe a humanistic approach would work here, focusing on their experience and emotions",
+      "plan": "Therapy: support their process without labeling it as a clinical issue since they don't mention hopelessness or worthlessness",
       "source_openr1_id": 25,
-      "source_split": "test",
-      "condition_matched": "complicated grief / prolonged grief"
+      "source_split": "test"
     },
     "c_054": {
-      "plan": "Skills: practice or other techniques",
+      "plan": "Therapy: suggest grounding techniques, like deep breathing, which can help in the moment",
       "source_openr1_id": 39,
-      "source_split": "test",
-      "condition_matched": "panic disorder"
+      "source_split": "test"
     },
     "c_055": {
-      "plan": "Therapy: approach here might be good, focusing on self-worth and reinforcing their strengths",
+      "plan": "Therapy: supportively help them see the discrepancy between past criticism and their actual skills, as evidenced by the recent praise",
       "source_openr1_id": 53,
-      "source_split": "test",
-      "condition_matched": "autism spectrum condition with sensory overload"
+      "source_split": "test"
     },
     "c_056": {
-      "plan": "Therapy: Start by validating their feelings, then offer gentle suggestions. Maybe mention that adjusting clothes or body language is a natural response to discomfort. Encourage small, manageable steps like brief eye contact paired with listening. Therapy: approaches... perhaps CBT techniques, but frame them as practical steps. Grounding exercises might help them feel more present",
+      "plan": "Therapy: CBT techniques, but frame them as practical steps",
       "source_openr1_id": 61,
-      "source_split": "test",
-      "condition_matched": "social anxiety disorder"
+      "source_split": "test"
     },
     "c_057": {
-      "plan": "Then, gently guide them to explore how choosing different perspectives can help manage their reactions. Maybe suggest reflecting on what other interpretations might exist, and how each affects their feelings. Encourage self-compassion, as shifting perspectives can be challenging",
+      "plan": "Therapy: suggest reflecting on what other interpretations might exist, and how each affects their feelings",
       "source_openr1_id": 63,
-      "source_split": "test",
-      "condition_matched": "anger dysregulation in emotionally unstable personality structure"
+      "source_split": "test"
     },
     "c_058": {
-      "plan": "Therapy: Considering therapeutic approaches, a humanistic approach would validate the parent's concerns and the child's feelings. Therapy: activity and inattention, which might hint at ADHD, but I can't mention that. Instead, focus on validating her experience",
+      "plan": "Therapy: support without using clinical terms",
       "source_openr1_id": 240,
-      "source_split": "test",
-      "condition_matched": "attention-deficit/hyperactivity disorder"
+      "source_split": "test"
     },
     "c_059": {
-      "plan": "Therapy: considering therapeutic approaches. Therapy: approach here could help by emphasizing her worth and supporting her self-exploration",
+      "plan": "Therapy: supporting her self-exploration",
       "source_openr1_id": 169,
-      "source_split": "test",
-      "condition_matched": "obsessive-compulsive disorder"
+      "source_split": "test"
     },
     "c_060": {
-      "plan": "I need to respond with empathy and support. I should focus on creating a safe space for them to explore these feelings without judgment. Since they mentioned the intensification after the breakup, maybe exploring what's changed post-breakup could help",
+      "plan": "Therapy: suggest a way to process these emotions",
       "source_openr1_id": 24,
-      "source_split": "test",
-      "condition_matched": "emotionally unstable (borderline) personality disorder"
+      "source_split": "test"
     },
     "c_061": {
-      "plan": "First, I need to acknowledge their awareness and the step they've taken to seek help. Also, humanistic approach elements like empathy and unconditional positive regard would help them feel supported",
-      "source_openr1_id": 88,
-      "source_split": "test",
-      "condition_matched": "alcohol use disorder (early recovery)"
+      "plan": "Therapy: motivational interviewing and relapse prevention. Medication: naltrexone or acamprosate; disulfiram if appropriate. Skills: trigger identification, coping strategies, and support group attendance. Follow-up: abstinence tracking, liver function, and craving intensity",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_062": {
-      "plan": "Therapy: considering their past, how might this decision impact their current emotional state?\n\nTherapeutic approaches: Maybe a humanistic approach to support self-exploration and personal growth",
-      "source_openr1_id": 183,
-      "source_split": "test",
-      "condition_matched": "chronic pain with depression"
+      "plan": "Therapy: pain management program with CBT for chronic pain. Medication: antidepressant with pain benefits (e.g., duloxetine, amitriptyline). Skills: pacing, activity scheduling, and cognitive coping for pain. Follow-up: pain levels, functional status, and mood",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_063": {
-      "plan": "Therapy: approaches... maybe person-centered to empower them, help them explore their own reasons",
-      "source_openr1_id": 41,
-      "source_split": "test",
-      "condition_matched": "anorexia nervosa (in recovery)"
+      "plan": "Therapy: family-based therapy (FBT) or CBT-E for eating disorders. Medication: limited role; address comorbid depression/anxiety. Skills: meal planning, body image work, and cognitive flexibility. Follow-up: weight restoration, vital signs, and electrolytes",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_064": {
-      "plan": "Therapy: considering a humanistic approach, emphasizing his inherent worth and strengths. Therapy: approach here could help him identify and reframe those thoughts",
-      "source_openr1_id": 200,
-      "source_split": "test",
-      "condition_matched": "depression (undiagnosed, resistant to help)"
+      "plan": "Therapy: pain management program with CBT for chronic pain. Medication: antidepressant with pain benefits (e.g., duloxetine, amitriptyline). Skills: pacing, activity scheduling, and cognitive coping for pain. Follow-up: pain levels, functional status, and mood",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_065": {
-      "plan": "Therapy: suggest starting small, like sharing thoughts in smaller groups or writing contributions first. Use a humanistic approach to support their self-acceptance while gently encouraging steps to adapt their participation style",
-      "source_openr1_id": 875,
-      "source_split": "train",
-      "condition_matched": "bipolar II disorder (depressive episode)"
+      "plan": "Therapy: CBT or interpersonal therapy for depression. Medication: SSRI antidepressant (e.g., sertraline) with monitoring. Skills: behavioral activation, mood tracking, and sleep hygiene. Follow-up: suicidal ideation screening and PHQ-9 tracking",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_066": {
-      "plan": "Therapy: start by really listening to what the client is saying. They're feeling empty and like their happiness doesn't last, even when they try distractions. Therapy: approaches. They're engaging in activities but not finding lasting happiness, which might suggest behavioral activation isn't enough. Maybe a humanistic approach focusing on self-exploration and authenticity would help",
-      "source_openr1_id": 318,
-      "source_split": "test",
-      "condition_matched": "late-life depression"
+      "plan": "Therapy: CBT adapted for older adults; reminiscence therapy. Medication: SSRI with attention to drug interactions and side effects. Skills: behavioral activation, social engagement, and meaningful activity. Follow-up: depression severity, cognitive status, and medical comorbidities",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_067": {
-      "plan": "Therapy: approach here would help, focusing on their inherent worth and supporting their self-exploration",
-      "source_openr1_id": 366,
-      "source_split": "test",
-      "condition_matched": "psychosis (stable, on medication)"
+      "plan": "Therapy: CBTp (CBT for psychosis) and family intervention. Medication: Continue/monitor psychosis (stable, on medication); antipsychotic medication with metabolic monitoring. Skills: reality testing, early warning sign recognition, and social skills. Follow-up: positive/negative symptoms, medication side effects",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_068": {
-      "plan": "Therapy: approach here would help",
-      "source_openr1_id": 31,
-      "source_split": "test",
-      "condition_matched": "caregiver burnout"
+      "plan": "Therapy: stress management and supportive counseling. Medication: antidepressant if depression develops. Skills: respite planning, boundary setting, and self-care scheduling. Follow-up: burnout symptoms, depression screening, and respite utilization",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_069": {
-      "plan": "Therapy: considering therapeutic approaches. Therapy: approaches. CBT might help them identify negative thought patterns, but I shouldn't name it",
-      "source_openr1_id": 393,
-      "source_split": "test",
-      "condition_matched": "somatization disorder with health anxiety"
+      "plan": "Therapy: CBT for health anxiety and somatic symptoms. Medication: low-dose antidepressant for symptom management. Skills: attention shifting, activity pacing, and medical reassurance reduction. Follow-up: healthcare utilization and symptom distress",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_070": {
-      "plan": "Therapy: considering cognitive behavioral elements, helping her recognize patterns in their arguments. Perhaps there's a cycle of negative thoughts leading to conflict. But I need to frame this in everyday language. Suggesting a pause before reacting could help break the cycle. Therapy: approach, I can encourage her to reflect on what's beneath the surface. Maybe stress from other areas of life is spilling into her relationship. I should ask gentle questions to help her uncover those feelings without leading too much",
-      "source_openr1_id": 237,
-      "source_split": "test",
-      "condition_matched": "schizophrenia (prodromal phase)"
+      "plan": "Therapy: CBTp and family intervention; vocational rehabilitation. Medication: antipsychotic with metabolic monitoring. Skills: early warning signs, medication adherence, and social engagement. Follow-up: symptom severity, side effects, and functional goals",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_071": {
-      "plan": "Therapy: start by understanding the user's concern. They mention their daughter is hyperactive and disobedient, and they're worried about her mental health. Therapy: actical advice. They might feel overwhelmed and need both emotional support and strategies. I should validate their feelings first. Then, think about therapeutic approaches that could be helpful here without naming them. Skills: user is likely a parent seeking practical advice. They might feel overwhelmed and need both emotional support and strategies",
-      "source_openr1_id": 263,
-      "source_split": "test",
-      "condition_matched": "dissociative episodes (comorbid with PTSD)"
+      "plan": "Therapy: phase-oriented trauma therapy with grounding focus. Medication: address comorbid PTSD/depression. Skills: grounding techniques, safety signals, and containment strategies. Follow-up: dissociation frequency and trauma processing progress",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_072": {
-      "plan": "Therapy: suggest small steps or exercises to practice without pressure. Therapy: actually make the problem worse, leading to more anxiety. It's a self-fulfilling prophecy. Maybe introduce the idea of breaking this cycle by addressing the underlying stress",
-      "source_openr1_id": 264,
-      "source_split": "test",
-      "condition_matched": "late-life anxiety with mild cognitive concerns"
+      "plan": "Therapy: CBT adapted for older adults; relaxation training. Medication: SSRI with careful titration; avoid benzodiazepines. Skills: worry management, relaxation, and cognitive restructuring. Follow-up: anxiety severity, fall risk, and cognitive function",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_073": {
-      "plan": "Therapy: actions could help them understand the emotions better",
-      "source_openr1_id": 302,
-      "source_split": "test",
-      "condition_matched": "body dysmorphic disorder"
+      "plan": "Therapy: CBT with mirror exposure and response prevention. Medication: SSRI at higher doses (similar to OCD). Skills: reducing checking/camouflaging, cognitive restructuring. Follow-up: BDD severity and insight level",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_074": {
-      "plan": "Therapy: considering her native family's impact. Therapy: approach like CBT could help them examine thoughts and behaviors, but I shouldn't name it",
-      "source_openr1_id": 198,
-      "source_split": "test",
-      "condition_matched": "burnout syndrome with depressive features"
+      "plan": "Therapy: stress management and work-life balance counseling. Medication: antidepressant if depression develops. Skills: boundary setting, recovery activities, and values clarification. Follow-up: burnout dimensions, sleep, and return-to-work planning",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_075": {
-      "plan": "Therapy: suggestion that helps them see their own worth. Using a humanistic approach might work here, emphasizing their inherent value. Therapy: approach here would help by emphasizing empathy and unconditional positive regard",
-      "source_openr1_id": 197,
-      "source_split": "test",
-      "condition_matched": "perinatal depression (antenatal)"
+      "plan": "Therapy: CBT or interpersonal therapy adapted for perinatal period. Medication: SSRI with consideration of breastfeeding safety. Skills: infant attachment support, partner involvement, and self-care. Follow-up: mood, bonding concerns, and infant safety",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_076": {
-      "plan": "Therapy: considering therapeutic approaches. Therapy: approaches. The symptoms align with depression, but I can't mention that. Instead, maybe use a cognitive-behavioral angle by gently suggesting exploring thoughts and behaviors. Also, a humanistic approach focusing on their experiences and support systems could be helpful",
+      "plan": "Therapy: suggesting exploring thoughts and behaviors",
       "source_openr1_id": 23,
-      "source_split": "test",
-      "condition_matched": "major depressive disorder"
+      "source_split": "test"
     },
     "c_077": {
-      "plan": "Therapy: CBT techniques to challenge their thoughts. But it's not working fully because the stress still manifests physically. Skills: use the stress still manifests physically. So, maybe exploring grounding techniques or mindfulness could help with the physical symptoms",
+      "plan": "Therapy: CBT techniques to challenge their thoughts",
       "source_openr1_id": 4,
-      "source_split": "test",
-      "condition_matched": "post-traumatic stress disorder"
+      "source_split": "test"
     },
     "c_078": {
-      "plan": "Therapy: consider self-care and re-engaging with activities when they're ready, but without pushing too hard. Therapy: approach: Maybe a humanistic approach would work here, focusing on their experience and emotions",
+      "plan": "Therapy: support their process without labeling it as a clinical issue since they don't mention hopelessness or worthlessness",
       "source_openr1_id": 25,
-      "source_split": "test",
-      "condition_matched": "complicated grief / prolonged grief"
+      "source_split": "test"
     },
     "c_079": {
-      "plan": "Skills: practice or other techniques",
+      "plan": "Therapy: suggest grounding techniques, like deep breathing, which can help in the moment",
       "source_openr1_id": 39,
-      "source_split": "test",
-      "condition_matched": "panic disorder"
+      "source_split": "test"
     },
     "c_080": {
-      "plan": "Therapy: approach here might be good, focusing on self-worth and reinforcing their strengths",
+      "plan": "Therapy: supportively help them see the discrepancy between past criticism and their actual skills, as evidenced by the recent praise",
       "source_openr1_id": 53,
-      "source_split": "test",
-      "condition_matched": "autism spectrum condition with sensory overload"
+      "source_split": "test"
     },
     "c_081": {
-      "plan": "Therapy: Start by validating their feelings, then offer gentle suggestions. Maybe mention that adjusting clothes or body language is a natural response to discomfort. Encourage small, manageable steps like brief eye contact paired with listening. Therapy: approaches... perhaps CBT techniques, but frame them as practical steps. Grounding exercises might help them feel more present",
+      "plan": "Therapy: CBT techniques, but frame them as practical steps",
       "source_openr1_id": 61,
-      "source_split": "test",
-      "condition_matched": "social anxiety disorder"
+      "source_split": "test"
     },
     "c_082": {
-      "plan": "Then, gently guide them to explore how choosing different perspectives can help manage their reactions. Maybe suggest reflecting on what other interpretations might exist, and how each affects their feelings. Encourage self-compassion, as shifting perspectives can be challenging",
+      "plan": "Therapy: suggest reflecting on what other interpretations might exist, and how each affects their feelings",
       "source_openr1_id": 63,
-      "source_split": "test",
-      "condition_matched": "anger dysregulation in emotionally unstable personality structure"
+      "source_split": "test"
     },
     "c_083": {
-      "plan": "Therapy: Considering therapeutic approaches, a humanistic approach would validate the parent's concerns and the child's feelings. Therapy: activity and inattention, which might hint at ADHD, but I can't mention that. Instead, focus on validating her experience",
+      "plan": "Therapy: support without using clinical terms",
       "source_openr1_id": 240,
-      "source_split": "test",
-      "condition_matched": "attention-deficit/hyperactivity disorder"
+      "source_split": "test"
     },
     "c_084": {
-      "plan": "Therapy: considering therapeutic approaches. Therapy: approach here could help by emphasizing her worth and supporting her self-exploration",
+      "plan": "Therapy: supporting her self-exploration",
       "source_openr1_id": 169,
-      "source_split": "test",
-      "condition_matched": "obsessive-compulsive disorder"
+      "source_split": "test"
     },
     "c_085": {
-      "plan": "I need to respond with empathy and support. I should focus on creating a safe space for them to explore these feelings without judgment. Since they mentioned the intensification after the breakup, maybe exploring what's changed post-breakup could help",
+      "plan": "Therapy: suggest a way to process these emotions",
       "source_openr1_id": 24,
-      "source_split": "test",
-      "condition_matched": "emotionally unstable (borderline) personality disorder"
+      "source_split": "test"
     },
     "c_086": {
-      "plan": "Therapy: approach wise, maybe use a humanistic angle, focusing on their well-being and self-care",
-      "source_openr1_id": 95,
-      "source_split": "test",
-      "condition_matched": "alcohol use disorder (early recovery)"
+      "plan": "Therapy: motivational interviewing and relapse prevention. Medication: naltrexone or acamprosate; disulfiram if appropriate. Skills: trigger identification, coping strategies, and support group attendance. Follow-up: abstinence tracking, liver function, and craving intensity",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_087": {
-      "plan": "Therapy: suggest creating a safe space for their emotions, which is a humanistic approach. Therapy: approach-wise, maybe a humanistic approach would work here, focusing on their emotional experience and creating a safe space. Skills: used therapy or communication techniques",
-      "source_openr1_id": 221,
-      "source_split": "test",
-      "condition_matched": "chronic pain with depression"
+      "plan": "Therapy: pain management program with CBT for chronic pain. Medication: antidepressant with pain benefits (e.g., duloxetine, amitriptyline). Skills: pacing, activity scheduling, and cognitive coping for pain. Follow-up: pain levels, functional status, and mood",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_088": {
-      "plan": "Therapy: considering their routine, structure is important. Proposing a specific planning activity during the quiet time could help. Therapy: action from planning their day. I should explore the benefits they see in quiet time. Are they seeking more focus, less stimulation, or better organization?\n\nI need to gently encourage them to reflect on what they hope to gain",
-      "source_openr1_id": 43,
-      "source_split": "test",
-      "condition_matched": "anorexia nervosa (in recovery)"
+      "plan": "Therapy: family-based therapy (FBT) or CBT-E for eating disorders. Medication: limited role; address comorbid depression/anxiety. Skills: meal planning, body image work, and cognitive flexibility. Follow-up: weight restoration, vital signs, and electrolytes",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_089": {
-      "plan": "Therapy: considering they're on leave, suggesting self-compassion activities. Therapy: approach here, identifying and adjusting self-critical thoughts. Also, considering their withdrawal from work and others, suggesting small steps to reconnect could help",
-      "source_openr1_id": 224,
-      "source_split": "test",
-      "condition_matched": "depression (undiagnosed, resistant to help)"
+      "plan": "Therapy: pain management program with CBT for chronic pain. Medication: antidepressant with pain benefits (e.g., duloxetine, amitriptyline). Skills: pacing, activity scheduling, and cognitive coping for pain. Follow-up: pain levels, functional status, and mood",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_090": {
-      "plan": "Therapy: approach to help them understand patterns. Follow-up: tracking moods or sleep to see connections",
-      "source_openr1_id": 1037,
-      "source_split": "train",
-      "condition_matched": "bipolar II disorder (depressive episode)"
+      "plan": "Therapy: CBT or interpersonal therapy for depression. Medication: SSRI antidepressant (e.g., sertraline) with monitoring. Skills: behavioral activation, mood tracking, and sleep hygiene. Follow-up: suicidal ideation screening and PHQ-9 tracking",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_091": {
-      "plan": "Therapy: approach. Cognitive Behavioral Therapy could help them explore the connection between thoughts and emotions. Follow-up: track their emotions and triggers",
-      "source_openr1_id": 16,
-      "source_split": "test",
-      "condition_matched": "late-life depression"
+      "plan": "Therapy: CBT adapted for older adults; reminiscence therapy. Medication: SSRI with attention to drug interactions and side effects. Skills: behavioral activation, social engagement, and meaningful activity. Follow-up: depression severity, cognitive status, and medical comorbidities",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_092": {
-      "plan": "Therapy: suggest exploring what they need from the relationship and themselves. That could tie into a therapeutic approach like person-centered or CBT, but without naming it. Therapy: approaches: Maybe parts of person-centered therapy to provide empathy and unconditional positive regard. Also, elements of CBT to help them examine the patterns (the cycle of okay moments followed by triggers) and how their thoughts affect their emotions",
-      "source_openr1_id": 379,
-      "source_split": "test",
-      "condition_matched": "psychosis (stable, on medication)"
+      "plan": "Therapy: CBTp (CBT for psychosis) and family intervention. Medication: Continue/monitor psychosis (stable, on medication); antipsychotic medication with metabolic monitoring. Skills: reality testing, early warning sign recognition, and social skills. Follow-up: positive/negative symptoms, medication side effects",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_093": {
-      "plan": "Therapy: approach here, focusing on their autonomy and self-compassion",
-      "source_openr1_id": 49,
-      "source_split": "test",
-      "condition_matched": "caregiver burnout"
+      "plan": "Therapy: stress management and supportive counseling. Medication: antidepressant if depression develops. Skills: respite planning, boundary setting, and self-care scheduling. Follow-up: burnout symptoms, depression screening, and respite utilization",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_094": {
-      "plan": "Therapy: approach without labeling it as CBT. Encourage them to explore the evidence for their fears versus what's actually happening. Grounding techniques could help too, like focusing on the present when panic starts",
-      "source_openr1_id": 446,
-      "source_split": "test",
-      "condition_matched": "somatization disorder with health anxiety"
+      "plan": "Therapy: CBT for health anxiety and somatic symptoms. Medication: low-dose antidepressant for symptom management. Skills: attention shifting, activity pacing, and medical reassurance reduction. Follow-up: healthcare utilization and symptom distress",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_095": {
-      "plan": "Therapy: consider what they need now versus then. Avoid mentioning specific therapies like CBT or psychodynamic, but incorporate elements like exploring patterns or coping strategies. Therapy: approach focusing on self-compassion and present-moment awareness might help. Skills: trying to adjust their mindset and face reality. Previous responses encouraged exploring these feelings and grounding techniques",
-      "source_openr1_id": 284,
-      "source_split": "test",
-      "condition_matched": "schizophrenia (prodromal phase)"
+      "plan": "Therapy: CBTp and family intervention; vocational rehabilitation. Medication: antipsychotic with metabolic monitoring. Skills: early warning signs, medication adherence, and social engagement. Follow-up: symptom severity, side effects, and functional goals",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_096": {
-      "plan": "Therapy: start by understanding what the client is going through. They mentioned feeling stuck in college, which they thought would be exciting but now feels like a monotonous routine. They’re disconnected from activities they once loved, like painting and hanging out with friends. Therapy: approach focusing on meaning and personal values might be helpful",
-      "source_openr1_id": 307,
-      "source_split": "test",
-      "condition_matched": "dissociative episodes (comorbid with PTSD)"
+      "plan": "Therapy: phase-oriented trauma therapy with grounding focus. Medication: address comorbid PTSD/depression. Skills: grounding techniques, safety signals, and containment strategies. Follow-up: dissociation frequency and trauma processing progress",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_097": {
-      "plan": "Therapy: consider a cognitive-behavioral approach, like addressing negative thought patterns, but without naming it. Therapy: approach, like addressing negative thought patterns, but without naming it. Skills: trying grounding techniques), and reassure them that it's okay to take it one step at a time. Follow-up: track thoughts and identify patterns, but frame it as a way to understand their feelings better",
-      "source_openr1_id": 278,
-      "source_split": "test",
-      "condition_matched": "late-life anxiety with mild cognitive concerns"
+      "plan": "Therapy: CBT adapted for older adults; relaxation training. Medication: SSRI with careful titration; avoid benzodiazepines. Skills: worry management, relaxation, and cognitive restructuring. Follow-up: anxiety severity, fall risk, and cognitive function",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_098": {
-      "plan": "Therapy: considering therapeutic approaches. Therapy: approaches. Since they're trapped in negative self-perception and daily struggles, a humanistic approach might help by emphasizing self-compassion",
-      "source_openr1_id": 315,
-      "source_split": "test",
-      "condition_matched": "body dysmorphic disorder"
+      "plan": "Therapy: CBT with mirror exposure and response prevention. Medication: SSRI at higher doses (similar to OCD). Skills: reducing checking/camouflaging, cognitive restructuring. Follow-up: BDD severity and insight level",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_099": {
-      "plan": "Therapy: approach would help them feel supported in exploring these feelings without judgment. Follow-up: monitor their symptoms and gently discuss the possibility of revisiting medication if counseling alone isn't sufficient, but that's a conversation for later",
-      "source_openr1_id": 234,
-      "source_split": "test",
-      "condition_matched": "burnout syndrome with depressive features"
+      "plan": "Therapy: stress management and work-life balance counseling. Medication: antidepressant if depression develops. Skills: boundary setting, recovery activities, and values clarification. Follow-up: burnout dimensions, sleep, and return-to-work planning",
+      "source_openr1_id": null,
+      "source_split": "generated"
     },
     "c_100": {
-      "plan": "Therapy: suggest exploring what's happening when the mood shifts occur. Maybe ask if they notice any patterns or triggers around the frustration or happiness. That's a CBT approach without naming it. Therapy: CBT approach without naming it. Also, linking physical symptoms to emotional states could help them see the connection. Skills: practices, like relaxation techniques or a bedtime routine, to address the insomnia and headaches",
-      "source_openr1_id": 251,
-      "source_split": "test",
-      "condition_matched": "perinatal depression (antenatal)"
+      "plan": "Therapy: CBT or interpersonal therapy adapted for perinatal period. Medication: SSRI with consideration of breastfeeding safety. Skills: infant attachment support, partner involvement, and self-care. Follow-up: mood, bonding concerns, and infant safety",
+      "source_openr1_id": null,
+      "source_split": "generated"
     }
   }
 }

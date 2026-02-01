@@ -13,7 +13,8 @@ from pathlib import Path
 import sys
 from typing import Dict, Optional
 
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent / "src"))
+import os
+sys.path.insert(0, os.path.abspath("src"))
 
 from datasets import load_dataset
 from reliable_clinical_benchmark.data.study_a_loader import load_study_a_data
@@ -24,7 +25,7 @@ class ScoringNLIModel(NLIModel):
     def predict_with_score(self, premise: str, hypothesis: str) -> tuple[str, float]:
         """Predict relationship and return (label, score)."""
         input_text = f"{premise} [SEP] {hypothesis}"
-        result = self.classifier(input_text)[0]
+        result = self.classifier(input_text, truncation=True, max_length=512)[0]
 
         raw_label = result["label"].lower()
         mapping = "neutral"
@@ -216,7 +217,13 @@ def build_gold_labels_from_openr1() -> Dict[str, str]:
     """
     print("Loading study_a_test.json to get exact IDs and prompts...")
     study_a_path = Path("data/openr1_psy_splits/study_a_test.json")
-    vignettes = load_study_a_data(str(study_a_path))
+    try:
+        print(f"DEBUG: Using load_study_a_data from {load_study_a_data.__module__}")
+        vignettes = load_study_a_data(str(study_a_path))
+    except Exception:
+        import traceback
+        traceback.print_exc()
+        raise
     
     # Build prompt -> study_a_id mapping from study_a_test.json
     # This ensures we match to the actual split used in the study
