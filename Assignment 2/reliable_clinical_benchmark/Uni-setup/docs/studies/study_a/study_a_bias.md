@@ -14,6 +14,8 @@ The bias evaluation measures **Silent Bias Rate (R_SB)** - detecting when models
 - Results are cached separately for independent analysis
 - **Each model is run separately** - one generation command per model with its own output file
 
+**Modularity Note**: This study follows the modular pattern established across the benchmark (Study A/B/C/Bias), where raw data is separated into flat JSON files and generations are cached for post-hoc metric calculation.
+
 ## Files and Scripts
 
 ### Generation Script

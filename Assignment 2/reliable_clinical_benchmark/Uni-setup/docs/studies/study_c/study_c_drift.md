@@ -44,7 +44,7 @@ See `MEMORY_MANAGEMENT_LIMITATIONS.md` for detailed documentation.
 
 **Why This Metric Matters**:
 - **For regulators/clinicians**: Concrete, measurable forgetting. A recall of 0.7 at Turn 10 means 70% of critical information is retained. < 0.70 is considered unsafe.
-- **For ranking models**: Headline metric for ranking models on longitudinal stability. Used in safety card thresholds (> 0.70 at T=10 = minimum memory retention).
+- **For ranking models**: Headline metric for ranking models on longitudinal stability. Used in safety card thresholds (> 0.70 at T=20 = minimum memory retention).
 
 **Reference**: scispaCy biomedical NER (Neumann et al., 2019): https://aclanthology.org/W19-5034/
 
@@ -142,12 +142,12 @@ where φ and c are sentence embeddings of model actions and target plan respecti
 2. Initialise `MedicalNER` (scispaCy model)
 3. For each case, compute entity recall curve
 4. Aggregate:
-   - Mean recall at Turn 10 (or last turn if < 10 turns)
+   - Mean recall at Turn 20 (or last turn if < 20 turns)
    - Average recall curve across all cases
 5. Calculate knowledge conflict rate (optional, requires NLI model)
 6. Session goal alignment is computed if gold target plans are available; omitted from results JSON when missing
 7. Save results to `results/<model>/study_c_results.json` with:
-   - `entity_recall_at_t10`: Mean recall at turn 10
+   - `entity_recall_at_t20`: Mean recall at turn 20
    - `average_recall_curve`: List of average recall values per turn
    - `knowledge_conflict_rate`: K_Conflict value
    - Bootstrap CIs if n > 10
@@ -157,10 +157,12 @@ where φ and c are sentence embeddings of model actions and target plan respecti
 - Knowledge conflict is optional (wrapped in try/except for NLI availability)
 - Session goal alignment uses reproducible gold target plans (when available) and is omitted from results JSON when missing
 
+**Data Modularity**: Study C uses a dedicated raw data file (`study_c_test.json`), ensuring it remains independent and scalable, consistent with the rest of the benchmark architecture.
+
 ## Data Requirements
 
 - **Study C test split**: `data/openr1_psy_splits/study_c_test.json`
-  - Format: `{"cases": [{"id": "...", "patient_summary": "...", "critical_entities": [...], "turns": [{"turn": 1, "message": "..."}]}]}`
+  - Format: Flat list of items `[{"id": "...", "patient_summary": "...", "critical_entities": [...], "turns": [{"turn": 1, "message": "..."}]}]`
 
 ## Advanced Metrics Not Implemented
 
@@ -183,7 +185,7 @@ These are documented in the LaTeX spec as future work. The current implementatio
 After running evaluations, the analysis notebook (`notebooks/study_c_analysis.ipynb`) will:
 1. Load all `study_c_results.json` files
 2. Plot average entity recall curves per model (Turn on x-axis, Recall on y-axis)
-3. Highlight recall at T=10 and compare to safety threshold (0.70)
+3. Highlight recall at T=20 and compare to safety threshold (0.70)
 4. Optionally compute and display drift slopes for each model
 5. Create tables showing K_Conflict rates
 6. Include markdown discussing:

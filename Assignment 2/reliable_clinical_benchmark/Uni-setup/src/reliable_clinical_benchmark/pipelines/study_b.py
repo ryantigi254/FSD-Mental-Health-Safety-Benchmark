@@ -360,6 +360,8 @@ def run_study_b(
     generate_only: bool = False,
     from_cache: Optional[str] = None,
     cache_out: Optional[str] = None,
+    do_single_turn: bool = True,
+    do_multi_turn: bool = True,
 ) -> SycophancyResult:
     """
     Run Study B sycophancy evaluation.
@@ -430,27 +432,34 @@ def run_study_b(
         logger.info(f"Generation-only mode. Writing Study B cache to {cache_path}")
 
         # 1) Single-turn items: control + injected
-        _generate_single_turn_study_b(
-            model=model,
-            items=items,
-            cache_path=cache_path,
-            run_id=run_id,
-            model_name=model_name,
-            existing_ok=existing_single,
-        )
-
-        # 2) Multi-turn cases (Turn-of-Flip): iterative generation with rolling context
-        multi_turn_cases = load_multi_turn_cases(str(study_b_path))
-        if multi_turn_cases:
-            _generate_multi_turn_study_b(
+        if do_single_turn:
+            _generate_single_turn_study_b(
                 model=model,
-                multi_turn_cases=multi_turn_cases,
+                items=items,
                 cache_path=cache_path,
                 run_id=run_id,
                 model_name=model_name,
-                existing_ok=existing_multi,
+                existing_ok=existing_single,
             )
 
+        # 2) Multi-turn cases (Turn-of-Flip): iterative generation with rolling context
+        if do_multi_turn:
+            mt_path = Path(data_dir) / "study_b_multi_turn.json"
+            if mt_path.exists():
+                 multi_turn_cases = load_multi_turn_cases(str(mt_path))
+            else:
+                 multi_turn_cases = load_multi_turn_cases(str(study_b_path))
+
+            if multi_turn_cases:
+                _generate_multi_turn_study_b(
+                    model=model,
+                    multi_turn_cases=multi_turn_cases,
+                    cache_path=cache_path,
+                    run_id=run_id,
+                    model_name=model_name,
+                    existing_ok=existing_multi,
+                )
+        
         if generate_only:
             logger.info("Study B generation-only complete; skipping metrics.")
             return SycophancyResult(
@@ -571,7 +580,11 @@ def run_study_b(
         
         # Turn of flip from cache
         tof = 0.0
-        multi_turn_cases = load_multi_turn_cases(str(study_b_path))
+        mt_path = Path(data_dir) / "study_b_multi_turn_test.json"
+        if mt_path.exists():
+             multi_turn_cases = load_multi_turn_cases(str(mt_path))
+        else:
+             multi_turn_cases = load_multi_turn_cases(str(study_b_path))
         if multi_turn_cases and by_case_turn:
             tof_values = []
             for case in multi_turn_cases:
@@ -698,7 +711,12 @@ def run_study_b(
 
         # Calculate turn of flip (if multi-turn cases available)
         tof = 0.0
-        multi_turn_cases = load_multi_turn_cases(str(study_b_path))
+        mt_path = Path(data_dir) / "study_b_multi_turn_test.json"
+        if mt_path.exists():
+             multi_turn_cases = load_multi_turn_cases(str(mt_path))
+        else:
+             multi_turn_cases = load_multi_turn_cases(str(study_b_path))
+             
         if multi_turn_cases:
             tof = calculate_turn_of_flip(model, multi_turn_cases)
         
