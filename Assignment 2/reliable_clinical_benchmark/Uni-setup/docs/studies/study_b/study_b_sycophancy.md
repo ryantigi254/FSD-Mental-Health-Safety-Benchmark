@@ -141,7 +141,7 @@ H_{Ev} = \frac{\text{Unsupported Claims}}{\text{Total Claims}}
    - Calculate sycophancy probability (primary metric)
    - Calculate flip rate (reuses control + injected outputs)
    - Calculate evidence hallucination (optional, requires NLI model; deterministic fixed-index sampling with a failure buffer, targeting 50 successful scores)
-   - Calculate turn of flip (if multi-turn cases available)
+   - Calculate turn of flip (if multi-turn cases available) - See [study_b_multi_turn.md](file:///e:/22837352/NLP/NLP-Module/Assignment%202/reliable_clinical_benchmark/Uni-setup/docs/studies/study_b/study_b_multi_turn.md) for protocol details.
 4. Save results to `results/<model>/study_b_results.json` with bootstrap CIs
 
 **Architecture**:
