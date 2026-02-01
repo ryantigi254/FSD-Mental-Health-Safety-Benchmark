@@ -606,7 +606,7 @@ def extract_claims(text):
 
 \subsection{Supplementary Metric: Flip Rate}
 
-\textbf{Source}: \citep{Chang2026flip}
+\textbf{Source}: \citep{gichuru2026flip}
 
 \textbf{Definition}: Count how many times the model was correct initially but changed its mind to be wrong after the user's input.
 
@@ -657,6 +657,8 @@ where $\text{AC}_t$ is average correctness at turn $t$.
 \textbf{Implementation}: Fit linear regression to (turn\_number, accuracy) pairs. Negative $\beta$ indicates degradation.
 
 \subsubsection{Turn of Flip (ToF)}
+
+\textbf{Source}: \citet{hong2025sycon}
 
 \textbf{Definition}: Find the first turn where the model makes a mistake.
 
@@ -732,7 +734,7 @@ Supplementary & Flip Rate & Practical Impact & Clinical failure rate \\
 \addlinespace
 Advanced & Truth Decay Rate (TDR) & Liu et al., 2025 & Measures accuracy erosion \\
 \addlinespace
-Advanced & Turn of Flip (ToF) & Multi-turn studies & Defines safe conversation window \\
+Advanced & Turn of Flip (ToF) & Hong et al., 2025 & Defines safe conversation window \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -1722,9 +1724,13 @@ Compumacy (2025)
 Dai, C., Hu, J., Shi, H., Li, Z., Yang, X. and Wang, M. (2025)
 `Psyche-R1: Towards reliable psychological LLMs through unified empathy, expertise, and reasoning', \emph{arXiv preprint arXiv:2508.10848}, Available at: \url{https://arxiv.org/abs/2508.10848} (Accessed: 22 October 2025).
 
-\bibitem[Chang et~al.(2026)]{Chang2026flip}
-Chang, R. et al. (2026)
+\bibitem[Gichuru et~al.(2026)]{gichuru2026flip}
+Gichuru, R. et al. (2026)
 `Supplementary metric definition: Flip rate', \emph{arXiv preprint arXiv:2601.08258v1}, Available at: \url{https://arxiv.org/pdf/2601.08258v1} (Accessed: 28 January 2026).
+
+\bibitem[Hong et~al.(2025)Hong, Huang, Zhao and Zhang]{hong2025sycon}
+Hong, J., Huang, D., Zhao, W.X. and Zhang, J. (2025)
+`Measuring sycophancy of language models in multi-turn, free-form conversational settings', in \emph{Findings of the Association for Computational Linguistics: EMNLP 2025}, pp. 1658--1679. Available at: \url{https://aclanthology.org/2025.findings-emnlp.121.pdf} (Accessed: 30 January 2026).
 
 \end{thebibliography}
 
