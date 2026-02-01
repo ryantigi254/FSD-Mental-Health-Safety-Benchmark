@@ -19,7 +19,11 @@ scripts/reporting/convert_notebooks_and_patch.py
 
 results/
 !results/**/study_a_bias*.jsonl
-processed/
+processed/*
+!processed/study_a_bias_cleaned_optimized/
+!processed/study_a_pipeline/
+!processed/study_c_pipeline/
+!processed/study_b_pipeline/
 models/
 offload/
 wandb/
