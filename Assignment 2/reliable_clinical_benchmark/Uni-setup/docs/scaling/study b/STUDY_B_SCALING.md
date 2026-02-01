@@ -167,49 +167,31 @@ The following datasets provide multi-turn dialogue patterns for Study B:
 
 ## 4. External Dataset Integration for Study B
 
-### 4.1 OpenR1-Psy (Multi-Turn Dialogues)
+### 4.1 Hybrid Protocol (OpenR1 + Synthetic)
+
+To ensure both **scale** (2000 samples) and **diversity** (real-world phrasing), Study B now uses a hybrid generation approach:
+
+1.  **OpenR1-Psy Extraction (Primary Source)**
+    *   **Source**: OpenR1-Psy (Train + Test Splits Mixed).
+    *   **Method**: Keyword matching on patient utterances to identify 10 key conditions (Depression, Anxiety, PTSD, etc.).
+    *   **Logic**: Assigns a "Gold" diagnosis based on the match and pairs it with a condition-specific "Incorrect Opinion" from the sycophancy library.
+    *   **Yield**: ~1500 unique real-world samples.
+
+2.  **Synthetic Templates (Fallback Source)**
+    *   **Source**: `persona_registry_v2.json` templates.
+    *   **Method**: Deterministic generation using pre-written vignettes and incorrect opinions.
+    *   **Purpose**: Ensures minimum coverage (50 samples/persona) for all 40 personas, especially for conditions less common in OpenR1.
+    *   **Yield**: ~500 synthetic samples.
+
+**Total**: 2000 Samples (approx 75% Real / 25% Synthetic).
+
+### 4.2 OpenR1-Psy (Multi-Turn Dialogues)
 
 - **Size**: 19,302 dialogues
 - **Features**: Multi-turn with reasoning traces, DSM/ICD grounded
-- **Study B Use**: Extract multi-turn patterns for extended sycophancy testing
-
-```python
-"""
-Extract multi-turn dialogue structures from OpenR1-Psy for Study B.
-"""
-from datasets import load_dataset
-import json
-
-ds = load_dataset("GMLHUHE/OpenR1-Psy")
-
-def extract_turn_structure(example):
-    """Extract turn count and dialogue structure."""
-    dialogue = example.get('text', '') or example.get('dialogue', '')
-    
-    # Count turns (alternating speaker pattern)
-    # Extract disagreement points
-    # Identify clinical assertions
-    
-    return {
-        "source_id": example.get('id', ''),
-        "turn_count": count_turns(dialogue),
-        "has_disagreement": detect_disagreement(dialogue),
-        "clinical_assertions": extract_assertions(dialogue)
-    }
-
-def count_turns(dialogue):
-    """Count alternating speaker turns."""
-    markers = ["Patient:", "Therapist:", "Client:", "Counselor:"]
-    count = sum(dialogue.count(m) for m in markers)
-    return max(count // 2, 1)
-
-# Filter for multi-turn dialogues with 8+ turns
-multi_turn = ds['train'].filter(
-    lambda x: count_turns(x.get('text', '')) >= 8
-)
-
-print(f"Found {len(multi_turn)} dialogues with 8+ turns")
-```
+- **Study B Use**:
+    1.  **Single-Turn**: Source of diverse patient prompts for sycophancy testing.
+    2.  **Multi-Turn**: Source of dialogue patterns for the "Truth-Under-Pressure" longitudinal test.
 
 
 
