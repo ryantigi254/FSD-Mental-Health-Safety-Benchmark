@@ -1,11 +1,11 @@
-"""Generate Study C gold target plans using NLI-based extraction.
+"""Generate Study C gold target plans.
 
-This script creates gold plan-of-care summaries for Study C cases:
-1. For cases WITH OpenR1-Psy linkage: Extract from counselor_think (existing method)
-2. For cases WITHOUT linkage: Generate structured plans from patient_summary + critical_entities
+This script creates plan-of-care targets for Study C cases:
+1. For linked cases: classify a fixed set of plan components using NLI as a verifier over OpenR1-Psy `counselor_think`, then render a deterministic structured plan.
+2. For unlinked/synthetic cases: generate a rule-based guideline plan from patient_summary + critical_entities.
 
 Output:
-- data/study_c_gold/target_plans.json (updated with all 100 cases)
+- data/study_c_gold/target_plans.json (updated with all cases)
 """
 
 from __future__ import annotations
@@ -16,10 +16,19 @@ import re
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent / "src"))
+
+from reliable_clinical_benchmark.utils.nli import NLIModel
+from reliable_clinical_benchmark.utils.plan_components import (
+    DEFAULT_PLAN_COMPONENTS,
+    classify_plan_components,
+    extract_recommendation_candidates,
+    nli_filter_candidates,
+    render_plan_from_components,
+)
 
 # Standard condition -> treatment mappings for gold plans
 CONDITION_TREATMENT_MAP: Dict[str, Dict[str, Any]] = {
@@ -239,13 +248,34 @@ def load_study_c_cases(study_c_path: Path) -> List[Dict[str, Any]]:
     return data.get("cases", [])
 
 
+def _collect_full_counselor_think(conversation: List[Dict[str, Any]]) -> str:
+    parts: List[str] = []
+    for turn in conversation:
+        ct = str(turn.get("counselor_think", "") or "").strip()
+        if ct:
+            parts.append(ct)
+    return " ".join(parts).strip()
+
+
 def main() -> int:
-    p = argparse.ArgumentParser(description="Generate Study C gold plans with NLI-based extraction")
+    p = argparse.ArgumentParser(description="Generate Study C gold plans (NLI-verified components for linked cases)")
     p.add_argument(
         "--data-dir",
         type=str,
         default="data/openr1_psy_splits",
         help="Directory containing study_c_test.json",
+    )
+    p.add_argument(
+        "--revision",
+        type=str,
+        default="main",
+        help="OpenR1-Psy dataset revision (commit hash, tag, or branch).",
+    )
+    p.add_argument(
+        "--cache-dir",
+        type=str,
+        default=None,
+        help="Optional Hugging Face datasets cache directory for OpenR1-Psy.",
     )
     p.add_argument(
         "--out",
@@ -284,12 +314,16 @@ def main() -> int:
     # Try to run OpenR1 extraction for linked cases first
     linked_count = 0
     unlinked_count = 0
+    linked_fallback_count = 0
     updated_count = 0
     
     try:
         from datasets import load_dataset
-        ds_test = load_dataset("GMLHUHE/OpenR1-Psy", split="test")
-        ds_train = load_dataset("GMLHUHE/OpenR1-Psy", split="train")
+        ds_kwargs = {"revision": args.revision}
+        if args.cache_dir:
+            ds_kwargs["cache_dir"] = args.cache_dir
+        ds_test = load_dataset("GMLHUHE/OpenR1-Psy", split="test", **ds_kwargs)
+        ds_train = load_dataset("GMLHUHE/OpenR1-Psy", split="train", **ds_kwargs)
         openr1_available = True
         print("OpenR1-Psy dataset loaded successfully")
     except Exception as e:
@@ -299,54 +333,94 @@ def main() -> int:
         ds_test = None
         ds_train = None
 
+    nli_model: Optional[NLIModel] = None
+    if openr1_available:
+        try:
+            nli_model = NLIModel()
+        except Exception as e:
+            print(f"Could not load NLI model: {e}")
+            print("Will generate all plans from patient summaries")
+            nli_model = None
+
     for case in cases:
         case_id = case.get("id", "")
         source_ids = case.get("metadata", {}).get("source_openr1_ids", [])
         patient_summary = case.get("patient_summary", "")
         critical_entities = case.get("critical_entities", [])
         
+        if args.force and case_id:
+            existing_plans.pop(case_id, None)
+        
         # Skip if already have plan and not forcing
-        if case_id in existing_plans and existing_plans[case_id].get("plan") and not args.force:
-            continue
+        if not args.force and case_id in existing_plans:
+            existing_entry = existing_plans.get(case_id)
+            if isinstance(existing_entry, dict) and existing_entry.get("plan"):
+                continue
         
         plan_text = ""
         source_id = None
         source_split = None
         
-        # Try OpenR1 linkage first
-        if openr1_available and source_ids:
+        # Try OpenR1 linkage first (NLI plan component classification)
+        if openr1_available and nli_model is not None and source_ids:
             for idx in source_ids:
                 for split_name, ds in [("test", ds_test), ("train", ds_train)]:
                     try:
                         row = ds[int(idx)]
                         convo = row.get("conversation", [])
-                        reasoning_parts = []
-                        for turn in convo:
-                            ct = str(turn.get("counselor_think", "") or "").strip()
-                            if ct:
-                                reasoning_parts.append(ct)
-                        
-                        if reasoning_parts:
-                            # Extract plan from reasoning (simplified)
-                            full_reasoning = " ".join(reasoning_parts)
-                            # Look for therapeutic content
-                            therapy_match = re.search(
-                                r"(?:recommend|suggest|therapy|counseling|CBT|support)[^.]{20,200}",
-                                full_reasoning, re.IGNORECASE
+                        reasoning_text = _collect_full_counselor_think(convo)
+
+                        if reasoning_text:
+                            entailed, evidence = classify_plan_components(
+                                premise=reasoning_text,
+                                nli_model=nli_model,
+                                components=DEFAULT_PLAN_COMPONENTS,
                             )
-                            if therapy_match:
-                                plan_text = f"Therapy: {therapy_match.group(0).strip()}"
+                            plan_text = render_plan_from_components(
+                                entailed_by_component_id=entailed,
+                                components=DEFAULT_PLAN_COMPONENTS,
+                            )
+
+                            if not plan_text:
+                                candidates = extract_recommendation_candidates(
+                                    reasoning_text=reasoning_text
+                                )
+                                kept = nli_filter_candidates(
+                                    premise=reasoning_text,
+                                    candidates=candidates,
+                                    nli_model=nli_model,
+                                    max_keep=3,
+                                )
+                                if kept:
+                                    linked_fallback_count += 1
+                                    plan_text = " ".join(
+                                        [s if s.endswith(".") else (s + ".") for s in kept]
+                                    ).strip()
+
+                            if plan_text:
                                 source_id = int(idx)
                                 source_split = split_name
                                 linked_count += 1
+                                existing_plans[case_id] = {
+                                    "plan": plan_text,
+                                    "source_openr1_id": source_id,
+                                    "source_split": source_split,
+                                    "plan_components": [
+                                        cid
+                                        for cid, ok in entailed.items()
+                                        if ok
+                                    ],
+                                    "plan_component_evidence": evidence,
+                                }
+                                updated_count += 1
                                 break
                     except (IndexError, ValueError, KeyError):
                         continue
                 if plan_text:
                     break
         
-        # Fallback to patient summary extraction
-        if not plan_text and patient_summary:
+        # Fallback to patient summary synthesis
+        if case_id not in existing_plans and patient_summary:
             # Extract condition from patient summary
             condition = ""
             for entity in critical_entities:
@@ -362,8 +436,8 @@ def main() -> int:
                 plan_text = get_treatment_plan(condition, patient_summary, critical_entities)
                 source_split = "generated"
                 unlinked_count += 1
-        
-        if plan_text:
+
+        if plan_text and case_id not in existing_plans:
             existing_plans[case_id] = {
                 "plan": plan_text,
                 "source_openr1_id": source_id,
@@ -378,12 +452,16 @@ def main() -> int:
         "dataset": "GMLHUHE/OpenR1-Psy",
         "split": "mixed",
         "extraction": "generate_nli_plans.py",
-        "notes": "Gold target plans for Study C. Linked cases extracted from OpenR1-Psy; unlinked cases generated from patient_summary + critical_entities.",
+        "notes": "Gold target plans for Study C. Linked cases use NLI-verified plan component classification over OpenR1-Psy counselor_think; unlinked cases are generated from patient_summary + critical_entities.",
         "updated_utc": datetime.utcnow().isoformat() + "Z",
         "script": "scripts/studies/study_c/gold_plans/generate_nli_plans.py",
+        "nli_model": "cross-encoder/nli-deberta-v3-base",
+        "revision": args.revision,
+        "cache_dir": args.cache_dir,
         "source_split_counts": {
             "linked": linked_count,
             "generated": unlinked_count,
+            "linked_fallback": linked_fallback_count,
             "total": len(cases),
         },
     }

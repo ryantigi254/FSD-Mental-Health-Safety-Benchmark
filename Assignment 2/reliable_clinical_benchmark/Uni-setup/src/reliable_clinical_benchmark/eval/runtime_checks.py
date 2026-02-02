@@ -265,8 +265,24 @@ def validate_study_c_schema(data_dir: str = "data") -> Tuple[bool, List[str]]:
             if not isinstance(persona_id, str) or not persona_id.strip():
                 errors.append(f"Study C cases[{cid}]: missing/invalid metadata.persona_id")
             source_openr1_ids = metadata.get("source_openr1_ids")
-            if not isinstance(source_openr1_ids, list) or not source_openr1_ids:
+            if not isinstance(source_openr1_ids, list):
                 errors.append(f"Study C cases[{cid}]: missing/invalid metadata.source_openr1_ids")
+            else:
+                source_split = metadata.get("source_split")
+                if source_split is not None:
+                    if not isinstance(source_split, str) or not source_split.strip():
+                        errors.append(f"Study C cases[{cid}]: missing/invalid metadata.source_split")
+                    elif source_split not in {"test", "train", "generated"}:
+                        errors.append(
+                            f"Study C cases[{cid}]: metadata.source_split must be one of {{test, train, generated}}"
+                        )
+
+                # Enforce linkage unless explicitly synthetic.
+                # Backwards compatibility: if source_split is missing, treat empty lists as synthetic.
+                if not source_openr1_ids and source_split not in {None, "generated"}:
+                    errors.append(
+                        f"Study C cases[{cid}]: empty metadata.source_openr1_ids is only allowed when metadata.source_split == 'generated'"
+                    )
 
     if errors:
         return False, errors

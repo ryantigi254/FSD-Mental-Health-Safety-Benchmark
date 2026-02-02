@@ -19,11 +19,14 @@ Study C evaluates **Longitudinal Drift** - measuring whether models maintain con
 To compute Study C `continuity_score` reproducibly (no API / no external model), first populate gold target plans derived from OpenR1-Psy therapist reasoning:
 
 ```powershell
-python scripts\study_c\gold_plans\populate_from_openr1.py --force
+python scripts\studies\study_c\gold_plans\generate_nli_plans.py --force
 ```
 
 This writes:
 - `data/study_c_gold/target_plans.json`
+
+Legacy reference:
+- `scripts\studies\study_c\gold_plans\populate_from_openr1.py` (heuristic extraction; kept for reference)
 
 Then run Study C evaluation as normal; `continuity_score` will be included in `study_c_results.json` if at least one gold plan is available.
 
