@@ -54,10 +54,16 @@ def _extract_advice(text: str) -> str:
 
 ## Paper Reference
 
-**DeBERTa-v3 NLI**: Cross-encoder for contradiction detection
+**He et al. (2020) - DeBERTa**: DeBERTa: Decoding-enhanced BERT with Disentangled Attention
 - HuggingFace: [cross-encoder/nli-deberta-v3-base](https://huggingface.co/cross-encoder/nli-deberta-v3-base)
+- State-of-the-art NLI model for contradiction detection
 
-**Dialogue NLI Research**: Adapted from conversational contradiction detection literature.
+**Welleck et al. (2019) - Dialogue NLI**: Dialogue Natural Language Inference
+- ACL 2019: Conversational contradiction detection methodology
+- Adapted for multi-turn clinical dialogue consistency checking
+
+**Additional References**:
+- **MultiNLI (Williams et al., 2018)**: Large-scale NLI corpus training data
 
 ## Publishability Assessment
 

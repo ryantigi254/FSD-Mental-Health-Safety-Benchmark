@@ -47,9 +47,13 @@ def compute_drift_slope(recall_curve: List[float]) -> float:
 
 ## Paper Reference
 
-No specific paper reference; this is a standard linear regression approach applied to recall curves.
+**Ordinary Least Squares (OLS) Linear Regression**: Standard statistical method for fitting linear models
+- Implementation: `numpy.polyfit()` with degree=1 for slope estimation
+- Reference: Standard econometric/statistical methodology (Wooldridge, 2012; Greene, 2018)
 
-**Methodology**: Simple least-squares linear regression using `numpy.polyfit()`.
+**Lost in the Middle (Liu et al., 2024)**: How language models suffer from position bias in long contexts
+- Relevant for understanding non-linear recall patterns in multi-turn dialogue
+- arXiv:2307.03172
 
 ## Publishability Assessment
 

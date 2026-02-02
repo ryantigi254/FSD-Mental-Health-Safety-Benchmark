@@ -1,26 +1,26 @@
 # Metric Defensibility & Verification Protocol
 
-To ensure all clinical safety metrics are defensible for final reporting and supervisor review, we implement a **Double Verification** strategy. This framework moves beyond simple heuristics by ensembling rule-based logic with semantic (NLI/Embedding) validation.
+I verify all clinical safety metrics to ensure they are defensible for final reporting and supervisor review. This framework moves beyond simple heuristics by ensembling rule-based logic with semantic (NLI/Embedding) validation.
 
 ## Metric Refinement Methodology
 
-Our approach to selecting and refining metrics follows a strict **four-stage validation process**. We do not blindly implement metrics; we critically evaluate them for clinical safety contexts.
+I follow a strict four-stage validation process when selecting and refining metrics. I do not blindly implement metrics; I critically evaluate them for clinical safety contexts.
 
-1.  **Source Identification**:
-    *   **Input**: Review definitions in `Metrics and Evaluation.tex` and supervisor guidelines.
-    *   **Action**: Identify the core concept (e.g., "Faithfulness", "Sycophancy").
+1. **Source Identification**:
+   * **Input**: I review definitions in `Metrics and Evaluation.tex` and supervisor guidelines.
+   * **Action**: I identify the core concept (e.g., "Faithfulness", "Sycophancy").
 
-2.  **Academic Alignment**:
-    *   **Input**: Read the primary source paper (e.g., Wei et al., Chang et al., Turpin et al.).
-    *   **Action**: Verify if the original metric (often built for general NLP) is robust enough for *clinical safety*.
+2. **Academic Alignment**:
+   * **Input**: I read the primary source paper (e.g., Wei et al., Chang et al., Turpin et al.).
+   * **Action**: I verify if the original metric (often built for general NLP) is robust enough for *clinical safety*.
 
-3.  **Gap Analysis (The "Single Point of Failure" Check)**:
-    *   **Question**: *"Can a model cheat this metric?"* or *"Can simple noise trigger a false positive?"*
-    *   **Outcome**: Identify weaknesses (e.g., Regex can be tricked by "I don't agree", simple NER misses synonyms).
+3. **Gap Analysis (The "Single Point of Failure" Check)**:
+   * **Question**: *"Can a model cheat this metric?"* or *"Can simple noise trigger a false positive?"*
+   * **Outcome**: I identify weaknesses (e.g., Regex can be tricked by "I don't agree", simple NER misses synonyms).
 
-4.  **Double Verification Implementation**:
-    *   **Action**: Layer a secondary, semantic validation method on top of the primary heuristic.
-    *   **Result**: The "Double Verification" strategies detailed below (e.g., NLI Ensemble, Semantic Overlap).
+4. **Double Verification Implementation**:
+   * **Action**: I layer a secondary, semantic validation method on top of the primary heuristic.
+   * **Result**: The "Double Verification" strategies detailed below (e.g., NLI Ensemble, Semantic Overlap).
 
 ---
 
@@ -68,11 +68,11 @@ Our approach to selecting and refining metrics follows a strict **four-stage val
 
 ## 4. Universal Statistical Rigour
 
-To maintain academic and clinical standards, the following "Double Checks" are applied globally:
+I apply the following "Double Checks" globally to maintain academic and clinical standards:
 
-1.  **Bootstrap Confidence Intervals**: 95% CI reported for all headline metrics (P_Syc, Recall@T10) to ensure results aren't just noise.
-2.  **Asymmetry Testing (T3 Style)**: For Sycophancy, we check **Bad Flip Rate** vs. **Good Flip Rate**. High Bad/Low Good proves malignant sycophancy.
-3.  **FactScore-Lite**: For Hallucination, we use Scispacy + NLI to approximate the standard FactScore methodology used in state-of-the-art research.
+1. **Bootstrap Confidence Intervals**: I report 95% CI for all headline metrics (P_Syc, Recall@T10) to ensure results are not just noise.
+2. **Asymmetry Testing (T3 Style)**: For Sycophancy, I check **Bad Flip Rate** vs. **Good Flip Rate**. High Bad/Low Good proves malignant sycophancy.
+3. **FactScore-Lite**: For Hallucination, I use Scispacy + NLI to approximate the FactScore methodology from Min et al. (2023).
 
 ---
 
@@ -83,6 +83,24 @@ To maintain academic and clinical standards, the following "Double Checks" are a
 | **Faithfulness Gap** | CoT might be "post-hoc" junk | Step-F1 verifies reasoning quality. |
 | **P_Syc** | "Agreeing to disagree" | NLI verifies adopting the wrong stance. |
 | **Entity Recall** | NER extraction noise | Semantic presence validation. |
+
+---
+
+## Metric-to-Citation Matrix
+
+| Metric | Study | Primary Citation | Verification Method |
+|--------|-------|------------------|---------------------|
+| **Faithfulness Gap** | A | Lanham et al. (2023) | Regex extraction + Step-F1 semantic alignment |
+| **Step-F1** | A | DeYoung et al. (2019) - ERASER | Token-level reasoning overlap |
+| **Silent Bias Rate** | A | Turpin et al. (2023) | Correlation check (causal intervention proposed) |
+| **Sycophancy Probability** | B | Wei et al. (2023) | Regex + NLI entailment ensemble |
+| **Flip Rate** | B | Chang et al. (2026) - T3 | Bad vs Good flip asymmetry testing |
+| **Evidence Hallucination** | B | Min et al. (2023) - FactScore; RAGAS (Es et al., 2023) | ScispaCy SVO extraction + NLI verification |
+| **Turn of Flip** | B | Multi-turn dialogue safety | First failure point tracking |
+| **Entity Recall Decay** | C | Neumann et al. (2019) - scispaCy | NER extraction + Jaccard semantic validation |
+| **Knowledge Conflict Rate** | C | He et al. (2020) - DeBERTa; Welleck et al. (2019) - Dialogue NLI | DeBERTa-v3 NLI contradiction detection |
+| **Session Goal Alignment** | C | Reimers & Gurevych (2019) - Sentence-BERT | Cosine similarity to target plan |
+| **Drift Slope** | C | Standard OLS regression | Linear regression on recall curves |
 
 ---
 
