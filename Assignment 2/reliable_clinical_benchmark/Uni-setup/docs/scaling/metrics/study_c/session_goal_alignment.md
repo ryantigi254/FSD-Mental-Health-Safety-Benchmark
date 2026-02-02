@@ -66,15 +66,18 @@ def calculate_alignment_score(
 
 1. **Requires Gold Target Plans**: Needs `data/study_c_gold/target_plans.json`
 2. **Coarse Granularity**: Single score for entire conversation
-3. **Plan Derivation**: Target plans derived from OpenR1-Psy `counselor_think`
+3. **Plan Derivation**: Target plans derived from NLI-verified plan component classification for linked cases, with legacy OpenR1-Psy `counselor_think` extraction kept for reference
 
 ## Data Dependencies
 
 ### Gold Target Plans
 
 - **Location**: `data/study_c_gold/target_plans.json`
-- **Population Script**: `scripts/study_c/gold_plans/populate_from_openr1.py`
-- **Source**: Deterministically extracted from OpenR1-Psy (no LLM generation)
+- **Population Script**: `scripts/studies/study_c/gold_plans/generate_nli_plans.py`
+- **Source**: Linked cases use NLI-verified plan component classification over OpenR1-Psy `counselor_think`; unlinked cases use rule-based plan synthesis
+
+Legacy reference:
+- `scripts/studies/study_c/gold_plans/populate_from_openr1.py` (heuristic extraction; kept for reference)
 
 **If no plan available**: Metric is omitted from results JSON.
 

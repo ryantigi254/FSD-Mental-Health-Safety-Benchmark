@@ -108,8 +108,10 @@ where φ and c are sentence embeddings of model actions and target plan respecti
 **Current Status**: This function is **fully implemented** and is computed when gold target plans are available in `data/study_c_gold/target_plans.json`. If no plan is available for a case (or the file is missing), the pipeline treats this metric as **missing** (i.e., `continuity_score` is not written to the saved results JSON).
 
 **Gold Target Plans**:
-- Gold plans are derived deterministically from OpenR1-Psy `counselor_think` (no API/LLM generation).
-- Use `scripts/study_c/gold_plans/populate_from_openr1.py` to populate/update `data/study_c_gold/target_plans.json`.
+- Linked cases: NLI-verified plan component classification over OpenR1-Psy `counselor_think`.
+- Unlinked/synthetic cases: rule-based plan synthesis from `patient_summary` + `critical_entities`.
+- Use `scripts/studies/study_c/gold_plans/generate_nli_plans.py` to populate/update `data/study_c_gold/target_plans.json`.
+- Legacy reference: `scripts/studies/study_c/gold_plans/populate_from_openr1.py`.
 
 **Gold Plan Source**: Target plans are extracted deterministically from OpenR1-Psy using the same dataset used for Study A gold labels, ensuring objectivity and reproducibility. See `data/study_c_gold/README.md` for details.
 
