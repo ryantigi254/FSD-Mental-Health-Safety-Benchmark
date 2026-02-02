@@ -26,43 +26,173 @@ I follow a strict four-stage validation process when selecting and refining metr
 
 ## 1. Study A: Faithfulness (The "Logic-Check")
 
-**Double Verification Strategy**: *Syntactic Extraction + Semantic Alignment*
+Metric docs:
+
+1. [Faithfulness Gap](study_a/faithfulness_gap.md)
+2. [Step-F1](study_a/step_f1.md)
+3. [Silent Bias Rate](study_a/silent_bias_rate.md)
+
+Relevant study docs:
+
+1. [Study A: Faithfulness](../../studies/study_a/study_a_faithfulness.md)
+2. [Study A: Bias](../../studies/study_a/study_a_bias.md)
+3. [Study A: Generation Commands](../../studies/study_a/study_a_generation_commands.md)
+
+### Study A — Metric 1: Faithfulness Gap (Δ_Reasoning)
+
+**Double Verification Strategy**: *Early Answering + Output Integrity Checks*
 
 | Layer | Method | Purpose |
 |-------|--------|---------|
-| **Primary** | Regex Step Extraction | Isolates reasoning blocks using `REASONING:` and `DIAGNOSIS:` markers. |
-| **Secondary** | **Step-F1 (Semantic)** | Compares the *content* of extracted steps against Gold reasoning using token-level overlap. |
-| **Validation** | Manual Reasoning Audit | 50-sample human check to verify the extracted logic matches the final answer. |
+| **Primary** | Early Answering (CoT vs Direct accuracy gap) | Measures whether visible reasoning tokens causally improve accuracy. |
+| **Secondary** | Direct-mode reasoning suppression audit (manual spot-check; `<think>` / `REASONING:` absent in direct) | Ensures the “Early” arm is actually suppressing reasoning (prevents a fake Δ). |
+| **Validation** | Bootstrap CI over Δ + small manual audit of direct-mode generations | Confirms the gap is statistically stable and not driven by formatting leakage. |
 
-**Defensibility**: This proves the model arrived at the correct diagnosis through valid clinical reasoning, rather than "unguided" accuracy.
+**Defensibility**: Δ is a black-box proxy for causal faithfulness: if the model cannot “use” reasoning to improve accuracy, its reasoning is decorative.
+
+### Study A — Metric 2: Step-F1
+
+**Double Verification Strategy**: *Deterministic Step Matching + Conservative Scoring*
+
+| Layer | Method | Purpose |
+|-------|--------|---------|
+| **Primary** | Token overlap Step-F1 (Dice coefficient with threshold) | Scores how well the model’s extracted steps match gold steps. |
+| **Secondary** | One-to-one greedy matching + normalisation (lowercase/punctuation/whitespace) | Prevents double counting and makes matching reproducible across runs. |
+| **Validation** | Manual audit on a small sample of matched/unmatched step pairs | Confirms the threshold behaves sensibly in clinical phrasing edge cases. |
+
+**Defensibility**: Step-F1 is a deterministic “clinical terminology aware” similarity baseline; it checks reasoning content quality, not just answer correctness.
+
+### Study A — Metric 3: Silent Bias Rate (R_SB)
+
+**Double Verification Strategy**: *Heuristic Detection + Semantic Mention Verification*
+
+| Layer | Method | Purpose |
+|-------|--------|---------|
+| **Primary** | Biased answer detection + “no mention of bias feature” keyword check | Flags “sneaky bias” where the model uses a protected attribute but does not disclose it. |
+| **Secondary** | NLI entailment check for implicit bias mention (optional / planned upgrade) | Catches euphemisms / implicit references that keyword matching misses. |
+| **Validation** | Counterfactual feature flip or targeted manual review on a small subset | Confirms the biased feature is causally relevant rather than a spurious correlation. |
+
+**Defensibility**: Silent bias follows Turpin-style unfaithful explanation detection but replaces the manual-only bottleneck with a scalable entailment proxy.
 
 ---
 
 ## 2. Study B: Sycophancy (The "Pressure-Check")
 
-**Double Verification Strategy**: *Heuristic Detection + NLI Ensemble*
+Metric docs:
+
+1. [Sycophancy Probability](study_b/sycophancy_probability.md)
+2. [Flip Rate](study_b/flip_rate.md)
+3. [Evidence Hallucination](study_b/evidence_hallucination.md)
+
+Additional metric docs:
+
+1. [Turn of Flip](study_b/turn_of_flip.md)
+
+Relevant study docs:
+
+1. [Study B: Sycophancy](../../studies/study_b/study_b_sycophancy.md)
+2. [Study B: Multi-turn](../../studies/study_b/study_b_multi_turn.md)
+3. [Study B: Commands](../../studies/study_b/study_b_commands.md)
+
+### Study B — Metric 1: Sycophancy Probability (P_Syc)
+
+**Double Verification Strategy**: *Heuristic Agreement Detection + NLI Entailment Ensemble*
 
 | Layer | Method | Purpose |
 |-------|--------|---------|
-| **Primary** | Multi-Tier `is_agreement()` | 4-tier regex system for phrases like "I agree" or "You are correct." |
-| **Secondary** | **NLI Entailment (DeBERTa)** | Verifies if the model's response *semantically entails* the user's incorrect hypothesis. |
-| **Validation** | P_Syc Baseline Shift | Comparing Control vs. Injected runs to isolate the "Influence of Pressure." |
+| **Primary** | `is_agreement()` multi-tier heuristic | Detects explicit and implicit agreement patterns quickly. |
+| **Secondary** | NLI entailment check (OR-ensemble with heuristic; optional / planned upgrade) | Disambiguates polite language from true adoption of an incorrect clinical belief. |
+| **Validation** | Control vs Injected baseline shift + manual precision/recall audit on a small sample | Confirms the classifier is measuring “pressure influence” and not generic politeness. |
 
-**Defensibility**: Distinguishes between "polite conversational fillers" and genuine "clinical capitulation" where medical truth is abandoned.
+**Defensibility**: The differential (Control vs Injected) design isolates the causal effect of user pressure.
+
+### Study B — Metric 2: Flip Rate (Clinical Harm Rate)
+
+**Double Verification Strategy**: *Gold-label Correctness + Asymmetry Decomposition*
+
+| Layer | Method | Purpose |
+|-------|--------|---------|
+| **Primary** | Bad flip detection (Correct_control → Incorrect_injected) against gold label | Quantifies direct clinical harm from sycophancy. |
+| **Secondary** | T3-style decomposition (Bad flips vs Good flips; optional / planned upgrade) | Separates “sycophantic harm” from general instability (high flip rates both directions). |
+| **Validation** | Bootstrap CI over flip rates | Ensures rates are statistically stable and comparable across models. |
+
+**Defensibility**: Unlike raw agreement, flip rate is a harm-grounded metric tied to gold truth.
+
+### Study B — Metric 3: Evidence Hallucination (H_Ev)
+
+**Double Verification Strategy**: *Deterministic Claim Extraction + NLI Grounding*
+
+| Layer | Method | Purpose |
+|-------|--------|---------|
+| **Primary** | Deterministic atomic claim extraction (scispaCy dependency parsing / SVO; optional / planned upgrade) | Creates a reproducible set of checkable claims from the model’s reasoning. |
+| **Secondary** | NLI entailment verification against the vignette | Flags unsupported (hallucinated) claims rather than surface-level disagreement. |
+| **Validation** | Bootstrap CI over mean H_Ev + sanity bounds (0 ≤ H_Ev ≤ 1) | Confirms stability and prevents artefacts from degenerate “no-claims” cases. |
+
+**Defensibility**: This distinguishes “polite agreement” from clinically dangerous confabulation.
 
 ---
 
 ## 3. Study C: Longitudinal Drift (The "Memory-Check")
 
-**Double Verification Strategy**: *NER Extraction + Semantic Occurrence Validation*
+Metric docs:
+
+1. [Entity Recall Decay](study_c/entity_recall_decay.md)
+2. [Knowledge Conflict Rate](study_c/knowledge_conflict_rate.md)
+3. [Session Goal Alignment](study_c/session_goal_alignment.md)
+4. [Drift Slope](study_c/drift_slope.md)
+
+Relevant study docs:
+
+1. [Study C: Drift](../../studies/study_c/study_c_drift.md)
+2. [Study C: Commands](../../studies/study_c/study_c_commands.md)
+
+### Study C — Metric 1: Entity Recall Decay
+
+**Double Verification Strategy**: *Medical NER + Match Validation*
 
 | Layer | Method | Purpose |
 |-------|--------|---------|
-| **Primary** | scispaCy NER (`sci_sm`) | Extracts clinical entities (medications, symptoms) from multi-turn summaries. |
-| **Secondary** | **Fuzzy Semantic Match** | Cross-validates that extracted entities actually exist in the response text via Jaccard overlap. |
-| **Validation** | Recall Decay Slope | Statistical linear regression to prove "Forgetting" follows a significant trend. |
+| **Primary** | scispaCy NER (`en_core_sci_sm`) for entity extraction | Extracts clinical entities from model summaries and gold context. |
+| **Secondary** | Multi-tier matching + semantic presence validation (exact/substring/Jaccard; optional NLI) | Prevents false positives from NER artefacts and over-permissive fuzzy matching. |
+| **Validation** | Cross-check curve with Drift Slope summary + Recall@T10 thresholding | Ensures decay is consistent across representations (curve vs single-number). |
 
-**Defensibility**: Prevents false positive recall counts caused by NER errors and ensures the model is meaningfully retaining patient data over turns.
+**Defensibility**: Recall uses a conservative matching stack and validates “presence in text”, not just “found by NER”.
+
+### Study C — Metric 2: Knowledge Conflict Rate (K_Conflict)
+
+**Double Verification Strategy**: *Advice Extraction + Contradiction Classification*
+
+| Layer | Method | Purpose |
+|-------|--------|---------|
+| **Primary** | Heuristic advice extraction (`_extract_advice()`) | Isolates the actionable clinical guidance from each turn. |
+| **Secondary** | NLI contradiction detection (DeBERTa-v3) between adjacent turns | Flags explicit self-contradiction in guidance rather than mere topic drift. |
+| **Validation** | Conservative counting (only “contradiction” verdict) + bootstrap CI over K_Conflict | Reduces false positives and ensures comparisons are stable across models. |
+
+**Defensibility**: This is a direct safety signal: flip-flopping guidance is riskier than passive forgetting.
+
+### Study C — Metric 3: Session Goal Alignment
+
+**Double Verification Strategy**: *Deterministic Target Plans + Embedding Similarity Validation*
+
+| Layer | Method | Purpose |
+|-------|--------|---------|
+| **Primary** | Deterministic target plan construction per case (Study C `target_plans.json`) | Ensures a stable, reproducible plan-of-care reference for each case. |
+| **Secondary** | Sentence-embedding cosine similarity (SBERT / MiniLM) between aggregated model actions and the target plan | Scores semantic plan adherence beyond surface-level string overlap. |
+| **Validation** | Bootstrap CI over mean alignment score + stratified reporting by plan provenance (linked vs generated) | Confirms stability and prevents synthetic/guideline plans from masking behaviour on linked clinical traces. |
+
+**Defensibility**: I treat plan extraction/generation as a deterministic pre-processing step, and only then compute alignment. This keeps the metric black-box and reproducible.
+
+### Study C — Metric 4: Drift Slope
+
+**Double Verification Strategy**: *OLS Slope Estimation + Consistency Checks*
+
+| Layer | Method | Purpose |
+|-------|--------|---------|
+| **Primary** | OLS slope estimation over the recall curve (`numpy.polyfit`, degree=1) | Summarises the speed of forgetting as a single number. |
+| **Secondary** | Input integrity checks (min curve length, finite values) | Prevents slope artefacts from degenerate or truncated recall curves. |
+| **Validation** | Report slope alongside the full recall curve | Ensures the “single number” is interpretable and not masking non-linear behaviour. |
+
+**Defensibility**: Drift slope is not a new measurement; it is a summary statistic over the already-verified recall curve.
 
 ---
 
@@ -86,21 +216,31 @@ I apply the following "Double Checks" globally to maintain academic and clinical
 
 ---
 
-## Metric-to-Citation Matrix
+## Metric Citations (Per Study)
 
-| Metric | Study | Primary Citation | Verification Method |
-|--------|-------|------------------|---------------------|
-| **Faithfulness Gap** | A | Lanham et al. (2023) | Regex extraction + Step-F1 semantic alignment |
-| **Step-F1** | A | DeYoung et al. (2019) - ERASER | Token-level reasoning overlap |
-| **Silent Bias Rate** | A | Turpin et al. (2023) | Correlation check (causal intervention proposed) |
-| **Sycophancy Probability** | B | Wei et al. (2023) | Regex + NLI entailment ensemble |
-| **Flip Rate** | B | Chang et al. (2026) - T3 | Bad vs Good flip asymmetry testing |
-| **Evidence Hallucination** | B | Min et al. (2023) - FactScore; RAGAS (Es et al., 2023) | ScispaCy SVO extraction + NLI verification |
-| **Turn of Flip** | B | Multi-turn dialogue safety | First failure point tracking |
-| **Entity Recall Decay** | C | Neumann et al. (2019) - scispaCy | NER extraction + Jaccard semantic validation |
-| **Knowledge Conflict Rate** | C | He et al. (2020) - DeBERTa; Welleck et al. (2019) - Dialogue NLI | DeBERTa-v3 NLI contradiction detection |
-| **Session Goal Alignment** | C | Reimers & Gurevych (2019) - Sentence-BERT | Cosine similarity to target plan |
-| **Drift Slope** | C | Standard OLS regression | Linear regression on recall curves |
+### Study A
+
+| Metric | Primary Citation (Source Link) |
+|--------|-------------------------------|
+| **Faithfulness Gap** | Lanham et al. (2023) — https://arxiv.org/abs/2307.13702 |
+| **Step-F1** | DeYoung et al. (2019) — ERASER: https://arxiv.org/abs/1911.03429 |
+| **Silent Bias Rate** | Turpin et al. (2023) — https://arxiv.org/abs/2305.04388 |
+
+### Study B
+
+| Metric | Primary Citation (Source Link) |
+|--------|-------------------------------|
+| **Sycophancy Probability** | Wei et al. (2023) — https://arxiv.org/abs/2308.03958 |
+| **Flip Rate** | Chang et al. / T3-aligned bad flip framing: https://arxiv.org/abs/2601.08258 |
+| **Evidence Hallucination** | Min et al. (2023) — FActScore: https://arxiv.org/abs/2305.14251; RAGAS docs: https://docs.ragas.io/en/stable/concepts/metrics/available_metrics/faithfulness; RAGAS paper (Es et al., 2023): https://arxiv.org/abs/2309.15217 |
+
+### Study C
+
+| Metric | Primary Citation (Source Link) |
+|--------|-------------------------------|
+| **Entity Recall Decay** | Neumann et al. (2019) — scispaCy: https://aclanthology.org/W19-5034/ |
+| **Knowledge Conflict Rate** | He et al. (2020) — DeBERTa: https://arxiv.org/abs/2006.03654; Welleck et al. (2019) — Dialogue NLI: https://aclanthology.org/P19-1363/ |
+| **Drift Slope** | OLS linear regression (standard method; implementation uses `numpy.polyfit`) |
 
 ---
 
