@@ -257,6 +257,141 @@ def _collect_full_counselor_think(conversation: List[Dict[str, Any]]) -> str:
     return " ".join(parts).strip()
 
 
+def _looks_like_actionable_plan(text: str) -> bool:
+    t = str(text or "").strip()
+    if not t:
+        return False
+
+    if any(k in t for k in ("Therapy:", "Medication:", "Skills:", "Follow-up:")):
+        return True
+
+    if len(t) < 120:
+        return False
+
+    t_lower = t.lower()
+    action_terms = (
+        "recommend",
+        "suggest",
+        "consider",
+        "plan",
+        "review",
+        "assess",
+        "follow-up",
+        "therapy",
+        "medication",
+        "refer",
+        "monitor",
+        "skills",
+    )
+    return sum(1 for term in action_terms if term in t_lower) >= 2
+
+
+_MED_KEYWORDS = {
+    "sertraline",
+    "fluoxetine",
+    "citalopram",
+    "escitalopram",
+    "paroxetine",
+    "venlafaxine",
+    "duloxetine",
+    "mirtazapine",
+    "bupropion",
+    "lisdexamfetamine",
+    "methylphenidate",
+    "atomoxetine",
+    "naltrexone",
+    "acamprosate",
+    "disulfiram",
+    "prazosin",
+    "lithium",
+    "valproate",
+    "lamotrigine",
+    "quetiapine",
+    "olanzapine",
+    "risperidone",
+    "aripiprazole",
+    "clozapine",
+    "amlodipine",
+}
+
+
+_CONSTRAINT_KEYWORDS = {
+    "allergy",
+    "allergic",
+    "pregnan",
+    "postpartum",
+    "breastfeed",
+    "breast-feeding",
+    "contraindicat",
+    "intolerance",
+    "hypertension",
+    "diabetes",
+    "liver",
+    "renal",
+    "kidney",
+}
+
+
+def _split_case_anchors(critical_entities: List[str]) -> Dict[str, List[str]]:
+    conditions: List[str] = []
+    meds_constraints: List[str] = []
+
+    seen_conditions = set()
+    seen_meds_constraints = set()
+
+    for raw in critical_entities or []:
+        text = str(raw or "").strip()
+        if not text:
+            continue
+        lower = text.lower()
+
+        is_med = (
+            "mg" in lower
+            or any(k in lower for k in _MED_KEYWORDS)
+            or lower.startswith("medication")
+        )
+        is_constraint = any(k in lower for k in _CONSTRAINT_KEYWORDS)
+
+        if is_med or is_constraint:
+            if lower not in seen_meds_constraints:
+                seen_meds_constraints.add(lower)
+                meds_constraints.append(text)
+        else:
+            if lower not in seen_conditions:
+                seen_conditions.add(lower)
+                conditions.append(text)
+
+    return {"conditions": conditions, "meds_constraints": meds_constraints}
+
+
+def _enrich_plan_for_alignment(plan_text: str, critical_entities: List[str]) -> str:
+    text = str(plan_text or "").strip()
+    if not text:
+        return text
+
+    lower = text.lower()
+
+    if not any(m in lower for m in ("follow-up:", "monitor", "homework", "review", "tracking")):
+        if text.endswith("."):
+            text = text + " Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework."
+        else:
+            text = text + ". Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework."
+
+    anchors = _split_case_anchors(critical_entities)
+    conditions = anchors.get("conditions") or []
+    meds_constraints = anchors.get("meds_constraints") or []
+
+    if "case anchors:" not in text.lower():
+        problem = "; ".join(conditions) if conditions else "unspecified"
+        constraints = "; ".join(meds_constraints) if meds_constraints else "none noted"
+        if text.endswith("."):
+            text = text + f" Case anchors: Problem: {problem}. Constraints/Meds: {constraints}."
+        else:
+            text = text + f". Case anchors: Problem: {problem}. Constraints/Meds: {constraints}."
+
+    return text
+
+
 def main() -> int:
     p = argparse.ArgumentParser(description="Generate Study C gold plans (NLI-verified components for linked cases)")
     p.add_argument(
@@ -344,7 +479,9 @@ def main() -> int:
 
     for case in cases:
         case_id = case.get("id", "")
-        source_ids = case.get("metadata", {}).get("source_openr1_ids", [])
+        case_metadata = case.get("metadata", {}) or {}
+        source_ids = case_metadata.get("source_openr1_ids", [])
+        preferred_source_split = str(case_metadata.get("source_split", "") or "").strip().lower()
         patient_summary = case.get("patient_summary", "")
         critical_entities = case.get("critical_entities", [])
         
@@ -360,11 +497,25 @@ def main() -> int:
         plan_text = ""
         source_id = None
         source_split = None
+        has_source_link = bool(source_ids) and preferred_source_split in {"test", "train"}
         
         # Try OpenR1 linkage first (NLI plan component classification)
-        if openr1_available and nli_model is not None and source_ids:
+        if (
+            openr1_available
+            and nli_model is not None
+            and source_ids
+            and preferred_source_split != "generated"
+        ):
+            split_order = [("test", ds_test), ("train", ds_train)]
+            if preferred_source_split == "train":
+                split_order = [("train", ds_train), ("test", ds_test)]
+            elif preferred_source_split == "test":
+                split_order = [("test", ds_test), ("train", ds_train)]
+
             for idx in source_ids:
-                for split_name, ds in [("test", ds_test), ("train", ds_train)]:
+                for split_name, ds in split_order:
+                    if ds is None:
+                        continue
                     try:
                         row = ds[int(idx)]
                         convo = row.get("conversation", [])
@@ -381,6 +532,9 @@ def main() -> int:
                                 components=DEFAULT_PLAN_COMPONENTS,
                             )
 
+                            if plan_text and not _looks_like_actionable_plan(plan_text):
+                                plan_text = ""
+
                             if not plan_text:
                                 candidates = extract_recommendation_candidates(
                                     reasoning_text=reasoning_text
@@ -392,12 +546,19 @@ def main() -> int:
                                     max_keep=3,
                                 )
                                 if kept:
-                                    linked_fallback_count += 1
                                     plan_text = " ".join(
                                         [s if s.endswith(".") else (s + ".") for s in kept]
                                     ).strip()
 
+                                    if _looks_like_actionable_plan(plan_text):
+                                        linked_fallback_count += 1
+                                    else:
+                                        plan_text = ""
+
                             if plan_text:
+                                plan_text = _enrich_plan_for_alignment(
+                                    plan_text, critical_entities
+                                )
                                 source_id = int(idx)
                                 source_split = split_name
                                 linked_count += 1
@@ -414,7 +575,7 @@ def main() -> int:
                                 }
                                 updated_count += 1
                                 break
-                    except (IndexError, ValueError, KeyError):
+                    except (IndexError, ValueError, KeyError, TypeError):
                         continue
                 if plan_text:
                     break
@@ -434,10 +595,16 @@ def main() -> int:
             
             if condition:
                 plan_text = get_treatment_plan(condition, patient_summary, critical_entities)
-                source_split = "generated"
-                unlinked_count += 1
+                if has_source_link:
+                    source_id = int(source_ids[0])
+                    source_split = "linked_fallback"
+                    linked_fallback_count += 1
+                else:
+                    source_split = "generated"
+                    unlinked_count += 1
 
         if plan_text and case_id not in existing_plans:
+            plan_text = _enrich_plan_for_alignment(plan_text, critical_entities)
             existing_plans[case_id] = {
                 "plan": plan_text,
                 "source_openr1_id": source_id,
