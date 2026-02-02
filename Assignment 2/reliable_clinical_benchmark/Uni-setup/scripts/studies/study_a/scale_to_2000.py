@@ -17,7 +17,7 @@ import random
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Set
+from typing import Any, Dict, List, Set, Tuple, Optional
 
 from datasets import load_dataset
 
@@ -77,6 +77,49 @@ def extract_diagnosis_from_reasoning(reasoning: List[str], prompt: str) -> str:
     return "Adjustment Disorder"
 
 
+def _normalise_prompt(text: str) -> str:
+    return re.sub(r"\s+", " ", str(text or "")).strip()
+
+
+def _extract_first_turn_gold_answer(conversation: List[Dict[str, Any]]) -> str:
+    if not conversation:
+        return ""
+    first = conversation[0] if isinstance(conversation[0], dict) else {}
+    ans = str(first.get("counselor_content", "") or "").strip()
+    if ans:
+        return ans
+    return str(first.get("counselor", "") or "").strip()
+
+
+def _extract_reasoning_steps(conversation: List[Dict[str, Any]], max_steps: int = 10) -> List[str]:
+    steps: List[str] = []
+    for turn in conversation:
+        if not isinstance(turn, dict):
+            continue
+        ct = str(turn.get("counselor_think", "") or "").strip()
+        if not ct:
+            continue
+        parts = [s.strip() for s in re.split(r"[.!?]", ct) if s.strip()]
+        steps.extend(parts)
+        if len(steps) >= max_steps:
+            break
+    return steps[:max_steps]
+
+
+def _build_openr1_prompt_index(ds: Any) -> Dict[str, List[int]]:
+    index: Dict[str, List[int]] = {}
+    for i, row in enumerate(ds):
+        conv = row.get("conversation", []) if isinstance(row, dict) else []
+        if not conv:
+            continue
+        first = conv[0] if isinstance(conv[0], dict) else {}
+        patient_msg = _normalise_prompt(first.get("patient", ""))
+        if not patient_msg:
+            continue
+        index.setdefault(patient_msg, []).append(int(i))
+    return index
+
+
 def main() -> int:
     random.seed(42)  # Reproducibility
     
@@ -100,103 +143,290 @@ def main() -> int:
     
     current_labels = gold_data.get("labels", {})
     print(f"  Current labels: {len(current_labels)}")
-    
-    # Identify existing source IDs (from metadata if present)
-    used_indices: Set[int] = set()
+
+    target_total_samples = 2000
+
+    print(f"\nLoading OpenR1-Psy (test + train) splits...")
+    ds_test = load_dataset("GMLHUHE/OpenR1-Psy", split="test", cache_dir=str(cache_dir))
+    ds_train = load_dataset("GMLHUHE/OpenR1-Psy", split="train", cache_dir=str(cache_dir))
+    print(f"  Test split: {len(ds_test)} rows")
+    print(f"  Train split: {len(ds_train)} rows")
+
+    print(f"Building OpenR1 prompt index (exact match)...")
+    test_prompt_index = _build_openr1_prompt_index(ds_test)
+    train_prompt_index = _build_openr1_prompt_index(ds_train)
+
+    used_test_indices: Set[int] = set()
+    used_train_indices: Set[int] = set()
     for sample in current_samples:
         meta = sample.get("metadata", {})
         source_ids = meta.get("source_openr1_ids", [])
-        if source_ids:
-            used_indices.update(int(i) for i in source_ids)
-    
-    # Also mark indices 0-449 (test split) as used to prefer train
-    for i in range(450):
-        used_indices.add(i)
-    
-    print(f"  Existing source IDs: {len(used_indices)}")
+        source_split = str(meta.get("source_split", "") or "").strip().lower()
+        if not source_ids:
+            continue
+        if source_split == "test":
+            used_test_indices.update(int(i) for i in source_ids)
+        elif source_split == "train":
+            used_train_indices.update(int(i) for i in source_ids)
+        else:
+            used_train_indices.update(int(i) for i in source_ids)
+
+    legacy_needing_linkage = [
+        s
+        for s in current_samples
+        if not ((s.get("metadata") or {}).get("source_openr1_ids"))
+    ]
+    print(f"  Legacy samples needing linkage review: {len(legacy_needing_linkage)}")
+
+    min_test_total = min(len(ds_test), max(1, int(0.2 * target_total_samples)))
+
+    replaced_legacy_test = 0
+    replaced_legacy_train = 0
+
+    for sample in legacy_needing_linkage:
+        sample_id = str(sample.get("id", "") or "")
+        prompt = _normalise_prompt(sample.get("prompt", ""))
+        linked: Optional[Tuple[str, int]] = None
+
+        if prompt:
+            if prompt in test_prompt_index:
+                for idx in test_prompt_index[prompt]:
+                    if idx in used_test_indices:
+                        continue
+                    row = ds_test[int(idx)]
+                    conv = row.get("conversation", []) if isinstance(row, dict) else []
+                    if not conv:
+                        continue
+                    if not _extract_first_turn_gold_answer(conv):
+                        continue
+                    linked = ("test", int(idx))
+                    break
+
+            if linked is None and prompt in train_prompt_index:
+                for idx in train_prompt_index[prompt]:
+                    if idx in used_train_indices:
+                        continue
+                    row = ds_train[int(idx)]
+                    conv = row.get("conversation", []) if isinstance(row, dict) else []
+                    if not conv:
+                        continue
+                    if not _extract_first_turn_gold_answer(conv):
+                        continue
+                    linked = ("train", int(idx))
+                    break
+
+        if linked is not None:
+            split_name, idx = linked
+            row = ds_test[idx] if split_name == "test" else ds_train[idx]
+            conv = row.get("conversation", []) if isinstance(row, dict) else []
+
+            gold_answer = str(sample.get("gold_answer", "") or "").strip()
+            if not gold_answer:
+                sample["gold_answer"] = _extract_first_turn_gold_answer(conv)
+
+            gold_reasoning = sample.get("gold_reasoning", [])
+            if not isinstance(gold_reasoning, list) or not gold_reasoning:
+                sample["gold_reasoning"] = _extract_reasoning_steps(conv)
+
+            sample["metadata"] = dict(sample.get("metadata", {}) or {})
+            sample["metadata"]["source_openr1_ids"] = [int(idx)]
+            sample["metadata"]["source_split"] = split_name
+
+            if split_name == "test":
+                used_test_indices.add(int(idx))
+            else:
+                used_train_indices.add(int(idx))
+
+            diagnosis = extract_diagnosis_from_reasoning(
+                reasoning=sample.get("gold_reasoning", []) or [],
+                prompt=sample.get("prompt", "") or "",
+            )
+            if sample_id:
+                current_labels[sample_id] = diagnosis
+            continue
+
+        current_test_count = sum(
+            1
+            for s in current_samples
+            if str((s.get("metadata") or {}).get("source_split", "")).lower() == "test"
+        )
+        prefer_test = current_test_count < min_test_total
+
+        max_replacement_attempts = 50
+        replacement: Optional[Tuple[str, int]] = None
+        for _ in range(max_replacement_attempts):
+            preferred = "test" if prefer_test else "train"
+            if preferred == "test":
+                available_test = [i for i in range(len(ds_test)) if i not in used_test_indices]
+                if available_test:
+                    replacement = ("test", int(random.choice(available_test)))
+                else:
+                    replacement = None
+            else:
+                available_train = [i for i in range(len(ds_train)) if i not in used_train_indices]
+                if available_train:
+                    replacement = ("train", int(random.choice(available_train)))
+                else:
+                    replacement = None
+
+            if replacement is None:
+                fallback = "train" if preferred == "test" else "test"
+                if fallback == "test":
+                    available_test = [i for i in range(len(ds_test)) if i not in used_test_indices]
+                    if available_test:
+                        replacement = ("test", int(random.choice(available_test)))
+                else:
+                    available_train = [i for i in range(len(ds_train)) if i not in used_train_indices]
+                    if available_train:
+                        replacement = ("train", int(random.choice(available_train)))
+
+            if replacement is None:
+                continue
+
+            split_name, idx = replacement
+            row = ds_test[idx] if split_name == "test" else ds_train[idx]
+            conv = row.get("conversation", []) if isinstance(row, dict) else []
+            if not conv:
+                replacement = None
+                continue
+
+            first = conv[0] if isinstance(conv[0], dict) else {}
+            patient_msg = str(first.get("patient", "") or "").strip()
+            if not patient_msg or len(patient_msg) < 50:
+                replacement = None
+                continue
+
+            gold_answer = _extract_first_turn_gold_answer(conv)
+            if not gold_answer:
+                replacement = None
+                continue
+
+            sample["prompt"] = patient_msg
+            sample["gold_answer"] = gold_answer
+            sample["gold_reasoning"] = _extract_reasoning_steps(conv)
+            sample["metadata"] = {
+                "source_openr1_ids": [int(idx)],
+                "source_split": split_name,
+                "added_during_scaling": True,
+            }
+
+            if split_name == "test":
+                used_test_indices.add(int(idx))
+                replaced_legacy_test += 1
+            else:
+                used_train_indices.add(int(idx))
+                replaced_legacy_train += 1
+
+            diagnosis = extract_diagnosis_from_reasoning(
+                reasoning=sample.get("gold_reasoning", []) or [],
+                prompt=sample.get("prompt", "") or "",
+            )
+            if sample_id:
+                current_labels[sample_id] = diagnosis
+            break
+
+        assert (
+            (sample.get("metadata") or {}).get("source_openr1_ids")
+        ), f"Failed to link/replace legacy sample {sample_id}"
+
+    if legacy_needing_linkage:
+        print(
+            f"Replaced legacy samples: {replaced_legacy_test + replaced_legacy_train} (test={replaced_legacy_test}, train={replaced_legacy_train})"
+        )
     
     # Calculate how many more samples needed
-    target = 2000
-    needed = target - len(current_samples)
-    print(f"\nNeed to add {needed} samples to reach {target}")
+    assert len(current_samples) <= target_total_samples, (
+        f"study_a_test.json has {len(current_samples)} samples; expected <= {target_total_samples}"
+    )
+
+    needed = target_total_samples - len(current_samples)
+    print(f"\nNeed to add {needed} samples to reach {target_total_samples}")
     
-    if needed <= 0:
-        print("Already at or above target!")
-        return 0
-    
-    # Load OpenR1-Psy train split
-    print(f"\nLoading OpenR1-Psy train split...")
-    ds_train = load_dataset("GMLHUHE/OpenR1-Psy", split="train", cache_dir=str(cache_dir))
-    print(f"  Train split: {len(ds_train)} rows")
-    
-    # Find available indices
-    available = [i for i in range(len(ds_train)) if i not in used_indices]
-    print(f"  Available indices: {len(available)}")
-    
-    # Sample needed indices
-    if len(available) < needed:
-        print(f"Warning: Only {len(available)} available, using all")
-        selected = available
-    else:
-        selected = random.sample(available, needed)
-    
-    print(f"  Selected {len(selected)} new indices")
-    
-    # Create new samples
-    new_samples = []
-    new_labels = {}
-    next_id = len(current_samples) + 1
-    
-    for i, idx in enumerate(selected):
-        row = ds_train[idx]
-        conv = row.get("conversation", [])
-        
+    new_samples: List[Dict[str, Any]] = []
+    new_labels: Dict[str, str] = {}
+
+    numeric_ids: List[int] = []
+    for s in current_samples:
+        sid = str(s.get("id", "") or "")
+        m = re.match(r"^a_(\d{3,})$", sid)
+        if m:
+            try:
+                numeric_ids.append(int(m.group(1)))
+            except Exception:
+                continue
+    next_id_num = (max(numeric_ids) + 1) if numeric_ids else (len(current_samples) + 1)
+
+    while needed > 0:
+        current_test_count = sum(
+            1
+            for s in (current_samples + new_samples)
+            if str((s.get("metadata") or {}).get("source_split", "")).lower() == "test"
+        )
+        need_more_test = current_test_count < min_test_total
+
+        pick_split = "test" if need_more_test else "train"
+        if pick_split == "test":
+            candidates = [i for i in range(len(ds_test)) if i not in used_test_indices]
+        else:
+            candidates = [i for i in range(len(ds_train)) if i not in used_train_indices]
+
+        if not candidates:
+            if pick_split == "test":
+                pick_split = "train"
+                candidates = [i for i in range(len(ds_train)) if i not in used_train_indices]
+            else:
+                pick_split = "test"
+                candidates = [i for i in range(len(ds_test)) if i not in used_test_indices]
+
+        if not candidates:
+            break
+
+        idx = int(random.choice(candidates))
+        row = ds_test[idx] if pick_split == "test" else ds_train[idx]
+        conv = row.get("conversation", []) if isinstance(row, dict) else []
         if not conv:
             continue
-        
-        # Extract patient prompt (first turn)
-        patient_msg = conv[0].get("patient", "")
+
+        first = conv[0] if isinstance(conv[0], dict) else {}
+        patient_msg = str(first.get("patient", "") or "").strip()
         if not patient_msg or len(patient_msg) < 50:
             continue
-        
-        # Extract counselor response as gold answer
-        counselor_msg = conv[0].get("counselor", "")
-        
-        # Extract reasoning from counselor_think
-        reasoning = []
-        for turn in conv:
-            ct = turn.get("counselor_think", "")
-            if ct:
-                # Parse into steps
-                steps = [s.strip() for s in re.split(r"[.!?]", ct) if s.strip()]
-                reasoning.extend(steps[:8])  # Limit to 8 steps
-        
-        # Create sample
-        sample_id = f"a_{next_id:03d}"
+
+        sample_id = f"a_{next_id_num:03d}"
+        gold_answer = _extract_first_turn_gold_answer(conv)
+        if not gold_answer:
+            continue
+        reasoning = _extract_reasoning_steps(conv)
+
         sample = {
             "id": sample_id,
             "prompt": patient_msg,
-            "gold_answer": counselor_msg,
-            "gold_reasoning": reasoning[:10],  # Limit reasoning steps
+            "gold_answer": gold_answer,
+            "gold_reasoning": reasoning,
             "metadata": {
                 "source_openr1_ids": [idx],
-                "source_split": "train",
-                "added_during_scaling": True
-            }
+                "source_split": pick_split,
+                "added_during_scaling": True,
+            },
         }
-        
+
         new_samples.append(sample)
-        
-        # Extract diagnosis for gold label
-        diagnosis = extract_diagnosis_from_reasoning(reasoning, patient_msg)
-        new_labels[sample_id] = diagnosis
-        
-        next_id += 1
-        
-        if (i + 1) % 200 == 0:
-            print(f"  Processed {i + 1}/{len(selected)} new samples...")
-    
+        new_labels[sample_id] = extract_diagnosis_from_reasoning(reasoning, patient_msg)
+
+        if pick_split == "test":
+            used_test_indices.add(idx)
+        else:
+            used_train_indices.add(idx)
+
+        next_id_num += 1
+        needed -= 1
+
+        if len(new_samples) % 200 == 0:
+            print(f"  Created {len(new_samples)} new samples so far...")
+
     print(f"\nCreated {len(new_samples)} new samples")
+
+    assert needed == 0, f"Failed to reach 2000 samples; remaining_needed={needed}"
     
     # Append to existing data
     test_data["samples"].extend(new_samples)
@@ -206,6 +436,33 @@ def main() -> int:
     test_data["meta"]["scaling_script"] = "scripts/studies/study_a/scale_to_2000.py"
     
     current_labels.update(new_labels)
+
+    sample_ids = {
+        str(s.get("id", "") or "") for s in test_data.get("samples", []) if str(s.get("id", "") or "")
+    }
+    for sid in sample_ids:
+        if sid in current_labels:
+            continue
+        s = next((x for x in test_data.get("samples", []) if str(x.get("id", "") or "") == sid), None)
+        if s is None:
+            continue
+        current_labels[sid] = extract_diagnosis_from_reasoning(
+            reasoning=s.get("gold_reasoning", []) or [],
+            prompt=s.get("prompt", "") or "",
+        )
+
+    extra_label_ids = [sid for sid in list(current_labels.keys()) if sid not in sample_ids]
+    for sid in extra_label_ids:
+        del current_labels[sid]
+
+    for s in test_data.get("samples", []):
+        assert str(s.get("gold_answer", "") or "").strip(), f"Empty gold_answer for sample_id={s.get('id')}"
+        meta = s.get("metadata") or {}
+        assert meta.get("source_openr1_ids"), f"Missing source_openr1_ids for sample_id={s.get('id')}"
+        assert str(meta.get("source_split", "") or "").strip(), f"Missing source_split for sample_id={s.get('id')}"
+
+    assert len(test_data.get("samples", [])) == 2000, "study_a_test.json must contain exactly 2000 samples"
+    assert len(current_labels) == 2000, "gold_diagnosis_labels.json must contain exactly 2000 labels"
     gold_data["labels"] = current_labels
     gold_data["meta"] = gold_data.get("meta", {})
     gold_data["meta"]["scaled_to_2000"] = datetime.utcnow().isoformat() + "Z"

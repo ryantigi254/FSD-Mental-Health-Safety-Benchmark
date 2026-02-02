@@ -20,8 +20,10 @@ from reliable_clinical_benchmark.data.study_a_loader import load_study_a_data
 
 def build_mapping_report() -> Dict:
     """Build a comprehensive mapping report between study_a IDs and OpenR1-Psy rows."""
-    print("Loading OpenR1-Psy test split...")
-    ds = load_dataset("GMLHUHE/OpenR1-Psy", split="test")
+    print("Loading OpenR1-Psy (test + train) splits...")
+    cache_dir = Path("Misc") / "datasets" / "openr1_psy"
+    ds_test = load_dataset("GMLHUHE/OpenR1-Psy", split="test", cache_dir=str(cache_dir))
+    ds_train = load_dataset("GMLHUHE/OpenR1-Psy", split="train", cache_dir=str(cache_dir))
     
     print("Loading study_a_test.json...")
     study_a_path = Path("data/openr1_psy_splits/study_a_test.json")
@@ -33,67 +35,81 @@ def build_mapping_report() -> Dict:
         labels_data = json.load(f)
     labels = labels_data.get("labels", {})
     
-    # Build mapping: study_a ID -> OpenR1-Psy row
-    mapping = {}
-    sample_idx = 0
-    
-    for row_idx, row in enumerate(ds):
-        convo = row.get("conversation") or []
-        if not convo:
-            continue
-        
-        first_round = convo[0]
-        patient_text = str(first_round.get("patient", "")).strip()
-        counselor_content = str(first_round.get("counselor_content", "")).strip()
-        counselor_think = first_round.get("counselor_think", "")
-        
-        # Same filter as build_study_a_split
-        if not patient_text or not counselor_content:
-            continue
-        
-        sample_idx += 1
-        study_a_id = f"a_{sample_idx:03d}"
-        
-        if sample_idx > 300:
-            break
-        
-        # Find corresponding vignette
-        vignette = None
-        for v in vignettes:
-            if v["id"] == study_a_id:
-                vignette = v
-                break
-        
-        if not vignette:
+    mapping: Dict[str, Dict] = {}
+
+    for vignette in vignettes:
+        study_a_id = str(vignette.get("id", "") or "")
+        meta = vignette.get("metadata") or {}
+        if not isinstance(meta, dict):
             mapping[study_a_id] = {
-                "status": "missing_vignette",
-                "openr1_row": row_idx,
-                "openr1_post_id": row.get("post_id"),
+                "status": "missing_metadata",
+                "openr1_row": None,
+                "openr1_post_id": None,
+                "openr1_split": None,
+                "prompt_match": False,
+                "prompt_similarity": 0.0,
+                "gold_label": labels.get(study_a_id, ""),
+                "study_a_prompt_preview": str(vignette.get("prompt", "") or "")[:100],
             }
             continue
-        
-        # Verify prompt text matches
+
+        source_ids = meta.get("source_openr1_ids")
+        source_split = str(meta.get("source_split", "") or "").strip().lower()
+        if not isinstance(source_ids, list) or not source_ids or source_split not in {"test", "train"}:
+            mapping[study_a_id] = {
+                "status": "missing_source_linkage",
+                "openr1_row": None,
+                "openr1_post_id": None,
+                "openr1_split": source_split or None,
+                "prompt_match": False,
+                "prompt_similarity": 0.0,
+                "gold_label": labels.get(study_a_id, ""),
+                "study_a_prompt_preview": str(vignette.get("prompt", "") or "")[:100],
+            }
+            continue
+
+        openr1_idx = int(source_ids[0])
+        ds = ds_test if source_split == "test" else ds_train
+
+        try:
+            row = ds[openr1_idx]
+        except Exception:
+            mapping[study_a_id] = {
+                "status": "missing_openr1_row",
+                "openr1_row": openr1_idx,
+                "openr1_post_id": None,
+                "openr1_split": source_split,
+                "prompt_match": False,
+                "prompt_similarity": 0.0,
+                "gold_label": labels.get(study_a_id, ""),
+                "study_a_prompt_preview": str(vignette.get("prompt", "") or "")[:100],
+            }
+            continue
+
+        convo = row.get("conversation") or []
+        first_round = convo[0] if convo and isinstance(convo[0], dict) else {}
+        patient_text = str(first_round.get("patient", "") or "").strip()
+        counselor_think = first_round.get("counselor_think", "")
+
         prompt_match = False
         prompt_similarity = 0.0
-        
-        study_a_prompt = vignette.get("prompt", "").strip()
+
+        study_a_prompt = str(vignette.get("prompt", "") or "").strip()
         openr1_prompt = patient_text.strip()
-        
-        # Normalise for comparison
+
         study_a_norm = " ".join(study_a_prompt.split())
         openr1_norm = " ".join(openr1_prompt.split())
-        
+
         if study_a_norm == openr1_norm:
             prompt_match = True
             prompt_similarity = 1.0
         elif study_a_norm.lower() == openr1_norm.lower():
             prompt_match = True
             prompt_similarity = 0.95
-        elif study_a_norm in openr1_norm or openr1_norm in study_a_norm:
+        elif study_a_norm and (study_a_norm in openr1_norm or openr1_norm in study_a_norm):
             prompt_match = True
             prompt_similarity = 0.8
         else:
-            # Calculate simple word overlap
             study_a_words = set(study_a_norm.lower().split())
             openr1_words = set(openr1_norm.lower().split())
             if study_a_words and openr1_words:
@@ -101,21 +117,23 @@ def build_mapping_report() -> Dict:
                 total = len(study_a_words | openr1_words)
                 prompt_similarity = overlap / total if total > 0 else 0.0
                 prompt_match = prompt_similarity > 0.7
-        
+
         gold_label = labels.get(study_a_id, "")
-        
+
         mapping[study_a_id] = {
             "status": "matched" if prompt_match else "mismatch",
-            "openr1_row": row_idx,
+            "openr1_row": openr1_idx,
             "openr1_post_id": row.get("post_id"),
+            "openr1_split": source_split,
             "prompt_match": prompt_match,
             "prompt_similarity": prompt_similarity,
             "gold_label": gold_label,
             "study_a_prompt_preview": study_a_prompt[:100] + "..." if len(study_a_prompt) > 100 else study_a_prompt,
             "openr1_prompt_preview": openr1_prompt[:100] + "..." if len(openr1_prompt) > 100 else openr1_prompt,
-            "counselor_think_preview": counselor_think[:200] + "..." if len(counselor_think) > 200 else counselor_think,
+            "counselor_think_preview": str(counselor_think or "")[:200]
+            + ("..." if len(str(counselor_think or "")) > 200 else ""),
         }
-    
+
     return mapping
 
 
@@ -124,7 +142,13 @@ def generate_report(mapping: Dict) -> None:
     total = len(mapping)
     matched = sum(1 for m in mapping.values() if m.get("status") == "matched")
     mismatched = sum(1 for m in mapping.values() if m.get("status") == "mismatch")
-    missing = sum(1 for m in mapping.values() if m.get("status") == "missing_vignette")
+    missing_metadata = sum(1 for m in mapping.values() if m.get("status") == "missing_metadata")
+    missing_source_linkage = sum(
+        1 for m in mapping.values() if m.get("status") == "missing_source_linkage"
+    )
+    missing_openr1_row = sum(
+        1 for m in mapping.values() if m.get("status") == "missing_openr1_row"
+    )
     labeled = sum(1 for m in mapping.values() if m.get("gold_label"))
     
     print("\n" + "="*80)
@@ -133,7 +157,15 @@ def generate_report(mapping: Dict) -> None:
     print(f"\nTotal study_a IDs: {total}")
     print(f"  [OK] Matched to OpenR1-Psy: {matched} ({matched/total*100:.1f}%)")
     print(f"  [X] Mismatched prompts: {mismatched} ({mismatched/total*100:.1f}%)")
-    print(f"  [?] Missing vignettes: {missing} ({missing/total*100:.1f}%)")
+    print(
+        f"  [?] Missing metadata: {missing_metadata} ({missing_metadata/total*100:.1f}%)"
+    )
+    print(
+        f"  [?] Missing source linkage: {missing_source_linkage} ({missing_source_linkage/total*100:.1f}%)"
+    )
+    print(
+        f"  [?] Missing OpenR1 rows: {missing_openr1_row} ({missing_openr1_row/total*100:.1f}%)"
+    )
     print(f"  [*] Labeled: {labeled} ({labeled/total*100:.1f}%)")
     
     # Show mismatches

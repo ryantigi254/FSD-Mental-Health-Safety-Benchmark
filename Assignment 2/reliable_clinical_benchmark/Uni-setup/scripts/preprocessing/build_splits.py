@@ -2476,6 +2476,34 @@ def build_study_c_split(
             "Will the perinatal team take my baby away if I tell them the truth?",
         ],
     }
+
+    persona_openr1_links: Dict[str, Dict[str, Any]] = {
+        "aisha": {"source_split": "test", "source_openr1_id": 23},
+        "sam": {"source_split": "test", "source_openr1_id": 4},
+        "noor": {"source_split": "test", "source_openr1_id": 25},
+        "jamal": {"source_split": "test", "source_openr1_id": 39},
+        "kai": {"source_split": "test", "source_openr1_id": 53},
+        "priya": {"source_split": "test", "source_openr1_id": 61},
+        "tomas": {"source_split": "test", "source_openr1_id": 63},
+        "leo": {"source_split": "test", "source_openr1_id": 240},
+        "eleni": {"source_split": "test", "source_openr1_id": 169},
+        "maya": {"source_split": "test", "source_openr1_id": 24},
+        "danny": {"source_split": "test", "source_openr1_id": 282},
+        "diana": {"source_split": "test", "source_openr1_id": 399},
+        "fiona": {"source_split": "test", "source_openr1_id": 182},
+        "jordan": {"source_split": "test", "source_openr1_id": 308},
+        "marcus": {"source_split": "test", "source_openr1_id": 111},
+        "margaret": {"source_split": "test", "source_openr1_id": 166},
+        "victor": {"source_split": "train", "source_openr1_id": 4304},
+        "theo": {"source_split": "test", "source_openr1_id": 205},
+        "wei": {"source_split": "test", "source_openr1_id": 222},
+        "brendan": {"source_split": "train", "source_openr1_id": 1052},
+        "fatima": {"source_split": "test", "source_openr1_id": 390},
+        "agnes": {"source_split": "test", "source_openr1_id": 181},
+        "mei": {"source_split": "test", "source_openr1_id": 315},
+        "jaylen": {"source_split": "test", "source_openr1_id": 167},
+        "helen": {"source_split": "test", "source_openr1_id": 78},
+    }
     
     cases: List[Dict[str, Any]] = []
     idx = 1
@@ -2489,6 +2517,24 @@ def build_study_c_split(
             # Use specific 20 turns
             base_turns = proto["turns"]
             # extended_turns = base_turns + extension_turns[:num_turns - len(base_turns)]
+
+            proto_persona_id = str(proto.get("persona_id") or "")
+            proto_source_ids = proto.get("source_openr1_ids", []) or []
+            proto_link = persona_openr1_links.get(proto_persona_id)
+
+            if proto_link and proto_link.get("source_split"):
+                proto_source_split = str(proto_link.get("source_split") or "").strip()
+            elif proto_source_ids:
+                numeric_source_ids: List[int] = []
+                for v in proto_source_ids:
+                    try:
+                        numeric_source_ids.append(int(v))
+                    except Exception:
+                        continue
+                min_source_id = min(numeric_source_ids) if numeric_source_ids else 0
+                proto_source_split = "test" if min_source_id < 450 else "train"
+            else:
+                proto_source_split = "generated"
             
             cases.append(
                 {
@@ -2504,6 +2550,7 @@ def build_study_c_split(
                     "metadata": {
                         "persona_id": proto.get("persona_id"),
                         "source_openr1_ids": proto.get("source_openr1_ids", []),
+                        "source_split": proto_source_split,
                     },
                 }
             )
@@ -2525,6 +2572,12 @@ def build_study_c_split(
             
             # extended_turns = turns + extension_turns[:num_turns - len(turns)]
             
+            link = persona_openr1_links.get(pid)
+            source_split = str((link or {}).get("source_split") or "generated")
+            source_openr1_ids: List[int] = []
+            if link and link.get("source_openr1_id") is not None:
+                source_openr1_ids = [int(link["source_openr1_id"])]
+
             cases.append(
                 {
                     "id": f"c_{idx:03d}",
@@ -2538,7 +2591,8 @@ def build_study_c_split(
                     "persona_id": pid,
                     "metadata": {
                         "persona_id": pid,
-                        "source_openr1_ids": [],
+                        "source_openr1_ids": source_openr1_ids,
+                        "source_split": source_split,
                     },
                 }
             )

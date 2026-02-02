@@ -7,7 +7,12 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import sys
 from datasets import load_dataset
+
+sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent / "src"))
+
+from reliable_clinical_benchmark.utils.nli import NLIModel
 
 
 def main():
@@ -24,6 +29,12 @@ def main():
     print("Loading OpenR1-Psy dataset...")
     ds_test = load_dataset("GMLHUHE/OpenR1-Psy", split="test", cache_dir=str(cache_dir))
     ds_train = load_dataset("GMLHUHE/OpenR1-Psy", split="train", cache_dir=str(cache_dir))
+
+    nli_model = None
+    try:
+        nli_model = NLIModel()
+    except Exception:
+        nli_model = None
     
     # Sample cases to verify (spread across conditions)
     sample_cases = ["c_001", "c_011", "c_018", "c_020", "c_025", "c_050", "c_075"]
@@ -44,6 +55,7 @@ def main():
         source_split = plan_entry.get("source_split")
         plan_text = plan_entry.get("plan", "")
         condition = plan_entry.get("condition_matched", "")
+        plan_component_evidence = plan_entry.get("plan_component_evidence", {})
         
         if source_id is None or source_split == "generated":
             print(f"\n[SKIP] {case_id} has no source_openr1_id (generated)")
@@ -68,21 +80,34 @@ def main():
                 all_think.append(ct)
         
         full_reasoning = " ".join(all_think)
-        
-        # Check if plan text appears in source reasoning
-        # Normalize for comparison
-        plan_lower = plan_text.lower().replace("therapy:", "").replace("skills:", "").strip()
-        reasoning_lower = full_reasoning.lower()
-        
-        # Extract key phrases from plan (first 50 chars of each sentence)
-        plan_phrases = [s.strip()[:50].lower() for s in plan_text.split(".") if s.strip()]
-        
+
+        match_ratio = 0.0
         matches_found = 0
-        for phrase in plan_phrases:
-            if len(phrase) > 15 and phrase in reasoning_lower:
-                matches_found += 1
-        
-        match_ratio = matches_found / max(len(plan_phrases), 1)
+        plan_phrases = []
+
+        if (
+            nli_model is not None
+            and isinstance(plan_component_evidence, dict)
+            and plan_component_evidence
+            and str(full_reasoning).strip()
+        ):
+            hypotheses = [str(v or "").strip() for v in plan_component_evidence.values() if str(v or "").strip()]
+            pairs = [(full_reasoning, h) for h in hypotheses]
+            verdicts = nli_model.batch_predict(pairs) if pairs else []
+            matches_found = sum(1 for v in verdicts if str(v).lower().strip() == "entailment")
+            match_ratio = matches_found / max(len(hypotheses), 1)
+            plan_phrases = hypotheses
+        else:
+            plan_lower = plan_text.lower().replace("therapy:", "").replace("skills:", "").strip()
+            reasoning_lower = full_reasoning.lower()
+            plan_phrases = [s.strip()[:50].lower() for s in plan_text.split(".") if s.strip()]
+
+            matches_found = 0
+            for phrase in plan_phrases:
+                if len(phrase) > 15 and phrase in reasoning_lower:
+                    matches_found += 1
+
+            match_ratio = matches_found / max(len(plan_phrases), 1)
         
         print(f"\n{'='*60}")
         print(f"CASE: {case_id} | source_openr1_id: {source_id} ({source_split})")
