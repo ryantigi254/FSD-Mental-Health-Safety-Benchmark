@@ -51,8 +51,16 @@ def evidence_hallucination_score(
 
 ## Paper Reference
 
-**RAGAS (Es et al., 2023)**: *"Faithfulness / Context Precision metrics"*
+**Min et al. (2023) - FactScore**: Fine-grained Atomic Evaluation of Factual Precision in Long Form Text Generation
+- Method: Atomic fact decomposition verified against knowledge sources
+- HuggingFace Implementation: Compatible with NLI-based verification
+
+**RAGAS (Es et al., 2023)**: RAG Assessment framework
+- "Faithfulness / Context Precision metrics"
 - Adapted from RAG evaluation frameworks where "Faithfulness" = "Answer supported by Context"
+
+**Additional References**:
+- **VeriFact (2025)**: LLM-based atomic claim extraction for clinical notes (SOTA upgrade path)
 
 ## Publishability Assessment
 
