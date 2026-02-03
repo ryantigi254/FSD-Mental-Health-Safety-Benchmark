@@ -2,7 +2,10 @@
 
 from .logging_config import setup_logging
 from .stats import bootstrap_confidence_interval
-from .ner import MedicalNER
+try:
+    from .ner import MedicalNER
+except Exception:
+    MedicalNER = None
 from .nli import NLIModel
 from .plan_components import (
     PlanComponent,
@@ -16,7 +19,6 @@ from .plan_components import (
 __all__ = [
     "setup_logging",
     "bootstrap_confidence_interval",
-    "MedicalNER",
     "NLIModel",
     "PlanComponent",
     "DEFAULT_PLAN_COMPONENTS",
@@ -25,3 +27,6 @@ __all__ = [
     "extract_recommendation_candidates",
     "nli_filter_candidates",
 ]
+
+if MedicalNER is not None:
+    __all__.insert(2, "MedicalNER")
