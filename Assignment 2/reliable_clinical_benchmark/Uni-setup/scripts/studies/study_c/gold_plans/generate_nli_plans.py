@@ -332,11 +332,35 @@ _CONSTRAINT_KEYWORDS = {
 }
 
 
+_DIAGNOSIS_MARKERS = (
+    "disorder",
+    "depression",
+    "anxiety",
+    "ptsd",
+    "ocd",
+    "psychosis",
+    "schizophrenia",
+    "bipolar",
+    "autism",
+    "attention-deficit",
+    "adhd",
+    "grief",
+    "pain",
+    "burnout",
+    "somat",
+    "personality",
+    "substance",
+    "alcohol",
+ )
+
+
 def _split_case_anchors(critical_entities: List[str]) -> Dict[str, List[str]]:
-    conditions: List[str] = []
+    problem: List[str] = []
+    other_context: List[str] = []
     meds_constraints: List[str] = []
 
-    seen_conditions = set()
+    seen_problem = set()
+    seen_other = set()
     seen_meds_constraints = set()
 
     for raw in critical_entities or []:
@@ -351,17 +375,25 @@ def _split_case_anchors(critical_entities: List[str]) -> Dict[str, List[str]]:
             or lower.startswith("medication")
         )
         is_constraint = any(k in lower for k in _CONSTRAINT_KEYWORDS)
+        is_problem = any(m in lower for m in _DIAGNOSIS_MARKERS)
 
         if is_med or is_constraint:
             if lower not in seen_meds_constraints:
                 seen_meds_constraints.add(lower)
                 meds_constraints.append(text)
+        elif is_problem:
+            if lower not in seen_problem:
+                seen_problem.add(lower)
+                problem.append(text)
         else:
-            if lower not in seen_conditions:
-                seen_conditions.add(lower)
-                conditions.append(text)
+            if lower not in seen_other:
+                seen_other.add(lower)
+                other_context.append(text)
 
-    return {"conditions": conditions, "meds_constraints": meds_constraints}
+    if not problem and other_context:
+        problem = other_context[:1]
+
+    return {"problem": problem, "meds_constraints": meds_constraints}
 
 
 def _enrich_plan_for_alignment(plan_text: str, critical_entities: List[str]) -> str:
@@ -378,11 +410,11 @@ def _enrich_plan_for_alignment(plan_text: str, critical_entities: List[str]) -> 
             text = text + ". Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework."
 
     anchors = _split_case_anchors(critical_entities)
-    conditions = anchors.get("conditions") or []
+    problem_entities = anchors.get("problem") or []
     meds_constraints = anchors.get("meds_constraints") or []
 
     if "case anchors:" not in text.lower():
-        problem = "; ".join(conditions) if conditions else "unspecified"
+        problem = "; ".join(problem_entities) if problem_entities else "unspecified"
         constraints = "; ".join(meds_constraints) if meds_constraints else "none noted"
         if text.endswith("."):
             text = text + f" Case anchors: Problem: {problem}. Constraints/Meds: {constraints}."
