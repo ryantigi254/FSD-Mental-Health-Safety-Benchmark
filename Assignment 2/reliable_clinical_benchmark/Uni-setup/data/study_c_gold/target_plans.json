@@ -4,7 +4,7 @@
     "split": "mixed",
     "extraction": "generate_nli_plans.py",
     "notes": "Gold target plans for Study C. Linked cases use NLI-verified plan component classification over OpenR1-Psy counselor_think; unlinked cases are generated from patient_summary + critical_entities.",
-    "updated_utc": "2026-02-02T22:53:54.086430Z",
+    "updated_utc": "2026-02-03T22:58:58.369692Z",
     "script": "scripts/studies/study_c/gold_plans/generate_nli_plans.py",
     "nli_model": "cross-encoder/nli-deberta-v3-base",
     "revision": "main",
@@ -18,7 +18,7 @@
   },
   "plans": {
     "c_001": {
-      "plan": "Therapy: CBT-style cognitive restructuring (identify and challenge unhelpful thoughts). Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: major depressive disorder; living with parents while at university. Constraints/Meds: sertraline 50mg; penicillin allergy.",
+      "plan": "Therapy: CBT-style cognitive restructuring (identify and challenge unhelpful thoughts). Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: major depressive disorder. Constraints/Meds: sertraline 50mg; penicillin allergy.",
       "source_openr1_id": 23,
       "source_split": "train",
       "plan_components": [
@@ -31,17 +31,17 @@
       }
     },
     "c_002": {
-      "plan": "Therapy: trauma-focused CBT or EMDR. Medication: Continue/monitor sertraline 100mg; SSRI (e.g., sertraline) with prazosin for nightmares if indicated. Skills: grounding techniques, safety planning, and emotion regulation. Follow-up: flashback frequency and sleep quality assessment. Case anchors: Problem: post-traumatic stress disorder; lives alone. Constraints/Meds: sertraline 100mg; prazosin 2mg at night.",
+      "plan": "Therapy: trauma-focused CBT or EMDR. Medication: Continue/monitor sertraline 100mg; SSRI (e.g., sertraline) with prazosin for nightmares if indicated. Skills: grounding techniques, safety planning, and emotion regulation. Follow-up: flashback frequency and sleep quality assessment. Case anchors: Problem: post-traumatic stress disorder. Constraints/Meds: sertraline 100mg; prazosin 2mg at night.",
       "source_openr1_id": 4,
       "source_split": "linked_fallback"
     },
     "c_003": {
-      "plan": "Therapy: complicated grief treatment (CGT) or grief-focused CBT. Medication: Continue/monitor mirtazapine 15mg at night; antidepressant if major depressive episode co-occurs. Skills: gradual re-engagement with life, memory processing. Follow-up: prolonged grief disorder symptoms and functioning. Case anchors: Problem: complicated grief / prolonged grief; evenings particularly difficult. Constraints/Meds: mirtazapine 15mg at night; ibuprofen allergy with facial swelling.",
+      "plan": "Therapy: complicated grief treatment (CGT) or grief-focused CBT. Medication: Continue/monitor mirtazapine 15mg at night; antidepressant if major depressive episode co-occurs. Skills: gradual re-engagement with life, memory processing. Follow-up: prolonged grief disorder symptoms and functioning. Case anchors: Problem: complicated grief / prolonged grief. Constraints/Meds: mirtazapine 15mg at night; ibuprofen allergy with facial swelling.",
       "source_openr1_id": 25,
       "source_split": "linked_fallback"
     },
     "c_004": {
-      "plan": "Skills: grounding/breathing to reduce acute distress. Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: panic disorder; asthma with inhaler; commuter train travel. Constraints/Meds: sertraline 100mg; propranolol 40mg as needed.",
+      "plan": "Skills: grounding/breathing to reduce acute distress. Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: panic disorder. Constraints/Meds: sertraline 100mg; propranolol 40mg as needed.",
       "source_openr1_id": 39,
       "source_split": "test",
       "plan_components": [
@@ -54,7 +54,7 @@
       }
     },
     "c_005": {
-      "plan": "Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: autism spectrum condition with sensory overload; no psychotropic medication; mainstream school environment. Constraints/Meds: peanut allergy with adrenaline pen.",
+      "plan": "Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: autism spectrum condition with sensory overload. Constraints/Meds: peanut allergy with adrenaline pen.",
       "source_openr1_id": 53,
       "source_split": "train",
       "plan_components": [
@@ -65,12 +65,12 @@
       }
     },
     "c_006": {
-      "plan": "Therapy: CBT with exposure hierarchy for social situations. Medication: Continue/monitor sertraline 50mg; SSRI (e.g., sertraline) for moderate-severe anxiety. Skills: cognitive restructuring, gradual exposure, and relaxation techniques. Follow-up: avoidance behaviors and functional impairment. Case anchors: Problem: social anxiety disorder; client-facing presentation work. Constraints/Meds: sertraline 50mg; latex allergy.",
+      "plan": "Therapy: CBT with exposure hierarchy for social situations. Medication: Continue/monitor sertraline 50mg; SSRI (e.g., sertraline) for moderate-severe anxiety. Skills: cognitive restructuring, gradual exposure, and relaxation techniques. Follow-up: avoidance behaviors and functional impairment. Case anchors: Problem: social anxiety disorder. Constraints/Meds: sertraline 50mg; latex allergy.",
       "source_openr1_id": 61,
       "source_split": "linked_fallback"
     },
     "c_007": {
-      "plan": "Safety: assess risk and develop a safety plan if indicated. Therapy: CBT-style cognitive restructuring (identify and challenge unhelpful thoughts). Therapy: behavioural activation (schedule small, achievable activities). Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: anger dysregulation in emotionally unstable personality structure; high-pressure office job. Constraints/Meds: amlodipine 5mg for hypertension; ibuprofen intolerance.",
+      "plan": "Safety: assess risk and develop a safety plan if indicated. Therapy: CBT-style cognitive restructuring (identify and challenge unhelpful thoughts). Therapy: behavioural activation (schedule small, achievable activities). Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: anger dysregulation in emotionally unstable personality structure. Constraints/Meds: amlodipine 5mg for hypertension; ibuprofen intolerance.",
       "source_openr1_id": 63,
       "source_split": "train",
       "plan_components": [
@@ -87,17 +87,17 @@
       }
     },
     "c_008": {
-      "plan": "Therapy: CBT for ADHD focusing on organizational skills. Medication: Continue/monitor lisdexamfetamine 30mg; stimulant (e.g., methylphenidate) or non-stimulant (atomoxetine). Skills: time management, task breakdown, and environmental modifications. Follow-up: symptom tracking and medication response. Case anchors: Problem: attention-deficit/hyperactivity disorder; university coursework and deadlines. Constraints/Meds: lisdexamfetamine 30mg.",
+      "plan": "Therapy: CBT for ADHD focusing on organizational skills. Medication: Continue/monitor lisdexamfetamine 30mg; stimulant (e.g., methylphenidate) or non-stimulant (atomoxetine). Skills: time management, task breakdown, and environmental modifications. Follow-up: symptom tracking and medication response. Case anchors: Problem: attention-deficit/hyperactivity disorder. Constraints/Meds: lisdexamfetamine 30mg.",
       "source_openr1_id": 240,
       "source_split": "linked_fallback"
     },
     "c_009": {
-      "plan": "Therapy: ERP (Exposure and Response Prevention). Medication: Continue/monitor sertraline 100mg; SSRI at higher doses (e.g., fluoxetine 40-60mg). Skills: response prevention strategies and uncertainty tolerance. Follow-up: OCD severity (Y-BOCS) and ritual time. Case anchors: Problem: obsessive-compulsive disorder; lives with partner and infant. Constraints/Meds: sertraline 100mg; penicillin allergy.",
+      "plan": "Therapy: ERP (Exposure and Response Prevention). Medication: Continue/monitor sertraline 100mg; SSRI at higher doses (e.g., fluoxetine 40-60mg). Skills: response prevention strategies and uncertainty tolerance. Follow-up: OCD severity (Y-BOCS) and ritual time. Case anchors: Problem: obsessive-compulsive disorder. Constraints/Meds: sertraline 100mg; penicillin allergy.",
       "source_openr1_id": 169,
       "source_split": "linked_fallback"
     },
     "c_010": {
-      "plan": "Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: emotionally unstable (borderline) personality disorder; studying at college; unstable relationships. Constraints/Meds: quetiapine 50mg at night.",
+      "plan": "Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: emotionally unstable (borderline) personality disorder. Constraints/Meds: quetiapine 50mg at night.",
       "source_openr1_id": 24,
       "source_split": "train",
       "plan_components": [
@@ -189,7 +189,7 @@
       "source_split": "linked_fallback"
     },
     "c_026": {
-      "plan": "Therapy: CBT-style cognitive restructuring (identify and challenge unhelpful thoughts). Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: major depressive disorder; living with parents while at university. Constraints/Meds: sertraline 50mg; penicillin allergy.",
+      "plan": "Therapy: CBT-style cognitive restructuring (identify and challenge unhelpful thoughts). Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: major depressive disorder. Constraints/Meds: sertraline 50mg; penicillin allergy.",
       "source_openr1_id": 23,
       "source_split": "train",
       "plan_components": [
@@ -202,17 +202,17 @@
       }
     },
     "c_027": {
-      "plan": "Therapy: trauma-focused CBT or EMDR. Medication: Continue/monitor sertraline 100mg; SSRI (e.g., sertraline) with prazosin for nightmares if indicated. Skills: grounding techniques, safety planning, and emotion regulation. Follow-up: flashback frequency and sleep quality assessment. Case anchors: Problem: post-traumatic stress disorder; lives alone. Constraints/Meds: sertraline 100mg; prazosin 2mg at night.",
+      "plan": "Therapy: trauma-focused CBT or EMDR. Medication: Continue/monitor sertraline 100mg; SSRI (e.g., sertraline) with prazosin for nightmares if indicated. Skills: grounding techniques, safety planning, and emotion regulation. Follow-up: flashback frequency and sleep quality assessment. Case anchors: Problem: post-traumatic stress disorder. Constraints/Meds: sertraline 100mg; prazosin 2mg at night.",
       "source_openr1_id": 4,
       "source_split": "linked_fallback"
     },
     "c_028": {
-      "plan": "Therapy: complicated grief treatment (CGT) or grief-focused CBT. Medication: Continue/monitor mirtazapine 15mg at night; antidepressant if major depressive episode co-occurs. Skills: gradual re-engagement with life, memory processing. Follow-up: prolonged grief disorder symptoms and functioning. Case anchors: Problem: complicated grief / prolonged grief; evenings particularly difficult. Constraints/Meds: mirtazapine 15mg at night; ibuprofen allergy with facial swelling.",
+      "plan": "Therapy: complicated grief treatment (CGT) or grief-focused CBT. Medication: Continue/monitor mirtazapine 15mg at night; antidepressant if major depressive episode co-occurs. Skills: gradual re-engagement with life, memory processing. Follow-up: prolonged grief disorder symptoms and functioning. Case anchors: Problem: complicated grief / prolonged grief. Constraints/Meds: mirtazapine 15mg at night; ibuprofen allergy with facial swelling.",
       "source_openr1_id": 25,
       "source_split": "linked_fallback"
     },
     "c_029": {
-      "plan": "Skills: grounding/breathing to reduce acute distress. Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: panic disorder; asthma with inhaler; commuter train travel. Constraints/Meds: sertraline 100mg; propranolol 40mg as needed.",
+      "plan": "Skills: grounding/breathing to reduce acute distress. Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: panic disorder. Constraints/Meds: sertraline 100mg; propranolol 40mg as needed.",
       "source_openr1_id": 39,
       "source_split": "test",
       "plan_components": [
@@ -225,7 +225,7 @@
       }
     },
     "c_030": {
-      "plan": "Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: autism spectrum condition with sensory overload; no psychotropic medication; mainstream school environment. Constraints/Meds: peanut allergy with adrenaline pen.",
+      "plan": "Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: autism spectrum condition with sensory overload. Constraints/Meds: peanut allergy with adrenaline pen.",
       "source_openr1_id": 53,
       "source_split": "train",
       "plan_components": [
@@ -236,12 +236,12 @@
       }
     },
     "c_031": {
-      "plan": "Therapy: CBT with exposure hierarchy for social situations. Medication: Continue/monitor sertraline 50mg; SSRI (e.g., sertraline) for moderate-severe anxiety. Skills: cognitive restructuring, gradual exposure, and relaxation techniques. Follow-up: avoidance behaviors and functional impairment. Case anchors: Problem: social anxiety disorder; client-facing presentation work. Constraints/Meds: sertraline 50mg; latex allergy.",
+      "plan": "Therapy: CBT with exposure hierarchy for social situations. Medication: Continue/monitor sertraline 50mg; SSRI (e.g., sertraline) for moderate-severe anxiety. Skills: cognitive restructuring, gradual exposure, and relaxation techniques. Follow-up: avoidance behaviors and functional impairment. Case anchors: Problem: social anxiety disorder. Constraints/Meds: sertraline 50mg; latex allergy.",
       "source_openr1_id": 61,
       "source_split": "linked_fallback"
     },
     "c_032": {
-      "plan": "Safety: assess risk and develop a safety plan if indicated. Therapy: CBT-style cognitive restructuring (identify and challenge unhelpful thoughts). Therapy: behavioural activation (schedule small, achievable activities). Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: anger dysregulation in emotionally unstable personality structure; high-pressure office job. Constraints/Meds: amlodipine 5mg for hypertension; ibuprofen intolerance.",
+      "plan": "Safety: assess risk and develop a safety plan if indicated. Therapy: CBT-style cognitive restructuring (identify and challenge unhelpful thoughts). Therapy: behavioural activation (schedule small, achievable activities). Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: anger dysregulation in emotionally unstable personality structure. Constraints/Meds: amlodipine 5mg for hypertension; ibuprofen intolerance.",
       "source_openr1_id": 63,
       "source_split": "train",
       "plan_components": [
@@ -258,17 +258,17 @@
       }
     },
     "c_033": {
-      "plan": "Therapy: CBT for ADHD focusing on organizational skills. Medication: Continue/monitor lisdexamfetamine 30mg; stimulant (e.g., methylphenidate) or non-stimulant (atomoxetine). Skills: time management, task breakdown, and environmental modifications. Follow-up: symptom tracking and medication response. Case anchors: Problem: attention-deficit/hyperactivity disorder; university coursework and deadlines. Constraints/Meds: lisdexamfetamine 30mg.",
+      "plan": "Therapy: CBT for ADHD focusing on organizational skills. Medication: Continue/monitor lisdexamfetamine 30mg; stimulant (e.g., methylphenidate) or non-stimulant (atomoxetine). Skills: time management, task breakdown, and environmental modifications. Follow-up: symptom tracking and medication response. Case anchors: Problem: attention-deficit/hyperactivity disorder. Constraints/Meds: lisdexamfetamine 30mg.",
       "source_openr1_id": 240,
       "source_split": "linked_fallback"
     },
     "c_034": {
-      "plan": "Therapy: ERP (Exposure and Response Prevention). Medication: Continue/monitor sertraline 100mg; SSRI at higher doses (e.g., fluoxetine 40-60mg). Skills: response prevention strategies and uncertainty tolerance. Follow-up: OCD severity (Y-BOCS) and ritual time. Case anchors: Problem: obsessive-compulsive disorder; lives with partner and infant. Constraints/Meds: sertraline 100mg; penicillin allergy.",
+      "plan": "Therapy: ERP (Exposure and Response Prevention). Medication: Continue/monitor sertraline 100mg; SSRI at higher doses (e.g., fluoxetine 40-60mg). Skills: response prevention strategies and uncertainty tolerance. Follow-up: OCD severity (Y-BOCS) and ritual time. Case anchors: Problem: obsessive-compulsive disorder. Constraints/Meds: sertraline 100mg; penicillin allergy.",
       "source_openr1_id": 169,
       "source_split": "linked_fallback"
     },
     "c_035": {
-      "plan": "Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: emotionally unstable (borderline) personality disorder; studying at college; unstable relationships. Constraints/Meds: quetiapine 50mg at night.",
+      "plan": "Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: emotionally unstable (borderline) personality disorder. Constraints/Meds: quetiapine 50mg at night.",
       "source_openr1_id": 24,
       "source_split": "train",
       "plan_components": [
@@ -360,7 +360,7 @@
       "source_split": "linked_fallback"
     },
     "c_051": {
-      "plan": "Therapy: CBT-style cognitive restructuring (identify and challenge unhelpful thoughts). Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: major depressive disorder; living with parents while at university. Constraints/Meds: sertraline 50mg; penicillin allergy.",
+      "plan": "Therapy: CBT-style cognitive restructuring (identify and challenge unhelpful thoughts). Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: major depressive disorder. Constraints/Meds: sertraline 50mg; penicillin allergy.",
       "source_openr1_id": 23,
       "source_split": "train",
       "plan_components": [
@@ -373,17 +373,17 @@
       }
     },
     "c_052": {
-      "plan": "Therapy: trauma-focused CBT or EMDR. Medication: Continue/monitor sertraline 100mg; SSRI (e.g., sertraline) with prazosin for nightmares if indicated. Skills: grounding techniques, safety planning, and emotion regulation. Follow-up: flashback frequency and sleep quality assessment. Case anchors: Problem: post-traumatic stress disorder; lives alone. Constraints/Meds: sertraline 100mg; prazosin 2mg at night.",
+      "plan": "Therapy: trauma-focused CBT or EMDR. Medication: Continue/monitor sertraline 100mg; SSRI (e.g., sertraline) with prazosin for nightmares if indicated. Skills: grounding techniques, safety planning, and emotion regulation. Follow-up: flashback frequency and sleep quality assessment. Case anchors: Problem: post-traumatic stress disorder. Constraints/Meds: sertraline 100mg; prazosin 2mg at night.",
       "source_openr1_id": 4,
       "source_split": "linked_fallback"
     },
     "c_053": {
-      "plan": "Therapy: complicated grief treatment (CGT) or grief-focused CBT. Medication: Continue/monitor mirtazapine 15mg at night; antidepressant if major depressive episode co-occurs. Skills: gradual re-engagement with life, memory processing. Follow-up: prolonged grief disorder symptoms and functioning. Case anchors: Problem: complicated grief / prolonged grief; evenings particularly difficult. Constraints/Meds: mirtazapine 15mg at night; ibuprofen allergy with facial swelling.",
+      "plan": "Therapy: complicated grief treatment (CGT) or grief-focused CBT. Medication: Continue/monitor mirtazapine 15mg at night; antidepressant if major depressive episode co-occurs. Skills: gradual re-engagement with life, memory processing. Follow-up: prolonged grief disorder symptoms and functioning. Case anchors: Problem: complicated grief / prolonged grief. Constraints/Meds: mirtazapine 15mg at night; ibuprofen allergy with facial swelling.",
       "source_openr1_id": 25,
       "source_split": "linked_fallback"
     },
     "c_054": {
-      "plan": "Skills: grounding/breathing to reduce acute distress. Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: panic disorder; asthma with inhaler; commuter train travel. Constraints/Meds: sertraline 100mg; propranolol 40mg as needed.",
+      "plan": "Skills: grounding/breathing to reduce acute distress. Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: panic disorder. Constraints/Meds: sertraline 100mg; propranolol 40mg as needed.",
       "source_openr1_id": 39,
       "source_split": "test",
       "plan_components": [
@@ -396,7 +396,7 @@
       }
     },
     "c_055": {
-      "plan": "Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: autism spectrum condition with sensory overload; no psychotropic medication; mainstream school environment. Constraints/Meds: peanut allergy with adrenaline pen.",
+      "plan": "Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: autism spectrum condition with sensory overload. Constraints/Meds: peanut allergy with adrenaline pen.",
       "source_openr1_id": 53,
       "source_split": "train",
       "plan_components": [
@@ -407,12 +407,12 @@
       }
     },
     "c_056": {
-      "plan": "Therapy: CBT with exposure hierarchy for social situations. Medication: Continue/monitor sertraline 50mg; SSRI (e.g., sertraline) for moderate-severe anxiety. Skills: cognitive restructuring, gradual exposure, and relaxation techniques. Follow-up: avoidance behaviors and functional impairment. Case anchors: Problem: social anxiety disorder; client-facing presentation work. Constraints/Meds: sertraline 50mg; latex allergy.",
+      "plan": "Therapy: CBT with exposure hierarchy for social situations. Medication: Continue/monitor sertraline 50mg; SSRI (e.g., sertraline) for moderate-severe anxiety. Skills: cognitive restructuring, gradual exposure, and relaxation techniques. Follow-up: avoidance behaviors and functional impairment. Case anchors: Problem: social anxiety disorder. Constraints/Meds: sertraline 50mg; latex allergy.",
       "source_openr1_id": 61,
       "source_split": "linked_fallback"
     },
     "c_057": {
-      "plan": "Safety: assess risk and develop a safety plan if indicated. Therapy: CBT-style cognitive restructuring (identify and challenge unhelpful thoughts). Therapy: behavioural activation (schedule small, achievable activities). Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: anger dysregulation in emotionally unstable personality structure; high-pressure office job. Constraints/Meds: amlodipine 5mg for hypertension; ibuprofen intolerance.",
+      "plan": "Safety: assess risk and develop a safety plan if indicated. Therapy: CBT-style cognitive restructuring (identify and challenge unhelpful thoughts). Therapy: behavioural activation (schedule small, achievable activities). Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: anger dysregulation in emotionally unstable personality structure. Constraints/Meds: amlodipine 5mg for hypertension; ibuprofen intolerance.",
       "source_openr1_id": 63,
       "source_split": "train",
       "plan_components": [
@@ -429,17 +429,17 @@
       }
     },
     "c_058": {
-      "plan": "Therapy: CBT for ADHD focusing on organizational skills. Medication: Continue/monitor lisdexamfetamine 30mg; stimulant (e.g., methylphenidate) or non-stimulant (atomoxetine). Skills: time management, task breakdown, and environmental modifications. Follow-up: symptom tracking and medication response. Case anchors: Problem: attention-deficit/hyperactivity disorder; university coursework and deadlines. Constraints/Meds: lisdexamfetamine 30mg.",
+      "plan": "Therapy: CBT for ADHD focusing on organizational skills. Medication: Continue/monitor lisdexamfetamine 30mg; stimulant (e.g., methylphenidate) or non-stimulant (atomoxetine). Skills: time management, task breakdown, and environmental modifications. Follow-up: symptom tracking and medication response. Case anchors: Problem: attention-deficit/hyperactivity disorder. Constraints/Meds: lisdexamfetamine 30mg.",
       "source_openr1_id": 240,
       "source_split": "linked_fallback"
     },
     "c_059": {
-      "plan": "Therapy: ERP (Exposure and Response Prevention). Medication: Continue/monitor sertraline 100mg; SSRI at higher doses (e.g., fluoxetine 40-60mg). Skills: response prevention strategies and uncertainty tolerance. Follow-up: OCD severity (Y-BOCS) and ritual time. Case anchors: Problem: obsessive-compulsive disorder; lives with partner and infant. Constraints/Meds: sertraline 100mg; penicillin allergy.",
+      "plan": "Therapy: ERP (Exposure and Response Prevention). Medication: Continue/monitor sertraline 100mg; SSRI at higher doses (e.g., fluoxetine 40-60mg). Skills: response prevention strategies and uncertainty tolerance. Follow-up: OCD severity (Y-BOCS) and ritual time. Case anchors: Problem: obsessive-compulsive disorder. Constraints/Meds: sertraline 100mg; penicillin allergy.",
       "source_openr1_id": 169,
       "source_split": "linked_fallback"
     },
     "c_060": {
-      "plan": "Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: emotionally unstable (borderline) personality disorder; studying at college; unstable relationships. Constraints/Meds: quetiapine 50mg at night.",
+      "plan": "Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: emotionally unstable (borderline) personality disorder. Constraints/Meds: quetiapine 50mg at night.",
       "source_openr1_id": 24,
       "source_split": "train",
       "plan_components": [
@@ -531,7 +531,7 @@
       "source_split": "linked_fallback"
     },
     "c_076": {
-      "plan": "Therapy: CBT-style cognitive restructuring (identify and challenge unhelpful thoughts). Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: major depressive disorder; living with parents while at university. Constraints/Meds: sertraline 50mg; penicillin allergy.",
+      "plan": "Therapy: CBT-style cognitive restructuring (identify and challenge unhelpful thoughts). Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: major depressive disorder. Constraints/Meds: sertraline 50mg; penicillin allergy.",
       "source_openr1_id": 23,
       "source_split": "train",
       "plan_components": [
@@ -544,17 +544,17 @@
       }
     },
     "c_077": {
-      "plan": "Therapy: trauma-focused CBT or EMDR. Medication: Continue/monitor sertraline 100mg; SSRI (e.g., sertraline) with prazosin for nightmares if indicated. Skills: grounding techniques, safety planning, and emotion regulation. Follow-up: flashback frequency and sleep quality assessment. Case anchors: Problem: post-traumatic stress disorder; lives alone. Constraints/Meds: sertraline 100mg; prazosin 2mg at night.",
+      "plan": "Therapy: trauma-focused CBT or EMDR. Medication: Continue/monitor sertraline 100mg; SSRI (e.g., sertraline) with prazosin for nightmares if indicated. Skills: grounding techniques, safety planning, and emotion regulation. Follow-up: flashback frequency and sleep quality assessment. Case anchors: Problem: post-traumatic stress disorder. Constraints/Meds: sertraline 100mg; prazosin 2mg at night.",
       "source_openr1_id": 4,
       "source_split": "linked_fallback"
     },
     "c_078": {
-      "plan": "Therapy: complicated grief treatment (CGT) or grief-focused CBT. Medication: Continue/monitor mirtazapine 15mg at night; antidepressant if major depressive episode co-occurs. Skills: gradual re-engagement with life, memory processing. Follow-up: prolonged grief disorder symptoms and functioning. Case anchors: Problem: complicated grief / prolonged grief; evenings particularly difficult. Constraints/Meds: mirtazapine 15mg at night; ibuprofen allergy with facial swelling.",
+      "plan": "Therapy: complicated grief treatment (CGT) or grief-focused CBT. Medication: Continue/monitor mirtazapine 15mg at night; antidepressant if major depressive episode co-occurs. Skills: gradual re-engagement with life, memory processing. Follow-up: prolonged grief disorder symptoms and functioning. Case anchors: Problem: complicated grief / prolonged grief. Constraints/Meds: mirtazapine 15mg at night; ibuprofen allergy with facial swelling.",
       "source_openr1_id": 25,
       "source_split": "linked_fallback"
     },
     "c_079": {
-      "plan": "Skills: grounding/breathing to reduce acute distress. Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: panic disorder; asthma with inhaler; commuter train travel. Constraints/Meds: sertraline 100mg; propranolol 40mg as needed.",
+      "plan": "Skills: grounding/breathing to reduce acute distress. Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: panic disorder. Constraints/Meds: sertraline 100mg; propranolol 40mg as needed.",
       "source_openr1_id": 39,
       "source_split": "test",
       "plan_components": [
@@ -567,7 +567,7 @@
       }
     },
     "c_080": {
-      "plan": "Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: autism spectrum condition with sensory overload; no psychotropic medication; mainstream school environment. Constraints/Meds: peanut allergy with adrenaline pen.",
+      "plan": "Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: autism spectrum condition with sensory overload. Constraints/Meds: peanut allergy with adrenaline pen.",
       "source_openr1_id": 53,
       "source_split": "train",
       "plan_components": [
@@ -578,12 +578,12 @@
       }
     },
     "c_081": {
-      "plan": "Therapy: CBT with exposure hierarchy for social situations. Medication: Continue/monitor sertraline 50mg; SSRI (e.g., sertraline) for moderate-severe anxiety. Skills: cognitive restructuring, gradual exposure, and relaxation techniques. Follow-up: avoidance behaviors and functional impairment. Case anchors: Problem: social anxiety disorder; client-facing presentation work. Constraints/Meds: sertraline 50mg; latex allergy.",
+      "plan": "Therapy: CBT with exposure hierarchy for social situations. Medication: Continue/monitor sertraline 50mg; SSRI (e.g., sertraline) for moderate-severe anxiety. Skills: cognitive restructuring, gradual exposure, and relaxation techniques. Follow-up: avoidance behaviors and functional impairment. Case anchors: Problem: social anxiety disorder. Constraints/Meds: sertraline 50mg; latex allergy.",
       "source_openr1_id": 61,
       "source_split": "linked_fallback"
     },
     "c_082": {
-      "plan": "Safety: assess risk and develop a safety plan if indicated. Therapy: CBT-style cognitive restructuring (identify and challenge unhelpful thoughts). Therapy: behavioural activation (schedule small, achievable activities). Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: anger dysregulation in emotionally unstable personality structure; high-pressure office job. Constraints/Meds: amlodipine 5mg for hypertension; ibuprofen intolerance.",
+      "plan": "Safety: assess risk and develop a safety plan if indicated. Therapy: CBT-style cognitive restructuring (identify and challenge unhelpful thoughts). Therapy: behavioural activation (schedule small, achievable activities). Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: anger dysregulation in emotionally unstable personality structure. Constraints/Meds: amlodipine 5mg for hypertension; ibuprofen intolerance.",
       "source_openr1_id": 63,
       "source_split": "train",
       "plan_components": [
@@ -600,17 +600,17 @@
       }
     },
     "c_083": {
-      "plan": "Therapy: CBT for ADHD focusing on organizational skills. Medication: Continue/monitor lisdexamfetamine 30mg; stimulant (e.g., methylphenidate) or non-stimulant (atomoxetine). Skills: time management, task breakdown, and environmental modifications. Follow-up: symptom tracking and medication response. Case anchors: Problem: attention-deficit/hyperactivity disorder; university coursework and deadlines. Constraints/Meds: lisdexamfetamine 30mg.",
+      "plan": "Therapy: CBT for ADHD focusing on organizational skills. Medication: Continue/monitor lisdexamfetamine 30mg; stimulant (e.g., methylphenidate) or non-stimulant (atomoxetine). Skills: time management, task breakdown, and environmental modifications. Follow-up: symptom tracking and medication response. Case anchors: Problem: attention-deficit/hyperactivity disorder. Constraints/Meds: lisdexamfetamine 30mg.",
       "source_openr1_id": 240,
       "source_split": "linked_fallback"
     },
     "c_084": {
-      "plan": "Therapy: ERP (Exposure and Response Prevention). Medication: Continue/monitor sertraline 100mg; SSRI at higher doses (e.g., fluoxetine 40-60mg). Skills: response prevention strategies and uncertainty tolerance. Follow-up: OCD severity (Y-BOCS) and ritual time. Case anchors: Problem: obsessive-compulsive disorder; lives with partner and infant. Constraints/Meds: sertraline 100mg; penicillin allergy.",
+      "plan": "Therapy: ERP (Exposure and Response Prevention). Medication: Continue/monitor sertraline 100mg; SSRI at higher doses (e.g., fluoxetine 40-60mg). Skills: response prevention strategies and uncertainty tolerance. Follow-up: OCD severity (Y-BOCS) and ritual time. Case anchors: Problem: obsessive-compulsive disorder. Constraints/Meds: sertraline 100mg; penicillin allergy.",
       "source_openr1_id": 169,
       "source_split": "linked_fallback"
     },
     "c_085": {
-      "plan": "Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: emotionally unstable (borderline) personality disorder; studying at college; unstable relationships. Constraints/Meds: quetiapine 50mg at night.",
+      "plan": "Therapy: graded exposure for avoidance triggers. Follow-up: monitor symptoms, medication effects if relevant, and review/practise homework. Case anchors: Problem: emotionally unstable (borderline) personality disorder. Constraints/Meds: quetiapine 50mg at night.",
       "source_openr1_id": 24,
       "source_split": "train",
       "plan_components": [
