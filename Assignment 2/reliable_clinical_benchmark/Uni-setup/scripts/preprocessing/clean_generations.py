@@ -6,7 +6,7 @@ Removes repetitive/duplicate content from model outputs while preserving
 diagnosis-relevant text. Uses O(n) hash-based deduplication.
 
 Input:  results/{model}/study_a_generations.jsonl
-Output: processed/study_a_cleaned/{model}/study_a_generations.jsonl
+Output: processed/cleaned/{study}_cleaned/{model}/study_{study}_generations.jsonl
 
 Usage:
     python scripts/preprocessing/clean_generations.py --study study_a
@@ -215,7 +215,7 @@ def main():
     total_stats = {"files": 0, "entries": 0, "cleaned": 0, "chars": 0}
     
     for study in studies:
-        output_dir = base_dir / "processed" / f"{study}_cleaned"
+        output_dir = base_dir / "processed" / "cleaned" / f"{study}_cleaned"
         print(f"\n[{study.upper()}] → {output_dir}")
         print("-" * 40)
         
