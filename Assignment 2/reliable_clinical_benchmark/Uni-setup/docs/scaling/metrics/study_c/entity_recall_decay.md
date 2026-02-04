@@ -117,6 +117,7 @@ Recommendation 2: The "Headline" vs. "Diagnostic" Split
 
 Usage Example (Analysis)
 
+```python
 from reliable_clinical_benchmark.metrics.drift import compute_drift_slope
 
 # Load the aggregated curve from the pipeline results
@@ -127,5 +128,5 @@ tdr = compute_drift_slope(recall_curve)
 
 print(f"Recall @ T10: {recall_curve[-1]:.2f}")
 print(f"Truth Decay Rate: {tdr:.3f} / turn")
-```python
+```
 
