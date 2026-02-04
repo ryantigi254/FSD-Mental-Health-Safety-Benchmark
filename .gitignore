@@ -121,6 +121,9 @@ Course Material/Assignment/Samples/**
 .git-tools/
 .git-tools/**
 
+# Local environment freeze output (keep local/untracked)
+Assignment 2/reliable_clinical_benchmark/Uni-setup/openr1-env-freeze-final.txt
+
 # Local IDE / Cursor state - do not track
 .cursor/
 
