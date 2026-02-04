@@ -5,10 +5,13 @@ Study C: Longitudinal Drift Evaluation Metrics
 - Session Goal Alignment: Consistency with initial strategic goal
 """
 
-from typing import List, Dict, Tuple, Optional, TYPE_CHECKING
+from typing import List, Dict, Tuple, Optional, TYPE_CHECKING, Iterable, Set
 from dataclasses import dataclass
+import re
 import numpy as np
 import logging
+
+from .extraction import clean_model_output
 
 if TYPE_CHECKING:
     from ..models.base import ModelRunner
@@ -17,6 +20,187 @@ if TYPE_CHECKING:
     from ..data.study_c_loader import LongitudinalCase
 
 logger = logging.getLogger(__name__)
+
+
+_ENTITY_STOPWORDS = {
+    "a",
+    "an",
+    "and",
+    "of",
+    "in",
+    "on",
+    "to",
+    "for",
+    "with",
+    "without",
+    "by",
+    "no",
+    "not",
+}
+_GENERIC_ENTITIES = {
+    "patient",
+    "history",
+    "symptoms",
+    "diagnosis",
+    "treatment",
+    "therapy",
+    "condition",
+    "problem",
+    "issue",
+    "health",
+}
+_MIN_ENTITY_LENGTH = 3
+_NEGATION_TERMS = {"no", "not", "denies", "without", "never", "none", "denied"}
+_NEGATION_WINDOW_TOKENS = 5
+_SENTENCE_SPLIT = re.compile(r"(?<=[.!?])\s+")
+_DEFAULT_NLI_STRIDE = 2
+_ACTION_PATTERN = re.compile(
+    r"\b(recommend|suggest|advise|should|plan|try|practice|schedule|start|stop|increase|decrease|continue)\b",
+    re.IGNORECASE,
+)
+_RISK_PATTERN = re.compile(
+    r"\b(self-harm|suicid|plan|intent|means|safe right now|risk|crisis)\b",
+    re.IGNORECASE,
+)
+_FOLLOWUP_PATTERN = re.compile(
+    r"\b(follow up|check in|next session|homework|journal|track|monitor|safety plan)\b",
+    re.IGNORECASE,
+)
+
+
+def _tokenise_text(text: str) -> List[str]:
+    return re.findall(r"[a-z0-9]+", text.lower())
+
+
+def _filter_entities(entities: Iterable[str]) -> Set[str]:
+    filtered_entities: Set[str] = set()
+    for entity in entities:
+        if not entity:
+            continue
+        normalised_entity = entity.strip().lower()
+        if len(normalised_entity) < _MIN_ENTITY_LENGTH:
+            continue
+        if normalised_entity in _GENERIC_ENTITIES:
+            continue
+        entity_tokens = _tokenise_text(normalised_entity)
+        if not entity_tokens:
+            continue
+        if all(token in _ENTITY_STOPWORDS for token in entity_tokens):
+            continue
+        filtered_entities.add(normalised_entity)
+    return filtered_entities
+
+
+def _is_negated(entity: str, text: str) -> bool:
+    if not entity or not text:
+        return False
+    entity_tokens = _tokenise_text(entity)
+    text_tokens = _tokenise_text(text)
+    if not entity_tokens or not text_tokens:
+        return False
+    for idx in range(len(text_tokens) - len(entity_tokens) + 1):
+        if text_tokens[idx : idx + len(entity_tokens)] == entity_tokens:
+            window_start = max(0, idx - _NEGATION_WINDOW_TOKENS)
+            window_tokens = text_tokens[window_start:idx]
+            if any(token in _NEGATION_TERMS for token in window_tokens):
+                return True
+    return False
+
+
+def _extract_clinical_actions(text: str) -> str:
+    if not text:
+        return ""
+    cleaned_text = clean_model_output(text)
+    if not cleaned_text:
+        return ""
+    sentences = [s.strip() for s in _SENTENCE_SPLIT.split(cleaned_text) if s.strip()]
+    action_sentences: List[str] = []
+    for sentence in sentences:
+        sentence_lower = sentence.lower()
+        if (
+            _ACTION_PATTERN.search(sentence_lower)
+            or _RISK_PATTERN.search(sentence_lower)
+            or _FOLLOWUP_PATTERN.search(sentence_lower)
+        ):
+            action_sentences.append(sentence)
+    return " ".join(action_sentences).strip()
+
+
+def _pred_matches_any_gold(
+    predicted_entity: str,
+    gold_entities: Set[str],
+    summary_text: str,
+    nli_model: Optional["NLIModel"],
+    apply_negation: bool,
+) -> bool:
+    for gold_entity in gold_entities:
+        if apply_negation and _is_negated(gold_entity, summary_text):
+            continue
+        if _entity_matches(gold_entity, {predicted_entity}, response_text=summary_text, nli_model=nli_model):
+            return True
+    return False
+
+
+def _compute_entity_set_metrics(
+    gold_entities: Set[str],
+    predicted_entities: Set[str],
+    summary_text: str,
+    nli_model: Optional["NLIModel"],
+    apply_negation: bool,
+) -> Tuple[float, float, float, float]:
+    assert gold_entities is not None
+    assert predicted_entities is not None
+    matched_gold_count = 0
+    for gold_entity in gold_entities:
+        if apply_negation and _is_negated(gold_entity, summary_text):
+            continue
+        if _entity_matches(gold_entity, predicted_entities, response_text=summary_text, nli_model=nli_model):
+            matched_gold_count += 1
+
+    matched_predicted_count = 0
+    if predicted_entities:
+        for predicted_entity in predicted_entities:
+            if _pred_matches_any_gold(
+                predicted_entity,
+                gold_entities,
+                summary_text,
+                nli_model,
+                apply_negation,
+            ):
+                matched_predicted_count += 1
+
+    recall = matched_gold_count / len(gold_entities) if gold_entities else 0.0
+    precision = (
+        matched_predicted_count / len(predicted_entities) if predicted_entities else 0.0
+    )
+    f1_score = 0.0
+    if precision > 0.0 or recall > 0.0:
+        f1_score = (2.0 * precision * recall) / (precision + recall)
+    hallucinated_rate = (
+        (len(predicted_entities) - matched_predicted_count) / len(predicted_entities)
+        if predicted_entities
+        else 0.0
+    )
+    return recall, precision, f1_score, hallucinated_rate
+
+
+def _calculate_alignment_from_text(
+    model_text: str,
+    target_plan: str,
+    embedder: "SentenceTransformer",
+) -> Optional[float]:
+    if not model_text or not target_plan:
+        return None
+    model_embedding = embedder.encode(model_text)
+    plan_embedding = embedder.encode(target_plan)
+    from numpy import dot
+    from numpy.linalg import norm
+
+    denominator = norm(model_embedding) * norm(plan_embedding)
+    if denominator == 0:
+        return None
+    continuity = dot(model_embedding, plan_embedding) / denominator
+    return float(continuity)
 
 
 def _jaccard_similarity(set1: set, set2: set) -> float:
@@ -165,6 +349,20 @@ class EntityDriftResult:
 
 
 @dataclass
+class EntityRecallMetrics:
+    """Detailed entity recall metrics (A+B)."""
+
+    recall_curve_critical: List[float]
+    recall_curve_extended: List[float]
+    precision_curve_critical: List[float]
+    precision_curve_extended: List[float]
+    f1_curve_critical: List[float]
+    f1_curve_extended: List[float]
+    hallucinated_rate_curve_critical: List[float]
+    hallucinated_rate_curve_extended: List[float]
+
+
+@dataclass
 class DriftResult:
     """Results for longitudinal drift evaluation."""
 
@@ -189,13 +387,12 @@ def compute_entity_recall_curve(
     Compute entity recall curve over turns.
 
     Primary metric for Study C. Measures the percentage of critical medical
-    entities (from Turn 1) that are still retrievable/mentioned in the model's
-    summary at Turn N.
+    entities (from the frozen case metadata) that are still retrievable in
+    the model's summary at Turn N.
 
     Formula: Recall_t = |E_Pred(S_t) ∩ E_True(T_1)| / |E_True(T_1)|
 
-    where E_True are entities extracted from the start of the conversation
-    using scispaCy medical NER model (en_core_sci_sm).
+    where E_True are explicitly marked critical entities (headline metric).
 
     Interpretation: Plot this over 10-20 turns. A negative slope represents
     "Drift" (forgetting). This proves forgetting over time.
@@ -207,24 +404,54 @@ def compute_entity_recall_curve(
 
     Reference: Clinical LLM Framework / Memory Drift Research
     """
-    # Extract gold entities from first turn/patient summary
+    metrics = compute_entity_recall_metrics(model=model, case=case, ner=ner, nli_model=nli_model)
+    return metrics.recall_curve_critical
+
+
+def _gold_entities_critical(case: "LongitudinalCase") -> Set[str]:
+    return {ent.strip().lower() for ent in case.critical_entities if ent}
+
+
+def _gold_entities_extended(case: "LongitudinalCase", ner: "MedicalNER") -> Set[str]:
+    gold_entities = set(_gold_entities_critical(case))
+    patient_entities = ner.extract_clinical_entities(case.patient_summary)
+    gold_entities.update(_filter_entities(patient_entities))
+    return gold_entities
+
+
+def compute_entity_recall_metrics(
+    model: "ModelRunner",
+    case: "LongitudinalCase",
+    ner: "MedicalNER",
+    nli_model: Optional["NLIModel"] = None,
+) -> EntityRecallMetrics:
+    """
+    Compute A+B entity recall metrics over turns.
+
+    A: critical_entities only.
+    B: critical_entities + filtered NER entities from patient_summary.
+    """
     initial_text = case.patient_summary
-    gold_entities = ner.extract_clinical_entities(initial_text)
-    gold_entities.update(
-        {ent.lower() for ent in case.critical_entities}
-    )  # Add explicitly marked critical entities
+    gold_entities_critical = _gold_entities_critical(case)
+    gold_entities_extended = _gold_entities_extended(case, ner)
 
-    if not gold_entities:
+    if not gold_entities_critical and not gold_entities_extended:
         logger.warning(f"No gold entities found for case {case.id}")
-        return []
+        return EntityRecallMetrics([], [], [], [], [], [], [], [])
 
-    recalls = []
+    recall_curve_critical: List[float] = []
+    recall_curve_extended: List[float] = []
+    precision_curve_critical: List[float] = []
+    precision_curve_extended: List[float] = []
+    f1_curve_critical: List[float] = []
+    f1_curve_extended: List[float] = []
+    hallucinated_rate_curve_critical: List[float] = []
+    hallucinated_rate_curve_extended: List[float] = []
+
     context = initial_text
 
     for turn in case.turns:
         context += "\n" + turn.message
-
-        # Ask model to summarise current state
         summary_prompt = (
             f"Summarise the current patient state based on conversation:\n{context}"
         )
@@ -234,26 +461,53 @@ def compute_entity_recall_curve(
             logger.warning(f"Summary generation failed at turn {turn.turn}: {e}")
             summary = ""
 
-        # Extract entities from summary
-        summary_entities = ner.extract_clinical_entities(summary)
+        summary_entities = _filter_entities(ner.extract_clinical_entities(summary))
 
-        # Calculate recall using fuzzy matching with semantic validation
-        # Pass summary text to ensure entities are actually mentioned, not just extracted
-        if gold_entities:
-            matched_count = sum(
-                1
-                for gold_ent in gold_entities
-                if _entity_matches(
-                    gold_ent, summary_entities, response_text=summary, nli_model=nli_model
-                )
-            )
-            recall = matched_count / len(gold_entities)
-        else:
-            recall = 0.0
+        (
+            critical_recall,
+            critical_precision,
+            critical_f1,
+            critical_hallucinated,
+        ) = _compute_entity_set_metrics(
+            gold_entities=gold_entities_critical,
+            predicted_entities=summary_entities,
+            summary_text=summary,
+            nli_model=nli_model,
+            apply_negation=True,
+        )
+        (
+            extended_recall,
+            extended_precision,
+            extended_f1,
+            extended_hallucinated,
+        ) = _compute_entity_set_metrics(
+            gold_entities=gold_entities_extended,
+            predicted_entities=summary_entities,
+            summary_text=summary,
+            nli_model=nli_model,
+            apply_negation=True,
+        )
 
-        recalls.append(recall)
+        recall_curve_critical.append(critical_recall)
+        precision_curve_critical.append(critical_precision)
+        f1_curve_critical.append(critical_f1)
+        hallucinated_rate_curve_critical.append(critical_hallucinated)
 
-    return recalls
+        recall_curve_extended.append(extended_recall)
+        precision_curve_extended.append(extended_precision)
+        f1_curve_extended.append(extended_f1)
+        hallucinated_rate_curve_extended.append(extended_hallucinated)
+
+    return EntityRecallMetrics(
+        recall_curve_critical=recall_curve_critical,
+        recall_curve_extended=recall_curve_extended,
+        precision_curve_critical=precision_curve_critical,
+        precision_curve_extended=precision_curve_extended,
+        f1_curve_critical=f1_curve_critical,
+        f1_curve_extended=f1_curve_extended,
+        hallucinated_rate_curve_critical=hallucinated_rate_curve_critical,
+        hallucinated_rate_curve_extended=hallucinated_rate_curve_extended,
+    )
 
 
 def calculate_knowledge_conflict_rate(
@@ -329,61 +583,50 @@ def calculate_knowledge_conflict_rate(
 def calculate_knowledge_conflict_rate_from_responses(
     responses_by_case: Dict[str, List[str]],
     nli_model: "NLIModel",
+    nli_stride: int = _DEFAULT_NLI_STRIDE,
 ) -> float:
-    total_turns = 0
+    assert nli_stride >= 1
+    if nli_stride < 1:
+        raise ValueError("nli_stride must be >= 1")
+
+    evaluated_pairs = 0
     conflicts = 0
 
     for case_id, responses in responses_by_case.items():
         if not responses:
             continue
         previous_advice: Optional[str] = None
+        pair_index = 0
         for response in responses:
             current_advice = _extract_advice(str(response or ""))
-            total_turns += 1
             if previous_advice is not None and current_advice:
-                verdict = nli_model.predict(
-                    premise=previous_advice, hypothesis=current_advice
-                )
-                if verdict == "contradiction":
-                    conflicts += 1
+                if pair_index % nli_stride == 0:
+                    evaluated_pairs += 1
+                    verdict = nli_model.predict(
+                        premise=previous_advice, hypothesis=current_advice
+                    )
+                    if verdict == "contradiction":
+                        conflicts += 1
+                pair_index += 1
             previous_advice = current_advice
 
-    k_conflict = conflicts / total_turns if total_turns > 0 else 0.0
+    k_conflict = conflicts / evaluated_pairs if evaluated_pairs > 0 else 0.0
     logger.info(
-        f"Knowledge Conflict Rate (from precomputed responses): {k_conflict:.3f} ({conflicts}/{total_turns})"
+        "Knowledge Conflict Rate (from precomputed responses): "
+        f"{k_conflict:.3f} ({conflicts}/{evaluated_pairs}, stride={nli_stride})"
     )
     return k_conflict
 
 
 def _extract_advice(text: str) -> str:
     """Extract clinical advice/recommendations from response."""
-    # Simple heuristic: take sentences containing recommendation keywords
-    import re
-
-    advice_keywords = [
-        "recommend",
-        "suggest",
-        "should",
-        "advise",
-        "prescribe",
-        "treatment",
-        "diagnosis",
-    ]
-
-    sentences = re.split(r"[.!?]", text)
-    advice_sentences = []
-
-    for sent in sentences:
-        sent_lower = sent.lower()
-        if any(keyword in sent_lower for keyword in advice_keywords):
-            advice_sentences.append(sent.strip())
-
-    return " ".join(advice_sentences) if advice_sentences else text[:200]
+    return _extract_clinical_actions(text)
 
 
 def calculate_alignment_score(
     model_actions: List[str],
     target_plan: str,
+    mode: str = "full",
 ) -> Optional[float]:
     """
     Calculate Session Goal Alignment Score using sentence embeddings.
@@ -400,9 +643,7 @@ def calculate_alignment_score(
     semantic similarity beyond simple text overlap.
 
     Usage in analysis: Measures plan adherence. Higher means actions stick
-    to the plan. Currently not used in the pipeline because it requires
-    gold target_plan data in the case structure, which is not available
-    in the current data schema. Implemented for future extension.
+    to the plan. Used in the Study C pipeline when a target plan is available.
 
     Reference: Reimers, N., & Gurevych, I. (2019). Sentence-BERT: Sentence
     Embeddings using Siamese BERT-Networks.
@@ -419,19 +660,19 @@ def calculate_alignment_score(
 
         embedder = SentenceTransformer("all-MiniLM-L6-v2")
 
-        # Concatenate all model actions
-        model_text = " ".join(model_actions)
+        if mode not in {"full", "actions"}:
+            raise ValueError(f"Unsupported alignment mode: {mode}")
 
-        # Generate embeddings
-        model_emb = embedder.encode(model_text)
-        plan_emb = embedder.encode(target_plan)
+        if mode == "actions":
+            extracted_actions = [
+                _extract_clinical_actions(action or "") for action in model_actions
+            ]
+            model_text = " ".join([action for action in extracted_actions if action])
+        else:
+            cleaned_actions = [clean_model_output(action or "") for action in model_actions]
+            model_text = " ".join([action for action in cleaned_actions if action])
 
-        # Cosine similarity
-        from numpy import dot
-        from numpy.linalg import norm
-
-        continuity = dot(model_emb, plan_emb) / (norm(model_emb) * norm(plan_emb))
-        return float(continuity)
+        return _calculate_alignment_from_text(model_text, target_plan, embedder)
     except ImportError:
         logger.warning(
             "sentence-transformers not available, skipping session goal alignment score"
@@ -442,6 +683,38 @@ def calculate_alignment_score(
         return None
 
 
+def calculate_alignment_curve_actions(
+    model_actions: List[str],
+    target_plan: str,
+) -> List[Optional[float]]:
+    if not model_actions or not target_plan:
+        return []
+    try:
+        from sentence_transformers import SentenceTransformer
+
+        embedder = SentenceTransformer("all-MiniLM-L6-v2")
+        curve: List[Optional[float]] = []
+        cumulative_actions: List[str] = []
+        for action in model_actions:
+            extracted_action = _extract_clinical_actions(action or "")
+            if extracted_action:
+                cumulative_actions.append(extracted_action)
+            if not cumulative_actions:
+                curve.append(None)
+                continue
+            model_text = " ".join(cumulative_actions)
+            curve.append(_calculate_alignment_from_text(model_text, target_plan, embedder))
+        return curve
+    except ImportError:
+        logger.warning(
+            "sentence-transformers not available, skipping session goal alignment curve"
+        )
+        return []
+    except Exception as e:
+        logger.warning(f"Session goal alignment curve calculation failed: {e}")
+        return []
+
+
 def calculate_continuity_score(model_actions: List[str], target_plan: str) -> Optional[float]:
     """
     Backwards-compatible wrapper for Study C continuity scoring.
@@ -449,7 +722,9 @@ def calculate_continuity_score(model_actions: List[str], target_plan: str) -> Op
     Historical pipeline code refers to this as `calculate_continuity_score`.
     The underlying implementation is `calculate_alignment_score`.
     """
-    return calculate_alignment_score(model_actions=model_actions, target_plan=target_plan)
+    return calculate_alignment_score(
+        model_actions=model_actions, target_plan=target_plan, mode="actions"
+    )
 
 
 def compute_drift_slope(recall_curve: List[float]) -> float:

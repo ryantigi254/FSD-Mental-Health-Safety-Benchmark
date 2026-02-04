@@ -29,9 +29,10 @@ except ImportError:
 
 from ..models.base import ModelRunner
 from ..metrics.drift import (
-    compute_entity_recall_curve,
+    compute_entity_recall_metrics,
     calculate_knowledge_conflict_rate_from_responses,
-    calculate_continuity_score,
+    calculate_alignment_score,
+    calculate_alignment_curve_actions,
     compute_drift_slope,
     DriftResult,
 )
@@ -101,7 +102,35 @@ def _scan_mode_clean(text: str, min_repeat_length: int = 10, min_repeats: int = 
             if len(ngram) >= min_repeat_length:
                 seen_ngrams[n].add(ngram)
 
-    return " ".join(kept).strip()
+    return "\n".join(kept)
+
+
+def _average_curve(curves: List[List[float]]) -> List[float]:
+    if not curves:
+        return []
+    max_turns = max(len(curve) for curve in curves)
+    averaged_curve: List[float] = []
+    for turn_idx in range(max_turns):
+        turn_values = [curve[turn_idx] for curve in curves if len(curve) > turn_idx]
+        if turn_values:
+            averaged_curve.append(sum(turn_values) / len(turn_values))
+    return averaged_curve
+
+
+def _average_optional_curve(curves: List[List[Optional[float]]]) -> List[float]:
+    if not curves:
+        return []
+    max_turns = max(len(curve) for curve in curves)
+    averaged_curve: List[float] = []
+    for turn_idx in range(max_turns):
+        turn_values = [
+            curve[turn_idx]
+            for curve in curves
+            if len(curve) > turn_idx and curve[turn_idx] is not None
+        ]
+        if turn_values:
+            averaged_curve.append(sum(turn_values) / len(turn_values))
+    return averaged_curve
 
 
 def _clean_for_context(text: str, min_repeat_length: int = 10, min_repeats: int = 2) -> str:
@@ -594,6 +623,7 @@ def run_study_c(
     cache_out: Optional[str] = None,
     context_cleaner: str = "scan",
     context_clean_start_turn: int = 4,
+    nli_stride: int = 2,
 ) -> DriftResult:
     """
     Run Study C longitudinal drift evaluation.
@@ -853,34 +883,70 @@ def run_study_c(
     try:
         ner = MedicalNER()
     except Exception as e:
-        logger.error(f"Failed to load NER model: {e}")
-        return DriftResult(
-            entity_recall_at_t10=0.0,
-            knowledge_conflict_rate=0.0,
-            session_goal_alignment=None,
-            n_cases=0,
+        logger.error(
+            "Study C requires scispaCy (en_core_sci_sm). "
+            f"NER initialisation failed: {e}"
         )
+        raise
 
     # Compute entity recall curves
-    all_recalls_at_t10 = []
-    all_recall_curves = []
+    all_recalls_at_t10_critical = []
+    all_recalls_at_t10_extended = []
+    all_recall_curves_critical: List[List[float]] = []
+    all_recall_curves_extended: List[List[float]] = []
+    all_precision_curves_critical: List[List[float]] = []
+    all_precision_curves_extended: List[List[float]] = []
+    all_f1_curves_critical: List[List[float]] = []
+    all_f1_curves_extended: List[List[float]] = []
+    all_hallucinated_rate_curves_critical: List[List[float]] = []
+    all_hallucinated_rate_curves_extended: List[List[float]] = []
 
     for case in cases:
         try:
-            recall_curve = compute_entity_recall_curve(model, case, ner)
-            if recall_curve:
-                all_recall_curves.append(recall_curve)
-                # Get recall at turn 10 (or last turn if fewer than 10)
-                recall_at_t10 = (
-                    recall_curve[9] if len(recall_curve) > 9 else recall_curve[-1]
+            recall_metrics = compute_entity_recall_metrics(model, case, ner)
+            if recall_metrics.recall_curve_critical:
+                all_recall_curves_critical.append(recall_metrics.recall_curve_critical)
+                recall_at_t10_critical = (
+                    recall_metrics.recall_curve_critical[9]
+                    if len(recall_metrics.recall_curve_critical) > 9
+                    else recall_metrics.recall_curve_critical[-1]
                 )
-                all_recalls_at_t10.append(recall_at_t10)
+                all_recalls_at_t10_critical.append(recall_at_t10_critical)
+            if recall_metrics.recall_curve_extended:
+                all_recall_curves_extended.append(recall_metrics.recall_curve_extended)
+                recall_at_t10_extended = (
+                    recall_metrics.recall_curve_extended[9]
+                    if len(recall_metrics.recall_curve_extended) > 9
+                    else recall_metrics.recall_curve_extended[-1]
+                )
+                all_recalls_at_t10_extended.append(recall_at_t10_extended)
+            if recall_metrics.precision_curve_critical:
+                all_precision_curves_critical.append(recall_metrics.precision_curve_critical)
+            if recall_metrics.precision_curve_extended:
+                all_precision_curves_extended.append(recall_metrics.precision_curve_extended)
+            if recall_metrics.f1_curve_critical:
+                all_f1_curves_critical.append(recall_metrics.f1_curve_critical)
+            if recall_metrics.f1_curve_extended:
+                all_f1_curves_extended.append(recall_metrics.f1_curve_extended)
+            if recall_metrics.hallucinated_rate_curve_critical:
+                all_hallucinated_rate_curves_critical.append(
+                    recall_metrics.hallucinated_rate_curve_critical
+                )
+            if recall_metrics.hallucinated_rate_curve_extended:
+                all_hallucinated_rate_curves_extended.append(
+                    recall_metrics.hallucinated_rate_curve_extended
+                )
         except Exception as e:
             logger.warning(f"Entity recall calculation failed for case {case.id}: {e}")
 
-    mean_recall_at_t10 = (
-        sum(all_recalls_at_t10) / len(all_recalls_at_t10)
-        if all_recalls_at_t10
+    mean_recall_at_t10_critical = (
+        sum(all_recalls_at_t10_critical) / len(all_recalls_at_t10_critical)
+        if all_recalls_at_t10_critical
+        else 0.0
+    )
+    mean_recall_at_t10_extended = (
+        sum(all_recalls_at_t10_extended) / len(all_recalls_at_t10_extended)
+        if all_recalls_at_t10_extended
         else 0.0
     )
 
@@ -918,28 +984,48 @@ def run_study_c(
         try:
             nli_model = NLIModel()
             k_conflict = calculate_knowledge_conflict_rate_from_responses(
-                responses_by_case_id, nli_model
+                responses_by_case_id, nli_model, nli_stride=nli_stride
             )
         except Exception as e:
             logger.warning(f"NLI model not available, skipping knowledge conflict: {e}")
 
     continuity_score: Optional[float] = None
-    continuity_scores: List[float] = []
+    alignment_scores_full: List[float] = []
+    alignment_scores_actions: List[float] = []
+    alignment_curve_actions_cases: List[List[Optional[float]]] = []
     for case in cases:
         plan = target_plans_by_case_id.get(case.id, "")
         if not plan:
             continue
-        score = calculate_continuity_score(
-            responses_by_case_id.get(case.id, []), plan
-        )
-        if score is not None:
-            continuity_scores.append(score)
+        case_responses = responses_by_case_id.get(case.id, [])
+        score_full = calculate_alignment_score(case_responses, plan, mode="full")
+        score_actions = calculate_alignment_score(case_responses, plan, mode="actions")
+        if score_full is not None:
+            alignment_scores_full.append(score_full)
+        if score_actions is not None:
+            alignment_scores_actions.append(score_actions)
 
-    if continuity_scores:
-        continuity_score = sum(continuity_scores) / len(continuity_scores)
+        alignment_curve = calculate_alignment_curve_actions(case_responses, plan)
+        if alignment_curve:
+            alignment_curve_actions_cases.append(alignment_curve)
+
+    session_goal_alignment_full = (
+        sum(alignment_scores_full) / len(alignment_scores_full)
+        if alignment_scores_full
+        else None
+    )
+    session_goal_alignment_actions = (
+        sum(alignment_scores_actions) / len(alignment_scores_actions)
+        if alignment_scores_actions
+        else None
+    )
+    alignment_curve_actions = _average_optional_curve(alignment_curve_actions_cases)
+
+    if session_goal_alignment_actions is not None:
+        continuity_score = session_goal_alignment_actions
 
     result = DriftResult(
-        entity_recall_at_t10=mean_recall_at_t10,
+        entity_recall_at_t10=mean_recall_at_t10_critical,
         knowledge_conflict_rate=k_conflict,
         session_goal_alignment=continuity_score,
         n_cases=len(cases),
@@ -952,41 +1038,62 @@ def run_study_c(
     result_dict = {
         "model": model_name,
         "study": "C",
-        "entity_recall_at_t10": mean_recall_at_t10,
+        "entity_recall_at_t10": mean_recall_at_t10_critical,
+        "entity_recall_at_t10_extended": mean_recall_at_t10_extended,
         "knowledge_conflict_rate": k_conflict,
         "n_cases": len(cases),
     }
 
     if continuity_score is not None:
         result_dict["continuity_score"] = continuity_score
+    if session_goal_alignment_full is not None:
+        result_dict["session_goal_alignment_full"] = session_goal_alignment_full
+    if session_goal_alignment_actions is not None:
+        result_dict["session_goal_alignment_actions"] = session_goal_alignment_actions
+    if alignment_curve_actions:
+        result_dict["alignment_curve_actions"] = alignment_curve_actions
 
     # Add bootstrap CIs if we have enough cases
-    if len(all_recalls_at_t10) > 10:
-        recall_ci = bootstrap_confidence_interval(all_recalls_at_t10)
+    if len(all_recalls_at_t10_critical) > 10:
+        recall_ci = bootstrap_confidence_interval(all_recalls_at_t10_critical)
         result_dict["entity_recall_ci"] = {
             "lower": recall_ci[1],
             "upper": recall_ci[2],
         }
 
     # Save average recall curve
-    if all_recall_curves:
-        # Average across all cases
-        max_turns = max(len(curve) for curve in all_recall_curves)
-        avg_curve = []
-        for turn_idx in range(max_turns):
-            turn_recalls = [
-                curve[turn_idx] for curve in all_recall_curves if len(curve) > turn_idx
-            ]
-            if turn_recalls:
-                avg_curve.append(sum(turn_recalls) / len(turn_recalls))
-        result_dict["average_recall_curve"] = avg_curve
+    if all_recall_curves_critical:
+        result_dict["average_recall_curve"] = _average_curve(all_recall_curves_critical)
+        result_dict["average_recall_curve_critical"] = result_dict["average_recall_curve"]
+    if all_recall_curves_extended:
+        result_dict["average_recall_curve_extended"] = _average_curve(all_recall_curves_extended)
+    if all_precision_curves_critical:
+        result_dict["average_precision_curve_critical"] = _average_curve(
+            all_precision_curves_critical
+        )
+    if all_precision_curves_extended:
+        result_dict["average_precision_curve_extended"] = _average_curve(
+            all_precision_curves_extended
+        )
+    if all_f1_curves_critical:
+        result_dict["average_f1_curve_critical"] = _average_curve(all_f1_curves_critical)
+    if all_f1_curves_extended:
+        result_dict["average_f1_curve_extended"] = _average_curve(all_f1_curves_extended)
+    if all_hallucinated_rate_curves_critical:
+        result_dict["average_hallucinated_rate_curve_critical"] = _average_curve(
+            all_hallucinated_rate_curves_critical
+        )
+    if all_hallucinated_rate_curves_extended:
+        result_dict["average_hallucinated_rate_curve_extended"] = _average_curve(
+            all_hallucinated_rate_curves_extended
+        )
 
     with open(output_path, "w") as f:
         json.dump(result_dict, f, indent=2)
 
     logger.info(f"Study C results saved to {output_path}")
     logger.info(
-        f"Entity Recall (T=10): {mean_recall_at_t10:.3f}, "
+        f"Entity Recall (T=10): {mean_recall_at_t10_critical:.3f}, "
         f"Knowledge Conflict: {k_conflict:.3f}"
     )
 
