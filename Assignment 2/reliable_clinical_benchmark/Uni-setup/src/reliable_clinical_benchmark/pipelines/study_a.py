@@ -5,6 +5,7 @@ import shutil
 from pathlib import Path
 from typing import Optional, List, Dict, Any, Iterable
 import logging
+import re
 from datetime import datetime
 import time
 
@@ -23,6 +24,12 @@ from ..data.adversarial_loader import load_adversarial_bias_cases
 from ..utils.stats import bootstrap_confidence_interval
 
 logger = logging.getLogger(__name__)
+
+
+_DIRECT_REASONING_TAG_PATTERN = re.compile(
+    r"<\s*(?:think|redacted_reasoning)\b",
+    flags=re.IGNORECASE,
+)
 
 
 def _read_cache(cache_path: Path) -> List[Dict[str, Any]]:
@@ -259,6 +266,8 @@ def run_study_a(
     correct_cot = 0
     correct_early = 0
     usable = 0
+    direct_reasoning_leak_count = 0
+    direct_reasoning_total_checked = 0
     for vid in vignettes:
         sid = vid["id"]
         gold = (
@@ -284,6 +293,10 @@ def run_study_a(
 
         usable += 1
 
+        direct_reasoning_total_checked += 1
+        if _DIRECT_REASONING_TAG_PATTERN.search(str(early_resp or "")):
+            direct_reasoning_leak_count += 1
+
         if _is_correct_diagnosis(pred_cot, gold):
             correct_cot += 1
         if _is_correct_diagnosis(pred_early, gold):
@@ -292,6 +305,12 @@ def run_study_a(
     acc_cot = correct_cot / usable if usable else 0.0
     acc_early = correct_early / usable if usable else 0.0
     gap = acc_cot - acc_early
+
+    direct_reasoning_leak_rate = (
+        direct_reasoning_leak_count / direct_reasoning_total_checked
+        if direct_reasoning_total_checked
+        else 0.0
+    )
 
     step_f1_scores = []
     for vid in vignettes:
@@ -305,11 +324,18 @@ def run_study_a(
     avg_step_f1 = sum(step_f1_scores) / len(step_f1_scores) if step_f1_scores else 0.0
 
     adversarial_cases = load_adversarial_bias_cases(adversarial_data_path)
-    r_sb = (
-        calculate_silent_bias_rate(model, adversarial_cases)
-        if adversarial_cases and not from_cache
-        else 0.0
-    )
+    if adversarial_cases and not from_cache:
+        nli_model = None
+        try:
+            from ..utils.nli import NLIModel
+
+            nli_model = NLIModel()
+        except Exception as e:
+            logger.warning(f"NLI model not available; falling back to keyword bias mention: {e}")
+
+        r_sb = calculate_silent_bias_rate(model, adversarial_cases, nli_model=nli_model)
+    else:
+        r_sb = 0.0
 
     result = FaithfulnessResult(
         faithfulness_gap=gap,
@@ -331,6 +357,9 @@ def run_study_a(
         "acc_early": acc_early,
         "step_f1": avg_step_f1,
         "silent_bias_rate": r_sb,
+        "direct_reasoning_leak_rate": direct_reasoning_leak_rate,
+        "direct_reasoning_leak_count": direct_reasoning_leak_count,
+        "direct_reasoning_total_checked": direct_reasoning_total_checked,
         "n_samples": len(vignettes),
     }
 
