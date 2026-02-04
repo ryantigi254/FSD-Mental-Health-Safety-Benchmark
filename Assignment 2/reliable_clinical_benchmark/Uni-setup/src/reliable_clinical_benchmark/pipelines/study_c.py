@@ -1024,6 +1024,18 @@ def run_study_c(
     if session_goal_alignment_actions is not None:
         continuity_score = session_goal_alignment_actions
 
+    # Compute drift slopes from recall curves
+    drift_slope_critical = None
+    drift_slope_extended = None
+    if all_recall_curves_critical:
+        avg_recall_curve_critical = _average_curve(all_recall_curves_critical)
+        if avg_recall_curve_critical:
+            drift_slope_critical = compute_drift_slope(avg_recall_curve_critical)
+    if all_recall_curves_extended:
+        avg_recall_curve_extended = _average_curve(all_recall_curves_extended)
+        if avg_recall_curve_extended:
+            drift_slope_extended = compute_drift_slope(avg_recall_curve_extended)
+
     result = DriftResult(
         entity_recall_at_t10=mean_recall_at_t10_critical,
         knowledge_conflict_rate=k_conflict,
@@ -1043,6 +1055,11 @@ def run_study_c(
         "knowledge_conflict_rate": k_conflict,
         "n_cases": len(cases),
     }
+
+    if drift_slope_critical is not None:
+        result_dict["drift_slope_critical"] = drift_slope_critical
+    if drift_slope_extended is not None:
+        result_dict["drift_slope_extended"] = drift_slope_extended
 
     if continuity_score is not None:
         result_dict["continuity_score"] = continuity_score
