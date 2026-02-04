@@ -124,6 +124,16 @@ Course Material/Assignment/Samples/**
 # Local environment freeze output (keep local/untracked)
 Assignment 2/reliable_clinical_benchmark/Uni-setup/openr1-env-freeze-final.txt
 
+# Uni-setup processed folder - ignore all except pipeline directories
+Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/*
+!Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/study_a_bias_cleaned_optimized/
+!Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/study_a_bias_pipeline/
+!Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/study_a_pipeline/
+!Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/study_c_pipeline/
+!Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/study_b_pipeline/
+!Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/study_b_multiturn_pipeline/
+Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/_archived/
+
 # Local IDE / Cursor state - do not track
 .cursor/
 
