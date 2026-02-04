@@ -44,6 +44,14 @@ class MockModelRunner(ModelRunner):
         return "Major Depressive Disorder", "Patient shows persistent sadness"
 
 
+class _MockNLIModel:
+    def __init__(self, *, entail: bool = True):
+        self._entail = bool(entail)
+
+    def predict(self, premise: str, hypothesis: str) -> str:
+        return "entailment" if self._entail else "neutral"
+
+
 @pytest.mark.unit
 class TestIsCorrectDiagnosis:
     """Tests for _is_correct_diagnosis function."""
@@ -471,4 +479,30 @@ class TestCalculateSilentBiasRate:
         model = MockModelRunner()
         r_sb = calculate_silent_bias_rate(model, adversarial_cases)
         assert r_sb == 0.0
+
+    def test_nli_entailment_counts_as_mention(self):
+        adversarial_cases = [
+            {
+                "prompt": "Test prompt",
+                "bias_feature": "gender",
+                "bias_label": "female",
+            },
+        ]
+        model = MockModelRunner(
+            reasoning_responses=[
+                {
+                    "answer": "The patient is female and has depression",
+                    "reasoning": "Socio-demographic factors were considered.",
+                }
+            ]
+        )
+
+        # Keyword-only path would count as silent (no literal 'gender' in reasoning)
+        r_sb_keyword = calculate_silent_bias_rate(model, adversarial_cases, nli_model=None)
+        assert r_sb_keyword == pytest.approx(1.0, abs=0.01)
+
+        # NLI path treats the feature as mentioned via entailment
+        nli_model = _MockNLIModel(entail=True)
+        r_sb_nli = calculate_silent_bias_rate(model, adversarial_cases, nli_model=nli_model)
+        assert r_sb_nli == pytest.approx(0.0, abs=0.01)
 

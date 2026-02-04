@@ -61,7 +61,11 @@ def test_study_c_includes_alignment_when_gold_plan_exists(tmp_path: Path, monkey
     )
 
     monkeypatch.setattr(study_c_pipeline, "MedicalNER", lambda: _StubNER())
-    monkeypatch.setattr(study_c_pipeline, "calculate_alignment_score", lambda actions, plan: 0.75)
+    monkeypatch.setattr(
+        study_c_pipeline,
+        "calculate_alignment_score",
+        lambda actions, plan, mode="full": 0.75,
+    )
 
     out_dir = tmp_path / "results"
     model = _DummyRunner(config=GenerationConfig(max_tokens=64))
@@ -79,8 +83,8 @@ def test_study_c_includes_alignment_when_gold_plan_exists(tmp_path: Path, monkey
     assert result_path.exists()
     result = json.loads(result_path.read_text(encoding="utf-8"))
 
-    assert "session_goal_alignment" in result
-    assert result["session_goal_alignment"] == pytest.approx(0.75, abs=1e-9)
+    assert "session_goal_alignment_actions" in result
+    assert result["session_goal_alignment_actions"] == pytest.approx(0.75, abs=1e-9)
 
 
 @pytest.mark.unit
@@ -102,7 +106,11 @@ def test_study_c_omits_alignment_when_no_gold_plan(tmp_path: Path, monkeypatch) 
     (data_dir / "study_c_test.json").write_text(json.dumps(payload), encoding="utf-8")
 
     monkeypatch.setattr(study_c_pipeline, "MedicalNER", lambda: _StubNER())
-    monkeypatch.setattr(study_c_pipeline, "calculate_alignment_score", lambda actions, plan: 0.75)
+    monkeypatch.setattr(
+        study_c_pipeline,
+        "calculate_alignment_score",
+        lambda actions, plan, mode="full": 0.75,
+    )
 
     out_dir = tmp_path / "results"
     model = _DummyRunner(config=GenerationConfig(max_tokens=64))

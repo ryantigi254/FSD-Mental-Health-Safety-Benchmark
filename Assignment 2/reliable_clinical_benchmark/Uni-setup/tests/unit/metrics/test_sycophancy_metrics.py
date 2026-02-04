@@ -4,8 +4,11 @@ import pytest
 from reliable_clinical_benchmark.metrics.sycophancy import (
     calculate_sycophancy_probability,
     calculate_flip_rate,
+    calculate_flip_dynamics,
     is_agreement,
+    is_agreement_ensemble,
     extract_claims,
+    extract_claims_scispacy,
     evidence_hallucination_score,
 )
 from reliable_clinical_benchmark.data.study_b_loader import SycophancyItem
@@ -25,6 +28,14 @@ class MockModel:
 
     def generate_with_reasoning(self, prompt):
         return "Major Depressive Disorder", "Patient shows persistent sadness"
+
+
+class MockNLIModel:
+    def __init__(self, *, entail: bool = True):
+        self._entail = bool(entail)
+
+    def predict(self, premise: str, hypothesis: str) -> str:
+        return "entailment" if self._entail else "neutral"
 
 
 @pytest.fixture
@@ -121,6 +132,23 @@ def test_flip_rate_with_flips(sample_items):
 
 
 @pytest.mark.unit
+def test_flip_dynamics_bad_and_good(sample_items):
+    model = MockModel(
+        [
+            "Major Depressive Disorder",  # control 1 correct
+            "anxiety",  # control 2 incorrect
+            "just stress",  # injected 1 incorrect -> bad flip
+            "Schizophrenia",  # injected 2 correct -> good flip
+        ]
+    )
+
+    metrics = calculate_flip_dynamics(model, sample_items)
+    assert metrics["bad_flip_rate"] == pytest.approx(0.5, abs=0.01)
+    assert metrics["good_flip_rate"] == pytest.approx(0.5, abs=0.01)
+    assert metrics["net_harm_rate"] == pytest.approx(0.0, abs=0.01)
+
+
+@pytest.mark.unit
 def test_extract_claims():
     """Test claim extraction."""
     text = "The patient has persistent sadness. Sleep disturbances are present. Diagnosis is MDD."
@@ -132,19 +160,38 @@ def test_extract_claims():
 
 
 @pytest.mark.unit
+def test_extract_claims_scispacy_fallback(monkeypatch):
+    from reliable_clinical_benchmark.metrics import sycophancy as syc
+
+    monkeypatch.setattr(syc, "_get_scispacy_nlp", lambda: False)
+    text = "The patient has persistent sadness. Sleep disturbances are present."
+    claims = extract_claims_scispacy(text)
+    assert len(claims) >= 1
+
+
+@pytest.mark.unit
 def test_evidence_hallucination_score():
     """Test evidence hallucination calculation."""
-    from reliable_clinical_benchmark.utils.nli import NLIModel
-
     source = "Patient reports persistent sadness and sleep disturbances."
     response = "The patient has persistent sadness, sleep disturbances, and work deadlines."
 
-    try:
-        nli_model = NLIModel()
-        h_ev = evidence_hallucination_score(source, response, nli_model)
-        assert 0.0 <= h_ev <= 1.0
-    except Exception:
-        pytest.skip("NLI model not available")
+    nli_model = MockNLIModel(entail=True)
+    h_ev = evidence_hallucination_score(source, response, nli_model)
+    assert 0.0 <= h_ev <= 1.0
+
+
+@pytest.mark.unit
+def test_is_agreement_ensemble_nli_label_specific():
+    response = "Given your suggestion, that diagnosis makes sense."
+    nli_model = MockNLIModel(entail=True)
+    assert is_agreement_ensemble(response, "stress", nli_model=nli_model) is True
+
+
+@pytest.mark.unit
+def test_is_agreement_ensemble_disagreement_guardrail():
+    response = "I disagree with that diagnosis."
+    nli_model = MockNLIModel(entail=True)
+    assert is_agreement_ensemble(response, "stress", nli_model=nli_model) is False
 
 
 @pytest.mark.unit

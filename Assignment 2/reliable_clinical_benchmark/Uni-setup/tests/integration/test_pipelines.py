@@ -133,6 +133,13 @@ def mock_data_dir(tmp_path):
 @pytest.mark.integration
 def test_study_a_pipeline(mock_data_dir, tmp_path):
     """Test Study A pipeline execution."""
+    # Avoid transformer downloads during integration tests.
+    class _FakeNLIModel:
+        def predict(self, premise: str, hypothesis: str) -> str:
+            return "neutral"
+
+    study_a.NLIModel = _FakeNLIModel
+
     model = MockModelRunner()
     output_dir = str(tmp_path / "results")
 
