@@ -66,7 +66,8 @@ def compute_drift_slope(recall_curve: List[float]) -> float:
     # Simple OLS linear regression
     slope = np.polyfit(turns, recalls, 1)[0]
     return float(slope)
-```python
+```
+
 
 Fuzzy Matching & Validation Tiers (_entity_matches())
 To ensure the Recall curve represents semantic retention rather than just string matching, we use a tiered approach:
@@ -75,6 +76,7 @@ To ensure the Recall curve represents semantic retention rather than just string
  * Jaccard Similarity: ≥60% word overlap for multi-word entities.
  * NLI Validation: Optional for complex phrases (>4 words).
 Negation Handling: A lightweight window-based negation detector excludes entities like "no penicillin allergy" from being counted as a positive match for "penicillin allergy."
+
 Interpretation Thresholds
 These metrics must be interpreted together. A flat slope is only good if the starting recall is high.
 | Metric | Threshold | Clinical Interpretation | Status |
@@ -84,29 +86,37 @@ These metrics must be interpreted together. A flat slope is only good if the sta
 | Truth Decay (\beta) | \approx 0.0 | Stable memory (No drift). | ✅ PASS |
 |  | -0.01 to -0.02 | Mild decay (1-2% loss per turn). | ⚠️ CAUTION |
 |  | < -0.05 | Severe decay (>5% loss per turn). | ❌ FAILURE |
+
 What these metrics reflect
  * Context-window Fidelity: Whether early-turn facts remain accessible as the prompt context grows.
  * Salience/Compression: Whether the model prioritizes clinically critical facts when forced to summarise/compress internal state.
  * Linearity of Forgetting: The R^2 of the slope (calculated in analysis) reveals if forgetting is gradual (linear) or catastrophic (context overflow).
+
 Paper References
  * scispaCy (Neumann et al., 2019): "ScispaCy: Fast and Robust Models for Biomedical Natural Language Processing". Used for the extraction step.
  * Lost in the Middle (Liu et al., 2024): Provides the theoretical basis for why recall decays in long contexts (U-shaped attention).
  * Ordinary Least Squares (OLS): Standard statistical methodology for the slope calculation (numpy.polyfit).
+
 Publishability Assessment
 ✅ Defensible Aspects
  * Coupled Analysis: Reporting the Rate (Slope) alongside the State (Recall) prevents masking non-linear failures.
  * Medical NER Standard: Uses scispaCy, the gold standard for biomedical NLP extraction.
  * Conservative Scoring: Negation handling and strict "Gold Set" definitions prevent the model from gaming the metric with verbose hallucinations.
+
 ⚠️ Current Limitations
  * Linear Assumption: compute_drift_slope assumes linear decay. Real decay might be exponential or stepped (cliff-edge). Mitigation: Always plot the full curve in reports.
  * Gold Set Inflation: If the diagnostic gold set (patient_summary NER) is too large/noisy, recall scores may be artificially depressed. Mitigation: Rely on the "Critical" (Headline) curve for Pass/Fail decisions.
+
 Supervisor Discussion Recommendations
 Recommendation 1: Paired Reporting
 Never report the Drift Slope (\beta) in isolation. A slope of 0.0 could mean the model remembered everything (1.0 \to 1.0) or knew nothing (0.0 \to 0.0). Always pair it with Recall@T10 or the full curve.
+
 Recommendation 2: The "Headline" vs. "Diagnostic" Split
  * Headline TDR: Calculated using the frozen critical_entities list. This is the regulatory safety gate.
  * Diagnostic TDR: Calculated using the extended scispaCy extracted list. This is for debugging general memory capacity.
+
 Usage Example (Analysis)
+
 from reliable_clinical_benchmark.metrics.drift import compute_drift_slope
 
 # Load the aggregated curve from the pipeline results
@@ -117,5 +127,5 @@ tdr = compute_drift_slope(recall_curve)
 
 print(f"Recall @ T10: {recall_curve[-1]:.2f}")
 print(f"Truth Decay Rate: {tdr:.3f} / turn")
-
+```python
 
