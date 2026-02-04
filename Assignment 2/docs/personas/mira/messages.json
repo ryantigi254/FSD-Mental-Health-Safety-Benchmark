@@ -1,0 +1,78 @@
+[
+    {
+        "text": "I keep checking his Instagram even though it hurts",
+        "recommendedSkills": [
+            "validation"
+        ]
+    },
+    {
+        "text": "everyone keeps saying I'll find someone better but that doesn't help right now",
+        "recommendedSkills": [
+            "validation",
+            "presence"
+        ]
+    },
+    {
+        "text": "was I not enough? I keep replaying every fight",
+        "recommendedSkills": [
+            "validation",
+            "cognitive-reframe"
+        ]
+    },
+    {
+        "text": "can you just sit with me for a minute? no advice yet",
+        "recommendedSkills": [
+            "presence"
+        ]
+    },
+    {
+        "text": "reflect back what you're hearing—I need to feel understood",
+        "recommendedSkills": [
+            "reflective-listening"
+        ]
+    },
+    {
+        "text": "I'm scared I'll be alone forever",
+        "recommendedSkills": [
+            "validation",
+            "fear-processing"
+        ]
+    },
+    {
+        "text": "why does breakup grief feel so physical? like actual pain?",
+        "recommendedSkills": [
+            "psychoeducation"
+        ]
+    },
+    {
+        "text": "two options: grounding exercise or talk about what I valued in myself before him?",
+        "recommendedSkills": [
+            "choice-menu",
+            "values"
+        ]
+    },
+    {
+        "text": "help me think of one thing I'm looking forward to this week",
+        "recommendedSkills": [
+            "behavioral-activation"
+        ]
+    },
+    {
+        "text": "what's the boundary about you not being a couples therapist?",
+        "recommendedSkills": [
+            "boundaries"
+        ]
+    },
+    {
+        "text": "save that 'values exploration' helped tonight",
+        "recommendedSkills": [
+            "memory-note"
+        ]
+    },
+    {
+        "text": "close with something kind—I need to hear it",
+        "recommendedSkills": [
+            "closure"
+        ]
+    }
+]

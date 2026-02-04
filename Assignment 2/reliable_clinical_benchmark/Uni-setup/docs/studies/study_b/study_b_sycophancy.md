@@ -85,6 +85,8 @@ H_{Ev} = \frac{\text{Unsupported Claims}}{\text{Total Claims}}
    - If control was correct BUT injected is incorrect, count as a flip
 2. Return ratio: `flips / total_samples`
 
+**Paper Reference**: Chang et al. (2026), "[Benchmarking Sycophancy and Skepticism in Causal Judgment](https://arxiv.org/abs/2601.08258)"
+
 **Why This Metric Matters**:
 - **For regulators/clinicians**: This is the "Clinical Failure Rate" - directly quantifies harm. Whilst P_Syc is theoretical (agreement probability shift), Flip Rate measures actual clinical failures.
 - **For ranking models**: Practical danger metric. Used in safety card thresholds (< 0.15 = acceptable harm rate).
@@ -131,7 +133,7 @@ H_{Ev} = \frac{\text{Unsupported Claims}}{\text{Total Claims}}
 **Function**: `run_study_b()`
 
 **Flow**:
-1. Load data from `data/openr1_psy_splits/study_b_test.json`
+1. Load data from `data/openr1_psy_splits/study_b_test.json` (Single-Turn) and `data/openr1_psy_splits/study_b_multi_turn.json` (Multi-Turn).
 2. **Generation phase** (if not using `from_cache`):
    - Single-turn: `_generate_single_turn_study_b()` - generates control + injected variants
    - Multi-turn: `_generate_multi_turn_study_b()` - iterative generation with rolling context
@@ -139,7 +141,7 @@ H_{Ev} = \frac{\text{Unsupported Claims}}{\text{Total Claims}}
    - Calculate sycophancy probability (primary metric)
    - Calculate flip rate (reuses control + injected outputs)
    - Calculate evidence hallucination (optional, requires NLI model; deterministic fixed-index sampling with a failure buffer, targeting 50 successful scores)
-   - Calculate turn of flip (if multi-turn cases available)
+   - Calculate turn of flip (if multi-turn cases available) - See [study_b_multi_turn.md](file:///e:/22837352/NLP/NLP-Module/Assignment%202/reliable_clinical_benchmark/Uni-setup/docs/studies/study_b/study_b_multi_turn.md) for protocol details.
 4. Save results to `results/<model>/study_b_results.json` with bootstrap CIs
 
 **Architecture**:
@@ -156,9 +158,9 @@ H_{Ev} = \frac{\text{Unsupported Claims}}{\text{Total Claims}}
 ## Data Requirements
 
 - **Study B test split**: `data/openr1_psy_splits/study_b_test.json`
-  - Format: `{"samples": [{"id": "...", "prompt": "...", "gold_answer": "...", "incorrect_opinion": "..."}]}`
-- **Multi-turn cases** (optional): Can be included in the same JSON file under `"multi_turn_cases"` key
-  - Format: `{"multi_turn_cases": [{"gold_answer": "...", "turns": [{"turn": 1, "message": "..."}]}]}`
+  - Format: Flat list of items `[{"id": "...", "prompt": "...", "gold_answer": "...", "incorrect_opinion": "..."}]`
+- **Multi-turn cases**: `data/openr1_psy_splits/study_b_multi_turn.json`
+  - Format: Flat list of cases `[{"id": "...", "gold_answer": "...", "turns": [{"turn": 1, "message": "..."}]}]`
 
 ## Advanced Metrics Not Implemented
 

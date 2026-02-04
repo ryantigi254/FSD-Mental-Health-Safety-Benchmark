@@ -19,19 +19,23 @@ Study C evaluates **Longitudinal Drift** - measuring whether models maintain con
 To compute Study C `continuity_score` reproducibly (no API / no external model), first populate gold target plans derived from OpenR1-Psy therapist reasoning:
 
 ```powershell
-python scripts\study_c\gold_plans\populate_from_openr1.py --force
+python scripts\studies\study_c\gold_plans\generate_nli_plans.py --force
 ```
 
 This writes:
 - `data/study_c_gold/target_plans.json`
+
+Legacy reference:
+- `scripts\studies\study_c\gold_plans\populate_from_openr1.py` (heuristic extraction; kept for reference)
 
 Then run Study C evaluation as normal; `continuity_score` will be included in `study_c_results.json` if at least one gold plan is available.
 
 **Architecture**:
 
 - Uses `run_study_c()` pipeline from `reliable_clinical_benchmark.pipelines.study_c`
-- Each case has 10 turns, each turn generates 2 variants (summary + dialogue)
+- Each case has 20 turns, each turn generates 2 variants (summary + dialogue)
 - Supports `--generate-only` flag for generation-only mode (no metrics)
+- Modular design: Separate raw data (`study_c_test.json`) similar to Study B and Study A Bias.
 
 ## Environment Requirements
 
@@ -55,7 +59,7 @@ See `docs/environment/ENVIRONMENT.md` for setup instructions.
 
 4. **Reload the model** after changing context length
 
-**Why this matters**: Study C accumulates conversation history across 10 turns (20 messages: user + assistant). All models in Study C support 32K context, allowing **full conversation history to be maintained without truncation**. The pipeline keeps the complete conversation history for all 10 turns, ensuring models have full context for consistent responses.
+**Why this matters**: Study C accumulates conversation history across 20 turns (40 messages: user + assistant). All models in Study C support 32K context, allowing **full conversation history to be maintained without truncation**. The pipeline keeps the complete conversation history for all 20 turns, ensuring models have full context for consistent responses.
 
 **Verification**: After setting context length, check LM Studio logs to confirm the model loaded with the correct context size.
 
@@ -508,15 +512,15 @@ python src/tests/studies/study_c/test_study_c_generate_only.py --model-id qwen3_
     - `variant: "summary"` (for Entity Recall Decay metric)
     - `variant: "dialogue"` (for Knowledge Conflict Rate metric)
 - **Metrics**: Calculated separately using `from_cache` mode
-- **Total Generations**: 600 (30 cases × 10 turns × 2 variants)
+- **Total Generations**: 4000 (100 cases × 20 turns × 2 variants)
 
 ## Data Source
 
 - **Input**: `data/openr1_psy_splits/study_c_test.json`
 - **Structure**:
   - `cases`: Multi-turn conversations with `patient_summary`, `critical_entities`, `turns`, `metadata` (persona_id, source_openr1_ids)
-- **Personas**: 10 personas (aisha, jamal, eleni, maya, sam, leo, priya, noor, tomas, kai)
-- **Turns**: 10 turns per case
+- **Personas**: 40 personas (Active coverage for scaling)
+- **Turns**: 20 turns per case
 
 ## Implementation Details
 
@@ -539,7 +543,7 @@ python scripts/study_c/gold_plans/populate_from_openr1.py --force
 
 This extracts plan-of-care summaries from OpenR1-Psy `counselor_think` (full conversation) using the same dataset used for Study A gold labels, ensuring objectivity and reproducibility.
 
-**Current Coverage**: 30/30 cases have extracted plans (100%). All cases can have Session Goal Alignment computed.
+**Current Coverage**: 100/100 cases have extracted plans (100%). All cases can have Session Goal Alignment computed.
 
 See `data/study_c_gold/README.md` for detailed documentation on the extraction process and reproducibility guarantees.
 

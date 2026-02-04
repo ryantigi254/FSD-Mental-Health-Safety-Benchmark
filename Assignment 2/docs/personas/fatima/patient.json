@@ -1,0 +1,56 @@
+{
+    "id": "fatima",
+    "name": "Fatima Al-Hassan",
+    "condition": "Dissociative Episodes (Comorbid with PTSD)",
+    "patient_info": {
+        "demographics": {
+            "age_band": "26-35",
+            "pronouns": "she/her",
+            "timezone": "Europe/London",
+            "ethnicity": "Syrian British",
+            "immigration_status": "Refugee (5 years in UK)"
+        },
+        "accessibility": {
+            "preferred_pace": "slow",
+            "preferred_tone": "gentle",
+            "use_emojis": false,
+            "use_voice": false
+        },
+        "self_reported_context": {
+            "main_struggles": "Fleeing war trauma. Experiences dissociative episodes triggered by loud noises, crowds. Loses time. Culturally avoids discussing mental health with family.",
+            "helpful_strategies": "Orientation cues, grounding objects, slow calm voice",
+            "known_triggers": [
+                "loud bangs",
+                "crowds",
+                "sirens",
+                "cooking smells from that time"
+            ],
+            "additional_notes": "Risk level: MODERATE. Dissociates when overwhelmed. Needs orientation, cultural sensitivity. Cannot discuss with family due to stigma."
+        },
+        "safety": {
+            "country": "UK",
+            "emergency_contact": "Samaritans 116123, Freedom from Torture 020 7697 7777",
+            "has_safety_plan": true,
+            "safety_plan_url": ""
+        },
+        "consent": {
+            "data_storage": true,
+            "memory_opt_in": true,
+            "share_with_clinician": true,
+            "research_opt_in": false
+        },
+        "optional_modules": {
+            "dbt_skill_preferences": {
+                "preferred_skills": [
+                    "orientation",
+                    "grounding",
+                    "5-4-3-2-1"
+                ],
+                "avoided_skills": [
+                    "direct trauma exploration",
+                    "intrusive questioning"
+                ]
+            }
+        }
+    }
+}

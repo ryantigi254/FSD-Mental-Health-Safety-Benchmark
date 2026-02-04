@@ -11,7 +11,7 @@ import json
 import pytest
 
 
-BASE_DIR = Path(__file__).resolve().parents[2]
+BASE_DIR = Path(__file__).resolve().parents[3]
 
 
 def _load_json(relative_path: str):
@@ -29,15 +29,17 @@ def test_study_a_split_invariants():
     assert "samples" in data
     samples = data["samples"]
     assert isinstance(samples, list)
-    # We currently freeze 300 items from OpenR1-Psy
-    assert len(samples) == 300
+    # Frozen split size
+    assert len(samples) == 2000
 
     for sample in samples:
-        assert set(sample.keys()) == {"id", "prompt", "gold_answer", "gold_reasoning"}
+        for key in ("id", "prompt", "gold_answer", "gold_reasoning", "metadata"):
+            assert key in sample
         assert isinstance(sample["id"], str) and sample["id"]
         assert isinstance(sample["prompt"], str) and sample["prompt"].strip()
         assert isinstance(sample["gold_answer"], str) and sample["gold_answer"].strip()
         assert isinstance(sample["gold_reasoning"], list)
+        assert isinstance(sample["metadata"], dict)
         # Reasoning steps should be non-empty strings if present
         for step in sample["gold_reasoning"]:
             assert isinstance(step, str)
@@ -47,19 +49,17 @@ def test_study_a_split_invariants():
 @pytest.mark.unit
 def test_study_b_split_invariants():
     """Study B: persona-grounded sycophancy items and ToF cases."""
-    data = _load_json("data/openr1_psy_splits/study_b_test.json")
+    samples_payload = _load_json("data/openr1_psy_splits/study_b_test.json")
+    multi_turn_cases = _load_json("data/openr1_psy_splits/study_b_multi_turn_test.json")
 
-    assert "samples" in data
-    assert "multi_turn_cases" in data
+    # Study B single-turn items are committed as a flat list.
+    assert isinstance(samples_payload, list)
+    samples = samples_payload
 
-    samples = data["samples"]
-    multi_turn_cases = data["multi_turn_cases"]
-
-    assert isinstance(samples, list)
     assert isinstance(multi_turn_cases, list)
 
-    # Single-turn items: we currently freeze 40 persona-grounded prompts
-    assert len(samples) == 40
+    # Frozen split sizes
+    assert len(samples) == 2000
 
     for item in samples:
         for key in ("id", "prompt", "gold_answer", "incorrect_opinion", "metadata"):
@@ -71,14 +71,13 @@ def test_study_b_split_invariants():
 
         metadata = item["metadata"]
         assert isinstance(metadata, dict)
-        # All Study B items should be persona-grounded
         assert "persona_id" in metadata
         assert isinstance(metadata["persona_id"], str) and metadata["persona_id"]
         assert "age" in metadata
         assert isinstance(metadata["age"], int)
 
-    # Multi-turn "truth-under-pressure" cases: we currently freeze 10
-    assert len(multi_turn_cases) == 10
+    # Multi-turn "truth-under-pressure" cases
+    assert len(multi_turn_cases) == 40
 
     for case in multi_turn_cases:
         for key in ("id", "gold_answer", "turns", "metadata"):
@@ -111,11 +110,11 @@ def test_study_c_split_invariants():
     cases = data["cases"]
     assert isinstance(cases, list)
 
-    # We currently freeze 30 longitudinal cases (3x each of 10 persona histories).
-    assert len(cases) == 30
+    # Frozen split size
+    assert len(cases) == 100
 
     for case in cases:
-        for key in ("id", "patient_summary", "critical_entities", "turns", "metadata"):
+        for key in ("id", "patient_summary", "critical_entities", "turns", "metadata", "num_turns"):
             assert key in case
 
         assert isinstance(case["id"], str) and case["id"]
@@ -129,8 +128,9 @@ def test_study_c_split_invariants():
 
         turns = case["turns"]
         assert isinstance(turns, list)
-        # Longitudinal histories are fixed at 10 turns
-        assert len(turns) == 10
+        # Longitudinal histories are fixed at 20 turns
+        assert len(turns) == 20
+        assert case.get("num_turns") == 20
         for t in turns:
             assert isinstance(t.get("turn"), int)
             assert isinstance(t.get("message"), str) and t["message"].strip()
