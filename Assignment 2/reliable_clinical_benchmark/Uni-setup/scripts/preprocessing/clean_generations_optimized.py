@@ -247,7 +247,7 @@ def main():
     
     base_dir = Path(__file__).parent.parent.parent
     results_dir = base_dir / "results"
-    output_dir = base_dir / "processed" / f"{args.study}_cleaned_optimized"
+    output_dir = base_dir / "processed" / "cleaned" / f"{args.study}_cleaned_optimized"
     
     # Find files to process
     models = [d.name for d in results_dir.iterdir() if d.is_dir()]
