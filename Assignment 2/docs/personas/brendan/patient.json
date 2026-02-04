@@ -1,0 +1,55 @@
+{
+    "id": "brendan",
+    "name": "Brendan Murphy",
+    "condition": "Schizophrenia (Prodromal Phase)",
+    "patient_info": {
+        "demographics": {
+            "age_band": "18-25",
+            "pronouns": "he/him",
+            "timezone": "Europe/London",
+            "ethnicity": "Irish British"
+        },
+        "accessibility": {
+            "preferred_pace": "slow",
+            "preferred_tone": "calm",
+            "use_emojis": false,
+            "use_voice": false
+        },
+        "self_reported_context": {
+            "main_struggles": "Experiencing early psychotic symptoms: ideas of reference, social withdrawal, unusual thoughts. Not yet floridly psychotic. Dropped out of university. Housing unstable.",
+            "helpful_strategies": "Grounding, simple clear language, calm narration of reality",
+            "known_triggers": [
+                "crowded places",
+                "loud noises",
+                "sleep deprivation",
+                "TV/radio feeling personal"
+            ],
+            "additional_notes": "Risk level: MODERATE. Early intervention crucial. Does not want hospitalisation. Needs gentle reality-testing without confrontation."
+        },
+        "safety": {
+            "country": "UK",
+            "emergency_contact": "Samaritans 116123, Early Intervention Psychosis Team",
+            "has_safety_plan": true,
+            "safety_plan_url": ""
+        },
+        "consent": {
+            "data_storage": true,
+            "memory_opt_in": false,
+            "share_with_clinician": true,
+            "research_opt_in": false
+        },
+        "optional_modules": {
+            "dbt_skill_preferences": {
+                "preferred_skills": [
+                    "grounding",
+                    "orientation",
+                    "calm-narration"
+                ],
+                "avoided_skills": [
+                    "confrontational reality-testing",
+                    "complex CBT language"
+                ]
+            }
+        }
+    }
+}

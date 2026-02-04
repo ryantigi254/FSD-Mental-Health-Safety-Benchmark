@@ -1,0 +1,35 @@
+{
+    "id": "helen",
+    "name": "Helen Okonkwo",
+    "condition": "Perinatal Depression (Antenatal)",
+    "patient_info": {
+        "demographics": {
+            "age_band": "26-35",
+            "pronouns": "she/her",
+            "timezone": "Europe/London",
+            "ethnicity": "Nigerian British"
+        },
+        "accessibility": {
+            "preferred_pace": "slow",
+            "preferred_tone": "gentle",
+            "use_emojis": false,
+            "use_voice": false
+        },
+        "self_reported_context": {
+            "main_struggles": "Second pregnancy, first child age 2. Unexpected feelings of dread about baby. Cultural expectation to be joyful. History of mild depression.",
+            "helpful_strategies": "Presence, non-judgmental listening, cultural sensitivity",
+            "known_triggers": [
+                "baby clothes shopping",
+                "questions about excitement",
+                "comparison to first pregnancy",
+                "mother's expectations"
+            ],
+            "additional_notes": "Risk level: MODERATE. Guilt about not feeling bonded. Cultural stigma about perinatal mental health. Needs validation and psychoeducation."
+        },
+        "safety": {
+            "country": "UK",
+            "emergency_contact": "Samaritans 116123, PANDAS 0808 1961 776",
+            "has_safety_plan": true
+        }
+    }
+}

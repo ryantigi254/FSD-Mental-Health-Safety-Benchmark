@@ -4,17 +4,18 @@
 
 Study B evaluates **Sycophancy** - measuring whether models abandon medical truth to agree with incorrect user opinions.
 
-**File**: `hf-local-scripts/run_study_b_generate_only.py`
+**Files**:
+- `hf-local-scripts/run_study_b_generate_only.py` (Single-Turn)
+- `hf-local-scripts/run_study_b_multi_turn_generate_only.py` (Multi-Turn)
 
-**What it does**:
-- Validates Study B split **personas + IDs** (`validate_study_b_schema`) before generating
-- Generates responses in two distinct modes:
-  - **Single-turn**: Control + injected variants (for P_Syc, Flip Rate, H_Ev metrics)
-  - **Multi-turn**: Iterative generation with rolling context (for Turn of Flip metric)
-- Uses `model.chat()` for multi-turn conversations with proper context passing
-- Writes to: `results/<model-id>/study_b_generations.jsonl`
+**What they do**:
+- Validate Study B personas and IDs before generating.
+- `run_study_b_generate_only.py`: Generates Single-Turn Control + Injected variants (for P_Syc, Flip Rate, H_Ev metrics).
+- `run_study_b_multi_turn_generate_only.py`: Generates Multi-Turn iterative conversations with rolling context (for Turn of Flip metric).
+- Use `model.chat()` for multi-turn conversations with proper context passing.
+- Write to: `results/<model-id>/study_b_generations.jsonl` (Single) or `results/<model-id>/study_b_multi_turn_generations.jsonl` (Multi).
 
-**Note**: This is a standalone generation run. Metrics are calculated separately using `from_cache` mode.
+**Note**: These are standalone generation runs. Metrics are calculated separately using `from_cache` mode.
 
 **Architecture**:
 - Single-turn generation: `_generate_single_turn_study_b()` - uses `model.generate()`
@@ -77,6 +78,12 @@ python src/tests/studies/study_b/lmstudio/test_study_b_gpt_oss.py
 python hf-local-scripts\run_study_b_generate_only.py --model-id psyllm
 ```
 
+#### 5. Multi-Turn Generation (Study B)
+
+```powershell
+python hf-local-scripts\run_study_b_multi_turn_generate_only.py --model-id psyllm
+```
+
 ---
 
 ### PsyLLM (HF local, GMLHUHE/PsyLLM)
@@ -108,6 +115,12 @@ python src/tests/studies/study_b/models/test_study_b_psyllm_gml_local.py
 
 ```powershell
 python hf-local-scripts\run_study_b_generate_only.py --model-id psyllm_gml_local
+```
+
+#### 5. Multi-Turn Generation (Study B)
+
+```powershell
+python hf-local-scripts\run_study_b_multi_turn_generate_only.py --model-id psyllm_gml_local
 ```
 
 ---
@@ -142,6 +155,12 @@ python src/tests/studies/study_b/lmstudio/test_study_b_qwq.py
 python hf-local-scripts\run_study_b_generate_only.py --model-id qwq
 ```
 
+#### 5. Multi-Turn Generation (Study B)
+
+```powershell
+python hf-local-scripts\run_study_b_multi_turn_generate_only.py --model-id qwq
+```
+
 ---
 
 ### DeepSeek-R1 (LM Studio distill)
@@ -172,6 +191,12 @@ python src/tests/studies/study_b/lmstudio/test_study_b_deepseek_r1_lmstudio.py
 
 ```powershell
 python hf-local-scripts\run_study_b_generate_only.py --model-id deepseek_r1_lmstudio
+```
+
+#### 5. Multi-Turn Generation (Study B)
+
+```powershell
+python hf-local-scripts\run_study_b_multi_turn_generate_only.py --model-id deepseek_r1_lmstudio
 ```
 
 ---
@@ -206,6 +231,12 @@ python src/tests/studies/study_b/lmstudio/test_study_b_gpt_oss.py
 python hf-local-scripts\run_study_b_generate_only.py --model-id gpt_oss
 ```
 
+#### 5. Multi-Turn Generation (Study B)
+
+```powershell
+python hf-local-scripts\run_study_b_multi_turn_generate_only.py --model-id gpt_oss
+```
+
 ---
 
 ### Qwen3-8B (LM Studio)
@@ -236,6 +267,12 @@ python src/tests/studies/study_b/lmstudio/test_study_b_qwen3_lmstudio.py
 
 ```powershell
 python hf-local-scripts\run_study_b_generate_only.py --model-id qwen3_lmstudio
+```
+
+#### 5. Multi-Turn Generation (Study B)
+
+```powershell
+python hf-local-scripts\run_study_b_multi_turn_generate_only.py --model-id qwen3_lmstudio
 ```
 
 ---
@@ -271,6 +308,12 @@ python src/tests/studies/study_b/models/test_study_b_piaget_local.py
 python hf-local-scripts\run_study_b_generate_only.py --model-id piaget_local
 ```
 
+#### 5. Multi-Turn Generation (Study B)
+
+```powershell
+python hf-local-scripts\run_study_b_multi_turn_generate_only.py --model-id piaget_local
+```
+
 ---
 
 ### Psyche-R1 (HF local)
@@ -302,6 +345,12 @@ python src/tests/studies/study_b/models/test_study_b_psyche_r1_local.py
 
 ```powershell
 python hf-local-scripts\run_study_b_generate_only.py --model-id psyche_r1_local
+```
+
+#### 5. Multi-Turn Generation (Study B)
+
+```powershell
+python hf-local-scripts\run_study_b_multi_turn_generate_only.py --model-id psyche_r1_local
 ```
 
 ---
@@ -337,6 +386,12 @@ python src/tests/studies/study_b/models/test_study_b_psych_qwen_local.py
 python hf-local-scripts\run_study_b_generate_only.py --model-id psych_qwen_local
 ```
 
+#### 5. Multi-Turn Generation (Study B)
+
+```powershell
+python hf-local-scripts\run_study_b_multi_turn_generate_only.py --model-id psych_qwen_local
+```
+
 ---
 
 ## Quick Smoke Test (Generic)
@@ -354,6 +409,11 @@ python src/tests/studies/study_b/test_study_b_generate_only.py --model-id qwen3_
    python scripts\run_evaluation.py --study b --study-b-from-cache results\{model-id}\study_b_generations.jsonl
    ```
 
+2. **Calculate Multi-Turn metrics** (Turn of Flip):
+   ```powershell
+   python scripts\run_evaluation.py --study b --study-b-from-cache results\{model-id}\study_b_multi_turn_generations.jsonl
+   ```
+
    Or use the pipeline directly:
    ```python
    from reliable_clinical_benchmark.pipelines.study_b import run_study_b
@@ -367,14 +427,16 @@ python src/tests/studies/study_b/test_study_b_generate_only.py --model-id qwen3_
   - Multi-turn: `variant: "multi_turn"` (1 per turn)
     - Includes `conversation_history` (structured) and `conversation_text` (backward compatible)
 - **Metrics**: Calculated separately using `from_cache` mode
-- **Total Generations**: 602 (276 samples × 2 + 50 multi-turn)
+- **Total Generations**: 4050 (2000 samples × 2 + 50 multi-turn)
 - **Implementation**: See `src/reliable_clinical_benchmark/pipelines/study_b.py` for single-turn/multi-turn separation
 
 ## Data Source
 
-- **Input**: `data/openr1_psy_splits/study_b_test.json`
+- **Input**:
+  - Single-Turn: `data/openr1_psy_splits/study_b_test.json`
+  - Multi-Turn: `data/openr1_psy_splits/study_b_multi_turn.json`
 - **Structure**:
-  - `samples`: Single-turn prompts with `prompt`, `gold_answer`, `incorrect_opinion`, `metadata` (persona_id, age)
-  - `multi_turn_cases`: Multi-turn conversations for Turn of Flip (ToF) metric
-- **Personas**: 10 personas (aisha, jamal, eleni, maya, sam, leo, priya, noor, tomas, kai)
+  - `study_b_test.json`: Flat list of items with `prompt`, `gold_answer`, `incorrect_opinion`, `metadata`.
+  - `study_b_multi_turn.json`: Flat list of cases for Turn of Flip (ToF) metric.
+- **Personas**: 40 personas (Active coverage for scaling).
 

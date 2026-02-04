@@ -3,9 +3,11 @@
 import pytest
 from reliable_clinical_benchmark.metrics.drift import (
     compute_entity_recall_curve,
+    compute_entity_recall_metrics,
     calculate_knowledge_conflict_rate,
     compute_drift_slope,
     _extract_advice,
+    _compute_entity_set_metrics,
 )
 from reliable_clinical_benchmark.data.study_c_loader import LongitudinalCase, Turn
 
@@ -21,6 +23,19 @@ class MockModel:
         summary = self.summaries[self.call_count % len(self.summaries)]
         self.call_count += 1
         return summary
+
+
+class DummyNER:
+    """Deterministic NER stub for unit tests."""
+
+    def __init__(self, entity_map):
+        self.entity_map = {
+            key: {entity.lower() for entity in value}
+            for key, value in entity_map.items()
+        }
+
+    def extract_clinical_entities(self, text):
+        return set(self.entity_map.get(text, set()))
 
 
 @pytest.fixture
@@ -40,26 +55,100 @@ def sample_case():
 @pytest.mark.unit
 def test_compute_entity_recall_curve(sample_case):
     """Test entity recall curve computation."""
-    from reliable_clinical_benchmark.utils.ner import MedicalNER
-
     summaries = [
-        "Patient has MDD, on fluoxetine, allergic to penicillin.",
-        "Patient has MDD, on fluoxetine.",
-        "Patient has MDD.",
+        "Patient has major depressive disorder, on fluoxetine, allergic to penicillin.",
+        "Patient has major depressive disorder, on fluoxetine.",
+        "Patient has major depressive disorder.",
     ]
 
     model = MockModel(summaries)
+    dummy_ner = DummyNER(
+        {
+            sample_case.patient_summary: {
+                "major depressive disorder",
+                "fluoxetine",
+                "penicillin",
+            },
+            summaries[0]: {"major depressive disorder", "fluoxetine", "penicillin"},
+            summaries[1]: {"major depressive disorder", "fluoxetine"},
+            summaries[2]: {"major depressive disorder"},
+        }
+    )
+    recall_curve = compute_entity_recall_curve(model, sample_case, dummy_ner)
 
-    try:
-        ner = MedicalNER()
-        recall_curve = compute_entity_recall_curve(model, sample_case, ner)
+    assert len(recall_curve) == len(sample_case.turns)
+    assert all(0.0 <= recall <= 1.0 for recall in recall_curve)
+    # Recall should generally decrease over turns
+    assert recall_curve[0] >= recall_curve[-1]
 
-        assert len(recall_curve) == len(sample_case.turns)
-        assert all(0.0 <= recall <= 1.0 for recall in recall_curve)
-        # Recall should generally decrease over turns
-        assert recall_curve[0] >= recall_curve[-1]
-    except Exception:
-        pytest.skip("scispaCy model not available")
+
+@pytest.mark.unit
+def test_entity_recall_metrics_critical_only():
+    patient_summary = "Baseline summary text"
+    summary_text = "Patient continues fluoxetine."
+    sample_case = LongitudinalCase(
+        id="critical_only",
+        patient_summary=patient_summary,
+        critical_entities=["fluoxetine"],
+        turns=[Turn(turn=1, message="Checking in")],
+    )
+
+    dummy_ner = DummyNER(
+        {
+            patient_summary: {"fluoxetine", "morning"},
+            summary_text: {"fluoxetine"},
+        }
+    )
+    model = MockModel([summary_text])
+
+    metrics = compute_entity_recall_metrics(model, sample_case, dummy_ner)
+
+    assert metrics.recall_curve_critical == [1.0]
+    assert metrics.precision_curve_critical == [1.0]
+    assert metrics.f1_curve_critical == [1.0]
+    assert metrics.hallucinated_rate_curve_critical == [0.0]
+    assert metrics.recall_curve_extended == [pytest.approx(0.5)]
+    assert metrics.f1_curve_extended == [pytest.approx(2.0 / 3.0)]
+
+
+@pytest.mark.unit
+def test_entity_metrics_negation_excludes_recall():
+    gold_entities = {"penicillin allergy"}
+    predicted_entities = {"penicillin allergy"}
+    summary_text = "No penicillin allergy reported."
+
+    recall, precision, f1_score, hallucinated_rate = _compute_entity_set_metrics(
+        gold_entities=gold_entities,
+        predicted_entities=predicted_entities,
+        summary_text=summary_text,
+        nli_model=None,
+        apply_negation=True,
+    )
+
+    assert recall == 0.0
+    assert precision == 0.0
+    assert f1_score == 0.0
+    assert hallucinated_rate == 1.0
+
+
+@pytest.mark.unit
+def test_entity_metrics_precision_f1_hallucinated():
+    gold_entities = {"fluoxetine", "penicillin"}
+    predicted_entities = {"fluoxetine", "sertraline"}
+    summary_text = "Patient continues fluoxetine and mentions sertraline."
+
+    recall, precision, f1_score, hallucinated_rate = _compute_entity_set_metrics(
+        gold_entities=gold_entities,
+        predicted_entities=predicted_entities,
+        summary_text=summary_text,
+        nli_model=None,
+        apply_negation=False,
+    )
+
+    assert recall == pytest.approx(0.5)
+    assert precision == pytest.approx(0.5)
+    assert f1_score == pytest.approx(0.5)
+    assert hallucinated_rate == pytest.approx(0.5)
 
 
 @pytest.mark.unit
@@ -97,14 +186,15 @@ def test_extract_advice_no_keywords():
     text = "The patient is doing well. Thank you for the update."
     advice = _extract_advice(text)
 
-    # Should return truncated text if no advice keywords found
-    assert len(advice) > 0
+    assert advice == ""
 
 
 @pytest.mark.unit
 def test_calculate_knowledge_conflict_rate():
     """Test knowledge conflict rate calculation."""
-    from reliable_clinical_benchmark.utils.nli import NLIModel
+    class _MockNLIModel:
+        def predict(self, premise: str, hypothesis: str) -> str:
+            return "contradiction"
 
     cases = [
         LongitudinalCase(
@@ -126,19 +216,14 @@ def test_calculate_knowledge_conflict_rate():
 
     model = MockModel(responses)
 
-    try:
-        nli_model = NLIModel()
-        k_conflict = calculate_knowledge_conflict_rate(model, cases, nli_model)
-        assert 0.0 <= k_conflict <= 1.0
-    except Exception:
-        pytest.skip("NLI model not available")
+    nli_model = _MockNLIModel()
+    k_conflict = calculate_knowledge_conflict_rate(model, cases, nli_model)
+    assert 0.0 <= k_conflict <= 1.0
 
 
 @pytest.mark.unit
 def test_entity_recall_empty_case():
     """Test entity recall with empty case."""
-    from reliable_clinical_benchmark.utils.ner import MedicalNER
-
     empty_case = LongitudinalCase(
         id="empty",
         patient_summary="",
@@ -147,11 +232,7 @@ def test_entity_recall_empty_case():
     )
 
     model = MockModel([])
-
-    try:
-        ner = MedicalNER()
-        recall_curve = compute_entity_recall_curve(model, empty_case, ner)
-        assert recall_curve == []
-    except Exception:
-        pytest.skip("scispaCy model not available")
+    dummy_ner = DummyNER({"": set()})
+    recall_curve = compute_entity_recall_curve(model, empty_case, dummy_ner)
+    assert recall_curve == []
 

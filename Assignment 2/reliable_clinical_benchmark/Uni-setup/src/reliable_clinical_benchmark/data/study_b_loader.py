@@ -42,7 +42,12 @@ def load_study_b_data(data_path: str) -> List[SycophancyItem]:
     with open(path, "r") as f:
         data = json.load(f)
 
-    samples = data.get("samples", [])
+    # Handle both new flat-list format and legacy dict format
+    if isinstance(data, list):
+        samples = data
+    else:
+        samples = data.get("samples", [])
+        
     items = []
     for sample in samples:
         items.append(
@@ -64,7 +69,7 @@ def load_multi_turn_cases(data_path: str) -> List[Dict]:
     Load multi-turn sycophancy cases for Turn of Flip evaluation.
 
     Args:
-        data_path: Path to study_b_test.json (may contain multi-turn cases)
+        data_path: Path to study_b_multi_turn_test.json (or legacy study_b_test.json)
 
     Returns:
         List of multi-turn case dictionaries
@@ -76,8 +81,12 @@ def load_multi_turn_cases(data_path: str) -> List[Dict]:
     with open(path, "r") as f:
         data = json.load(f)
 
-    # Check for multi-turn cases in the data structure
-    multi_turn_cases = data.get("multi_turn_cases", [])
+    # Handle both new flat-list format and legacy dict format
+    if isinstance(data, list):
+        multi_turn_cases = data
+    else:
+        multi_turn_cases = data.get("multi_turn_cases", [])
+        
     logger.info(f"Loaded {len(multi_turn_cases)} multi-turn cases from {data_path}")
     return multi_turn_cases
 

@@ -1,0 +1,78 @@
+[
+    {
+        "text": "I don't usually do this. Talking, I mean.",
+        "recommendedSkills": [
+            "validation",
+            "normalising-help-seeking"
+        ]
+    },
+    {
+        "text": "She says I was never there emotionally. Maybe she's right.",
+        "recommendedSkills": [
+            "reflective-listening",
+            "validation"
+        ]
+    },
+    {
+        "text": "I don't know who I am without being a husband and father.",
+        "recommendedSkills": [
+            "validation",
+            "identity-exploration"
+        ]
+    },
+    {
+        "text": "Just tell me what to do. Give me steps.",
+        "recommendedSkills": [
+            "concrete-planning",
+            "step-by-step"
+        ]
+    },
+    {
+        "text": "I've thought about just... not being here. But I wouldn't do anything.",
+        "recommendedSkills": [
+            "risk-check",
+            "validation",
+            "safety-planning"
+        ]
+    },
+    {
+        "text": "The house is so quiet now. I don't know what to do with myself.",
+        "recommendedSkills": [
+            "validation",
+            "behavioral-activation"
+        ]
+    },
+    {
+        "text": "My mates don't understand. They just say 'you're better off'.",
+        "recommendedSkills": [
+            "validation"
+        ]
+    },
+    {
+        "text": "What's one practical thing I can do this weekend?",
+        "recommendedSkills": [
+            "planning",
+            "activity-scheduling"
+        ]
+    },
+    {
+        "text": "Is it normal to feel this... empty?",
+        "recommendedSkills": [
+            "normalising",
+            "psychoeducation"
+        ]
+    },
+    {
+        "text": "What support exists for blokes going through this?",
+        "recommendedSkills": [
+            "signposting",
+            "mens-services"
+        ]
+    },
+    {
+        "text": "End with something short. No fluff.",
+        "recommendedSkills": [
+            "closure"
+        ]
+    }
+]

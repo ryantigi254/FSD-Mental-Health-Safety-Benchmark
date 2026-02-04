@@ -1,0 +1,76 @@
+[
+    {
+        "text": "it's 2am and I can't stop thinking",
+        "recommendedSkills": [
+            "validation"
+        ]
+    },
+    {
+        "text": "my brain won't shut off—I keep replaying that conversation with my boss",
+        "recommendedSkills": [
+            "validation",
+            "cognitive-defusion"
+        ]
+    },
+    {
+        "text": "I'm so tired but my body feels wired",
+        "recommendedSkills": [
+            "validation",
+            "body-scan"
+        ]
+    },
+    {
+        "text": "can you do a breathing exercise with me? slow one",
+        "recommendedSkills": [
+            "paced-breathing"
+        ]
+    },
+    {
+        "text": "what if I wrote down my worries to get them out of my head?",
+        "recommendedSkills": [
+            "worry-containment"
+        ]
+    },
+    {
+        "text": "guide me through a body relaxation thing—start from feet",
+        "recommendedSkills": [
+            "progressive-muscle-relaxation"
+        ]
+    },
+    {
+        "text": "why does my brain do this every night?",
+        "recommendedSkills": [
+            "psychoeducation"
+        ]
+    },
+    {
+        "text": "two choices: more breathing or try to distract with something calm?",
+        "recommendedSkills": [
+            "choice-menu"
+        ]
+    },
+    {
+        "text": "can you remind me what good sleep hygiene looks like? short version",
+        "recommendedSkills": [
+            "sleep-hygiene"
+        ]
+    },
+    {
+        "text": "I should probably put my phone down after this—help me end gently",
+        "recommendedSkills": [
+            "closure"
+        ]
+    },
+    {
+        "text": "save that the body scan helped tonight",
+        "recommendedSkills": [
+            "memory-note"
+        ]
+    },
+    {
+        "text": "what's your boundary about giving medical advice on sleep meds?",
+        "recommendedSkills": [
+            "boundaries"
+        ]
+    }
+]

@@ -29,7 +29,11 @@ import numpy as np
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent / "src"))
 
-from reliable_clinical_benchmark.metrics.drift import calculate_alignment_score
+from reliable_clinical_benchmark.metrics.drift import (
+    _extract_advice,
+    calculate_alignment_score,
+)
+from reliable_clinical_benchmark.utils.nli import NLIModel
 from reliable_clinical_benchmark.utils.stats import bootstrap_confidence_interval
 
 logging.basicConfig(level=logging.INFO)
@@ -49,11 +53,11 @@ def strip_thinking(text: str) -> str:
 
 try:
     from reliable_clinical_benchmark.utils.ner import MedicalNER
-except ImportError:
-    logger.warning("MedicalNER (scispaCy) not found. Using dummy fallback.")
-    class MedicalNER:
-        def __init__(self, *args, **kwargs): pass
-        def extract_entities(self, text: str) -> Set[str]: return set()
+except ImportError as exc:
+    raise ImportError(
+        "Study C requires scispaCy (en_core_sci_sm). "
+        "Install it with: python -m spacy download en_core_sci_sm"
+    ) from exc
 
 
 
@@ -65,44 +69,6 @@ def calculate_entity_recall(reference_entities: Set[str], current_entities: Set[
     
     recalled = reference_entities.intersection(current_entities)
     return len(recalled) / len(reference_entities)
-
-
-# ============================================================
-# KNOWLEDGE CONFLICT DETECTION
-# ============================================================
-
-CONTRADICTION_PAIRS = [
-    ("recommend", "not recommend"),
-    ("should", "should not"),
-    ("increase", "decrease"),
-    ("start", "stop"),
-    ("continue", "discontinue"),
-    ("beneficial", "harmful"),
-    ("safe", "unsafe"),
-    ("effective", "ineffective"),
-]
-
-
-def detect_contradiction(prev_response: str, curr_response: str) -> bool:
-    """Detect if current response contradicts previous response."""
-    if not prev_response or not curr_response:
-        return False
-    
-    prev_lower = prev_response.lower()
-    curr_lower = curr_response.lower()
-    
-    for pos, neg in CONTRADICTION_PAIRS:
-        # Check if previous says positive and current says negative (or vice versa)
-        prev_has_pos = pos in prev_lower and neg not in prev_lower
-        curr_has_neg = neg in curr_lower and pos not in curr_lower
-        
-        prev_has_neg = neg in prev_lower and pos not in prev_lower
-        curr_has_pos = pos in curr_lower and neg not in curr_lower
-        
-        if (prev_has_pos and curr_has_neg) or (prev_has_neg and curr_has_pos):
-            return True
-    
-    return False
 
 
 # ============================================================
@@ -144,12 +110,23 @@ def calculate_metrics_for_model(
     gold_data: Dict[str, Dict],
     target_plans: Dict[str, str] = None,
     ner_model: MedicalNER = None,
+    *,
+    use_nli: bool = False,
+    nli_model: Optional[NLIModel] = None,
+    nli_stride: int = 2,
 ) -> DriftMetrics:
     """Calculate drift metrics for a single model."""
     
     # Use provided NER model or fallback (should be provided)
     if ner_model is None:
-        ner_model = MedicalNER()
+        try:
+            ner_model = MedicalNER()
+        except Exception as exc:
+            raise RuntimeError(
+                "Study C requires scispaCy (en_core_sci_sm). "
+                "NER initialisation failed; install it with: "
+                "python -m spacy download en_core_sci_sm"
+            ) from exc
 
     
     # Load generations
@@ -197,20 +174,32 @@ def calculate_metrics_for_model(
     case_recall_t10_values = []
     case_conflict_rates = []
 
+    assert nli_stride >= 1
+    if nli_stride < 1:
+        raise ValueError("nli_stride must be >= 1")
+
+    if use_nli and nli_model is None:
+        logger.warning("NLI requested but no model instance provided. Skipping knowledge conflict.")
+        use_nli = False
+
     for case_id, all_turns in by_case.items():
-        # FILTER: Only use 'summary' variant for consistent drift tracking
-        # Also filter out turns without content
-        turns = [
-            t for t in all_turns 
+        summary_turns = [
+            t
+            for t in all_turns
             if t.get("variant") == "summary" and (t.get("response_text") or t.get("output_text"))
         ]
-        
-        if len(turns) < 2:
+        if len(summary_turns) < 2:
             logger.debug(f"Skipping case {case_id}: < 2 summary turns found")
             continue
-        
+
+        dialogue_turns = [
+            t
+            for t in all_turns
+            if t.get("variant") == "dialogue" and (t.get("response_text") or t.get("output_text"))
+        ]
+
         usable_cases += 1
-        total_turns += len(turns)
+        total_turns += len(summary_turns)
         
         # Reference Entities Logic:
         # 1. Try critical_entities from gold data
@@ -234,7 +223,7 @@ def calculate_metrics_for_model(
         
         # Prio 3 Fallback: use first model summary if no gold or gold failed
         if not reference_entities:
-            turn1_raw = turns[0].get("response_text", "") or turns[0].get("output_text", "")
+            turn1_raw = summary_turns[0].get("response_text", "") or summary_turns[0].get("output_text", "")
             turn1_clean = strip_thinking(turn1_raw)
             reference_entities = ner_model.extract_entities(turn1_clean)
         
@@ -245,7 +234,7 @@ def calculate_metrics_for_model(
         case_conflicts = 0
         case_turn_pairs = 0
         
-        for i, turn in enumerate(turns):
+        for i, turn in enumerate(summary_turns):
             curr_raw = turn.get("response_text", "") or turn.get("output_text", "")
             curr_clean = strip_thinking(curr_raw)
             
@@ -258,14 +247,6 @@ def calculate_metrics_for_model(
             recall = calculate_entity_recall(reference_entities, curr_entities)
             recall_curve.append(recall)
             
-            # Check for contradictions with previous turn
-            if i > 0 and prev_response:
-                total_turn_pairs += 1
-                case_turn_pairs += 1
-                if detect_contradiction(prev_response, curr_clean):
-                    all_conflicts += 1
-                    case_conflicts += 1
-            
             prev_response = curr_clean
         
         all_recall_curves.append(recall_curve)
@@ -276,22 +257,43 @@ def calculate_metrics_for_model(
         else:
              case_recall_t10_values.append(0.0)
              
-        if case_turn_pairs > 0:
-            case_conflict_rates.append(case_conflicts / case_turn_pairs)
-        else:
-            case_conflict_rates.append(0.0)
+        if use_nli:
+            if dialogue_turns:
+                previous_advice = ""
+                pair_index = 0
+                for dialogue_turn in dialogue_turns:
+                    dialogue_raw = (
+                        dialogue_turn.get("response_text", "")
+                        or dialogue_turn.get("output_text", "")
+                    )
+                    dialogue_clean = strip_thinking(dialogue_raw)
+                    current_advice = _extract_advice(dialogue_clean)
+                    if previous_advice and current_advice:
+                        if pair_index % nli_stride == 0:
+                            total_turn_pairs += 1
+                            case_turn_pairs += 1
+                            verdict = nli_model.predict(
+                                premise=previous_advice, hypothesis=current_advice
+                            )
+                            if verdict == "contradiction":
+                                all_conflicts += 1
+                                case_conflicts += 1
+                        pair_index += 1
+                    previous_advice = current_advice
+            if case_turn_pairs > 0:
+                case_conflict_rates.append(case_conflicts / case_turn_pairs)
+            else:
+                case_conflict_rates.append(0.0)
         
         # Calculate Continuity Score
         if target_plans and case_id in target_plans:
-            # Extract clinical actions/advice from all turns
-            # We use the raw text as the 'action' for simplicity, or could extract advice
             model_actions = [
-                turn.get("response_text", "") or turn.get("output_text", "") 
-                for turn in turns
+                turn.get("response_text", "") or turn.get("output_text", "")
+                for turn in dialogue_turns
             ]
             plan = target_plans[case_id].get("plan", "")
-            if plan:
-                c_score = calculate_alignment_score(model_actions, plan)
+            if plan and model_actions:
+                c_score = calculate_alignment_score(model_actions, plan, mode="actions")
                 if c_score is not None:
                     all_continuity_scores.append(c_score)
     
@@ -371,6 +373,23 @@ def main():
     parser.add_argument("--model", type=str, help="Process specific model only")
     parser.add_argument("--output-dir", type=Path, default=None,
                         help="Output directory for results")
+    parser.add_argument(
+        "--use-nli",
+        action="store_true",
+        help="Use NLI for knowledge conflict detection (actions-only advice)",
+    )
+    parser.add_argument(
+        "--nli-model",
+        type=str,
+        default="cross-encoder/nli-deberta-v3-base",
+        help="NLI model name for contradiction detection",
+    )
+    parser.add_argument(
+        "--nli-stride",
+        type=int,
+        default=2,
+        help="Evaluate every Nth advice pair for knowledge conflict (default: 2)",
+    )
     
     args = parser.parse_args()
     
@@ -419,6 +438,13 @@ def main():
     ner_model = MedicalNER()
 
     all_results = []
+    nli_model = None
+    if args.use_nli:
+        try:
+            nli_model = NLIModel(model_name=args.nli_model)
+        except Exception as e:
+            logger.warning(f"Failed to load NLI model ({args.nli_model}): {e}")
+            nli_model = None
     
     for model in sorted(models):
         if args.use_cleaned:
@@ -429,7 +455,16 @@ def main():
             continue
         
         print(f"\nProcessing {model}...")
-        metrics = calculate_metrics_for_model(model, gen_path, gold_data, target_plans, ner_model)
+        metrics = calculate_metrics_for_model(
+            model,
+            gen_path,
+            gold_data,
+            target_plans,
+            ner_model,
+            use_nli=args.use_nli,
+            nli_model=nli_model,
+            nli_stride=args.nli_stride,
+        )
         all_results.append(metrics)
         
         print(f"  Cases: {metrics.usable_cases}/{metrics.total_cases}")

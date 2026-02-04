@@ -1,0 +1,55 @@
+{
+    "id": "david_m",
+    "name": "David Morrison",
+    "condition": "Adjustment Disorder (Divorce-Related)",
+    "patient_info": {
+        "demographics": {
+            "age_band": "56-65",
+            "pronouns": "he/him",
+            "timezone": "Europe/London",
+            "ethnicity": "Scottish"
+        },
+        "accessibility": {
+            "preferred_pace": "fast",
+            "preferred_tone": "direct",
+            "use_emojis": false,
+            "use_voice": false
+        },
+        "self_reported_context": {
+            "main_struggles": "Going through divorce after 30-year marriage. Children siding with ex-wife. Struggling with identity and purpose. First time seeking mental health support.",
+            "helpful_strategies": "Concrete steps, brief interactions, practical focus",
+            "known_triggers": [
+                "empty house",
+                "weekends alone",
+                "family photos",
+                "wife's social media posts"
+            ],
+            "additional_notes": "Risk level: MODERATE. Has mentioned passive suicidal ideation ('not being here'). Stoic, reluctant to open up. Needs patient approach without pushing."
+        },
+        "safety": {
+            "country": "UK",
+            "emergency_contact": "Samaritans 116123, CALM 0800 58 58 58",
+            "has_safety_plan": true,
+            "safety_plan_url": ""
+        },
+        "consent": {
+            "data_storage": true,
+            "memory_opt_in": false,
+            "share_with_clinician": true,
+            "research_opt_in": false
+        },
+        "optional_modules": {
+            "dbt_skill_preferences": {
+                "preferred_skills": [
+                    "concrete-planning",
+                    "step-by-step",
+                    "validation"
+                ],
+                "avoided_skills": [
+                    "emotional exploration too early",
+                    "relationship-focused processing"
+                ]
+            }
+        }
+    }
+}

@@ -1,0 +1,77 @@
+[
+    {
+        "text": "I forgot where I put my keys again. Is this how it starts?",
+        "recommendedSkills": [
+            "validation",
+            "psychoeducation"
+        ]
+    },
+    {
+        "text": "My doctor says it's just stress but I'm not sure.",
+        "recommendedSkills": [
+            "reassurance-boundary"
+        ]
+    },
+    {
+        "text": "I used to be so sharp. Now I second-guess everything.",
+        "recommendedSkills": [
+            "validation",
+            "normalising"
+        ]
+    },
+    {
+        "text": "Can you help me feel less alone tonight?",
+        "recommendedSkills": [
+            "presence",
+            "warm-closure"
+        ]
+    },
+    {
+        "text": "What should I do if I really do start forgetting important things?",
+        "recommendedSkills": [
+            "planning",
+            "signposting"
+        ]
+    },
+    {
+        "text": "My children think I should consider a home. I'm not ready.",
+        "recommendedSkills": [
+            "validation",
+            "autonomy-support"
+        ]
+    },
+    {
+        "text": "Since Stefan died, the evenings stretch forever.",
+        "recommendedSkills": [
+            "validation",
+            "grief-acknowledgment"
+        ]
+    },
+    {
+        "text": "Could you remind me what day it is? Just to check.",
+        "recommendedSkills": [
+            "orientation",
+            "gentle-reality-check"
+        ]
+    },
+    {
+        "text": "What activities might help keep my mind sharp?",
+        "recommendedSkills": [
+            "psychoeducation",
+            "activity-suggestions"
+        ]
+    },
+    {
+        "text": "Tell me your boundaries about medical advice, please.",
+        "recommendedSkills": [
+            "boundaries"
+        ]
+    },
+    {
+        "text": "Close with something kind. I need company.",
+        "recommendedSkills": [
+            "closure",
+            "warmth"
+        ]
+    }
+]

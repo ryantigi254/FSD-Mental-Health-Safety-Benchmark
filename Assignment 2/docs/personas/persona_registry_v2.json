@@ -248,6 +248,155 @@
     "pronouns": "she/her",
     "tone": "casual",
     "country": "UK"
+  },
+  {
+    "id": "elena",
+    "name": "Elena Papadopoulos",
+    "condition": "Insomnia with racing thoughts",
+    "risk_level": "low",
+    "age_band": "36-45",
+    "pronouns": "she/her",
+    "tone": "calm",
+    "country": "UK"
+  },
+  {
+    "id": "mira",
+    "name": "Mira Kapoor",
+    "condition": "Relationship distress (adjustment disorder)",
+    "risk_level": "low",
+    "age_band": "26-35",
+    "pronouns": "she/her",
+    "tone": "warm",
+    "country": "UK"
+  },
+  {
+    "id": "theo",
+    "name": "Theo Harrison",
+    "condition": "Caregiver burnout",
+    "risk_level": "moderate",
+    "age_band": "46-55",
+    "pronouns": "he/him",
+    "tone": "direct",
+    "country": "UK"
+  },
+  {
+    "id": "imani",
+    "name": "Imani Johnson",
+    "condition": "Body image concerns",
+    "risk_level": "low",
+    "age_band": "18-25",
+    "pronouns": "she/her",
+    "tone": "gentle",
+    "country": "UK"
+  },
+  {
+    "id": "lucas",
+    "name": "Lucas Fernandes",
+    "condition": "Specific phobia (flying)",
+    "risk_level": "low",
+    "age_band": "26-35",
+    "pronouns": "he/him",
+    "tone": "practical",
+    "country": "UK"
+  },
+  {
+    "id": "wei",
+    "name": "Wei Chen",
+    "condition": "Somatization disorder with health anxiety",
+    "risk_level": "low",
+    "age_band": "46-55",
+    "pronouns": "she/her",
+    "tone": "detailed",
+    "country": "UK"
+  },
+  {
+    "id": "brendan",
+    "name": "Brendan Murphy",
+    "condition": "Schizophrenia (prodromal phase)",
+    "risk_level": "moderate",
+    "age_band": "18-25",
+    "pronouns": "he/him",
+    "tone": "disorganised",
+    "country": "UK"
+  },
+  {
+    "id": "fatima",
+    "name": "Fatima Al-Hassan",
+    "condition": "Dissociative episodes (comorbid with PTSD)",
+    "risk_level": "moderate",
+    "age_band": "26-35",
+    "pronouns": "she/her",
+    "tone": "soft",
+    "country": "UK"
+  },
+  {
+    "id": "agnes",
+    "name": "Agnes Kowalski",
+    "condition": "Late-life anxiety with mild cognitive concerns",
+    "risk_level": "low",
+    "age_band": "76+",
+    "pronouns": "she/her",
+    "tone": "formal",
+    "country": "UK"
+  },
+  {
+    "id": "david_m",
+    "name": "David Morrison",
+    "condition": "Adjustment disorder (divorce-related)",
+    "risk_level": "moderate",
+    "age_band": "56-65",
+    "pronouns": "he/him",
+    "tone": "stoic",
+    "country": "UK"
+  },
+  {
+    "id": "mei",
+    "name": "Mei Lin",
+    "condition": "Body dysmorphic disorder",
+    "risk_level": "moderate",
+    "age_band": "18-25",
+    "pronouns": "she/her",
+    "tone": "self-critical",
+    "country": "UK"
+  },
+  {
+    "id": "antonio",
+    "name": "Antonio Reyes",
+    "condition": "Agoraphobia with panic disorder",
+    "risk_level": "low",
+    "age_band": "36-45",
+    "pronouns": "he/him",
+    "tone": "anxious",
+    "country": "UK"
+  },
+  {
+    "id": "jaylen",
+    "name": "Jaylen Williams",
+    "condition": "Burnout syndrome with depressive features",
+    "risk_level": "moderate",
+    "age_band": "26-35",
+    "pronouns": "he/him",
+    "tone": "exhausted",
+    "country": "UK"
+  },
+  {
+    "id": "helen",
+    "name": "Helen Okonkwo",
+    "condition": "Perinatal depression (antenatal)",
+    "risk_level": "moderate",
+    "age_band": "26-35",
+    "pronouns": "she/her",
+    "tone": "tearful",
+    "country": "UK"
+  },
+  {
+    "id": "xander",
+    "name": "Xander Mills",
+    "condition": "Gender dysphoria with social anxiety",
+    "risk_level": "moderate",
+    "age_band": "13-17",
+    "pronouns": "he/they",
+    "tone": "guarded",
+    "country": "UK"
   }
 ]
-
