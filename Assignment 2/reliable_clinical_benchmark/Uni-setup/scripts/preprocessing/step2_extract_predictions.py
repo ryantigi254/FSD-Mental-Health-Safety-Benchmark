@@ -297,10 +297,10 @@ def main():
             input_dir = base_dir / "results"
             input_pattern = f"{study}_generations.jsonl"
         else:
-            input_dir = base_dir / "processed" / f"{study}_cleaned"
+            input_dir = base_dir / "processed" / "cleaned" / f"{study}_cleaned"
             input_pattern = f"{study}_generations.jsonl"
         
-        output_dir = base_dir / "processed" / f"{study}_extracted"
+        output_dir = base_dir / "processed" / "cleaned" / f"{study}_extracted"
         
         print(f"\n[{study.upper()}]")
         print(f"  Input:  {input_dir}")

@@ -26,6 +26,7 @@ processed/*
 !processed/study_c_pipeline/
 !processed/study_b_pipeline/
 !processed/study_b_multiturn_pipeline/
+processed/_archived/
 models/
 offload/
 wandb/
