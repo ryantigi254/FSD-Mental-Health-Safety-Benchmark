@@ -66,6 +66,7 @@ def compute_drift_slope(recall_curve: List[float]) -> float:
     # Simple OLS linear regression
     slope = np.polyfit(turns, recalls, 1)[0]
     return float(slope)
+```python
 
 Fuzzy Matching & Validation Tiers (_entity_matches())
 To ensure the Recall curve represents semantic retention rather than just string matching, we use a tiered approach:
