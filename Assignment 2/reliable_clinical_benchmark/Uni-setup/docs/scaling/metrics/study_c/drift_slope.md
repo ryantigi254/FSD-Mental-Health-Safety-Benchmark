@@ -4,7 +4,9 @@
 
 ## Definition
 
-Quantifies the speed of entity forgetting by fitting a linear regression to (turn_number, recall) pairs. Provides a single-number summary of drift speed for comparison across models.
+Quantifies the speed of entity forgetting by fitting a linear regression to (turn_number, recall) pairs. Provides a single-number summary of drift speed for comparison across models. The default input is the critical recall curve; the extended curve can be used as a diagnostic variant.
+
+**Note**: Drift Slope is a summary statistic over the recall curve, not an independent verification signal.
 
 ## LaTeX Formula
 
@@ -72,17 +74,19 @@ def compute_drift_slope(recall_curve: List[float]) -> float:
 
 ## Supervisor Discussion Recommendations
 
-This metric was not specifically discussed but is documented in the codebase.
+These recommendations capture how Drift Slope should be reported so it remains interpretable (as a summary statistic, not a standalone signal).
+
+### Recommended Enhancement: Critical-Curve Default + Paired Reporting
+
+- Compute drift slope on `average_recall_curve_critical` (headline).
+- Optionally compute a diagnostic slope on `average_recall_curve_extended`.
+- Always report slope together with the underlying recall curve (to avoid masking non-linear decay).
 
 ### Key Points
 
 1. **Currently Available**: Function works, just not stored in results JSON
 2. **Analysis Notebooks**: Can be computed from saved recall curves
 3. **Could Add to Pipeline**: Simple enhancement if needed
-
-### Defence Statement
-
-> "Drift Slope provides a single-number summary of entity recall decay speed using linear regression, enabling quick model comparison on longitudinal stability."
 
 ## Updates Needed
 
@@ -98,8 +102,11 @@ This metric was not specifically discussed but is documented in the codebase.
 # In analysis notebook:
 from reliable_clinical_benchmark.metrics.drift import compute_drift_slope
 
-# Load recall curve from results
-recall_curve = results["average_recall_curve"]
+# Load recall curve from results (headline = critical)
+recall_curve = results["average_recall_curve_critical"]
+
+# Optional diagnostic variant
+diagnostic_curve = results.get("average_recall_curve_extended")
 
 # Compute slope
 slope = compute_drift_slope(recall_curve)

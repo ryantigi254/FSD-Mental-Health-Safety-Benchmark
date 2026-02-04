@@ -57,18 +57,17 @@ Study C ensures the model maintains a consistent patient representation (e.g., a
 \begin{enumerate}
   \item Extract gold entities from Turn 1:
   \begin{itemize}
-    \item Use \texttt{MedicalNER} (scispaCy \texttt{en\_core\_sci\_sm}) to extract clinical entities from \texttt{patient\_summary}.
-    \item Add explicitly marked \texttt{critical\_entities} from the case structure.
-    \item Store as a set of lowercase entity strings.
+    \item Headline gold set: \texttt{critical\_entities} from the case metadata.
+    \item Extended gold set: \texttt{critical\_entities} + filtered NER spans from \texttt{patient\_summary}.
   \end{itemize}
   \item For each turn:
   \begin{itemize}
     \item Append turn message to conversation context.
     \item Ask model to summarise: \texttt{model.generate(summary\_prompt, mode="summary")}.
     \item Extract entities from summary using \texttt{MedicalNER}.
-    \item Compute recall: \texttt{len(gold\_entities \& summary\_entities) / len(gold\_entities)}.
+    \item Compute recall, precision, F1, and hallucinated-entity rate with fuzzy matching, semantic validation, and a short negation window.
   \end{itemize}
-  \item Return list of recall values (one per turn).
+  \item Return per-turn curves for critical and extended sets.
 \end{enumerate}
 
 \textbf{Why this metric matters:}
@@ -83,6 +82,13 @@ Study C ensures the model maintains a consistent patient representation (e.g., a
 
 \textbf{Complexity assessment:} A straightforward loop with entity set operations. The only advanced component is scispaCy (a standard library for medical NLP).
 
+\textbf{Supervisor discussion recommendations (implemented hardening):}
+\begin{itemize}
+  \item \textbf{A1 (gold set):} freeze the headline gold set to curated \texttt{critical\_entities} (auditable, clinically meaningful). Keep an extended gold set (critical + filtered NER spans from \texttt{patient\_summary}) as a diagnostic only.
+  \item \textbf{B1 (negation):} exclude negated mentions using a short token-window rule (e.g., \texttt{no/denies/without} within 5 tokens before the entity).
+  \item \textbf{C (quality controls):} report precision/F1 and hallucinated-entity rate curves alongside recall to detect recall inflation via verbosity or incorrect entities.
+\end{itemize}
+
 \subsection*{2. Knowledge Conflict Rate ($K_{\text{Conflict}}$) --- Diagnostic Metric}
 \textbf{Function:} \texttt{calculate\_knowledge\_conflict\_rate()} in \texttt{metrics/drift.py}
 
@@ -94,10 +100,10 @@ K_{\text{Conflict}} = \frac{\text{Count}(\text{NLI}(T_i, T_{i-1}) = \text{Contra
 \textbf{Implementation logic:}
 \begin{enumerate}
   \item For each case, track conversation turn-by-turn.
-  \item Extract clinical advice from each response using \texttt{\_extract\_advice()}:
+  \item Extract clinical advice from each response using the shared \texttt{\_extract\_advice()} helper:
   \begin{itemize}
-    \item Simple heuristic: find sentences containing recommendation keywords (\texttt{"recommend"}, \texttt{"suggest"}, \texttt{"should"}, \texttt{"advise"}, \texttt{"prescribe"}, \texttt{"treatment"}, \texttt{"diagnosis"}).
-    \item If no keywords found, use the first 200 characters of the response.
+    \item \texttt{\_extract\_advice()} delegates to \texttt{\_extract\_clinical\_actions()} (shared with Session Goal Alignment).
+    \item Returns an empty string when no actions are detected (no fallback snippet).
   \end{itemize}
   \item For each turn (after the first):
   \begin{itemize}
@@ -122,8 +128,8 @@ K_{\text{Conflict}} = \frac{\text{Count}(\text{NLI}(T_i, T_{i-1}) = \text{Contra
 
 \textbf{Trade-offs:}
 \begin{itemize}
-  \item Advice extraction is heuristic-based (keyword matching). Dependency parsing could be added as future work.
-  \item NLI models can have false positives (detecting contradictions where there are none). Current threshold (exact \texttt{"contradiction"} match) is conservative.
+  \item Advice extraction is heuristic-based (sentence-level action filtering). Dependency parsing / structured action frames could be added as future work.
+  \item NLI models can have false positives (detecting contradictions where there are none). Current counting rule (exact \texttt{"contradiction"} only) is conservative.
 \end{itemize}
 
 \subsection*{3. Session Goal Alignment --- Supplementary Metric}
@@ -150,7 +156,7 @@ where $\phi$ and $c$ are sentence embeddings of model actions and target plan re
   \item \textbf{For ranking models:} Supplementary metric for consistency with the intended care pathway.
 \end{itemize}
 
-\textbf{Current status:} Fully implemented but not used in the pipeline (\texttt{run\_study\_c} hardcodes \texttt{continuity\_score = 0.0}). Current data schema does not include \texttt{target\_plan} fields in longitudinal cases. Function is ready for future extension when gold plan data becomes available.
+\textbf{Current status:} Fully implemented and used when gold target plans are available in \texttt{data/study\_c\_gold/target\_plans.json}. If no plan is available, the pipeline omits the metric from the results JSON.
 
 \textbf{Advanced technique:} Sentence-Transformers semantic similarity provides better matching than simple text overlap.
 
@@ -182,18 +188,22 @@ where $\phi$ and $c$ are sentence embeddings of model actions and target plan re
 \begin{enumerate}
   \item Load data from \texttt{data/openr1\_psy\_splits/study\_c\_test.json}.
   \item Initialise \texttt{MedicalNER} (scispaCy model).
-  \item For each case, compute entity recall curve.
+  \item For each case, compute entity recall metrics (critical + extended).
   \item Aggregate:
   \begin{itemize}
-    \item Mean recall at Turn 10 (or last turn if $< 10$ turns).
-    \item Average recall curve across all cases.
+    \item Mean recall at Turn 10 (or last turn if $< 10$ turns) for critical + extended.
+    \item Average recall/precision/F1/hallucinated curves across all cases.
   \end{itemize}
   \item Calculate knowledge conflict rate (optional; requires NLI model).
-  \item Session goal alignment is skipped (requires target plan data not in current schema).
+  \item Session goal alignment is computed if gold target plans are available.
   \item Save results to \texttt{results/<model>/study\_c\_results.json} with:
   \begin{itemize}
-    \item \texttt{entity\_recall\_at\_t10}: mean recall at Turn 10
-    \item \texttt{average\_recall\_curve}: list of average recall values per turn
+    \item \texttt{entity\_recall\_at\_t10}: mean recall at Turn 10 (critical)
+    \item \texttt{entity\_recall\_at\_t10\_extended}: mean recall at Turn 10 (extended)
+    \item \texttt{average\_recall\_curve\_critical}, \texttt{average\_recall\_curve\_extended}
+    \item \texttt{average\_precision\_curve\_critical}, \texttt{average\_precision\_curve\_extended}
+    \item \texttt{average\_f1\_curve\_critical}, \texttt{average\_f1\_curve\_extended}
+    \item \texttt{average\_hallucinated\_rate\_curve\_critical}, \texttt{average\_hallucinated\_rate\_curve\_extended}
     \item \texttt{knowledge\_conflict\_rate}: $K_{\text{Conflict}}$ value
     \item Bootstrap CIs if $n > 10$
   \end{itemize}
@@ -203,7 +213,7 @@ where $\phi$ and $c$ are sentence embeddings of model actions and target plan re
 \begin{itemize}
   \item NER model loading is wrapped in try/except with clear error messages.
   \item Knowledge conflict is optional (wrapped in try/except for NLI availability).
-  \item Session goal alignment is explicitly documented as ``not used'' with explanation.
+  \item Session goal alignment is omitted from results when no plan is available.
 \end{itemize}
 
 \section*{Data requirements}

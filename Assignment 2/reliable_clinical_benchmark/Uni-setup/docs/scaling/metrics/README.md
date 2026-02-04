@@ -26,9 +26,9 @@ Individual documentation for each metric in the Clinical LLM Reasoning Benchmark
 
 | Metric | Classification | Paper Reference |
 |--------|---------------|-----------------|
-| [Entity Recall Decay](study_c/entity_recall_decay.md) | **Primary** | scispaCy (Neumann et al., 2019) |
+| [Entity Recall Decay](study_c/entity_recall_decay.md) | **Primary** | scispaCy (Neumann et al., 2019); critical + extended gold sets with precision/hallucinated rates |
 | [Knowledge Conflict Rate](study_c/knowledge_conflict_rate.md) | Diagnostic | DeBERTa-v3 NLI |
-| [Session Goal Alignment](study_c/session_goal_alignment.md) | Supplementary | Sentence-BERT (Reimers & Gurevych, 2019) |
+| [Session Goal Alignment](study_c/session_goal_alignment.md) | Supplementary | Sentence-BERT (Reimers & Gurevych, 2019); actions-only alignment + per-turn curve |
 | [Drift Slope](study_c/drift_slope.md) | Supplementary | Linear regression |
 
 ---

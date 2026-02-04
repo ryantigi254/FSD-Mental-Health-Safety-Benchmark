@@ -152,11 +152,16 @@ Relevant study docs:
 
 | Layer | Method | Purpose |
 |-------|--------|---------|
-| **Primary** | scispaCy NER (`en_core_sci_sm`) for entity extraction | Extracts clinical entities from model summaries and gold context. |
-| **Secondary** | Multi-tier matching + semantic presence validation (exact/substring/Jaccard; optional NLI) | Prevents false positives from NER artefacts and over-permissive fuzzy matching. |
-| **Validation** | Cross-check curve with Drift Slope summary + Recall@T10 thresholding | Ensures decay is consistent across representations (curve vs single-number). |
+| **Primary** | scispaCy NER (`en_core_sci_sm`) + critical-entities gold set | Extracts clinical entities from model summaries and anchors the headline gold set to frozen metadata. |
+| **Secondary** | Multi-tier matching + semantic presence validation + negation checks (exact/substring/Jaccard; optional NLI) | Prevents false positives from NER artefacts, over-permissive fuzzy matching, and polarity errors. |
+| **Validation** | Cross-check curve with Drift Slope summary + Recall@T10 thresholding + precision/hallucinated rate curves + sampled manual audit (TP/FP/FN by entity class) | Ensures decay is consistent across representations and not inflated by extraction noise. |
 
 **Defensibility**: Recall uses a conservative matching stack and validates “presence in text”, not just “found by NER”.
+
+**What it measures (scope)**:
+- **Context-window fidelity**: whether early-turn facts remain accessible as the prompt grows.
+- **Salience/compression choices**: whether the model preserves clinically critical facts when summarising.
+- **Extractor noise**: scispaCy + fuzzy matching limits (tracked via manual audit).
 
 ### Study C — Metric 2: Knowledge Conflict Rate (K_Conflict)
 
@@ -164,7 +169,7 @@ Relevant study docs:
 
 | Layer | Method | Purpose |
 |-------|--------|---------|
-| **Primary** | Heuristic advice extraction (`_extract_advice()`) | Isolates the actionable clinical guidance from each turn. |
+| **Primary** | Shared clinical action extraction (`_extract_advice()` via `_extract_clinical_actions`) | Isolates the actionable clinical guidance from each turn without fallback snippets. |
 | **Secondary** | NLI contradiction detection (DeBERTa-v3) between adjacent turns | Flags explicit self-contradiction in guidance rather than mere topic drift. |
 | **Validation** | Conservative counting (only “contradiction” verdict) + bootstrap CI over K_Conflict | Reduces false positives and ensures comparisons are stable across models. |
 
@@ -177,8 +182,8 @@ Relevant study docs:
 | Layer | Method | Purpose |
 |-------|--------|---------|
 | **Primary** | Deterministic target plan construction per case (Study C `target_plans.json`) | Ensures a stable, reproducible plan-of-care reference for each case. |
-| **Secondary** | Sentence-embedding cosine similarity (SBERT / MiniLM) between aggregated model actions and the target plan | Scores semantic plan adherence beyond surface-level string overlap. |
-| **Validation** | Bootstrap CI over mean alignment score + stratified reporting by plan provenance (linked vs generated) | Confirms stability and prevents synthetic/guideline plans from masking behaviour on linked clinical traces. |
+| **Secondary** | Sentence-embedding cosine similarity (SBERT / MiniLM) over actions-only text, with full-text ablation | Scores semantic plan adherence beyond surface-level string overlap while reducing style bias. |
+| **Validation** | Bootstrap CI over mean alignment score + per-turn alignment curve (actions up to turn t) + stratified reporting by plan provenance (linked vs generated) | Confirms stability and highlights when alignment begins to drift. |
 
 **Defensibility**: I treat plan extraction/generation as a deterministic pre-processing step, and only then compute alignment. This keeps the metric black-box and reproducible.
 
@@ -241,6 +246,12 @@ I apply the following "Double Checks" globally to maintain academic and clinical
 | **Entity Recall Decay** | Neumann et al. (2019) — scispaCy: https://aclanthology.org/W19-5034/ |
 | **Knowledge Conflict Rate** | He et al. (2020) — DeBERTa: https://arxiv.org/abs/2006.03654; Welleck et al. (2019) — Dialogue NLI: https://aclanthology.org/P19-1363/ |
 | **Drift Slope** | OLS linear regression (standard method; implementation uses `numpy.polyfit`) |
+
+**Closest conceptual relatives (evaluation framing; not the same metric)**:
+- Dialogue State Tracking evaluation (slot precision/recall/F1, joint goal accuracy): Williams et al. (2016) — https://doi.org/10.5087/dad.2016.301
+- Long-term dialogue memory evaluation with F1/overlap vs human references: https://arxiv.org/abs/2308.15022
+- Very long-term memory benchmarks using QA F1 / retrieval accuracy and fact-based summarisation scoring (LoCoMo): https://arxiv.org/abs/2402.17753
+- Atomic-fact factuality framing (FActScore) as a fine-grained proxy for summary correctness: https://arxiv.org/abs/2305.14251
 
 ---
 
