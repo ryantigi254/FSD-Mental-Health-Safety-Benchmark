@@ -40,5 +40,33 @@ Thumbs.db
 # Logs
 *.log
 
-# Misc datasets (large files)
-Misc/datasets/openr1_psy/
+# Development artifacts - keep locally, don't publish
+Misc/
+docs/Misc/
+scripts/dev/
+processed/_archived/
+
+# Development logs and metadata
+/METRICS_SUMMARY.md
+/METRIC_FIXES.md
+/walkthrough.md
+/openr1-env-freeze*.txt
+/clear_cache_commands.ps1
+/.coverage
+/htmlcov/
+
+# Generated data (keep structure, ignore contents)
+/results/*/
+/processed/*/
+!/processed/.gitkeep
+/metric-results/*/
+!/metric-results/.gitkeep
+
+# Model files (downloaded separately)
+/models/*/merges.txt
+/models/*/vocab.json
+/models/*/config.json
+/models/*/pytorch_model.bin
+/models/*/model.safetensors
+/models/*/tokenizer.json
+/models/transformers_cache/
