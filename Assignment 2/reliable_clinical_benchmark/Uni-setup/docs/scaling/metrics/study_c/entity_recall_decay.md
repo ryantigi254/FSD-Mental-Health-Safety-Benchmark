@@ -1,4 +1,4 @@
-```markdown
+
 # Entity Recall & Truth Decay
 
 > **Study C: Longitudinal Drift** | **Classification: Primary Metric & KPI**
