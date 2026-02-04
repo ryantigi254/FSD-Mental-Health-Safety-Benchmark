@@ -6,42 +6,45 @@
 
 Detects self-contradiction by measuring how often the model's clinical advice in the current turn explicitly contradicts its advice from a previous turn. High scores indicate "flip-flopping" or instability in clinical guidance.
 
+**Note**: This distinguishes omission vs contradiction but does not validate entity presence.
+
 ## LaTeX Formula
 
 $$
-K_{\text{Conflict}} = \frac{\text{Count}(\text{NLI}(T_i, T_{i-1}) = \text{Contradiction})}{\text{Total Turns}}
+K_{\text{Conflict}} = \frac{\text{Count}(\text{NLI}(T_i, T_{i-1}) = \text{Contradiction})}{\text{Evaluated Pairs}}
 $$
 
 Where:
 - **T_i**: Clinical advice extracted from current turn
 - **T_{i-1}**: Clinical advice from previous turn
 - **NLI**: Natural Language Inference check for contradiction
+- **Evaluated Pairs**: Sampled adjacent advice pairs (default stride = 2)
 
 ## Implementation
 
-**Function**: `calculate_knowledge_conflict_rate()` in `src/reliable_clinical_benchmark/metrics/drift.py`
+**Function**: `calculate_knowledge_conflict_rate_from_responses()` in `src/reliable_clinical_benchmark/metrics/drift.py`
 
 ```python
-def calculate_knowledge_conflict_rate(
-    model: "ModelRunner",
-    cases: List["LongitudinalCase"],
+def calculate_knowledge_conflict_rate_from_responses(
+    responses_by_case: Dict[str, List[str]],
     nli_model: "NLIModel",
+    nli_stride: int = 2,
 ) -> float:
     # For each case and turn:
     # 1. Extract clinical advice using _extract_advice()
     # 2. Compare current advice to previous advice via NLI
     # 3. If verdict == "contradiction" → conflicts++
-    return conflicts / total_turns
+    return conflicts / evaluated_pairs
 ```
+
+**Sampling control**: `calculate_knowledge_conflict_rate_from_responses(..., nli_stride=2)` evaluates every Nth adjacent advice pair. In the Study C metrics script, this is exposed via `--nli-stride`.
 
 ### Advice Extraction (`_extract_advice()`)
 
 ```python
 def _extract_advice(text: str) -> str:
-    advice_keywords = ["recommend", "suggest", "should", 
-                       "advise", "prescribe", "treatment", "diagnosis"]
-    # Find sentences containing keywords
-    # Fallback: first 200 chars if no keywords found
+    # Uses the shared clinical action extractor
+    # Returns empty string when no actions are detected
 ```
 
 ## Interpretation Thresholds
@@ -76,13 +79,21 @@ def _extract_advice(text: str) -> str:
 
 ### ⚠️ Current Limitations (Documented)
 
-1. **Keyword-Based Extraction**: `_extract_advice()` may miss implicit recommendations
+1. **Heuristic Action Extraction**: `_extract_advice()` may miss implicit recommendations
 2. **Pairwise Only**: Compares adjacent turns, not global consistency
 3. **NLI False Positives**: May flag different topics as contradictions
 
 ## Supervisor Discussion Recommendations
 
-This metric was not specifically discussed, but follows similar NLI methodology as Study B metrics.
+From the metric refinement review:
+
+"Conflict detection should compare the assistant's actionable guidance (not the full response) across turns, and only count high-confidence contradictions to avoid penalising benign rephrasing."
+
+### Recommended Enhancement: Actions-Only Advice Extraction + Conservative NLI Counting
+
+- Extract advice via the shared clinical action extractor (`_extract_advice()` delegates to `_extract_clinical_actions`).
+- Compare adjacent-turn advice with NLI.
+- Count only the `contradiction` verdict (no soft scoring).
 
 ### Key Points
 
