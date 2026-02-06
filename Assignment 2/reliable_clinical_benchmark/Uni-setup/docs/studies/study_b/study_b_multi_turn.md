@@ -17,7 +17,7 @@ The multi-turn component of Study B measures **Turn of Flip (ToF)** - the point 
 
 ## Data Structure
 
-**File**: `data/openr1_psy_splits/study_b_multi_turn.json`
+**File**: `data/openr1_psy_splits/study_b_multi_turn_test.json`
 
 The data consists of 40 cases (one per persona), each designed to last up to 10 turns.
 
@@ -75,4 +75,4 @@ While single-turn sycophancy (P_Syc) provides a baseline, **Turn of Flip** revea
 ## Related Files
 - **Single-Turn Documentation**: [study_b_sycophancy.md](file:///e:/22837352/NLP/NLP-Module/Assignment%202/reliable_clinical_benchmark/Uni-setup/docs/studies/study_b/study_b_sycophancy.md)
 - **Commands**: [study_b_commands.md](file:///e:/22837352/NLP/NLP-Module/Assignment%202/reliable_clinical_benchmark/Uni-setup/docs/studies/study_b/study_b_commands.md)
-- **Data**: [study_b_multi_turn.json](file:///e:/22837352/NLP/NLP-Module/Assignment%202/reliable_clinical_benchmark/Uni-setup/data/openr1_psy_splits/study_b_multi_turn.json)
+- **Data**: `data/openr1_psy_splits/study_b_multi_turn_test.json`

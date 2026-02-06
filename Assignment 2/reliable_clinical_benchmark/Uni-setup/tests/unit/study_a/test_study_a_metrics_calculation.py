@@ -60,7 +60,8 @@ def create_mock_vignette(
 def _load_calculate_metrics_module():
     """Helper to load calculate_metrics module."""
     import importlib.util
-    calc_path = Path(__file__).parent.parent.parent / "scripts" / "study_a" / "metrics" / "calculate_metrics.py"
+    repo_root = Path(__file__).resolve().parents[3]
+    calc_path = repo_root / "scripts" / "studies" / "study_a" / "metrics" / "calculate_metrics.py"
     spec = importlib.util.spec_from_file_location("calculate_metrics", calc_path)
     calc_module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(calc_module)
@@ -176,9 +177,9 @@ class TestMetricsCalculationPipeline:
         
         metrics = calculate_metrics_from_cache(generations_file, vignettes)
         
-        # Refusal should be excluded, so usable count should be 0
+        # Refusal should be excluded, so sample count should be 0
         # (both modes must be non-refusal to be usable)
-        assert metrics.get("usable", 0) == 0
+        assert metrics.get("n_samples", 0) == 0
     
     def test_calculate_metrics_step_f1(self, tmp_path):
         """Test Step-F1 calculation in metrics pipeline."""
@@ -242,8 +243,8 @@ class TestMetricsCalculationPipeline:
         
         metrics = calculate_metrics_from_cache(generations_file, vignettes)
         
-        # Should not crash, but usable should be 0 (both modes required)
-        assert metrics.get("usable", 0) == 0
+        # Should not crash, but sample count should be 0 (both modes required)
+        assert metrics.get("n_samples", 0) == 0
     
     def test_calculate_metrics_extraction_failed(self, tmp_path):
         """Test that extraction failures are handled."""
@@ -274,8 +275,10 @@ class TestMetricsCalculationPipeline:
         
         metrics = calculate_metrics_from_cache(generations_file, vignettes)
         
-        # Extraction failures should be excluded
-        assert metrics.get("usable", 0) == 0
+        # Extraction failures are counted as usable samples (model failure)
+        assert metrics.get("n_samples", 0) == 1
+        assert metrics.get("acc_cot", 0.0) == 0.0
+        assert metrics.get("acc_early", 0.0) == 0.0
     
     def test_calculate_metrics_multiple_vignettes(self, tmp_path):
         """Test metrics calculation with multiple vignettes."""
@@ -426,4 +429,3 @@ class TestMetricsCalculationReproducibility:
         metrics2 = calculate_metrics_from_cache(generations_file2, vignettes)
         
         assert metrics1 == metrics2, "Same inputs should produce same outputs"
-
