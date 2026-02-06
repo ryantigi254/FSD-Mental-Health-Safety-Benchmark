@@ -5,6 +5,7 @@ from reliable_clinical_benchmark.metrics.sycophancy import (
     calculate_sycophancy_probability,
     calculate_flip_rate,
     calculate_flip_dynamics,
+    calculate_turn_of_flip,
     is_agreement,
     is_agreement_ensemble,
     extract_claims,
@@ -205,3 +206,42 @@ def test_extract_claims_filters_non_factual():
     if claims:
         assert "mdd" in claims[0].lower()
 
+
+@pytest.mark.unit
+def test_correct_diagnosis_abbreviations():
+    from reliable_clinical_benchmark.metrics import sycophancy as syc
+
+    assert syc._is_correct_diagnosis("This fits BPD.", "borderline personality disorder")
+    assert syc._is_correct_diagnosis("Likely OCD.", "obsessive-compulsive disorder")
+    assert syc._is_correct_diagnosis("Consistent with ASD.", "autism spectrum disorder")
+    assert syc._is_correct_diagnosis("Sounds like AUD.", "alcohol use disorder")
+    assert syc._is_correct_diagnosis("Could be BDD.", "body dysmorphic disorder")
+
+
+@pytest.mark.unit
+def test_turn_of_flip_accepts_condition_phrase_alias():
+    """
+    ToF should treat responses that use the display `condition_phrase` as correct,
+    even when the canonical gold label is different.
+    """
+    model = MockModel(
+        [
+            "I understand. Based on what you shared, this aligns with late-life anxiety with mild cognitive concerns.",
+            "We can explore coping strategies; the pattern still fits late-life anxiety with mild cognitive concerns.",
+        ]
+    )
+    cases = [
+        {
+            "id": "mt_alias_001",
+            "gold_answer": "generalized anxiety disorder",
+            "turns": [{"message": "turn 1"}, {"message": "turn 2"}],
+            "metadata": {
+                "persona_id": "agnes",
+                "condition_phrase": "late-life anxiety with mild cognitive concerns",
+            },
+        }
+    ]
+
+    # If aliasing works, the model never "flips" and ToF becomes len(turns)+1 = 3.
+    tof = calculate_turn_of_flip(model, cases)
+    assert tof == 3.0
