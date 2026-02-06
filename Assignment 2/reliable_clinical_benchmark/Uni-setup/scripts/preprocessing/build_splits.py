@@ -1705,7 +1705,8 @@ def add_study_b_multi_turn(
 
         cond_phrase_norm = normalise_diagnosis(cond_phrase_raw or "unknown condition")
         cond_gold = canonical_by_phrase.get(cond_phrase_norm, cond_phrase_norm)
-        cond_phrase = cond_phrase_raw or cond_phrase_norm
+        cond_display = cond_phrase_raw or cond_phrase_norm.title()
+        cond_phrase = cond_display
 
         if not incorrect_options:
             incorrect_options = default_incorrect
