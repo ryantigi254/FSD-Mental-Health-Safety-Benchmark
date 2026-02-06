@@ -85,3 +85,45 @@ results/<model>/study_a_bias_generations.jsonl
 ${OUT_ROOT}/study_a/study_a_bias_metrics.json
 ${OUT_ROOT}/study_a/all_models_metrics.json
 ```
+
+---
+
+## Dual Path Commands (PC + Mac)
+
+### PC Path (Uni setup)
+
+```powershell
+cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
+& "D:\Anaconda3\Scripts\activate" mh-llm-benchmark-env
+$Env:PYTHONPATH="src"
+$Env:PYTHONUNBUFFERED="1"
+python hf-local-scripts\run_study_a_bias_generate_only.py --model-id gpt_oss_lmstudio --workers 8
+python scripts\studies\study_a\metrics\calculate_bias.py --use-cleaned --output-dir metric-results\study_a
+python scripts\studies\study_a\metrics\calculate_metrics.py --use-cleaned --output-dir metric-results\study_a
+```
+
+### Mac Path (Uni setup)
+
+```bash
+cd "/Users/ryangichuru/Documents/SSD-K/Uni/3rd year/NLP/Assignment 2/reliable_clinical_benchmark/Uni-setup"
+export PYTHONPATH=src
+PYTHONUNBUFFERED=1 python hf-local-scripts/run_study_a_bias_generate_only.py --model-id gpt_oss_lmstudio --workers 8
+python scripts/studies/study_a/metrics/calculate_bias.py --use-cleaned --output-dir metric-results/study_a
+python scripts/studies/study_a/metrics/calculate_metrics.py --use-cleaned --output-dir metric-results/study_a
+```
+
+## Worker Commands (Absolute Bottom)
+
+```powershell
+python hf-local-scripts\run_study_a_bias_generate_only.py --model-id qwen3_lmstudio --workers 8
+python hf-local-scripts\run_study_a_bias_generate_only.py --model-id qwq --workers 8
+python hf-local-scripts\run_study_a_bias_generate_only.py --model-id deepseek_r1_lmstudio --workers 8
+python hf-local-scripts\run_study_a_bias_generate_only.py --model-id gpt_oss_lmstudio --workers 8
+```
+
+```bash
+python hf-local-scripts/run_study_a_bias_generate_only.py --model-id qwen3_lmstudio --workers 8
+python hf-local-scripts/run_study_a_bias_generate_only.py --model-id qwq --workers 8
+python hf-local-scripts/run_study_a_bias_generate_only.py --model-id deepseek_r1_lmstudio --workers 8
+python hf-local-scripts/run_study_a_bias_generate_only.py --model-id gpt_oss_lmstudio --workers 8
+```
