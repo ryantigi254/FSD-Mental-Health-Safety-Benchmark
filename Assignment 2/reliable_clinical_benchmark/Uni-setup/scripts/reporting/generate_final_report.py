@@ -90,16 +90,15 @@ def generate_report():
         
         report_lines.append("\n### Sycophancy Probability (P_Syc)")
         report_lines.append("Measure: Propensity to agree with user's incorrect diagnosis. Lower is better (closer to 0 or negative).")
-        report_lines.append("\n| Model | P_Syc | Flip Rate | Agree (Control) | Agree (Injected) |")
-        report_lines.append("|---|---|---|---|---|")
+        report_lines.append("\n| Model | P_Syc | Agree (Control) | Agree (Injected) |")
+        report_lines.append("|---|---|---|---|")
         
         for m in study_b_data:
             p_syc = m.get("sycophancy_probability", 0)
-            flip = m.get("flip_rate", 0)
             ac = m.get("control_agreement_rate", 0)
             ai = m.get("injected_agreement_rate", 0)
             
-            report_lines.append(f"| {m['model']} | {p_syc:.3f} | {flip:.3f} | {ac:.3f} | {ai:.3f} |")
+            report_lines.append(f"| {m['model']} | {p_syc:.3f} | {ac:.3f} | {ai:.3f} |")
 
         report_lines.append("\n#### 🔍 Key Findings")
         report_lines.append("1. **Resistance to Pressure**: Most models showed negative or low P_Syc scores, indicating they did not blindly jump to agree with the 'injected' incorrect opinion. This is a positive sign for clinical robustness.")
@@ -141,4 +140,3 @@ def generate_report():
 
 if __name__ == "__main__":
     generate_report()
-

@@ -90,7 +90,9 @@ H_{Ev} = \frac{\text{Unsupported Claims}}{\text{Total Claims}}
 \end{itemize}
 
 \subsection*{3. Flip Rate --- Supplementary Metric}
-\textbf{Function:} \texttt{calculate\_flip\_rate()} in \texttt{metrics/sycophancy.py}
+\textbf{Computation:} Analysis notebooks (single-turn cache), not pipeline JSON.
+
+\textbf{Helper:} \texttt{calculate\_flip\_rate()} in \texttt{metrics/sycophancy.py}
 
 \textbf{LaTeX formula:}
 \[
@@ -174,7 +176,7 @@ H_{Ev} = \frac{\text{Unsupported Claims}}{\text{Total Claims}}
   \item \textbf{Metrics phase}:
   \begin{itemize}
     \item Calculate sycophancy probability (primary)
-    \item Calculate flip rate (reuses control + injected outputs)
+    \item Calculate flip rate in analysis notebooks (reuses cached control + injected outputs)
     \item Calculate evidence hallucination (optional; requires NLI; limited to first 50 items for efficiency)
     \item Calculate turn of flip (if multi-turn cases available)
   \end{itemize}
@@ -214,7 +216,7 @@ The LaTeX spec mentions two additional advanced metrics that are \textbf{not imp
   \item \textbf{Stance Shift Magnitude (SSM)}: maps responses to ordinal scores ($-2$ to $+2$) for agreement strength. Reference: Kaur (2025), \emph{Echoes of Agreement: Argument-Driven Sycophancy}.
 \end{enumerate}
 
-These are documented in the LaTeX spec as future work. The current implementation ($P_{\text{Syc}}$, Flip Rate, $H_{Ev}$, ToF) provides sufficient coverage for the core research questions.
+These are documented in the LaTeX spec as future work. The current implementation ($P_{\text{Syc}}$, Flip Rate [analysis-only], $H_{Ev}$, ToF) provides sufficient coverage for the core research questions.
 
 \section*{Usage in analysis}
 After running evaluations, the analysis notebook (\texttt{notebooks/study\_b\_analysis.ipynb}) will:
@@ -239,4 +241,3 @@ This provides the evidence needed to answer: ``Do reasoning models resist user p
   \item Ragas (claim verification inspiration): \url{https://arxiv.org/abs/2309.15217}
   \item NLI model used by this codebase (\texttt{NLIModel} default): \url{https://huggingface.co/cross-encoder/nli-deberta-v3-base}
 \end{itemize}
-

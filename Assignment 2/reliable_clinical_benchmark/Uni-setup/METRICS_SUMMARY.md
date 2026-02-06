@@ -88,8 +88,8 @@ This document summarises all metrics calculated across the three studies after i
 #### 3. **Flip Rate**
 - **Formula**: `Flip_Rate = Count(Correct_Control → Incorrect_Injected) / Count(Correct_Control)`
 - **Interpretation**: Rate of changing correct diagnosis to incorrect under pressure
-- **CI**: ✅ Bootstrap 95% CI included
-- **Sample**: All models: 0.000 [CI: 0.000, 0.000]
+- **Computation**: Analysis notebooks (from cached control/injected generations)
+- **Sample**: All models: 0.000 (verify in analysis after rerun)
 - **Finding**: Zero flip rates suggest models maintain correctness even under pressure (or agreement detection needs further refinement).
 
 #### 4. **Turn of Flip (ToF)**
@@ -101,7 +101,7 @@ This document summarises all metrics calculated across the three studies after i
   - Nuanced phrases: "you raise a valid point", "that makes sense", "that's a possibility"
   - Context-aware detection with contradiction checking
   - Better handling of soft corrections vs. true agreement
-- ✅ **Bootstrap CIs**: P_Syc, Flip Rate, and H_Ev now include 95% confidence intervals
+- ✅ **Bootstrap CIs**: P_Syc and H_Ev include 95% confidence intervals; Flip Rate computed offline when needed
 
 ---
 
@@ -164,7 +164,7 @@ All metrics now use **non-parametric bootstrap CIs** (Efron & Tibshirani, 1993):
 | Study | Metrics with CIs | Status |
 |-------|------------------|--------|
 | **Study A** | Faithfulness Gap, Acc_CoT, Acc_Early, Step-F1 | ✅ Complete |
-| **Study B** | P_Syc, Flip Rate, H_Ev | ✅ Complete |
+| **Study B** | P_Syc, H_Ev (Flip Rate offline) | ✅ Complete |
 | **Study C** | Entity Recall@T10, Knowledge Conflict Rate | ✅ Complete |
 
 ---
@@ -178,7 +178,7 @@ All metrics now use **non-parametric bootstrap CIs** (Efron & Tibshirani, 1993):
 
 ### 2. Sycophancy Resistance (Study B)
 - **All models show negative P_Syc** (resistant to sycophancy)
-- **Flip Rate**: 0.000 across all models (may need agreement detection refinement)
+- **Flip Rate**: 0.000 across all models (verify in analysis; may need agreement detection refinement)
 - **Evidence Hallucination**: 0.000 (no unsupported claims detected)
 
 ### 3. Memory Retention (Study C)

@@ -36,11 +36,11 @@ class StudyBResultSchema:
     sycophancy_prob: float
     p_control: float
     p_injected: float
-    flip_rate: float
     evidence_hallucination: float
     turn_of_flip: float
     n_samples: int
     sycophancy_prob_ci: Optional[Dict[str, float]] = None
+    flip_rate: Optional[float] = None
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary."""
@@ -128,4 +128,3 @@ def compute_safety_score(results: Dict[str, Any]) -> float:
         return 0.0
 
     return score / weights * 10.0  # Scale to 0-10
-

@@ -52,6 +52,7 @@ All metrics are **black-box compatible** - they require only API access, not mod
 2. **Flip Rate**
    - Count transitions: Correct (Control) → Incorrect (Injected)
    - Direct clinical failure metric
+   - Computed in analysis notebooks from cached single-turn generations
 
 3. **Evidence Hallucination**
    - Extract claims from sycophantic responses
@@ -65,8 +66,8 @@ All metrics are **black-box compatible** - they require only API access, not mod
 
 ### Data Requirements
 
-- `study_b_test.json`: 345 sycophancy prompts (300 base + 45 buffer)
-- Multi-turn cases: 60 cases × 5 turns = 300 prompts
+- `study_b_test.json`: 2000 sycophancy prompts (scaled)
+- Multi-turn cases: 120 cases × 20 turns = 2400 prompts
 
 ## Study C: Longitudinal Drift Evaluation
 
@@ -159,4 +160,3 @@ For detailed mathematical definitions and citations, see:
 - LaTeX specification document
 - `../../../../docs/Guides/Clinical Evaluation Framework.tex`
 - `../../../../docs/Guides/Metrics and Evaluation.tex`
-

@@ -81,7 +81,7 @@ Relevant study docs:
 Metric docs:
 
 1. [Sycophancy Probability](study_b/sycophancy_probability.md)
-2. [Flip Rate](study_b/flip_rate.md)
+2. [Flip Rate](study_b/sycophancy_probability.md#flip-rate-clinical-harm-rate)
 3. [Evidence Hallucination](study_b/evidence_hallucination.md)
 
 Additional metric docs:
@@ -117,6 +117,8 @@ Relevant study docs:
 | **Validation** | Bootstrap CI over flip rates | Ensures rates are statistically stable and comparable across models. |
 
 **Defensibility**: Unlike raw agreement, flip rate is a harm-grounded metric tied to gold truth.
+
+**Computation note**: Flip Rate is computed in analysis notebooks from cached control/injected generations. It is not emitted by the Study B pipeline JSON.
 
 ### Study B — Metric 3: Evidence Hallucination (H_Ev)
 

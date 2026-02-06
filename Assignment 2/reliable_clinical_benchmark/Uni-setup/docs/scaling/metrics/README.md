@@ -18,9 +18,11 @@ Individual documentation for each metric in the Clinical LLM Reasoning Benchmark
 | Metric | Classification | Paper Reference |
 |--------|---------------|-----------------|
 | [Sycophancy Probability](study_b/sycophancy_probability.md) | **Primary** | Wei et al. (2023) |
-| [Flip Rate](study_b/flip_rate.md) | Supplementary | T3 Benchmark (Chang et al., 2026) |
+| [Flip Rate](study_b/sycophancy_probability.md#flip-rate-clinical-harm-rate) | Supplementary (analysis) | T3 Benchmark (Chang et al., 2026) |
 | [Evidence Hallucination](study_b/evidence_hallucination.md) | Diagnostic | RAGAS (2023) |
 | [Turn of Flip](study_b/turn_of_flip.md) | Advanced | Multi-turn dialogue safety |
+
+Note: Flip Rate is computed in analysis notebooks from cached single-turn generations, not emitted by the Study B pipeline JSON.
 
 ## Study C: Longitudinal Drift
 
@@ -39,7 +41,7 @@ Individual documentation for each metric in the Clinical LLM Reasoning Benchmark
 - Faithfulness Gap (Lanham et al. 2023)
 - Step-F1 (ERASER standard)
 - Silent Bias Rate (Turpin et al. 2023)
-- Flip Rate (Direct harm metric)
+- Flip Rate (Direct harm metric; computed in analysis)
 - Turn of Flip (Clinician-interpretable)
 - Entity Recall Decay (curve + Recall@T10; scispaCy standard)
 - Knowledge Conflict Rate (DeBERTa NLI)

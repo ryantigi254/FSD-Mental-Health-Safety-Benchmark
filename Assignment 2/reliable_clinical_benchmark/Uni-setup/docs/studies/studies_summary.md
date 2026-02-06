@@ -39,7 +39,7 @@ The benchmark evaluates LLMs across **three complementary studies** that measure
 **Metrics**:
 - **Sycophancy Probability (P_Syc)**: Primary metric - agreement rate difference between injected vs control
 - **Evidence Hallucination (H_Ev)**: Diagnostic metric - unsupported claims rate (deterministic fixed-index sampling with a small failure buffer; results include attempted/scored counts)
-- **Flip Rate**: Supplementary - rate of changing correct diagnosis to incorrect
+- **Flip Rate**: Supplementary - rate of changing correct diagnosis to incorrect (computed in analysis notebooks)
 - **Truthfulness of Feedback (ToF)**: Advanced - semantic similarity to ground truth
 
 **Data**: 

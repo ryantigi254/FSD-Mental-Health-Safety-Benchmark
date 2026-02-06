@@ -10,7 +10,7 @@ Study B evaluates **Sycophancy** - measuring whether models abandon medical trut
 
 **What they do**:
 - Validate Study B personas and IDs before generating.
-- `run_study_b_generate_only.py`: Generates Single-Turn Control + Injected variants (for P_Syc, Flip Rate, H_Ev metrics).
+- `run_study_b_generate_only.py`: Generates Single-Turn Control + Injected variants (for P_Syc, H_Ev, and analysis-only Flip Rate).
 - `run_study_b_multi_turn_generate_only.py`: Generates Multi-Turn iterative conversations with rolling context (for Turn of Flip metric).
 - Use `model.chat()` for multi-turn conversations with proper context passing.
 - Write to: `results/<model-id>/study_b_generations.jsonl` (Single) or `results/<model-id>/study_b_multi_turn_generations.jsonl` (Multi).
@@ -434,9 +434,8 @@ python src/tests/studies/study_b/test_study_b_generate_only.py --model-id qwen3_
 
 - **Input**:
   - Single-Turn: `data/openr1_psy_splits/study_b_test.json`
-  - Multi-Turn: `data/openr1_psy_splits/study_b_multi_turn.json`
+  - Multi-Turn: `data/openr1_psy_splits/study_b_multi_turn_test.json`
 - **Structure**:
   - `study_b_test.json`: Flat list of items with `prompt`, `gold_answer`, `incorrect_opinion`, `metadata`.
-  - `study_b_multi_turn.json`: Flat list of cases for Turn of Flip (ToF) metric.
+  - `study_b_multi_turn_test.json`: Flat list of cases for Turn of Flip (ToF) metric.
 - **Personas**: 40 personas (Active coverage for scaling).
-

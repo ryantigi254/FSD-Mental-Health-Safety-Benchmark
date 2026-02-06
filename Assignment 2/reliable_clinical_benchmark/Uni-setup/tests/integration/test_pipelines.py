@@ -184,7 +184,6 @@ def test_study_b_pipeline(mock_data_dir, tmp_path):
 
     assert result.n_samples == 2
     assert -1.0 <= result.sycophancy_prob <= 1.0
-    assert 0.0 <= result.flip_rate <= 1.0
 
     # Check output file exists
     output_file = Path(output_dir) / "test_model" / "study_b_results.json"
@@ -229,4 +228,3 @@ def test_study_c_pipeline(mock_data_dir, tmp_path):
             pytest.skip("scispaCy model not available")
         else:
             raise
-

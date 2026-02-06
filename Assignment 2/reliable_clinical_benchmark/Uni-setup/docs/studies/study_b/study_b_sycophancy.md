@@ -71,7 +71,11 @@ H_{Ev} = \frac{\text{Unsupported Claims}}{\text{Total Claims}}
 
 ### 3. Flip Rate - Supplementary Metric
 
-**Function**: `calculate_flip_rate()` in `metrics/sycophancy.py`
+**Computation location**: Analysis notebooks (single-turn cache), not pipeline results.
+
+- **Notebook**: `notebooks/study_b_analysis.ipynb`
+- **Input**: `study_b_generations.jsonl` (control/injected cached outputs)
+- **Helper**: `calculate_flip_rate()` in `metrics/sycophancy.py` (optional utility)
 
 **LaTeX Formula**:
 \[
@@ -109,7 +113,9 @@ H_{Ev} = \frac{\text{Unsupported Claims}}{\text{Total Claims}}
      - Add user message to history
      - Call `model.chat(conversation_history)` with full rolling context
      - Add assistant response to history for next turn
-   - At each turn, check if response is still correct using `_is_correct_diagnosis()`
+   - At each turn, check if response is still correct using `_is_correct_diagnosis()`, accepting either:
+     - canonical label (`gold_answer`), or
+     - display alias (`metadata.condition_phrase`)
    - Record turn number where first mistake occurs
 2. Return average: `sum(tof_values) / len(tof_values)`
 
@@ -133,13 +139,13 @@ H_{Ev} = \frac{\text{Unsupported Claims}}{\text{Total Claims}}
 **Function**: `run_study_b()`
 
 **Flow**:
-1. Load data from `data/openr1_psy_splits/study_b_test.json` (Single-Turn) and `data/openr1_psy_splits/study_b_multi_turn.json` (Multi-Turn).
+1. Load data from `data/openr1_psy_splits/study_b_test.json` (Single-Turn) and `data/openr1_psy_splits/study_b_multi_turn_test.json` (Multi-Turn).
 2. **Generation phase** (if not using `from_cache`):
    - Single-turn: `_generate_single_turn_study_b()` - generates control + injected variants
    - Multi-turn: `_generate_multi_turn_study_b()` - iterative generation with rolling context
 3. **Metrics phase**:
    - Calculate sycophancy probability (primary metric)
-   - Calculate flip rate (reuses control + injected outputs)
+   - Calculate flip rate in analysis notebooks (reuses cached control + injected outputs)
    - Calculate evidence hallucination (optional, requires NLI model; deterministic fixed-index sampling with a failure buffer, targeting 50 successful scores)
    - Calculate turn of flip (if multi-turn cases available) - See [study_b_multi_turn.md](file:///e:/22837352/NLP/NLP-Module/Assignment%202/reliable_clinical_benchmark/Uni-setup/docs/studies/study_b/study_b_multi_turn.md) for protocol details.
 4. Save results to `results/<model>/study_b_results.json` with bootstrap CIs
@@ -159,8 +165,8 @@ H_{Ev} = \frac{\text{Unsupported Claims}}{\text{Total Claims}}
 
 - **Study B test split**: `data/openr1_psy_splits/study_b_test.json`
   - Format: Flat list of items `[{"id": "...", "prompt": "...", "gold_answer": "...", "incorrect_opinion": "..."}]`
-- **Multi-turn cases**: `data/openr1_psy_splits/study_b_multi_turn.json`
-  - Format: Flat list of cases `[{"id": "...", "gold_answer": "...", "turns": [{"turn": 1, "message": "..."}]}]`
+- **Multi-turn cases**: `data/openr1_psy_splits/study_b_multi_turn_test.json`
+  - Format: Flat list of cases `[{"id": "...", "gold_answer": "...", "turns": [{"turn": 1, "message": "..."}], "metadata": {"condition_phrase": "..."}}]`
 
 ## Advanced Metrics Not Implemented
 
@@ -169,7 +175,7 @@ The LaTeX spec mentions two additional advanced metrics that are **not implement
 1. **Truth Decay Rate (TDR)**: Measures the slope of accuracy decline over time in multi-turn conversations. Reference: Liu et al. (2025), "Truth Decay: Quantifying Multi-Turn Sycophancy"
 2. **Stance Shift Magnitude (SSM)**: Maps responses to ordinal scores (-2 to +2) for agreement strength. Reference: Kaur (2025), "Echoes of Agreement: Argument-Driven Sycophancy"
 
-These are documented in the LaTeX spec as future work. The current implementation (P_Syc, Flip Rate, H_Ev, ToF) provides sufficient coverage for the core research questions.
+These are documented in the LaTeX spec as future work. The current implementation (P_Syc, Flip Rate [analysis-only], H_Ev, ToF) provides sufficient coverage for the core research questions.
 
 ## Usage in Analysis
 
@@ -190,4 +196,3 @@ This provides the evidence needed to answer: "Do reasoning models resist user pr
 - Wei et al. (2023). "Simple synthetic data reduces sycophancy in large language models": https://arxiv.org/abs/2308.03958
 - Ragas: Automated Evaluation of Retrieval Augmented Generation (faithfulness-style claim verification inspiration): https://arxiv.org/abs/2309.15217
 - NLI model used by this codebase (`NLIModel` default): https://huggingface.co/cross-encoder/nli-deberta-v3-base
-
