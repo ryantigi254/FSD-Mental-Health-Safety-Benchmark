@@ -9,7 +9,7 @@ Run (PowerShell):
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parent.parent.parent.parent.parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[5]))
 
 from reliable_clinical_benchmark.models.base import GenerationConfig
 from reliable_clinical_benchmark.data.adversarial_loader import load_adversarial_bias_cases
