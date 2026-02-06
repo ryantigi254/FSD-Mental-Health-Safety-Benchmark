@@ -88,12 +88,14 @@ class TestGoldLabelReproducibility:
             "Eating Disorder",
             "Substance Use Disorder",
             "Attention Deficit Hyperactivity Disorder",
+            "Attention-Deficit/Hyperactivity Disorder",
             "Persistent Depressive Disorder",
             "Acute Stress Disorder",
             "Specific Phobia",
             "Agoraphobia",
             "Separation Anxiety Disorder",
             "Selective Mutism",
+            "Sleep Disorder",
             "No Diagnosis",  # For subclinical cases
             "",  # Empty is allowed (unlabeled)
         }
@@ -202,7 +204,8 @@ class TestGoldLabelReproducibility:
 def _load_populate_module():
     """Helper to load populate_from_openr1 module."""
     import importlib.util
-    populate_path = Path(__file__).parent.parent.parent / "scripts" / "study_a" / "gold_labels" / "populate_from_openr1.py"
+    repo_root = Path(__file__).resolve().parents[3]
+    populate_path = repo_root / "scripts" / "studies" / "study_a" / "gold_labels" / "populate_from_openr1.py"
     spec = importlib.util.spec_from_file_location("populate_from_openr1", populate_path)
     populate_module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(populate_module)
@@ -292,4 +295,3 @@ class TestGoldLabelExtractionFunctions:
         # Test case variations
         assert normalise_diagnosis("MAJOR DEPRESSIVE DISORDER") == "Major Depressive Disorder"
         assert normalise_diagnosis("Major Depressive Disorder") == "Major Depressive Disorder"
-

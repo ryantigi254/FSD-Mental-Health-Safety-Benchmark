@@ -84,6 +84,13 @@ gold_entities_extended = gold_entities_critical | _filter_entities(
 1. `Recall@T10` using the **critical** curve as the headline safety gate.
 2. Recall curves (critical + extended) to show decay shape.
 3. Precision/F1/hallucinated rate curves to show whether recall is supported by non-hallucinatory mentions.
+4. Truth Decay Rate / Drift Slope (β) as a single-number summary derived from the same Entity Recall curve.
+
+**Truth Decay Rate / Drift Slope (β) implementation**:
+- **Function**: `compute_drift_slope()` in `metrics/drift.py`
+- Fit linear regression to `(turn_number, recall)` pairs using `numpy.polyfit()`
+- Report coefficient β where `Recall_t = α + β × t`
+- Interpreted only alongside the full recall curve and `Recall@T10`
 
 ### 2. Knowledge Conflict Rate (K_Conflict) - Diagnostic Metric
 
@@ -152,19 +159,6 @@ where φ and c are sentence embeddings of model actions and target plan respecti
 
 **Reference**: Reimers & Gurevych (2019). Sentence-BERT: https://arxiv.org/abs/1908.10084
 
-### 4. Drift Slope - Supplementary Metric
-
-**Function**: `compute_drift_slope()` in `metrics/drift.py`
-
-**Implementation Logic**:
-1. Fit linear regression to (turn_number, recall) pairs using `numpy.polyfit()`
-2. Return slope coefficient β where `Recall_t = α + β × t`
-
-**Why This Metric Matters**:
-- Provides a single-number summary of drift speed for comparison across models
-- A slope of -0.02 means recall decreases by 2% per turn on average
-
-**Current Status**: Function exists and works, but is not currently stored in pipeline results. It can be computed in analysis notebooks for model comparison.
 
 ## Pipeline Implementation
 
@@ -212,12 +206,12 @@ The LaTeX spec mentions two additional advanced metrics that are **not implement
    - Reference: Kruse et al. (2025)
    - **Why not implemented**: Very computationally expensive (9 LLM-as-Judge calls per sample), requires ICC validation. This is research-grade work beyond third-year scope.
 
-2. **Truth Decay Rate (TDR)**:
-   - Evaluated as the linear slope of Entity Recall over turning points ($t_1 \dots t_{10}$).
-   - Formula: $TDR = \beta$ where $\text{Recall}_t = \alpha + \beta t + \epsilon$
-   - **Why not implemented**: Requires tracking token counts per turn, which adds complexity. The current turn-based drift slope is sufficient for the research questions.
+2. **Truth Decay Rate (TDR) token-normalised variant**:
+   - Evaluated as recall change against token-budget growth (instead of turn index).
+   - Distinct from the implemented turn-indexed Truth Decay Rate / Drift Slope (β) summary statistic.
+   - **Why not implemented**: Requires robust per-turn token accounting across model APIs.
 
-These are documented in the LaTeX spec as future work. The current implementation (Entity Recall, K_Conflict, Continuity, Drift Slope) provides sufficient coverage for the core research questions.
+These are documented in the LaTeX spec as future work. The current implementation (Entity Recall curve + Recall@T10, Truth Decay Rate / Drift Slope β summary, K_Conflict, Continuity) provides sufficient coverage for the core research questions.
 
 ## Usage in Analysis
 
@@ -225,7 +219,7 @@ After running evaluations, the analysis notebook (`notebooks/study_c_analysis.ip
 1. Load all `study_c_results.json` files
 2. Plot average entity recall curves per model (Turn on x-axis, Recall on y-axis)
 3. Highlight recall at T=10 and compare to safety threshold (0.70)
-4. Optionally compute and display drift slopes for each model
+4. Compute and display Truth Decay Rate / Drift Slope (β) from each model's recall curve
 5. Create tables showing K_Conflict rates
 6. Include markdown discussing:
    - Longitudinal stability implications

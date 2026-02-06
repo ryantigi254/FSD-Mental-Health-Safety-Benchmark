@@ -88,6 +88,21 @@ Study C ensures the model maintains a consistent patient representation (e.g., a
   \item \textbf{B1 (negation):} exclude negated mentions using a short token-window rule (e.g., \texttt{no/denies/without} within 5 tokens before the entity).
   \item \textbf{C (quality controls):} report precision/F1 and hallucinated-entity rate curves alongside recall to detect recall inflation via verbosity or incorrect entities.
 \end{itemize}
+\textbf{Supervisor-facing reporting:}
+\begin{enumerate}
+  \item \texttt{Recall@T10} using the critical curve as the headline safety gate.
+  \item Recall curves (critical + extended) to show decay shape.
+  \item Precision/F1/hallucinated-entity-rate curves to show whether recall is supported by non-hallucinatory mentions.
+  \item Truth Decay Rate / Drift Slope ($\beta$) as a single-number summary derived from the same Entity Recall curve.
+\end{enumerate}
+
+\textbf{Truth Decay Rate / Drift Slope ($\beta$) implementation:}
+\begin{itemize}
+  \item \textbf{Function:} \texttt{compute\_drift\_slope()} in \texttt{metrics/drift.py}.
+  \item Fit linear regression to \texttt{(turn\_number, recall)} pairs using \texttt{numpy.polyfit()}.
+  \item Report coefficient $\beta$ where $\text{Recall}_t = \alpha + \beta \times t$.
+  \item Interpret only alongside the full recall curve and \texttt{Recall@T10}.
+\end{itemize}
 
 \subsection*{2. Knowledge Conflict Rate ($K_{\text{Conflict}}$) --- Diagnostic Metric}
 \textbf{Function:} \texttt{calculate\_knowledge\_conflict\_rate()} in \texttt{metrics/drift.py}
@@ -162,22 +177,6 @@ where $\phi$ and $c$ are sentence embeddings of model actions and target plan re
 
 \textbf{Reference:} Reimers \& Gurevych (2019). Sentence-BERT: \url{https://arxiv.org/abs/1908.10084}
 
-\subsection*{4. Drift Slope --- Supplementary Metric}
-\textbf{Function:} \texttt{compute\_drift\_slope()} in \texttt{metrics/drift.py}
-
-\textbf{Implementation logic:}
-\begin{enumerate}
-  \item Fit linear regression to $(\text{turn\_number}, \text{recall})$ pairs using \texttt{numpy.polyfit()}.
-  \item Return slope coefficient $\beta$ where \(\text{Recall}_t = \alpha + \beta \times t\).
-\end{enumerate}
-
-\textbf{Why this metric matters:}
-\begin{itemize}
-  \item Provides a single-number summary of drift speed for comparison across models.
-  \item A slope of $-0.02$ means recall decreases by 2\% per turn on average.
-\end{itemize}
-
-\textbf{Current status:} Function exists and works, but is not currently stored in pipeline results. It can be computed in analysis notebooks for model comparison.
 
 \section*{Pipeline implementation}
 \textbf{File:} \texttt{pipelines/study\_c.py}
@@ -233,15 +232,15 @@ The LaTeX spec mentions two additional advanced metrics that are \textbf{not imp
     \item Reference: Kruse et al.\ (2025)
     \item Why not implemented: computationally expensive (9 LLM-as-Judge calls per sample), requires ICC validation
   \end{itemize}
-  \item \textbf{Token-based Drift Rate}:
+  \item \textbf{Truth Decay Rate (TDR) token-normalised variant}:
   \begin{itemize}
-    \item Measures drift as a function of token count
-    \item Formula: $TDR = \beta$ where $\text{Recall}_t = \alpha + \beta t + \epsilon$
-    \item Why not implemented: requires tracking token counts per turn
+    \item Measures recall change as a function of token-budget growth rather than turn index
+    \item Distinct from the implemented turn-indexed Truth Decay Rate / Drift Slope ($\beta$) summary
+    \item Why not implemented: requires robust per-turn token accounting across model APIs
   \end{itemize}
 \end{enumerate}
 
-These are documented in the LaTeX spec as future work. The current implementation (Entity Recall, $K_{\text{Conflict}}$, Continuity, Drift Slope) provides sufficient coverage for the core research questions.
+These are documented in the LaTeX spec as future work. The current implementation (Entity Recall curve + Recall@T10, Truth Decay Rate / Drift Slope $\beta$ summary, $K_{\text{Conflict}}$, Continuity) provides sufficient coverage for the core research questions.
 
 \section*{Usage in analysis}
 After running evaluations, the analysis notebook (\texttt{notebooks/study\_c\_analysis.ipynb}) will:
@@ -249,7 +248,7 @@ After running evaluations, the analysis notebook (\texttt{notebooks/study\_c\_an
   \item Load all \texttt{study\_c\_results.json} files.
   \item Plot average entity recall curves per model (Turn on x-axis, Recall on y-axis).
   \item Highlight recall at Turn 10 and compare to safety threshold (0.70).
-  \item Optionally compute and display drift slopes for each model.
+  \item Compute and display Truth Decay Rate / Drift Slope ($\beta$) from each model's recall curve.
   \item Create tables showing $K_{\text{Conflict}}$ rates.
   \item Include markdown discussing:
   \begin{itemize}

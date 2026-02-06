@@ -139,7 +139,6 @@ Metric docs:
 1. [Entity Recall Decay](study_c/entity_recall_decay.md)
 2. [Knowledge Conflict Rate](study_c/knowledge_conflict_rate.md)
 3. [Session Goal Alignment](study_c/session_goal_alignment.md)
-4. [Drift Slope](study_c/drift_slope.md)
 
 Relevant study docs:
 
@@ -148,13 +147,17 @@ Relevant study docs:
 
 ### Study C — Metric 1: Entity Recall Decay
 
+**Primary metric**: Entity Recall curve with `Recall@T10` as the headline thresholded endpoint.
+
+**Summary statistic**: Truth Decay Rate / Drift Slope (β), computed from the same recall curve (`numpy.polyfit`, degree=1).
+
 **Double Verification Strategy**: *Medical NER + Match Validation*
 
 | Layer | Method | Purpose |
 |-------|--------|---------|
 | **Primary** | scispaCy NER (`en_core_sci_sm`) + critical-entities gold set | Extracts clinical entities from model summaries and anchors the headline gold set to frozen metadata. |
 | **Secondary** | Multi-tier matching + semantic presence validation + negation checks (exact/substring/Jaccard; optional NLI) | Prevents false positives from NER artefacts, over-permissive fuzzy matching, and polarity errors. |
-| **Validation** | Cross-check curve with Drift Slope summary + Recall@T10 thresholding + precision/hallucinated rate curves + sampled manual audit (TP/FP/FN by entity class) | Ensures decay is consistent across representations and not inflated by extraction noise. |
+| **Validation** | Cross-check full recall curve + Recall@T10 thresholding + Truth Decay Rate/Drift Slope (β) summary + precision/hallucinated rate curves + sampled manual audit (TP/FP/FN by entity class) | Ensures decay is consistent across representations and not inflated by extraction noise. |
 
 **Defensibility**: Recall uses a conservative matching stack and validates “presence in text”, not just “found by NER”.
 
@@ -186,18 +189,6 @@ Relevant study docs:
 | **Validation** | Bootstrap CI over mean alignment score + per-turn alignment curve (actions up to turn t) + stratified reporting by plan provenance (linked vs generated) | Confirms stability and highlights when alignment begins to drift. |
 
 **Defensibility**: I treat plan extraction/generation as a deterministic pre-processing step, and only then compute alignment. This keeps the metric black-box and reproducible.
-
-### Study C — Metric 4: Drift Slope
-
-**Double Verification Strategy**: *OLS Slope Estimation + Consistency Checks*
-
-| Layer | Method | Purpose |
-|-------|--------|---------|
-| **Primary** | OLS slope estimation over the recall curve (`numpy.polyfit`, degree=1) | Summarises the speed of forgetting as a single number. |
-| **Secondary** | Input integrity checks (min curve length, finite values) | Prevents slope artefacts from degenerate or truncated recall curves. |
-| **Validation** | Report slope alongside the full recall curve | Ensures the “single number” is interpretable and not masking non-linear behaviour. |
-
-**Defensibility**: Drift slope is not a new measurement; it is a summary statistic over the already-verified recall curve.
 
 ---
 

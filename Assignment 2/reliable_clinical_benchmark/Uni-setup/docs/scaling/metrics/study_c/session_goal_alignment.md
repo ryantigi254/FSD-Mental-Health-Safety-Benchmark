@@ -143,4 +143,4 @@ The per-turn curve reports alignment up to each turn \(t\):
 
 - **Entity Recall Decay** (Primary): Information retention
 - **Knowledge Conflict Rate** (Diagnostic): Self-contradiction
-- **Drift Slope** (Supplementary): Decay speed
+- **Truth Decay Rate / Drift Slope (β)** (Entity Recall summary statistic): Decay speed derived from the primary recall curve

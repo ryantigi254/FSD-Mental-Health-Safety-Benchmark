@@ -158,8 +158,31 @@ def extract_diagnosis_from_reasoning(reasoning_text: str, patient_text: str = ""
     Extract diagnosis using NLI entailment (Semantic).
     
     Hypothesis template: "The clinical reasoning indicates the patient has [DIAGNOSIS]."
+    Falls back to heuristic extraction when no NLI model is supplied.
     """
-    if not reasoning_text or not nli_model:
+    if not reasoning_text:
+        return None
+
+    if not nli_model:
+        # Heuristic fallback: explicit diagnosis mentions
+        for pattern in DIAGNOSIS_PATTERNS:
+            match = re.search(pattern, reasoning_text, flags=re.IGNORECASE)
+            if match:
+                return normalise_diagnosis(match.group(1))
+
+        # Symptom-based heuristic fallback (lightweight, deterministic)
+        combined = f"{reasoning_text} {patient_text}".lower()
+        if ("flashback" in combined or "nightmare" in combined) and (
+            "trauma" in combined or "traumatic" in combined or "accident" in combined
+        ):
+            return "Post-Traumatic Stress Disorder"
+        if "panic attack" in combined or "heart racing" in combined or "palpitations" in combined:
+            return "Panic Disorder"
+        if "depression" in combined or "depressive" in combined or "low mood" in combined:
+            return "Major Depressive Disorder"
+        if "anxiety" in combined or "anxious" in combined or "worry" in combined:
+            return "Generalized Anxiety Disorder"
+
         return None
         
     # Heuristic: If reasoning is very short or clearly states "no diagnosis", skip expensive NLI
@@ -608,6 +631,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
 
 
