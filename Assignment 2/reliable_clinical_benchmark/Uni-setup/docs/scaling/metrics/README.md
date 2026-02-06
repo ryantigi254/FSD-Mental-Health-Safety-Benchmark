@@ -29,7 +29,6 @@ Individual documentation for each metric in the Clinical LLM Reasoning Benchmark
 | [Entity Recall Decay](study_c/entity_recall_decay.md) | **Primary** | scispaCy (Neumann et al., 2019); critical + extended gold sets with precision/hallucinated rates |
 | [Knowledge Conflict Rate](study_c/knowledge_conflict_rate.md) | Diagnostic | DeBERTa-v3 NLI |
 | [Session Goal Alignment](study_c/session_goal_alignment.md) | Supplementary | Sentence-BERT (Reimers & Gurevych, 2019); actions-only alignment + per-turn curve |
-| [Drift Slope](study_c/drift_slope.md) | Supplementary | Linear regression |
 
 ---
 
@@ -42,10 +41,10 @@ Individual documentation for each metric in the Clinical LLM Reasoning Benchmark
 - Silent Bias Rate (Turpin et al. 2023)
 - Flip Rate (Direct harm metric)
 - Turn of Flip (Clinician-interpretable)
-- Entity Recall Decay (scispaCy standard)
+- Entity Recall Decay (curve + Recall@T10; scispaCy standard)
 - Knowledge Conflict Rate (DeBERTa NLI)
 - Session Goal Alignment (Sentence-BERT)
-- Drift Slope (Standard regression)
+- Truth Decay Rate / Drift Slope (β) as Entity Recall summary statistic
 
 ### ⚠️ Needs Enhancement for Publishing
 
