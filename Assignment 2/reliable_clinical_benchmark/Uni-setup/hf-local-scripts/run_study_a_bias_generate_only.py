@@ -52,6 +52,21 @@ def _write_cache_entry(cache_path: Path, entry: dict) -> None:
         os.fsync(f.fileno())
 
 
+def _persist_entry_with_retry(cache_path: Path, entry: dict, max_attempts: int = 3) -> bool:
+    """Persist one entry with bounded retries for transient filesystem errors."""
+    for attempt_number in range(1, max_attempts + 1):
+        try:
+            _write_cache_entry(cache_path, entry)
+            return True
+        except OSError as write_error:
+            print(
+                f"Write failed for {entry.get('id', '<unknown>')} "
+                f"(attempt {attempt_number}/{max_attempts}): {write_error}"
+            )
+            time.sleep(0.2 * attempt_number)
+    return False
+
+
 def _canonical_model_output_dir(model_id: str) -> str:
     """Map model IDs/aliases to canonical results directory names."""
     model_id_lower = model_id.lower()
@@ -292,6 +307,17 @@ def main() -> None:
 
     total_pending_cases = len(pending_cases)
     print(f"Pending cases to generate: {total_pending_cases}")
+    if total_pending_cases == 0:
+        print("No pending cases to generate.")
+        print(f"\nBias generation complete. Saved to {cache_out}")
+        print(cache_out)
+        return
+
+    pending_cases_by_id = {
+        str(case.get("id", "") or ""): case
+        for case in pending_cases
+        if str(case.get("id", "") or "")
+    }
 
     def _generate_case_entry(case: dict) -> dict:
         case_id = case.get("id", "")
@@ -337,40 +363,53 @@ def main() -> None:
 
     if worker_count == 1:
         saved_count = 0
+        generated_case_ids = set()
         for case in pending_cases:
             entry = _generate_case_entry(case)
             if entry["status"] == "error":
                 print(f"Generation failed for {entry['id']}: {entry['error_message']}")
-            _write_cache_entry(cache_path, entry)
+            write_ok = _persist_entry_with_retry(cache_path, entry)
+            if not write_ok:
+                print(f"Final write failure for {entry['id']}")
+                continue
+            generated_case_ids.add(entry["id"])
             saved_count += 1
             print(
                 f"[saved {saved_count}/{total_pending_cases}] "
                 f"{entry['id']} status={entry['status']} latency_ms={entry['meta']['latency_ms']}"
             )
     else:
+        generated_case_ids = set()
         with ThreadPoolExecutor(max_workers=worker_count) as executor:
-            future_to_case_id = {
-                executor.submit(_generate_case_entry, case): case.get("id", "")
-                for case in pending_cases
-            }
-            remaining_futures = set(future_to_case_id.keys())
+            pending_cases_iter = iter(pending_cases)
+            future_to_case_id = {}
+            for _ in range(worker_count):
+                try:
+                    first_case = next(pending_cases_iter)
+                except StopIteration:
+                    break
+                submitted_future = executor.submit(_generate_case_entry, first_case)
+                future_to_case_id[submitted_future] = str(first_case.get("id", "") or "")
+
             saved_count = 0
             heartbeat_interval = max(1, int(args.progress_interval_seconds))
-            while remaining_futures:
-                completed_now, remaining_futures = wait(
-                    remaining_futures,
+            while future_to_case_id:
+                completed_now, _ = wait(
+                    set(future_to_case_id.keys()),
                     timeout=heartbeat_interval,
                     return_when=FIRST_COMPLETED,
                 )
                 if not completed_now:
+                    in_flight_count = len(future_to_case_id)
+                    queued_count = total_pending_cases - saved_count - in_flight_count
                     print(
                         f"[progress] saved={saved_count}/{total_pending_cases}, "
-                        f"running={len(remaining_futures)}"
+                        f"in_flight={in_flight_count}, queued={max(0, queued_count)}"
                     )
                     continue
 
                 for completed_future in completed_now:
-                    case_id = future_to_case_id[completed_future]
+                    case_id = future_to_case_id.pop(completed_future)
                     try:
                         entry = completed_future.result()
                     except Exception as unexpected_error:
@@ -395,12 +434,52 @@ def main() -> None:
                         }
                     if entry["status"] == "error":
                         print(f"Generation failed for {entry['id']}: {entry['error_message']}")
-                    _write_cache_entry(cache_path, entry)
+                    write_ok = _persist_entry_with_retry(cache_path, entry)
+                    if not write_ok:
+                        print(f"Final write failure for {entry['id']}")
+                    else:
+                        generated_case_ids.add(entry["id"])
                     saved_count += 1
                     print(
                         f"[saved {saved_count}/{total_pending_cases}] "
                         f"{entry['id']} status={entry['status']} latency_ms={entry['meta']['latency_ms']}"
                     )
+                    try:
+                        next_case = next(pending_cases_iter)
+                        next_future = executor.submit(_generate_case_entry, next_case)
+                        future_to_case_id[next_future] = str(next_case.get("id", "") or "")
+                    except StopIteration:
+                        pass
+
+    missing_case_ids = sorted(set(pending_cases_by_id.keys()) - generated_case_ids)
+    if missing_case_ids:
+        print(f"Detected {len(missing_case_ids)} missing case(s). Retrying sequentially...")
+        for missing_case_id in missing_case_ids:
+            missing_case = pending_cases_by_id[missing_case_id]
+            retry_entry = _generate_case_entry(missing_case)
+            if retry_entry["status"] == "error":
+                print(
+                    f"Retry generation failed for {retry_entry['id']}: "
+                    f"{retry_entry['error_message']}"
+                )
+            retry_write_ok = _persist_entry_with_retry(cache_path, retry_entry)
+            if retry_write_ok:
+                generated_case_ids.add(retry_entry["id"])
+                print(
+                    f"[retry-saved] {retry_entry['id']} "
+                    f"status={retry_entry['status']} latency_ms={retry_entry['meta']['latency_ms']}"
+                )
+            else:
+                print(f"[retry-write-failed] {retry_entry['id']}")
+
+    final_missing_case_ids = sorted(set(pending_cases_by_id.keys()) - generated_case_ids)
+    if final_missing_case_ids:
+        print(
+            f"WARNING: {len(final_missing_case_ids)} case(s) still missing after retry. "
+            "Re-run the same command to resume these IDs."
+        )
+    else:
+        print(f"All pending cases persisted: {len(generated_case_ids)}/{total_pending_cases}")
 
     print(f"\nBias generation complete. Saved to {cache_out}")
     print(cache_out)
