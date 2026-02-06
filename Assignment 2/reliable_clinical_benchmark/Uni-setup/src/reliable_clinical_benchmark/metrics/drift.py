@@ -55,7 +55,23 @@ _NEGATION_WINDOW_TOKENS = 5
 _SENTENCE_SPLIT = re.compile(r"(?<=[.!?])\s+")
 _DEFAULT_NLI_STRIDE = 2
 _ACTION_PATTERN = re.compile(
-    r"\b(recommend|suggest|advise|should|plan|try|practice|schedule|start|stop|increase|decrease|continue)\b",
+    r"\b("
+    r"recommend|suggest|consider|advise|propose|encourage|urge|direct|instruct|mandate|"
+    r"plan|aim|goal|target|prioriti[sz]e|must|should|ought\s*to|"
+    r"prescribe|dispense|administer|start|initiate|commence|introduce|"
+    r"take|use|consume|inject|apply|dose|"
+    r"increase|decrease|reduce|lower|raise|adjust|optimi[sz]e|modify|alter|"
+    r"switch|change|rotate|substitute|replace|"
+    r"titrate|taper|wean|continue|"
+    r"stop|discontinue|cease|withdraw|halt|suspend|"
+    r"avoid|refrain|abstain|restrict|limit|prevent|prohibit|forbid|warn|caution|"
+    r"assess|evaluate|examine|screen|investigate|explore|review|"
+    r"monitor|observe|track|watch|check|measure|record|log|"
+    r"order|request|schedule|arrange|"
+    r"refer|consult|admit|discharge|transfer|signpost|connect|link|contact|call|seek|"
+    r"follow\s*up|"
+    r"work\s*on|focus\s*on|practi[sc]e|engage|attend|participate|implement|utili[sz]e|employ|try"
+    r")\b",
     re.IGNORECASE,
 )
 _RISK_PATTERN = re.compile(
@@ -755,4 +771,3 @@ def compute_drift_slope(recall_curve: List[float]) -> float:
     # Simple linear regression
     slope = np.polyfit(turns, recalls, 1)[0]
     return float(slope)
-

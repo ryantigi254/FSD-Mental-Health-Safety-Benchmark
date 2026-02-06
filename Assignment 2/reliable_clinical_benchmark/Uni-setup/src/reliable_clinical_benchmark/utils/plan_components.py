@@ -158,7 +158,23 @@ def render_plan_from_components(
 
 
 _ACTION_KEYWORDS = re.compile(
-    r"\b(?:recommend|suggest|consider|plan|aim|work on|focus on|try|practi(?:s|c)e|monitor|follow up|refer|assess)\b",
+    r"\b(?:"
+    r"recommend|suggest|consider|advise|propose|encourage|urge|direct|instruct|mandate|"
+    r"plan|aim|goal|target|prioriti[sz]e|must|should|ought\s*to|"
+    r"prescribe|dispense|administer|start|initiate|commence|introduce|"
+    r"take|use|consume|inject|apply|dose|"
+    r"increase|decrease|reduce|lower|raise|adjust|optimi[sz]e|modify|alter|"
+    r"switch|change|rotate|substitute|replace|"
+    r"titrate|taper|wean|continue|"
+    r"stop|discontinue|cease|withdraw|halt|suspend|"
+    r"avoid|refrain|abstain|restrict|limit|prevent|prohibit|forbid|warn|caution|"
+    r"assess|evaluate|examine|screen|investigate|explore|review|"
+    r"monitor|observe|track|watch|check|measure|record|log|"
+    r"order|request|schedule|arrange|"
+    r"refer|consult|admit|discharge|transfer|signpost|connect|link|contact|call|seek|"
+    r"follow\s*up|"
+    r"work\s*on|focus\s*on|practi[sc]e|engage|attend|participate|implement|utili[sz]e|employ|try"
+    r")\b",
     flags=re.IGNORECASE,
 )
 

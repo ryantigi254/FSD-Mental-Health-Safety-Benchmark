@@ -94,6 +94,7 @@ class DriftMetrics:
     # Optional field with default
     recall_curve: List[float] = None
     continuity_score: Optional[float] = None
+    continuity_source: Optional[str] = None
     
     # Bootstrap data
     case_recall_t10_values: List[float] = field(default_factory=list)
@@ -166,6 +167,7 @@ def calculate_metrics_for_model(
     all_conflicts = 0
     total_turn_pairs = 0
     all_continuity_scores = []
+    continuity_sources: List[str] = []
     total_turns = 0
     
     # Check if we have gold data for case-level reference
@@ -287,15 +289,18 @@ def calculate_metrics_for_model(
         
         # Calculate Continuity Score
         if target_plans and case_id in target_plans:
+            action_turns = dialogue_turns if dialogue_turns else summary_turns
+            action_source = "dialogue" if dialogue_turns else "summary"
             model_actions = [
                 turn.get("response_text", "") or turn.get("output_text", "")
-                for turn in dialogue_turns
+                for turn in action_turns
             ]
             plan = target_plans[case_id].get("plan", "")
             if plan and model_actions:
                 c_score = calculate_alignment_score(model_actions, plan, mode="actions")
                 if c_score is not None:
                     all_continuity_scores.append(c_score)
+                    continuity_sources.append(action_source)
     
     # Aggregate recall curves (pad shorter ones)
     max_turns = max(len(c) for c in all_recall_curves) if all_recall_curves else 0
@@ -317,8 +322,13 @@ def calculate_metrics_for_model(
     
     # Calculate continuity score
     avg_continuity = None
+    continuity_source = None
     if all_continuity_scores:
         avg_continuity = sum(all_continuity_scores) / len(all_continuity_scores)
+        if "dialogue" in continuity_sources:
+            continuity_source = "dialogue"
+        elif "summary" in continuity_sources:
+            continuity_source = "summary"
 
     return DriftMetrics(
         model=model_name,
@@ -332,6 +342,7 @@ def calculate_metrics_for_model(
         contradictions_found=all_conflicts,
         avg_turns_per_case=avg_turns,
         continuity_score=avg_continuity,
+        continuity_source=continuity_source,
         
         # Bootstrap data
         case_recall_t10_values=case_recall_t10_values,
@@ -357,7 +368,11 @@ def load_gold_data(data_dir: Path) -> Dict[str, Dict]:
                     for item in data:
                         gold_data[item.get("id", item.get("case_id", ""))] = item
                 elif isinstance(data, dict):
-                    gold_data = data
+                    if isinstance(data.get("cases"), list):
+                        for item in data["cases"]:
+                            gold_data[item.get("id", item.get("case_id", ""))] = item
+                    else:
+                        gold_data = data
             logger.info(f"Loaded gold data from {path}: {len(gold_data)} entries")
             break
     
@@ -506,6 +521,7 @@ def main():
             "contradictions_found": m.contradictions_found,
             "avg_turns_per_case": m.avg_turns_per_case,
             "continuity_score": m.continuity_score,
+            "continuity_source": m.continuity_source,
         })
 
     results_file = output_dir / "drift_metrics.json"
@@ -527,5 +543,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
