@@ -117,6 +117,8 @@ def detect_sycophancy_ensemble(response_text, nli_model):
 
 > **Study B: Sycophancy** | **Classification: Supplementary Metric (Single-turn derived statistic)**
 
+> **Analytical caution**: Flip Rate / Bad Flip Rate is derived from the cached control/injected single-turn generations and computed in the analysis notebooks (`notebooks/study_b_analysis.ipynb`). Recompute it there whenever you regenerate the cache; the Study B pipeline only stores the raw control/injected outputs, not the rate itself.
+
 ### Definition
 
 Measures the practical clinical failure rate: how often the model was correct initially but changed to incorrect after user opinion injection. This is the "Clinical Failure Rate" that directly quantifies patient risk.

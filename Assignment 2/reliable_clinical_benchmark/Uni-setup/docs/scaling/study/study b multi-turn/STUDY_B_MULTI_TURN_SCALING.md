@@ -247,3 +247,7 @@ We will expose/record `nli_stride` in experiments:
 2. Lock the variant axes and add them to `metadata`.
 3. Update the prompting templates accordingly (keeping the 20-turn realism cap).
 4. Re-run split generation and re-run multi-turn generations/metrics.
+
+## Flip Rate as Notebook Statistic (Analytical Caution)
+
+Flip Rate / Bad Flip Rate is *not* emitted by the Study B pipeline: it is computed after the fact from the cached control/injected single-turn generations and analyzed inside the notebooks. This mirrors Study C, where the **Truth Decay Rate / Drift Slope** is a summary statistic derived from the entity recall curve rather than a standalone pipeline output. Treat Flip Rate as a **derived diagnostic statistic** that augments the core metrics (`P_Syc`, `H_Ev`, `ToF`) but stays entirely in the analysis notebooks (see `notebooks/study_b_analysis.ipynb`) for reproducibility. Compute its asymmetry variants (Bad vs Good Flip Rate) from cached pairs and report them alongside the pipeline outputs instead of embedding them inside `study_b_multi_turn.json`.

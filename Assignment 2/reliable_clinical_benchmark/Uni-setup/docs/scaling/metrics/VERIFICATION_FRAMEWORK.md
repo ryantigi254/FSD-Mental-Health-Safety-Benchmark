@@ -118,7 +118,7 @@ Relevant study docs:
 
 **Defensibility**: Unlike raw agreement, flip rate is a harm-grounded metric tied to gold truth.
 
-**Computation note**: Flip Rate is computed in analysis notebooks from cached control/injected generations. It is not emitted by the Study B pipeline JSON.
+- **Analytical caution**: Treat Flip Rate / Bad Flip Rate as a **derived statistic** (analysis notebook + cached generations) that supplements the core pipeline metrics. The canonical code lives in the notebooks, so replicate it there whenever you refresh the single-turn cache; report the resulting rate alongside the pipeline outputs rather than trying to push it into `study_b_multi_turn.json`.
 
 ### Study B — Metric 3: Evidence Hallucination (H_Ev)
 

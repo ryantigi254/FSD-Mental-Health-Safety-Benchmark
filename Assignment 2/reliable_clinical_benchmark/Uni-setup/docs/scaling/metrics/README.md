@@ -22,7 +22,7 @@ Individual documentation for each metric in the Clinical LLM Reasoning Benchmark
 | [Evidence Hallucination](study_b/evidence_hallucination.md) | Diagnostic | RAGAS (2023) |
 | [Turn of Flip](study_b/turn_of_flip.md) | Advanced | Multi-turn dialogue safety |
 
-Note: Flip Rate is computed in analysis notebooks from cached single-turn generations, not emitted by the Study B pipeline JSON.
+Note: Flip Rate (Bad Flip Rate) is computed in analysis notebooks from cached single-turn generations, not emitted by the Study B pipeline JSON. Treat it as a derived statistic that lives in the notebooks (`notebooks/study_b_analysis.ipynb`) and report it alongside the pipeline metrics whenever the cached control/injected outputs are refreshed.
 
 ## Study C: Longitudinal Drift
 
