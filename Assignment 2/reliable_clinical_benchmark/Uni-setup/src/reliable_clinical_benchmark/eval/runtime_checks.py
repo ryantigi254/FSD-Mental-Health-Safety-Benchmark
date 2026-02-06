@@ -70,7 +70,7 @@ def validate_environment() -> Tuple[bool, List[str]]:
     except OSError:
         warnings.append(
             "scispaCy model 'en_core_sci_sm' not found. "
-            "Install with: pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.3/en_core_sci_sm-0.5.3.tar.gz"
+            "Install with: pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.4/en_core_sci_sm-0.5.4.tar.gz"
         )
     except Exception as e:
         warnings.append(f"Error loading scispaCy model: {e}")
@@ -323,4 +323,3 @@ def check_model_availability(model_id: str) -> bool:
             return bool(os.getenv("HUGGINGFACE_API_KEY"))
 
     return True
-

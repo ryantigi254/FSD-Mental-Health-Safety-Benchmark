@@ -36,7 +36,7 @@ conda activate mh-llm-benchmark-env   # Use your conda activation command if 'co
 
 pip install -r requirements.txt
 # spaCy model via scispaCy S3 (matches spaCy 3.6.1)
-python -m pip install --no-deps https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.3/en_core_sci_sm-0.5.3.tar.gz
+python -m pip install --no-deps https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.4/en_core_sci_sm-0.5.4.tar.gz
 python -m spacy validate
 ```
 
@@ -80,7 +80,7 @@ pip install -r requirements.txt --upgrade transformers
 - Local HF model runners: `piaget_local`, `psyche_r1_local`, `psych_qwen_local`, `psyllm_gml_local`
 - Generation scripts: `hf-local-scripts/run_study_*_generate_only.py` (for local models)
 
-**Note:** If `en_core_sci_sm` is unavailable, the S3 link above is the tested path for v0.5.3. NER-dependent tests auto-skip if the model is missing.
+**Note:** If `en_core_sci_sm` is unavailable, the S3 link above is the tested path for v0.5.4. NER-dependent tests auto-skip if the model is missing.
 
 For detailed environment setup, see `docs/environment/ENVIRONMENT.md`.
 

@@ -7,8 +7,8 @@ tokenizers==0.19.1
 sentencepiece==0.2.1
 
 # NLP specialised libraries
-spacy==3.6.1
-scispacy==0.5.3
+spacy==3.7.5
+scispacy==0.5.4
 # Note: scispacy model en_core_sci_sm must be installed separately via URL
 sentence-transformers==2.5.1
 
@@ -45,4 +45,3 @@ rapidfuzz>=3.0.0  # Fast fuzzy string matching for repetition detection
 black==24.3.0
 flake8==7.0.0
 mypy==1.9.0
-

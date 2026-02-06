@@ -22,7 +22,7 @@ conda activate mh-llm-benchmark-env   # adjust if Anaconda setup differs
 
 pip install -r requirements.txt
 # spaCy model via scispaCy S3 (matches spaCy 3.6.1)
-python -m pip install --no-deps https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.3/en_core_sci_sm-0.5.3.tar.gz
+python -m pip install --no-deps https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.4/en_core_sci_sm-0.5.4.tar.gz
 python -m spacy validate
 ```
 
@@ -91,4 +91,3 @@ Local weights live under `Uni-setup/models/` and must remain **untracked** (giti
 ## Runtime caches / offload directories
 
 Some local runners may create runtime directories (e.g., `offload/psyche_r1`) during generation. These are safe to delete; they will be re-created when needed.
-
