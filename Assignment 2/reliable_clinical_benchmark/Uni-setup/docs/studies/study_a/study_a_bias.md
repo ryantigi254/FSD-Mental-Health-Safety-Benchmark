@@ -18,6 +18,8 @@ The bias evaluation measures **Silent Bias Rate (R_SB)** - detecting when models
 
 ## Files and Scripts
 
+**Ready-to-run command list**: `docs/studies/study_a/study_a_bias_commands.md`
+
 ### Generation Script
 **Location**: `hf-local-scripts/run_study_a_bias_generate_only.py`
 
@@ -92,7 +94,7 @@ python src/tests/studies/study_a/models/bias/test_study_a_bias_psyllm_gml_local.
 
 #### 4. Full Generation
 ```powershell
-python hf-local-scripts\run_study_a_bias_generate_only.py --model-id psyllm
+python hf-local-scripts/run_study_a_bias_generate_only.py --model-id psyllm
 ```
 
 ---
@@ -120,7 +122,7 @@ python src/tests/studies/study_a/lmstudio/bias/test_study_a_bias_qwq.py
 
 #### 4. Full Generation
 ```powershell
-python hf-local-scripts\run_study_a_bias_generate_only.py --model-id qwq
+python hf-local-scripts/run_study_a_bias_generate_only.py --model-id qwq
 ```
 
 ---
@@ -148,7 +150,7 @@ python src/tests/studies/study_a/lmstudio/bias/test_study_a_bias_deepseek_r1_lms
 
 #### 4. Full Generation
 ```powershell
-python hf-local-scripts\run_study_a_bias_generate_only.py --model-id deepseek_r1_lmstudio
+python hf-local-scripts/run_study_a_bias_generate_only.py --model-id deepseek_r1_lmstudio
 ```
 
 ---
@@ -176,7 +178,7 @@ python src/tests/studies/study_a/lmstudio/bias/test_study_a_bias_gpt_oss.py
 
 #### 4. Full Generation
 ```powershell
-python hf-local-scripts\run_study_a_bias_generate_only.py --model-id gpt_oss_lmstudio
+python hf-local-scripts/run_study_a_bias_generate_only.py --model-id gpt_oss_lmstudio
 ```
 
 ---
@@ -204,7 +206,7 @@ python src/tests/studies/study_a/lmstudio/bias/test_study_a_bias_qwen3_lmstudio.
 
 #### 4. Full Generation
 ```powershell
-python hf-local-scripts\run_study_a_bias_generate_only.py --model-id qwen3_lmstudio
+python hf-local-scripts/run_study_a_bias_generate_only.py --model-id qwen3_lmstudio
 ```
 
 ---
@@ -233,7 +235,7 @@ python src/tests/studies/study_a/models/bias/test_study_a_bias_piaget_local.py
 
 #### 4. Full Generation
 ```powershell
-python hf-local-scripts\run_study_a_bias_generate_only.py --model-id piaget_local
+python hf-local-scripts/run_study_a_bias_generate_only.py --model-id piaget_local
 ```
 
 ---
@@ -262,7 +264,7 @@ python src/tests/studies/study_a/models/bias/test_study_a_bias_psyche_r1_local.p
 
 #### 4. Full Generation
 ```powershell
-python hf-local-scripts\run_study_a_bias_generate_only.py --model-id psyche_r1_local
+python hf-local-scripts/run_study_a_bias_generate_only.py --model-id psyche_r1_local
 ```
 
 ---
@@ -291,7 +293,7 @@ python src/tests/studies/study_a/models/bias/test_study_a_bias_psych_qwen_local.
 
 #### 4. Full Generation
 ```powershell
-python hf-local-scripts\run_study_a_bias_generate_only.py --model-id psych_qwen_local --quantization 4bit
+python hf-local-scripts/run_study_a_bias_generate_only.py --model-id psych_qwen_local --quantization 4bit
 ```
 
 **Note**: The script automatically detects local HF models and loads them directly. For `psych_qwen_local`, quantization defaults to `4bit` but can be overridden with `--quantization`. Use `--model` to specify a custom model path.
@@ -386,4 +388,3 @@ See `data/adversarial_bias/README.md` and `data/adversarial_bias/BIAS_DIMENSIONS
 - Smoke tests print to terminal (no file saving) for quick verification
 - Full generations use `max_tokens=8192` to allow complete reasoning chains
 - Smoke tests use `max_tokens=512` for faster execution
-

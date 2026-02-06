@@ -1,169 +1,104 @@
-# Study A Generation Commands
+# Study A Commands (Generation + Metrics)
 
-## Overview
+## Run Location
 
-Study A evaluates **Faithfulness** - measuring whether model reasoning drives predictions or is merely post-hoc rationalisation.
+Run every command from:
 
-**Scripts**: Individual model runners in `hf-local-scripts/` (e.g., `run_qwen3_lmstudio.py`, `run_psyllm_gml.py`)
-
-**What it does**:
-- Generates responses in two modes per sample:
-  - **CoT mode** (`mode="cot"`): Chain-of-Thought reasoning with step-by-step analysis
-  - **Direct mode** (`mode="direct"`): Immediate answer without explicit reasoning
-- Each sample generates both modes (2 generations per sample)
-- Writes to: `results/<model-id>/study_a_generations.jsonl`
-
-**Note**: This is a standalone generation run. Metrics are calculated separately using `from_cache` mode or via `scripts/study_a/metrics/calculate_metrics.py`.
-
-- Uses `run_study_a()` pipeline from `reliable_clinical_benchmark.pipelines.study_a`
-- Each model has a dedicated script with `study-a` subcommand
-- Supports `--generate-only` flag for generation-only mode (no metrics)
-
-**Modularity**: Like Study B and Study A Bias, this study uses a separated execution model where raw data is decoupled from metrics calculation. This ensures scalability for large runs.
-
-## Commands per Model
-
-Run these from `Uni-setup/`:
-
-### Qwen3-8B (LM Studio)
-```powershell
-python hf-local-scripts\run_qwen3_lmstudio.py study-a --generate-only
+```bash
+cd "/Users/ryangichuru/Documents/SSD-K/Uni/3rd year/NLP/Assignment 2/reliable_clinical_benchmark/Uni-setup"
 ```
 
-### QwQ-32B (LM Studio)
-```powershell
-python hf-local-scripts\run_qwen3_lmstudio.py study-a --generate-only --api-identifier QwQ-32B-GGUF --model-name qwq
+## Shared Variables
+
+```bash
+export PYTHONPATH=src
+RUN_TAG="$(date +%Y%m%d_%H%M)"
+OUT_ROOT="metric-results/misc/${RUN_TAG}"
+mkdir -p "${OUT_ROOT}/study_a"
 ```
 
-**Note**: QwQ uses the same script as Qwen3 but with different API identifier. Alternatively, use the model factory approach (see below).
+## Study A Generation Commands (Per Model)
 
-### DeepSeek-R1 (LM Studio distill)
-```powershell
-python hf-local-scripts\run_qwen3_lmstudio.py study-a --generate-only --api-identifier deepseek-r1-distill-qwen-14b --model-name deepseek-r1-lmstudio
+### LM Studio models (`mh-llm-benchmark-env`)
+
+```bash
+conda run -n mh-llm-benchmark-env env PYTHONPATH=src \
+  python hf-local-scripts/run_qwen3_lmstudio.py study-a --generate-only \
+  --api-identifier qwen3-8b --model-name qwen3-lmstudio
+
+conda run -n mh-llm-benchmark-env env PYTHONPATH=src \
+  python hf-local-scripts/run_qwen3_lmstudio.py study-a --generate-only \
+  --api-identifier QwQ-32B-GGUF --model-name qwq
+
+conda run -n mh-llm-benchmark-env env PYTHONPATH=src \
+  python hf-local-scripts/run_qwen3_lmstudio.py study-a --generate-only \
+  --api-identifier deepseek-r1-distill-qwen-14b --model-name deepseek-r1-lmstudio
+
+conda run -n mh-llm-benchmark-env env PYTHONPATH=src \
+  python hf-local-scripts/run_qwen3_lmstudio.py study-a --generate-only \
+  --api-identifier gpt-oss-20b --model-name gpt-oss-20b
 ```
 
-**Note**: DeepSeek-R1 uses the same script pattern with different API identifier. Alternatively, use the model factory approach (see below).
+### Local HF models (`mh-llm-local-env`)
 
-### GPT-OSS-20B (LM Studio)
-```powershell
-python hf-local-scripts\run_qwen3_lmstudio.py study-a --generate-only --api-identifier gpt-oss-20b --model-name gpt-oss-20b
+```bash
+conda run -n mh-llm-local-env env PYTHONNOUSERSITE=1 PYTHONPATH=src \
+  python hf-local-scripts/run_psyllm_gml.py study-a --generate-only --model-name psyllm-gml-local
+
+conda run -n mh-llm-local-env env PYTHONNOUSERSITE=1 PYTHONPATH=src \
+  python hf-local-scripts/run_psyche_r1.py study-a --generate-only --model-name psyche-r1-local
+
+conda run -n mh-llm-local-env env PYTHONNOUSERSITE=1 PYTHONPATH=src \
+  python hf-local-scripts/run_psych_qwen_32b.py study-a --generate-only --model-name psych-qwen-32b-local --quantization 4bit
+
+conda run -n mh-llm-local-env env PYTHONNOUSERSITE=1 PYTHONPATH=src \
+  python scripts/evaluation/run_evaluation.py --model piaget_local --study A --generate-only --output-dir results
 ```
 
-**Note**: GPT-OSS uses the same script pattern with different API identifier. Alternatively, use the model factory approach (see below).
+## Study A Metrics Commands
 
-### PsyLLM (HF local, GMLHUHE/PsyLLM)
-```powershell
-python hf-local-scripts\run_psyllm_gml.py study-a --generate-only
+### Faithfulness Gap + Step-F1 (all models from cleaned pipeline)
+
+```bash
+conda run -n mh-llm-benchmark-env env PYTHONPATH=src \
+  python scripts/studies/study_a/metrics/calculate_metrics.py \
+  --use-cleaned \
+  --output-dir "${OUT_ROOT}/study_a"
 ```
 
-### Piaget-8B (HF local)
-**Note**: `run_piaget_8b.py` is a simple prompt runner. For Study A, use the model factory approach (see below) or create a wrapper script similar to `run_psyche_r1.py`.
+### Faithfulness Gap + Step-F1 (per model)
 
-### Psyche-R1 (HF local)
-```powershell
-python hf-local-scripts\run_psyche_r1.py study-a --generate-only
+```bash
+for MODEL in qwen3-lmstudio qwq deepseek-r1-lmstudio gpt-oss-20b psyllm-gml-local piaget-8b-local psyche-r1-local psych-qwen-32b-local; do
+  conda run -n mh-llm-benchmark-env env PYTHONPATH=src \
+    python scripts/studies/study_a/metrics/calculate_metrics.py \
+    --use-cleaned \
+    --model "${MODEL}" \
+    --output-dir "${OUT_ROOT}/study_a"
+done
 ```
 
-### Psych-Qwen-32B (HF local, 4-bit)
-```powershell
-python hf-local-scripts\run_psych_qwen_32b.py study-a --generate-only
+### Silent Bias Rate merge
+
+```bash
+conda run -n mh-llm-benchmark-env env PYTHONPATH=src \
+  python scripts/studies/study_a/metrics/calculate_bias.py \
+  --use-cleaned \
+  --output-dir "${OUT_ROOT}/study_a"
+
+conda run -n mh-llm-benchmark-env env PYTHONPATH=src \
+  python scripts/studies/study_a/metrics/calculate_metrics.py \
+  --use-cleaned \
+  --output-dir "${OUT_ROOT}/study_a"
 ```
 
-## Alternative: Using Model Factory
+## Output Files
 
-For models without dedicated scripts, you can use the model factory approach:
-
-```python
-from reliable_clinical_benchmark.models.factory import get_model_runner
-from reliable_clinical_benchmark.models.base import GenerationConfig
-from reliable_clinical_benchmark.pipelines.study_a import run_study_a
-
-config = GenerationConfig(max_tokens=4096)
-runner = get_model_runner("qwq", config)  # or "deepseek_r1_lmstudio", "gpt_oss", "piaget_local", etc.
-
-run_study_a(
-    model=runner,
-    data_dir="data/openr1_psy_splits",
-    output_dir="results",
-    model_name="qwq",  # matches model_id
-    generate_only=True,
-    cache_out="results/qwq/study_a_generations.jsonl",
-)
+```text
+${OUT_ROOT}/study_a/all_models_metrics.json
+${OUT_ROOT}/study_a/study_a_bias_metrics.json
+${OUT_ROOT}/study_a/<model>_metrics.json
 ```
 
-**Available model IDs**:
-- LM Studio: `qwq`, `deepseek_r1_lmstudio`, `gpt_oss`, `qwen3_lmstudio`
-- Local HF: `psyllm_gml_local`, `piaget_local`, `psyche_r1_local`, `psych_qwen_local`
-
-## Quick Smoke Test
-
-Test with a small subset first (any model):
-```powershell
-python hf-local-scripts\run_qwen3_lmstudio.py study-a --generate-only --max-samples 5
-```
-
-## Custom Options
-
-### Specify Output Location
-```powershell
-python hf-local-scripts\run_qwen3_lmstudio.py study-a --generate-only --cache-out results\custom\study_a.jsonl
-```
-
-### Custom Data Directory
-```powershell
-python hf-local-scripts\run_qwen3_lmstudio.py study-a --generate-only --data-dir data\custom_study_a
-```
-
-### Generation Parameters
-```powershell
-python hf-local-scripts\run_qwen3_lmstudio.py study-a --generate-only --temperature 0.8 --top-p 0.95 --max-new-tokens 2048
-```
-
-## After Generation
-
-1. **Calculate Study A metrics** (from cache):
-   ```powershell
-   python scripts\study_a\metrics\calculate_metrics.py
-   ```
-
-   Or use the pipeline directly:
-   ```python
-   from reliable_clinical_benchmark.pipelines.study_a import run_study_a
-   run_study_a(model=runner, from_cache="results/{model-id}/study_a_generations.jsonl", ...)
-   ```
-
-2. **Calculate bias metrics** (separate run):
-   ```powershell
-   python scripts\study_a\metrics\calculate_bias.py
-   ```
-
-## Output
-
-- **Generations**: `results/{model-id}/study_a_generations.jsonl`
-  - Each entry has `mode: "cot"` or `mode: "direct"`
-  - 2 generations per sample (one CoT, one Direct)
-- **Metrics**: Calculated separately using `from_cache` mode
-  - Faithfulness Gap (Δ_Reasoning)
-  - Step-F1
-  - Accuracy (CoT vs Direct)
-  - Silent Bias Rate (R_SB) - from separate bias run
-
-## Data Source
-
-- **Input**: `data/openr1_psy_splits/study_a_test.json` (Primary split)
-- **Structure**: Vignettes with patient transcripts
-- **Purpose**: Measure if reasoning improves accuracy (faithfulness)
-
-## Implementation Details
-
-- **Pipeline**: `src/reliable_clinical_benchmark/pipelines/study_a.py`
-- **Metrics**: `src/reliable_clinical_benchmark/metrics/faithfulness.py`
-- **Model Interface**: Uses `ModelRunner.generate(prompt, mode="cot"|"direct")`
-- **Cache Format**: JSONL with fields: `id`, `mode`, `prompt`, `output_text`, `status`, `timestamp`, `model_name`, `meta`
-
-## Related Documentation
-
-- **Architecture**: See `docs/studies/study_a/study_a_faithfulness.md` for implementation details
-- **Bias Evaluation**: See `docs/studies/study_a/study_a_bias.md` for Silent Bias Rate (R_SB) workflow
-- **Metrics**: See `docs/metrics/METRIC_CALCULATION_PIPELINE.md` for metric calculation details
-
+Bias generation commands are in:
+`docs/studies/study_a/study_a_bias_commands.md`
