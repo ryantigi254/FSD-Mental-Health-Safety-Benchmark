@@ -1,135 +1,65 @@
-# Study A Bias Commands (Generation + Metrics)
+# Study A Bias Commands
 
-## Run Location
+## Scope
+Study A bias generation writes to `results/<model-folder>/study_a_bias_generations.jsonl` and metrics write to `metric-results/.../study_a`.
 
-Run every command from:
+## One-Time Setup
 
+### Mac/Linux
 ```bash
 cd "/Users/ryangichuru/Documents/SSD-K/Uni/3rd year/NLP/Assignment 2/reliable_clinical_benchmark/Uni-setup"
 ```
 
-## Shared Variables
-
-```bash
-export PYTHONPATH=src
-RUN_TAG="$(date +%Y%m%d_%H%M)"
-OUT_ROOT="metric-results/misc/${RUN_TAG}"
-mkdir -p "${OUT_ROOT}/study_a"
-```
-
-## Study A Bias Generation Commands (Per Model)
-
-### LM Studio models (`mh-llm-benchmark-env`)
-
-```bash
-conda run -n mh-llm-benchmark-env env PYTHONPATH=src PYTHONUNBUFFERED=1 \
-  python hf-local-scripts/run_study_a_bias_generate_only.py --model-id qwen3_lmstudio --workers 4
-
-conda run -n mh-llm-benchmark-env env PYTHONPATH=src PYTHONUNBUFFERED=1 \
-  python hf-local-scripts/run_study_a_bias_generate_only.py --model-id qwq --workers 4
-
-conda run -n mh-llm-benchmark-env env PYTHONPATH=src PYTHONUNBUFFERED=1 \
-  python hf-local-scripts/run_study_a_bias_generate_only.py --model-id deepseek_r1_lmstudio --workers 4
-
-conda run -n mh-llm-benchmark-env env PYTHONPATH=src PYTHONUNBUFFERED=1 \
-  python hf-local-scripts/run_study_a_bias_generate_only.py --model-id gpt_oss_lmstudio --workers 4
-```
-
-### Local HF models (`mh-llm-local-env`)
-
-```bash
-conda run -n mh-llm-local-env env PYTHONNOUSERSITE=1 PYTHONPATH=src PYTHONUNBUFFERED=1 \
-  python hf-local-scripts/run_study_a_bias_generate_only.py --model-id psyllm_gml_local
-
-conda run -n mh-llm-local-env env PYTHONNOUSERSITE=1 PYTHONPATH=src PYTHONUNBUFFERED=1 \
-  python hf-local-scripts/run_study_a_bias_generate_only.py --model-id piaget_local
-
-conda run -n mh-llm-local-env env PYTHONNOUSERSITE=1 PYTHONPATH=src PYTHONUNBUFFERED=1 \
-  python hf-local-scripts/run_study_a_bias_generate_only.py --model-id psyche_r1_local
-
-conda run -n mh-llm-local-env env PYTHONNOUSERSITE=1 PYTHONPATH=src PYTHONUNBUFFERED=1 \
-  python hf-local-scripts/run_study_a_bias_generate_only.py --model-id psych_qwen_local --quantization 4bit
-```
-
-## Study A Bias Metric Commands
-
-### Silent Bias Rate (all models)
-
-```bash
-conda run -n mh-llm-benchmark-env env PYTHONPATH=src \
-  python scripts/studies/study_a/metrics/calculate_bias.py \
-  --use-cleaned \
-  --output-dir "${OUT_ROOT}/study_a"
-```
-
-### Merge bias into Study A metrics bundle
-
-```bash
-conda run -n mh-llm-benchmark-env env PYTHONPATH=src \
-  python scripts/studies/study_a/metrics/calculate_metrics.py \
-  --use-cleaned \
-  --output-dir "${OUT_ROOT}/study_a"
-```
-
-## Diagnostics Checks
-
-```bash
-jq '. | to_entries[] | {model: .key, silent_bias_rate: .value.silent_bias_rate, silent_bias_rate_ci_low: .value.silent_bias_rate_ci_low, silent_bias_rate_ci_high: .value.silent_bias_rate_ci_high, n_biased_outcomes: .value.n_biased_outcomes, n_silent: .value.n_silent}' \
-  "${OUT_ROOT}/study_a/study_a_bias_metrics.json"
-```
-
-## Output Files
-
-```text
-results/<model>/study_a_bias_generations.jsonl
-${OUT_ROOT}/study_a/study_a_bias_metrics.json
-${OUT_ROOT}/study_a/all_models_metrics.json
-```
-
----
-
-## Automatic Cross-Platform Runner (Preferred)
-
-```bash
-python scripts/dev/run_generation_auto.py --study study_a_bias --model-id gpt_oss_lmstudio --env mh-llm-benchmark-env --workers 8
-```
-
-## Dual Path Commands (PC + Mac, Legacy)
-
-### PC Path (Uni setup)
-
+### Windows (PC)
 ```powershell
 cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup"
-& "D:\Anaconda3\Scripts\activate" mh-llm-benchmark-env
-$Env:PYTHONPATH="src"
-$Env:PYTHONUNBUFFERED="1"
-python hf-local-scripts\run_study_a_bias_generate_only.py --model-id gpt_oss_lmstudio --workers 8
-python scripts\studies\study_a\metrics\calculate_bias.py --use-cleaned --output-dir metric-results\study_a
-python scripts\studies\study_a\metrics\calculate_metrics.py --use-cleaned --output-dir metric-results\study_a
 ```
 
-### Mac Path (Uni setup)
+## Generation Commands (Automatic Cross-Platform Runner)
 
+### Mac/Linux
 ```bash
-cd "/Users/ryangichuru/Documents/SSD-K/Uni/3rd year/NLP/Assignment 2/reliable_clinical_benchmark/Uni-setup"
-export PYTHONPATH=src
-PYTHONUNBUFFERED=1 python hf-local-scripts/run_study_a_bias_generate_only.py --model-id gpt_oss_lmstudio --workers 8
-python scripts/studies/study_a/metrics/calculate_bias.py --use-cleaned --output-dir metric-results/study_a
-python scripts/studies/study_a/metrics/calculate_metrics.py --use-cleaned --output-dir metric-results/study_a
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id qwen3_lmstudio --env mh-llm-benchmark-env --workers 8
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id qwq --env mh-llm-benchmark-env --workers 8
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id deepseek_r1_lmstudio --env mh-llm-benchmark-env --workers 8
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id gpt_oss_lmstudio --env mh-llm-benchmark-env --workers 8
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id psyllm_gml_local --env mh-llm-local-env
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id piaget_local --env mh-llm-local-env
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id psyche_r1_local --env mh-llm-local-env
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id psych_qwen_local --env mh-llm-local-env --quantization 4bit
 ```
 
-## Worker Commands (Absolute Bottom)
-
+### Windows (PC)
 ```powershell
-python hf-local-scripts\run_study_a_bias_generate_only.py --model-id qwen3_lmstudio --workers 8
-python hf-local-scripts\run_study_a_bias_generate_only.py --model-id qwq --workers 8
-python hf-local-scripts\run_study_a_bias_generate_only.py --model-id deepseek_r1_lmstudio --workers 8
-python hf-local-scripts\run_study_a_bias_generate_only.py --model-id gpt_oss_lmstudio --workers 8
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id qwen3_lmstudio --env mh-llm-benchmark-env --workers 8
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id qwq --env mh-llm-benchmark-env --workers 8
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id deepseek_r1_lmstudio --env mh-llm-benchmark-env --workers 8
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id gpt_oss_lmstudio --env mh-llm-benchmark-env --workers 8
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id psyllm_gml_local --env mh-llm-local-env
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id piaget_local --env mh-llm-local-env
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id psyche_r1_local --env mh-llm-local-env
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id psych_qwen_local --env mh-llm-local-env --quantization 4bit
 ```
 
+## Metrics Commands
+
+### Mac/Linux
 ```bash
-python hf-local-scripts/run_study_a_bias_generate_only.py --model-id qwen3_lmstudio --workers 8
-python hf-local-scripts/run_study_a_bias_generate_only.py --model-id qwq --workers 8
-python hf-local-scripts/run_study_a_bias_generate_only.py --model-id deepseek_r1_lmstudio --workers 8
-python hf-local-scripts/run_study_a_bias_generate_only.py --model-id gpt_oss_lmstudio --workers 8
+RUN_TAG="$(date +%Y%m%d_%H%M)"; OUT_ROOT="metric-results/misc/${RUN_TAG}"; mkdir -p "${OUT_ROOT}/study_a"; conda run -n mh-llm-benchmark-env env PYTHONPATH=src python scripts/studies/study_a/metrics/calculate_bias.py --use-cleaned --output-dir "${OUT_ROOT}/study_a"
+RUN_TAG="$(date +%Y%m%d_%H%M)"; OUT_ROOT="metric-results/misc/${RUN_TAG}"; mkdir -p "${OUT_ROOT}/study_a"; conda run -n mh-llm-benchmark-env env PYTHONPATH=src python scripts/studies/study_a/metrics/calculate_metrics.py --use-cleaned --output-dir "${OUT_ROOT}/study_a"
+```
+
+### Windows (PC)
+```powershell
+$RUN_TAG=Get-Date -Format "yyyyMMdd_HHmm"; $OUT_ROOT="metric-results/misc/$RUN_TAG"; New-Item -ItemType Directory -Force -Path "$OUT_ROOT/study_a" | Out-Null; conda run -n mh-llm-benchmark-env python scripts/studies/study_a/metrics/calculate_bias.py --use-cleaned --output-dir "$OUT_ROOT/study_a"
+$RUN_TAG=Get-Date -Format "yyyyMMdd_HHmm"; $OUT_ROOT="metric-results/misc/$RUN_TAG"; New-Item -ItemType Directory -Force -Path "$OUT_ROOT/study_a" | Out-Null; conda run -n mh-llm-benchmark-env python scripts/studies/study_a/metrics/calculate_metrics.py --use-cleaned --output-dir "$OUT_ROOT/study_a"
+```
+
+## Workers
+`study_a_bias` generation supports `--workers`. If not passed, default is `1`.
+
+## Useful Checks
+```bash
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id gpt_oss_lmstudio --check-only
+python hf-local-scripts/run_study_a_bias_generate_only.py --model-id gpt_oss_lmstudio --workers 8 --max-cases 5
 ```
