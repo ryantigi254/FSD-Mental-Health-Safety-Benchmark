@@ -28,7 +28,7 @@ def main() -> None:
     )
     common.add_argument("--temperature", type=float, default=0.6)
     common.add_argument("--top-p", type=float, default=0.95)
-    common.add_argument("--max-new-tokens", type=int, default=4096)
+    common.add_argument("--max-new-tokens", type=int, default=16384)
     common.add_argument(
         "--quantization",
         default="4bit",

@@ -30,7 +30,12 @@ def _parse_args() -> argparse.Namespace:
         help="Results directory (defaults to Uni-setup/results).",
     )
     p.add_argument("--max-samples", type=int, default=None, help="Limit number of multi-turn cases.")
-    p.add_argument("--max-tokens", type=int, default=2048, help="Max new tokens per generation turn.")
+    p.add_argument(
+        "--max-tokens",
+        type=int,
+        default=16384,
+        help="Max new tokens per generation turn (default: 16384 to avoid truncation).",
+    )
     p.add_argument(
         "--cache-out",
         type=str,

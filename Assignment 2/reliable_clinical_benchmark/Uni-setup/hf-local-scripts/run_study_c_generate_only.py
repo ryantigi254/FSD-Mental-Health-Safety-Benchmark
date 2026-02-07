@@ -36,10 +36,10 @@ def _parse_args() -> argparse.Namespace:
     )
     p.add_argument("--max-cases", type=int, default=None, help="Limit Study C cases.")
     p.add_argument(
-        "--max-tokens", 
-        type=int, 
-        default=7000, 
-        help="Max new tokens per generation. Default 7000 accommodates all models including Piaget-8B max (5958). "
+        "--max-tokens",
+        type=int,
+        default=16384,
+        help="Max new tokens per generation (default: 16384 for long turns without truncation). "
              "GPU cache is cleared after each generation to prevent memory buildup. Can be reduced if memory is tight."
     )
     p.add_argument(
@@ -142,5 +142,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
 

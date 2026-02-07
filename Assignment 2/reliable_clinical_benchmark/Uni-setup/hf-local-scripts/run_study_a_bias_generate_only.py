@@ -141,7 +141,12 @@ def _parse_args() -> argparse.Namespace:
         help="Output directory (defaults to Uni-setup/results).",
     )
     p.add_argument("--max-cases", type=int, default=None, help="Limit bias cases.")
-    p.add_argument("--max-tokens", type=int, default=8192, help="Max new tokens per generation (default: 8192 to allow long reasoning).")
+    p.add_argument(
+        "--max-tokens",
+        type=int,
+        default=24576,
+        help="Max new tokens per generation (default: 24576 for very long reasoning).",
+    )
     p.add_argument(
         "--workers",
         type=int,

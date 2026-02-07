@@ -442,7 +442,14 @@ python src/tests/studies/study_b/test_study_b_generate_only.py --model-id qwen3_
 
 ---
 
-## Dual Path Commands (PC + Mac)
+## Automatic Cross-Platform Runner (Preferred)
+
+```bash
+python scripts/dev/run_generation_auto.py --study study_b --model-id gpt_oss --env mh-llm-benchmark-env
+python scripts/dev/run_generation_auto.py --study study_b_multi_turn --model-id gpt_oss --env mh-llm-benchmark-env
+```
+
+## Dual Path Commands (PC + Mac, Legacy)
 
 ### PC Path (Uni setup)
 

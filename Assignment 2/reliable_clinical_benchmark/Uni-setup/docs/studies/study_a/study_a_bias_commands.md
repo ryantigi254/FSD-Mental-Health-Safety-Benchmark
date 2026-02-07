@@ -88,7 +88,13 @@ ${OUT_ROOT}/study_a/all_models_metrics.json
 
 ---
 
-## Dual Path Commands (PC + Mac)
+## Automatic Cross-Platform Runner (Preferred)
+
+```bash
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id gpt_oss_lmstudio --env mh-llm-benchmark-env --workers 8
+```
+
+## Dual Path Commands (PC + Mac, Legacy)
 
 ### PC Path (Uni setup)
 

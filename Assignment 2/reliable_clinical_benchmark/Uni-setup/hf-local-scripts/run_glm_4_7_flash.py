@@ -41,7 +41,7 @@ def main() -> None:
     )
     common.add_argument("--temperature", type=float, default=0.7)
     common.add_argument("--top-p", type=float, default=0.9)
-    common.add_argument("--max-new-tokens", type=int, default=4096)
+    common.add_argument("--max-new-tokens", type=int, default=16384)
 
     parser = argparse.ArgumentParser(parents=[common])
 

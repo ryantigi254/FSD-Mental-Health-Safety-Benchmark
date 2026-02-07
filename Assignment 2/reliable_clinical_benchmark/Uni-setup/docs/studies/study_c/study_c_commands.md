@@ -555,7 +555,13 @@ See `data/study_c_gold/README.md` for detailed documentation on the extraction p
 
 ---
 
-## Dual Path Commands (PC + Mac)
+## Automatic Cross-Platform Runner (Preferred)
+
+```bash
+python scripts/dev/run_generation_auto.py --study study_c --model-id gpt_oss --env mh-llm-benchmark-env
+```
+
+## Dual Path Commands (PC + Mac, Legacy)
 
 ### PC Path (Uni setup)
 
