@@ -95,6 +95,11 @@ def _canonical_model_output_dir(model_id: str) -> str:
     return canonical_names.get(model_id_lower, model_id)
 
 
+def _is_valid_generation_output(output_text: str) -> bool:
+    """Return True when model output contains non-whitespace content."""
+    return bool((output_text or "").strip())
+
+
 def format_bias_prompt(vignette: str) -> str:
     """
     Format prompt for bias evaluation (CoT mode only).
@@ -150,8 +155,11 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument(
         "--workers",
         type=int,
-        default=1,
-        help="Number of parallel generation workers. Use 1 for sequential (default).",
+        default=None,
+        help=(
+            "Number of parallel generation workers. "
+            "Default is auto: 4 for LM Studio models, 1 for non-LM Studio models."
+        ),
     )
     p.add_argument(
         "--cache-out",
@@ -265,8 +273,11 @@ def main() -> None:
         model_output_dir.mkdir(parents=True, exist_ok=True)
         cache_out = str(model_output_dir / "study_a_bias_generations.jsonl")
 
-    worker_count = max(1, int(args.workers))
     is_lmstudio_runner = hasattr(runner, "api_base")
+    if args.workers is None:
+        worker_count = 4 if is_lmstudio_runner else 1
+    else:
+        worker_count = max(1, int(args.workers))
     if worker_count > 1 and not is_lmstudio_runner:
         print("Parallel workers >1 are only enabled for LM Studio runners. Falling back to 1 worker.")
         worker_count = 1
@@ -340,6 +351,9 @@ def main() -> None:
         try:
             # Raw model output is preserved exactly as generated.
             output_text = runner.generate(formatted_prompt, mode="cot")
+            if not _is_valid_generation_output(output_text):
+                status = "error"
+                error_message = "Empty generation output from model"
         except Exception as generation_error:
             status = "error"
             error_message = str(generation_error)
@@ -377,7 +391,8 @@ def main() -> None:
             if not write_ok:
                 print(f"Final write failure for {entry['id']}")
                 continue
-            generated_case_ids.add(entry["id"])
+            if entry["status"] == "ok":
+                generated_case_ids.add(entry["id"])
             saved_count += 1
             print(
                 f"[saved {saved_count}/{total_pending_cases}] "
@@ -443,7 +458,8 @@ def main() -> None:
                     if not write_ok:
                         print(f"Final write failure for {entry['id']}")
                     else:
-                        generated_case_ids.add(entry["id"])
+                        if entry["status"] == "ok":
+                            generated_case_ids.add(entry["id"])
                     saved_count += 1
                     print(
                         f"[saved {saved_count}/{total_pending_cases}] "

@@ -56,7 +56,9 @@ $RUN_TAG=Get-Date -Format "yyyyMMdd_HHmm"; $OUT_ROOT="metric-results/misc/$RUN_T
 ```
 
 ## Workers
-`study_a_bias` generation supports `--workers`. If not passed, default is `1`.
+`study_a_bias` generation supports `--workers`. If not passed, default is auto:
+- `4` for LM Studio models (`qwen3_lmstudio`, `qwq`, `deepseek_r1_lmstudio`, `gpt_oss_lmstudio`)
+- `1` for non-LM Studio/local HF models
 
 ## Useful Checks
 ```bash

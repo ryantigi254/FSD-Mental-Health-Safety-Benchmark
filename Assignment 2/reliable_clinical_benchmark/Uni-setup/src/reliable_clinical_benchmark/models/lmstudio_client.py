@@ -163,6 +163,9 @@ def chat_completion(
 
         # Preserve reasoning if LM Studio returns it alongside content
         reasoning_field = choice.get("reasoning")
+        if not reasoning_field:
+            # LM Studio commonly emits reasoning as `reasoning_content`.
+            reasoning_field = choice.get("reasoning_content")
         reasoning_parts: List[str] = []
         if isinstance(reasoning_field, str) and reasoning_field.strip():
             reasoning_parts.append(reasoning_field.strip())
@@ -195,4 +198,3 @@ def chat_completion(
         logger.error(f"LM Studio response parsing error for model {model}: {e}")
         logger.error(f"Response structure: {result if 'result' in locals() else 'N/A'}")
         raise ValueError(f"Unexpected response format from LM Studio: {e}")
-
