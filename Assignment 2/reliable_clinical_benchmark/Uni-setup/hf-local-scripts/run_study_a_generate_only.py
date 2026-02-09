@@ -42,6 +42,21 @@ def _parse_args() -> argparse.Namespace:
         default=None,
         help="Explicit cache path (defaults to results/<model-id>/study_a_generations.jsonl).",
     )
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=None,
+        help=(
+            "Number of parallel generation workers. "
+            "Default is auto: 4 for LM Studio runners, 1 for non-LM Studio runners."
+        ),
+    )
+    parser.add_argument(
+        "--progress-interval-seconds",
+        type=int,
+        default=10,
+        help="Heartbeat interval for progress logging while waiting for workers.",
+    )
     return parser.parse_args()
 
 
@@ -97,6 +112,7 @@ def main() -> None:
     from reliable_clinical_benchmark.models.base import GenerationConfig
     from reliable_clinical_benchmark.models.factory import get_model_runner
     from reliable_clinical_benchmark.pipelines.study_a import run_study_a
+    from reliable_clinical_benchmark.utils.worker_runtime import resolve_worker_count
 
     args = _parse_args()
 
@@ -109,6 +125,7 @@ def main() -> None:
 
     config = GenerationConfig(max_tokens=args.max_tokens)
     runner = get_model_runner(args.model_id, config)
+    worker_count = resolve_worker_count(args.workers, runner, lmstudio_default=4, non_lm_default=1)
 
     normalized_model_id = _normalize_model_id_for_path(args.model_id, output_dir)
 
@@ -124,8 +141,11 @@ def main() -> None:
         model_name=normalized_model_id,
         generate_only=True,
         cache_out=cache_out,
+        workers=worker_count,
+        progress_interval_seconds=args.progress_interval_seconds,
     )
 
+    print(f"Workers: {worker_count}")
     print(cache_out)
 
 

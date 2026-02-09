@@ -56,6 +56,8 @@ def test_study_c_generate_only_writes_jsonl(tmp_path: Path) -> None:
         use_nli=False,
         generate_only=True,
         cache_out=str(cache_path),
+        workers=4,
+        progress_interval_seconds=1,
     )
 
     assert cache_path.exists()
@@ -81,5 +83,4 @@ def test_study_c_generate_only_writes_jsonl(tmp_path: Path) -> None:
             assert isinstance(r.get("prompt"), str) and r["prompt"].startswith("Summarise the current patient state")
         if r["variant"] == "dialogue":
             assert isinstance(r.get("conversation_text"), str) and r["conversation_text"]
-
 

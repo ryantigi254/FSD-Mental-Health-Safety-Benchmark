@@ -22,6 +22,11 @@ from ..metrics.extraction import is_refusal, extract_diagnosis_heuristic
 from ..data.study_a_loader import load_study_a_data
 from ..data.adversarial_loader import load_adversarial_bias_cases
 from ..utils.stats import bootstrap_confidence_interval
+from ..utils.worker_runtime import (
+    append_jsonl_with_retry,
+    iter_threaded_results,
+    resolve_worker_count,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -125,6 +130,8 @@ def run_study_a(
     generate_only: bool = False,
     from_cache: Optional[str] = None,
     cache_out: Optional[str] = None,
+    workers: int = 1,
+    progress_interval_seconds: int = 10,
 ) -> FaithfulnessResult:
     """
     Run Study A faithfulness evaluation.
@@ -170,6 +177,15 @@ def run_study_a(
             existing = _existing_ok(_read_cache(cache_path))
             logger.info(f"Resume enabled: found {len(existing)} cached sample(s)")
 
+        worker_count = resolve_worker_count(
+            requested_workers=workers,
+            runner=model,
+            lmstudio_default=4,
+            non_lm_default=1,
+            log=logger,
+        )
+
+        pending_jobs: List[Dict[str, Any]] = []
         for vignette in vignettes:
             sid = vignette.get("id")
             persona_id = vignette.get("metadata", {}).get("persona_id")
@@ -179,58 +195,90 @@ def run_study_a(
             for mode in ("cot", "direct"):
                 if existing.get(sid, {}).get(mode):
                     continue
-                status = "ok"
-                output_text = ""
-                error_message = ""
-                t0 = time.perf_counter()
-                try:
-                    output_text = model.generate(prompt, mode=mode)
-                except Exception as e:
-                    status = "error"
-                    error_message = str(e)
-                    logger.warning(f"Generation failed for {sid} [{mode}]: {e}")
-                latency_ms = int((time.perf_counter() - t0) * 1000)
-                entry = {
-                    "id": sid,
-                    "persona_id": persona_id,
-                    "mode": mode,
-                    "prompt": prompt,
-                    "output_text": output_text,
-                    "status": status,
-                    "error_message": error_message,
-                    "timestamp": _now_iso(),
-                    "run_id": run_id,
-                    "model_name": model_name,
-                    "sampling": {
-                        "temperature": model.config.temperature,
-                        "top_p": model.config.top_p,
-                        "max_tokens": model.config.max_tokens,
-                        # Placeholders for LM Studio defaults (not exposed here)
-                        "top_k": None,
-                        "min_p": None,
-                        "repeat_penalty": None,
-                        "repeat_last_n": None,
-                        "dry_multiplier": None,
-                        "dry_base": None,
-                        "dry_allowed_length": None,
-                        "dry_penalty_last_n": None,
-                        "mirostat": None,
-                        "mirostat_lr": None,
-                        "mirostat_ent": None,
-                        "logit_bias": None,
-                        "n_ctx": None,
-                        "n_predict": model.config.max_tokens,
-                        "n_keep": None,
-                        "seed": None,
-                        "cache_reuse": None,
-                    },
-                    "meta": {
-                        "prompt_tokens": None,
-                        "response_tokens": None,
-                        "latency_ms": latency_ms,
-                    },
-                }
-                _write_cache_entry(cache_path, entry)
+                pending_jobs.append(
+                    {
+                        "id": sid,
+                        "persona_id": persona_id,
+                        "prompt": prompt,
+                        "mode": mode,
+                    }
+                )
+
+        logger.info(
+            "Pending Study A generations: %d (workers=%d)",
+            len(pending_jobs),
+            worker_count,
+        )
+
+        def _generate_entry(job: Dict[str, Any]) -> Dict[str, Any]:
+            status = "ok"
+            output_text = ""
+            error_message = ""
+            t0 = time.perf_counter()
+            try:
+                output_text = model.generate(job["prompt"], mode=job["mode"])
+            except Exception as error:
+                status = "error"
+                error_message = str(error)
+                logger.warning("Generation failed for %s [%s]: %s", job["id"], job["mode"], error)
+
+            latency_ms = int((time.perf_counter() - t0) * 1000)
+            return {
+                "id": job["id"],
+                "persona_id": job["persona_id"],
+                "mode": job["mode"],
+                "prompt": job["prompt"],
+                "output_text": output_text,
+                "status": status,
+                "error_message": error_message,
+                "timestamp": _now_iso(),
+                "run_id": run_id,
+                "model_name": model_name,
+                "sampling": {
+                    "temperature": model.config.temperature,
+                    "top_p": model.config.top_p,
+                    "max_tokens": model.config.max_tokens,
+                    # Placeholders for LM Studio defaults (not exposed here)
+                    "top_k": None,
+                    "min_p": None,
+                    "repeat_penalty": None,
+                    "repeat_last_n": None,
+                    "dry_multiplier": None,
+                    "dry_base": None,
+                    "dry_allowed_length": None,
+                    "dry_penalty_last_n": None,
+                    "mirostat": None,
+                    "mirostat_lr": None,
+                    "mirostat_ent": None,
+                    "logit_bias": None,
+                    "n_ctx": None,
+                    "n_predict": model.config.max_tokens,
+                    "n_keep": None,
+                    "seed": None,
+                    "cache_reuse": None,
+                },
+                "meta": {
+                    "prompt_tokens": None,
+                    "response_tokens": None,
+                    "latency_ms": latency_ms,
+                },
+            }
+
+        for _, generated_entry in iter_threaded_results(
+            jobs=pending_jobs,
+            worker_count=worker_count,
+            worker_fn=_generate_entry,
+            progress_interval_seconds=progress_interval_seconds,
+            progress_label="study_a",
+            log=logger,
+        ):
+            write_ok = append_jsonl_with_retry(cache_path, generated_entry, log=logger)
+            if not write_ok:
+                logger.error(
+                    "Failed to persist Study A cache row for %s [%s]",
+                    generated_entry.get("id"),
+                    generated_entry.get("mode"),
+                )
 
         if generate_only:
             logger.info("Generation-only complete; skipping metrics.")
@@ -380,4 +428,3 @@ def run_study_a(
     )
 
     return result
-

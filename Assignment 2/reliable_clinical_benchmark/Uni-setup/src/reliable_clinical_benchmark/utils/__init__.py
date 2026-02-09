@@ -15,6 +15,12 @@ from .plan_components import (
     extract_recommendation_candidates,
     nli_filter_candidates,
 )
+from .worker_runtime import (
+    is_lmstudio_runner,
+    resolve_worker_count,
+    append_jsonl_with_retry,
+    iter_threaded_results,
+)
 
 __all__ = [
     "setup_logging",
@@ -26,6 +32,10 @@ __all__ = [
     "render_plan_from_components",
     "extract_recommendation_candidates",
     "nli_filter_candidates",
+    "is_lmstudio_runner",
+    "resolve_worker_count",
+    "append_jsonl_with_retry",
+    "iter_threaded_results",
 ]
 
 if MedicalNER is not None:

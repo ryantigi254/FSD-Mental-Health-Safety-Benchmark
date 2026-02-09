@@ -68,10 +68,14 @@ $RUN_TAG=Get-Date -Format "yyyyMMdd_HHmm"; $OUT_ROOT="metric-results/misc/$RUN_T
 ```
 
 ## Workers
-Study C script does not expose a `--workers` argument. Throughput is controlled by model backend concurrency (LM Studio settings) and hardware.
+- `run_study_c_generate_only.py` exposes `--workers` and `--progress-interval-seconds`.
+- Default worker policy is fail-closed:
+  - LM Studio runners: auto `4` workers.
+  - Non-LM runners: auto `1` worker.
+- Study C parallelises by case only; each case preserves turn order and context accumulation.
 
 ## Useful Checks
 ```bash
 python scripts/dev/run_generation_auto.py --study study_c --model-id gpt_oss --check-only
-python hf-local-scripts/run_study_c_generate_only.py --model-id gpt_oss --max-cases 2
+python hf-local-scripts/run_study_c_generate_only.py --model-id gpt_oss --max-cases 2 --workers 4 --progress-interval-seconds 10
 ```

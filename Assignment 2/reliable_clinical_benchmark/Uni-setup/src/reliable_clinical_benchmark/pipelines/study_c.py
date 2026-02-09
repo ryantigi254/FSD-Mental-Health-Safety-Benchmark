@@ -37,9 +37,14 @@ from ..metrics.drift import (
     DriftResult,
 )
 from ..data.study_c_loader import load_study_c_data
-from ..utils.ner import MedicalNER
 from ..utils.nli import NLIModel
 from ..utils.stats import bootstrap_confidence_interval
+from ..utils.worker_runtime import (
+    append_jsonl_with_retry,
+    is_lmstudio_runner,
+    iter_threaded_results,
+    resolve_worker_count,
+)
 
 
 SENT_SPLIT = re.compile(r"(?<=[.!?])\s+")
@@ -624,6 +629,8 @@ def run_study_c(
     context_cleaner: str = "scan",
     context_clean_start_turn: int = 4,
     nli_stride: int = 2,
+    workers: int = 1,
+    progress_interval_seconds: int = 10,
 ) -> DriftResult:
     """
     Run Study C longitudinal drift evaluation.
@@ -637,6 +644,8 @@ def run_study_c(
         use_nli: Whether to compute knowledge conflict (requires NLI model)
         generate_only: If True, write generations JSONL only (no metrics).
         cache_out: Path to write cached generations JSONL when using generate_only.
+        workers: Parallel worker count for generation-only execution.
+        progress_interval_seconds: Heartbeat interval for worker progress logs.
 
     Returns:
         DriftResult with all metrics
@@ -678,51 +687,79 @@ def run_study_c(
             )
             logger.info(f"Resume enabled: found {total_cached} cached (case, turn, variant) entry/entries")
 
-        for case in cases:
+        worker_count = resolve_worker_count(
+            requested_workers=workers,
+            runner=model,
+            lmstudio_default=4,
+            non_lm_default=1,
+            log=logger,
+        )
+        lmstudio_mode = is_lmstudio_runner(model)
+        logger.info("Study C effective workers: %d", worker_count)
+
+        def _case_has_pending_rows(case: Any) -> bool:
+            for turn in case.turns:
+                if not existing.get(case.id, {}).get(turn.turn, {}).get("summary"):
+                    return True
+                if not existing.get(case.id, {}).get(turn.turn, {}).get("dialogue"):
+                    return True
+            return False
+
+        case_jobs = [case for case in cases if _case_has_pending_rows(case)]
+        logger.info("Pending Study C case jobs: %d", len(case_jobs))
+
+        def _generate_case_entries(case: Any) -> List[Dict[str, Any]]:
             persona_id = (case.metadata or {}).get("persona_id")
             context_for_summary = case.patient_summary
-            conversation_history = []
+            conversation_history: List[Dict[str, str]] = []
+            generated_entries: List[Dict[str, Any]] = []
 
             for turn in case.turns:
-                # Summary-style prompt used by compute_entity_recall_curve()
                 context_for_summary += "\n" + turn.message
                 summary_prompt = (
                     f"Summarise the current patient state based on conversation:\n{context_for_summary}"
                 )
 
-                # Check if already generated
                 if existing.get(case.id, {}).get(turn.turn, {}).get("summary"):
-                    logger.debug(f"Skipping case {case.id} turn {turn.turn} variant summary (already cached)")
+                    logger.debug("Skipping case %s turn %d variant summary (already cached)", case.id, turn.turn)
                 else:
                     status = "ok"
                     summary_text = ""
                     error_message = ""
                     t0 = time.perf_counter()
                     max_retries = 3
-                    retry_delay = 2.0  # seconds
+                    retry_delay = 2.0
                     for attempt in range(max_retries):
                         try:
                             summary_text = model.generate(summary_prompt, mode="summary")
-                            break  # Success, exit retry loop
-                        except Exception as e:
+                            break
+                        except Exception as error:
                             if attempt < max_retries - 1:
                                 logger.warning(
-                                    f"Summary generation failed for case {case.id} turn {turn.turn} "
-                                    f"(attempt {attempt + 1}/{max_retries}): {e}. Retrying in {retry_delay}s..."
+                                    "Summary generation failed for case %s turn %d (attempt %d/%d): %s. "
+                                    "Retrying in %.1fs...",
+                                    case.id,
+                                    turn.turn,
+                                    attempt + 1,
+                                    max_retries,
+                                    error,
+                                    retry_delay,
                                 )
                                 time.sleep(retry_delay)
-                                retry_delay *= 2  # Exponential backoff
+                                retry_delay *= 2
                             else:
                                 status = "error"
-                                error_message = str(e)
+                                error_message = str(error)
                                 logger.error(
-                                    f"Summary generation failed for case {case.id} turn {turn.turn} "
-                                    f"after {max_retries} attempts: {e}"
+                                    "Summary generation failed for case %s turn %d after %d attempts: %s",
+                                    case.id,
+                                    turn.turn,
+                                    max_retries,
+                                    error,
                                 )
                     latency_ms = int((time.perf_counter() - t0) * 1000)
 
-                    _write_cache_entry(
-                        cache_path,
+                    generated_entries.append(
                         {
                             "case_id": case.id,
                             "persona_id": persona_id,
@@ -736,125 +773,109 @@ def run_study_c(
                             "run_id": run_id,
                             "model_name": model_name,
                             "meta": {"latency_ms": latency_ms},
-                        },
+                        }
                     )
 
-                # Dialogue-style prompt used by calculate_knowledge_conflict_rate()
                 conversation_history.append({"role": "user", "content": turn.message})
-                
-                # Full conversation history maintained (all models support 32K context, 10 turns = 20 messages)
-
-                # Check if already generated
                 if existing.get(case.id, {}).get(turn.turn, {}).get("dialogue"):
-                    logger.debug(f"Skipping case {case.id} turn {turn.turn} variant dialogue (already cached)")
-                    # Still need to append to conversation_history for next turn
+                    logger.debug("Skipping case %s turn %d variant dialogue (already cached)", case.id, turn.turn)
                     cached_dialogue = existing[case.id][turn.turn]["dialogue"]
-                    response_text = cached_dialogue.get("response_text", "")
-                    if response_text:
-                        # Clean repetitive text before adding to conversation history
-                        cleaned_response = response_text
+                    cached_response_text = cached_dialogue.get("response_text", "")
+                    if cached_response_text:
+                        cleaned_response = cached_response_text
                         if context_cleaner != "none" and _should_clean_context(turn.turn, context_clean_start_turn):
-                            cleaned_response = _clean_for_context(response_text)
+                            cleaned_response = _clean_for_context(cached_response_text)
                         conversation_history.append({"role": "assistant", "content": cleaned_response})
-                        # Full conversation history maintained for subsequent turns
                 else:
                     status = "ok"
                     response_text = ""
                     error_message = ""
                     t0 = time.perf_counter()
                     max_retries = 3
-                    retry_delay = 2.0  # seconds
+                    retry_delay = 2.0
                     original_max_tokens = model.config.max_tokens
-                    
+                    use_cuda_recovery = (not lmstudio_mode) and TORCH_AVAILABLE and torch.cuda.is_available()
+
                     for attempt in range(max_retries):
                         try:
-                            # Clear GPU cache before each attempt (especially important after OOM errors)
-                            if TORCH_AVAILABLE and torch.cuda.is_available():
+                            if use_cuda_recovery:
                                 torch.cuda.empty_cache()
                                 torch.cuda.synchronize()
-                                # Reset peak memory stats to help with fragmentation
                                 torch.cuda.reset_peak_memory_stats(0)
-                            
-                            # Reduce max_new_tokens progressively on retries to handle memory pressure
+
                             if attempt > 0:
-                                # Halve max_tokens on each retry (down to minimum of 256)
                                 current_max = model.config.max_tokens
                                 reduced_tokens = max(256, current_max // (2 ** attempt))
                                 if reduced_tokens < current_max:
                                     logger.info(
-                                        f"Reducing max_tokens from {current_max} to {reduced_tokens} "
-                                        f"for retry attempt {attempt + 1}/{max_retries}"
+                                        "Reducing max_tokens from %d to %d for retry attempt %d/%d",
+                                        current_max,
+                                        reduced_tokens,
+                                        attempt + 1,
+                                        max_retries,
                                     )
                                     model.config.max_tokens = reduced_tokens
-                            
-                            # Use model.chat() with structured conversation history (like Study B)
-                            # This properly handles multi-turn conversations with LM Studio's chat completion API
-                            # Full conversation history maintained (all models support 32K context)
+
                             response_text = model.chat(conversation_history, mode="default")
-                            
-                            # Clean repetitive text before adding to conversation history
-                            # This prevents memory bloat in future turns while keeping raw response in saved file
                             cleaned_response = response_text
                             if context_cleaner != "none" and _should_clean_context(turn.turn, context_clean_start_turn):
                                 cleaned_response = _clean_for_context(response_text)
                             if cleaned_response != response_text:
-                                original_len = len(response_text)
-                                cleaned_len = len(cleaned_response)
                                 logger.info(
-                                    f"Cleaned {original_len - cleaned_len} characters of repetition "
-                                    f"from turn {turn.turn} response before adding to conversation history"
+                                    "Cleaned %d characters of repetition from turn %d response before adding "
+                                    "to conversation history",
+                                    len(response_text) - len(cleaned_response),
+                                    turn.turn,
                                 )
-                            
-                            # Add cleaned response to conversation history (saves memory)
-                            # But save raw response to file (for analysis)
+
                             conversation_history.append({"role": "assistant", "content": cleaned_response})
-                            
-                            # Restore original max_tokens after success
                             model.config.max_tokens = original_max_tokens
-                            break  # Success, exit retry loop
-                        except Exception as e:
-                            # Restore original max_tokens before next retry
+                            break
+                        except Exception as error:
                             model.config.max_tokens = original_max_tokens
-                            
-                            # Check if it's a CUDA OOM error
-                            error_str = str(e).lower()
-                            is_cuda_oom = "cuda" in error_str and ("out of memory" in error_str or "oom" in error_str)
-                            
+                            error_str = str(error).lower()
+                            is_cuda_oom = "cuda" in error_str and (
+                                "out of memory" in error_str or "oom" in error_str
+                            )
                             if attempt < max_retries - 1:
-                                # Clear GPU cache more aggressively on CUDA OOM
-                                if is_cuda_oom and TORCH_AVAILABLE and torch.cuda.is_available():
+                                if is_cuda_oom and use_cuda_recovery:
                                     logger.info("Clearing GPU cache aggressively after CUDA OOM error...")
                                     torch.cuda.empty_cache()
                                     torch.cuda.synchronize()
-                                    # Reset peak memory stats
                                     torch.cuda.reset_peak_memory_stats(0)
-                                    # Force garbage collection
                                     import gc
+
                                     gc.collect()
                                     torch.cuda.empty_cache()
-                                
+
                                 logger.warning(
-                                    f"Dialogue generation failed for case {case.id} turn {turn.turn} "
-                                    f"(attempt {attempt + 1}/{max_retries}): {e}. Retrying in {retry_delay}s..."
+                                    "Dialogue generation failed for case %s turn %d (attempt %d/%d): %s. "
+                                    "Retrying in %.1fs...",
+                                    case.id,
+                                    turn.turn,
+                                    attempt + 1,
+                                    max_retries,
+                                    error,
+                                    retry_delay,
                                 )
                                 time.sleep(retry_delay)
-                                retry_delay *= 2  # Exponential backoff
+                                retry_delay *= 2
                             else:
                                 status = "error"
-                                error_message = str(e)
+                                error_message = str(error)
                                 logger.error(
-                                    f"Dialogue generation failed for case {case.id} turn {turn.turn} "
-                                    f"after {max_retries} attempts: {e}"
+                                    "Dialogue generation failed for case %s turn %d after %d attempts: %s",
+                                    case.id,
+                                    turn.turn,
+                                    max_retries,
+                                    error,
                                 )
+
                     latency_ms = int((time.perf_counter() - t0) * 1000)
-
-                    # Generate conversation_text for logging/debugging (after response is added to history)
                     conversation_text = "\n".join(
-                        [f"{msg['role']}: {msg['content']}" for msg in conversation_history[:-1]]  # Exclude last assistant response
+                        [f"{message['role']}: {message['content']}" for message in conversation_history[:-1]]
                     )
-
-                    _write_cache_entry(
-                        cache_path,
+                    generated_entries.append(
                         {
                             "case_id": case.id,
                             "persona_id": persona_id,
@@ -868,7 +889,26 @@ def run_study_c(
                             "run_id": run_id,
                             "model_name": model_name,
                             "meta": {"latency_ms": latency_ms},
-                        },
+                        }
+                    )
+            return generated_entries
+
+        for _, case_entries in iter_threaded_results(
+            jobs=case_jobs,
+            worker_count=worker_count,
+            worker_fn=_generate_case_entries,
+            progress_interval_seconds=progress_interval_seconds,
+            progress_label="study_c",
+            log=logger,
+        ):
+            for entry in case_entries:
+                write_ok = append_jsonl_with_retry(cache_path, entry, log=logger)
+                if not write_ok:
+                    logger.error(
+                        "Failed to persist Study C row for %s turn %s variant %s",
+                        entry.get("case_id"),
+                        entry.get("turn_num"),
+                        entry.get("variant"),
                     )
 
         logger.info("Study C generation-only complete; skipping metrics.")
@@ -881,6 +921,8 @@ def run_study_c(
 
     # Initialise NER
     try:
+        from ..utils.ner import MedicalNER
+
         ner = MedicalNER()
     except Exception as e:
         logger.error(
@@ -1115,4 +1157,3 @@ def run_study_c(
     )
 
     return result
-

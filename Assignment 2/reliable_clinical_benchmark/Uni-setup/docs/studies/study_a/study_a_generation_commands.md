@@ -58,10 +58,14 @@ conda run -n mh-llm-benchmark-env python scripts/studies/study_a/metrics/calcula
 ```
 
 ## Workers
-`study_a` generation does not expose a `--workers` flag. Throughput for Study A is controlled by LM Studio model load settings (`Max Concurrent Predictions`).
+- `run_study_a_generate_only.py` exposes `--workers` and `--progress-interval-seconds`.
+- Default worker policy is fail-closed:
+  - LM Studio runners: auto `4` workers.
+  - Non-LM runners: auto `1` worker.
+- If `--workers > 1` is provided for a non-LM runner, the script forces `1`.
 
 ## Useful Checks
 ```bash
 python scripts/dev/run_generation_auto.py --study study_a --model-id gpt_oss --check-only
-python hf-local-scripts/run_study_a_generate_only.py --model-id gpt_oss --max-samples 5
+python hf-local-scripts/run_study_a_generate_only.py --model-id gpt_oss --max-samples 5 --workers 4 --progress-interval-seconds 10
 ```

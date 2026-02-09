@@ -88,12 +88,17 @@ $RUN_TAG=Get-Date -Format "yyyyMMdd_HHmm"; $OUT_ROOT="metric-results/misc/$RUN_T
 ```
 
 ## Workers
-Study B scripts do not expose a `--workers` argument. Throughput is handled by LM Studio parallel request capacity (`Max Concurrent Predictions`) and by whichever model backend is configured.
+- `run_study_b_generate_only.py` and `run_study_b_multi_turn_generate_only.py` expose `--workers` and `--progress-interval-seconds`.
+- Default worker policy is fail-closed:
+  - LM Studio runners: auto `4` workers.
+  - Non-LM runners: auto `1` worker.
+- Single-turn generation parallelises per prompt variant.
+- Multi-turn generation parallelises by case only; each case stays sequential by turn.
 
 ## Useful Checks
 ```bash
 python scripts/dev/run_generation_auto.py --study study_b --model-id gpt_oss --check-only
 python scripts/dev/run_generation_auto.py --study study_b_multi_turn --model-id gpt_oss --check-only
-python hf-local-scripts/run_study_b_generate_only.py --model-id gpt_oss --max-samples 5
-python hf-local-scripts/run_study_b_multi_turn_generate_only.py --model-id gpt_oss --max-samples 2
+python hf-local-scripts/run_study_b_generate_only.py --model-id gpt_oss --max-samples 5 --workers 4 --progress-interval-seconds 10
+python hf-local-scripts/run_study_b_multi_turn_generate_only.py --model-id gpt_oss --max-samples 2 --workers 4 --progress-interval-seconds 10
 ```

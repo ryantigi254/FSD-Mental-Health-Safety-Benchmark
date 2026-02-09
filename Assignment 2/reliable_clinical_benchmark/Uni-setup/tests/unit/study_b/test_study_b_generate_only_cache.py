@@ -73,6 +73,8 @@ def test_study_b_generate_only_writes_jsonl(tmp_path: Path) -> None:
         use_nli=False,
         generate_only=True,
         cache_out=str(cache_path),
+        workers=4,
+        progress_interval_seconds=1,
     )
 
     assert cache_path.exists()
@@ -105,5 +107,4 @@ def test_study_b_generate_only_writes_jsonl(tmp_path: Path) -> None:
             assert isinstance(row.get("turn_num"), int) and row["turn_num"] >= 1
             assert isinstance(row.get("conversation_text"), str) and row["conversation_text"]
             assert isinstance(row.get("response_text"), str)
-
 
