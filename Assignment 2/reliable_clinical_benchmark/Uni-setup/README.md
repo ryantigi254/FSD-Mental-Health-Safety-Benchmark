@@ -42,7 +42,7 @@ python -m spacy validate
 
 **What runs in this env:**
 - LM Studio model runners (qwen3_lmstudio, gpt_oss, qwq, deepseek_r1_lmstudio)
-- Evaluation pipelines (`scripts/run_evaluation.py`)
+- Evaluation pipelines (`scripts/evaluation/run_evaluation.py`)
 - Metric calculations
 - Pytest unit and integration tests
 

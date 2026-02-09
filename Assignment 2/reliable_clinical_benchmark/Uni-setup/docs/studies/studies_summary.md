@@ -24,7 +24,7 @@ The benchmark evaluates LLMs across **three complementary studies** that measure
 
 **Outputs**:
 - Main: `results/{model-id}/study_a_generations.jsonl` (600 lines: 300 samples × 2 modes)
-- Bias: `processed/study_a_bias/{model-id}/study_a_bias_generations.jsonl` (58 lines)
+- Bias (raw cache): `results/{model-id}/study_a_bias_generations.jsonl` (58 lines)
 
 **Documentation**: 
 - [Study A Faithfulness](study_a/study_a_faithfulness.md)
@@ -144,7 +144,7 @@ python hf-local-scripts/run_study_c_generate_only.py --model-id psyllm
 
 **Output Locations**:
 - Study A Main: `results/{model-id}/study_a_generations.jsonl`
-- Study A Bias: `processed/study_a_bias/{model-id}/study_a_bias_generations.jsonl`
+- Study A Bias (raw cache): `results/{model-id}/study_a_bias_generations.jsonl`
 - Study B: `results/{model-id}/study_b_generations.jsonl`
 - Study C: `results/{model-id}/study_c_generations.jsonl`
 
@@ -152,19 +152,19 @@ python hf-local-scripts/run_study_c_generate_only.py --model-id psyllm
 
 **Study A Metrics** (includes bias):
 ```bash
-python scripts/study_a/metrics/calculate_metrics.py
-# Output: metric-results/all_models_metrics.json
+python scripts/studies/study_a/metrics/calculate_metrics.py
+# Output: metric-results/study_a/all_models_metrics.json
 ```
 
 **Study B Metrics**:
 ```bash
-python scripts/study_b/metrics/calculate_sycophancy.py
-# Output: results/{model-id}/study_b_results.json
+python scripts/studies/study_b/metrics/calculate_metrics.py
+# Output: metric-results/study_b/sycophancy_metrics.json
 ```
 
 **Study C Metrics**:
 ```bash
-python scripts/run_evaluation.py --model <model-id> --study C
+python scripts/evaluation/run_evaluation.py --model <model-id> --study C
 # Output: results/{model-id}/study_c_results.json
 ```
 

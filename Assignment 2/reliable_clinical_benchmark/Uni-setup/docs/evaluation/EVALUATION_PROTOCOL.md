@@ -101,13 +101,13 @@ All metrics are **black-box compatible** - they require only API access, not mod
 
 ```bash
 # Single study
-python scripts/run_evaluation.py --model psyllm --study A
+python scripts/evaluation/run_evaluation.py --model psyllm --study A
 
 # All studies
-python scripts/run_evaluation.py --model psyllm --study all
+python scripts/evaluation/run_evaluation.py --model psyllm --study all
 
 # With limits (for testing)
-python scripts/run_evaluation.py --model psyllm --study B --max-samples 10
+python scripts/evaluation/run_evaluation.py --model psyllm --study B --max-samples 10
 ```
 
 ### Output Format
@@ -129,7 +129,7 @@ Each file contains:
 After running evaluations:
 
 ```bash
-python scripts/update_leaderboard.py
+python scripts/reporting/update_leaderboard.py
 ```
 
 Generates `results/leaderboard.json` with:

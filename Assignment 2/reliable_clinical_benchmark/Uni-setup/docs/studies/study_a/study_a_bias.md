@@ -28,23 +28,23 @@ The bias evaluation measures **Silent Bias Rate (R_SB)** - detecting when models
 **What it does**:
 - Validates bias data structure before generating
 - Generates CoT responses for adversarial bias cases
-- Writes to: `processed/study_a_bias/<model-id>/study_a_bias_generations.jsonl`
+- Writes to: `results/<model-id>/study_a_bias_generations.jsonl`
 
 **Important**:
 - **Each model must be run separately** - one command per model with a unique `--model-id`
-- **Each model gets its own output file**: `processed/study_a_bias/{model-id}/study_a_bias_generations.jsonl`
-- Output is saved in `processed/study_a_bias/` (separate from main Study A generations in `results/`)
+- **Each model gets its own output file**: `results/{model-id}/study_a_bias_generations.jsonl`
+- Output is saved in `results/` (separate from processed/enriched pipeline outputs under `processed/`)
 - You cannot run multiple models in a single command
 
 ### Metric Calculation Script
-**Location**: `scripts/study_a/metrics/calculate_bias.py`
+**Location**: `scripts/studies/study_a/metrics/calculate_bias.py`
 
 **Purpose**: Calculate Silent Bias Rate (R_SB) from cached generations
 
-**Output**: `metric-results/study_a_bias_metrics.json`
+**Output**: `metric-results/study_a/study_a_bias_metrics.json`
 
 ### Integration
-The main metrics script (`scripts/study_a/metrics/calculate_metrics.py`) now automatically:
+The main metrics script (`scripts/studies/study_a/metrics/calculate_metrics.py`) now automatically:
 - Loads bias metrics if available
 - Merges them into the main metrics JSON
 - Includes `silent_bias_rate` in `all_models_metrics.json`
@@ -304,28 +304,28 @@ python hf-local-scripts/run_study_a_bias_generate_only.py --model-id psych_qwen_
 
 ### Step 1: Generate Bias Responses
 
-Run the generation command for each model (see commands above). This creates: `processed/study_a_bias/{model-id}/study_a_bias_generations.jsonl`
+Run the generation command for each model (see commands above). This creates: `results/{model-id}/study_a_bias_generations.jsonl`
 
 ### Step 2: Calculate Bias Metrics
 
 After all models have been generated:
 
 ```powershell
-python scripts\study_a\metrics\calculate_bias.py
+python scripts\studies\study_a\metrics\calculate_bias.py --bias-dir results --output-dir metric-results/study_a
 ```
 
-This creates: `metric-results/study_a_bias_metrics.json`
+This creates: `metric-results/study_a/study_a_bias_metrics.json`
 
 ### Step 3: Calculate All Study A Metrics
 
 ```powershell
-python scripts\study_a\metrics\calculate_metrics.py
+python scripts\studies\study_a\metrics\calculate_metrics.py
 ```
 
 This will:
 - Calculate faithfulness metrics from `study_a_generations.jsonl`
 - Load and merge bias metrics from `study_a_bias_metrics.json`
-- Save combined results to `metric-results/all_models_metrics.json`
+- Save combined results to `metric-results/study_a/all_models_metrics.json`
 
 ## Metric Formula
 
@@ -349,13 +349,13 @@ Where:
 
 Each model generates its own separate output file:
 
-- **Per-Model Generations**: `processed/study_a_bias/{model-id}/study_a_bias_generations.jsonl`
-  - Example: `processed/study_a_bias/qwq/study_a_bias_generations.jsonl`
-  - Example: `processed/study_a_bias/psych_qwen_local/study_a_bias_generations.jsonl`
+- **Per-Model Generations (raw cache)**: `results/{model-id}/study_a_bias_generations.jsonl`
+  - Example: `results/qwq/study_a_bias_generations.jsonl`
+  - Example: `results/psych-qwen-32b-local/study_a_bias_generations.jsonl`
   - Each file contains all bias case generations for that specific model
-  - Saved in `processed/study_a_bias/` directory (separate from main Study A generations)
-- **Bias Metrics**: `metric-results/study_a_bias_metrics.json` (aggregated across all models)
-- **Combined Metrics**: `metric-results/all_models_metrics.json` (includes `silent_bias_rate` per model)
+  - Saved in `results/` directory (separate from main Study A generations)
+- **Bias Metrics**: `metric-results/study_a/study_a_bias_metrics.json` (aggregated across all models)
+- **Combined Metrics**: `metric-results/study_a/all_models_metrics.json` (includes `silent_bias_rate` per model)
 
 ## Data Source
 

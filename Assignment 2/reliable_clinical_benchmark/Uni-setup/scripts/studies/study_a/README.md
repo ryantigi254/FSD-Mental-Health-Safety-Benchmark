@@ -5,7 +5,7 @@ Scripts for Study A (Faithfulness) evaluation, organised by function.
 ## Directory Structure
 
 ```
-scripts/study_a/
+scripts/studies/study_a/
 ├── gold_labels/     # Gold diagnosis label management
 └── metrics/        # Metric calculation and analysis
 ```
@@ -38,31 +38,30 @@ Scripts for calculating and analysing Study A metrics:
 ### Extract gold labels from OpenR1-Psy
 
 ```bash
-python scripts/study_a/gold_labels/populate_from_openr1.py --force
-python scripts/study_a/gold_labels/verify_id_matching.py
+python scripts/studies/study_a/gold_labels/populate_from_openr1.py --force
+python scripts/studies/study_a/gold_labels/verify_id_matching.py
 ```
 
 ### Calculate metrics
 
 ```bash
-python scripts/study_a/metrics/calculate_metrics.py
+python scripts/studies/study_a/metrics/calculate_metrics.py
 ```
 
 ### Manual labelling
 
 ```bash
-python scripts/study_a/gold_labels/manual_label.py --only-unlabeled --show-consensus
+python scripts/studies/study_a/gold_labels/manual_label.py --only-unlabeled --show-consensus
 ```
 
 ### Analyse model outputs
 
 ```bash
-python scripts/study_a/metrics/analyze_extraction.py --results-dir results
+python scripts/studies/study_a/metrics/analyze_extraction.py --results-dir results
 ```
 
 ### Alternative labelling (OpenAI API)
 
 ```bash
-python scripts/study_a/gold_labels/label_with_openai.py --model gpt-4o-mini
+python scripts/studies/study_a/gold_labels/label_with_openai.py --model gpt-4o-mini
 ```
-

@@ -15,19 +15,19 @@
 - **Frozen**: Never modified (ensures reproducibility)
 
 ### Output Files (Calculated Metrics)
-- **Location**: `Uni-setup/metric-results/`
+- **Location**: `Uni-setup/metric-results/study_a/`
 - **Individual**: `{model_name}_metrics.json`
 - **Combined**: `all_models_metrics.json`
 - **Format**: JSON with metric values
 
 ## Calculation Script
 
-**Script**: `Uni-setup/scripts/calculate_study_a_metrics.py`
+**Script**: `Uni-setup/scripts/studies/study_a/metrics/calculate_metrics.py`
 
 **Usage**:
 ```bash
 cd Uni-setup
-python scripts/calculate_study_a_metrics.py
+python scripts/studies/study_a/metrics/calculate_metrics.py
 ```
 
 **What it does**:
@@ -69,7 +69,7 @@ python scripts/calculate_study_a_metrics.py
 
 ## Verification
 
-**Unit Tests**: `tests/unit/test_faithfulness_metrics.py`
+**Unit Tests**: `tests/unit/metrics/test_faithfulness_metrics.py`
 - 38 tests covering all metric functions
 - Verifies formula correctness
 - Tests edge cases
@@ -77,7 +77,7 @@ python scripts/calculate_study_a_metrics.py
 **Run Tests**:
 ```bash
 cd Uni-setup
-python -m pytest tests/unit/test_faithfulness_metrics.py -v
+python -m pytest tests/unit/metrics/test_faithfulness_metrics.py -v
 ```
 
 ## Example Metric Output
@@ -99,4 +99,3 @@ python -m pytest tests/unit/test_faithfulness_metrics.py -v
 - `faithfulness_gap = 0.0`: No difference between CoT and Early accuracy
 - `step_f1 = 0.097`: Low reasoning quality (9.7% overlap with gold)
 - `n_samples = 300`: All 300 samples processed successfully
-

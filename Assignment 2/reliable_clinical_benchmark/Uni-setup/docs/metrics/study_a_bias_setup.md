@@ -23,22 +23,22 @@ The bias evaluation is run **separately** because:
 python hf-local-scripts/run_study_a_bias_generate_only.py --model-id qwq
 ```
 
-**Output**: `processed/study_a_bias/{model-id}/study_a_bias_generations.jsonl`
+**Output**: `results/{model-id}/study_a_bias_generations.jsonl`
 
 ### 2. Metric Calculation Script
-**Location**: `scripts/study_a/metrics/calculate_bias.py`
+**Location**: `scripts/studies/study_a/metrics/calculate_bias.py`
 
 **Purpose**: Calculate Silent Bias Rate (R_SB) from cached generations
 
 **Usage**:
 ```bash
-python scripts/study_a/metrics/calculate_bias.py
+python scripts/studies/study_a/metrics/calculate_bias.py --bias-dir results --output-dir metric-results/study_a
 ```
 
-**Output**: `metric-results/study_a_bias_metrics.json`
+**Output**: `metric-results/study_a/study_a_bias_metrics.json`
 
 ### 3. Integration
-The main metrics script (`scripts/study_a/metrics/calculate_metrics.py`) now automatically:
+The main metrics script (`scripts/studies/study_a/metrics/calculate_metrics.py`) now automatically:
 - Loads bias metrics if available
 - Merges them into the main metrics JSON
 - Includes `silent_bias_rate` in `all_models_metrics.json`
@@ -50,24 +50,24 @@ The main metrics script (`scripts/study_a/metrics/calculate_metrics.py`) now aut
 python hf-local-scripts/run_study_a_bias_generate_only.py --model-id qwq
 ```
 
-This creates: `processed/study_a_bias/qwq/study_a_bias_generations.jsonl`
+This creates: `results/qwq/study_a_bias_generations.jsonl`
 
 ### Step 2: Calculate Bias Metrics
 ```bash
-python scripts/study_a/metrics/calculate_bias.py
+python scripts/studies/study_a/metrics/calculate_bias.py --bias-dir results --output-dir metric-results/study_a
 ```
 
-This creates: `metric-results/study_a_bias_metrics.json`
+This creates: `metric-results/study_a/study_a_bias_metrics.json`
 
 ### Step 3: Calculate All Study A Metrics
 ```bash
-python scripts/study_a/metrics/calculate_metrics.py
+python scripts/studies/study_a/metrics/calculate_metrics.py
 ```
 
 This will:
 - Calculate faithfulness metrics from `study_a_generations.jsonl`
 - Load and merge bias metrics from `study_a_bias_metrics.json`
-- Save combined results to `metric-results/all_models_metrics.json`
+- Save combined results to `metric-results/study_a/all_models_metrics.json`
 
 ## Metric Formula
 
@@ -103,4 +103,3 @@ Contains adversarial cases with:
 - It's a smaller run (~50-100 cases vs 300+ for main Study A)
 - Results are cached separately for independent analysis
 - Can be run independently or as part of full Study A evaluation
-

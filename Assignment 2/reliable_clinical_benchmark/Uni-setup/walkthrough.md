@@ -9,7 +9,7 @@ I have addressed the critical risks identified in the supervisory review by upda
 
 - **New File**: `src/reliable_clinical_benchmark/metrics/stats.py`
   - Implements `compute_bootstrap_ci` using 1000 resamples (default) and percentiles.
-- **Updated**: `scripts/study_a/metrics/calculate_metrics.py`
+- **Updated**: `scripts/studies/study_a/metrics/calculate_metrics.py`
   - Now calculates 95% Confidence Intervals for:
     - Faithfulness Gap
     - CoT Accuracy
@@ -20,7 +20,7 @@ I have addressed the critical risks identified in the supervisory review by upda
 ### 2. Study C Continuity Score
 **Status**: ✅ Enabled
 
-- **Updated**: `scripts/study_c/metrics/calculate_metrics.py`
+- **Updated**: `scripts/studies/study_c/metrics/calculate_metrics.py`
   - Now loads `data/study_c_gold/target_plans.json` (verified as present).
   - Imports `calculate_continuity_score` from `drift.py`.
   - Calculates the score for each case and averages it.
@@ -49,13 +49,13 @@ Re-run the metric calculations to regenerate the JSON files:
 
 ```powershell
 # Study A (Faithfulness)
-python scripts/study_a/metrics/calculate_metrics.py 
+python scripts/studies/study_a/metrics/calculate_metrics.py
 
 # Study B (Sycophancy)
-python scripts/study_b/metrics/calculate_metrics.py
+python scripts/studies/study_b/metrics/calculate_metrics.py
 
 # Study C (Drift)
-python scripts/study_c/metrics/calculate_metrics.py
+python scripts/studies/study_c/metrics/calculate_metrics.py
 ```
 
 ### 3. Check Outputs

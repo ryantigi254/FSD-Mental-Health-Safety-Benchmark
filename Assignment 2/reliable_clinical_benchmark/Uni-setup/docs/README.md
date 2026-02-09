@@ -39,6 +39,9 @@ This directory contains comprehensive documentation for the mental health LLM be
 
 - **`evaluation/`** - Evaluation protocols
   - `EVALUATION_PROTOCOL.md` - Evaluation procedures and protocols
+- **`scaling/`** - Scaling documentation
+  - `scaling_summary.md` - High-level scaling index for study and metric scaling
+  - `metrics/metrics_summary.md` - Scaling-track metrics summary and verification pointers
 
 ## Quick Links
 
@@ -66,6 +69,7 @@ This directory contains comprehensive documentation for the mental health LLM be
 - [Testing Strategy](testing/TESTING.md)
 - [Environment Setup](environment/ENVIRONMENT.md)
 - [Evaluation Protocol](evaluation/EVALUATION_PROTOCOL.md)
+- [Scaling Overview](scaling/scaling_summary.md)
 
 ## File Locations
 
@@ -80,7 +84,7 @@ This directory contains comprehensive documentation for the mental health LLM be
 **Generation Scripts** (standalone, per-model):
 - **Study A Bias**: `hf-local-scripts/run_study_a_bias_generate_only.py`
   - Generates CoT responses for adversarial bias cases
-  - Output: `processed/study_a_bias/{model-id}/study_a_bias_generations.jsonl`
+  - Output: `results/{model-id}/study_a_bias_generations.jsonl`
 - **Study B**: `hf-local-scripts/run_study_b_generate_only.py`
   - Generates single-turn (control + injected) and multi-turn responses
   - Output: `results/{model-id}/study_b_generations.jsonl`
@@ -89,11 +93,11 @@ This directory contains comprehensive documentation for the mental health LLM be
   - Output: `results/{model-id}/study_c_generations.jsonl`
 
 **Metric Calculation Scripts**:
-- **Study A Gold Labels**: `scripts/study_a/gold_labels/`
-- **Study A Metrics**: `scripts/study_a/metrics/`
+- **Study A Gold Labels**: `scripts/studies/study_a/gold_labels/`
+- **Study A Metrics**: `scripts/studies/study_a/metrics/`
   - `calculate_metrics.py` - Main metrics (faithfulness, accuracy, step F1)
   - `calculate_bias.py` - Silent Bias Rate (R_SB)
-- **Main Evaluation**: `scripts/run_evaluation.py`
+- **Main Evaluation**: `scripts/evaluation/run_evaluation.py`
   - Supports `from_cache` mode for calculating metrics from cached generations
 
 ### Results
@@ -101,16 +105,16 @@ This directory contains comprehensive documentation for the mental health LLM be
 **Generation Cache Files**:
 - **Study A Main**: `results/{model-id}/study_a_generations.jsonl`
   - Contains CoT and Direct mode responses per sample
-- **Study A Bias**: `processed/study_a_bias/{model-id}/study_a_bias_generations.jsonl`
+- **Study A Bias (raw cache)**: `results/{model-id}/study_a_bias_generations.jsonl`
   - Contains CoT responses for adversarial bias cases
-  - Saved in `processed/study_a_bias/` directory (separate from main Study A generations)
+  - Saved in `results/` (separate from the cleaned/processed pipeline outputs under `processed/`)
 - **Study B**: `results/{model-id}/study_b_generations.jsonl`
   - Contains single-turn (control + injected) and multi-turn responses
 - **Study C**: `results/{model-id}/study_c_generations.jsonl`
   - Contains summary + dialogue variants per turn
 
 **Calculated Metrics**:
-- **Study A**: `metric-results/all_models_metrics.json` (includes `study_a_bias_metrics.json`)
+- **Study A**: `metric-results/study_a/all_models_metrics.json` (merges `study_a_bias_metrics.json` when present)
 - **Study B**: `results/{model-id}/study_b_results.json`
 - **Study C**: `results/{model-id}/study_c_results.json`
 
@@ -130,4 +134,3 @@ For detailed architecture information, see:
 - **Package Structure**: `src/README.md` - Complete package layout and ModelRunner interface
 - **Test Structure**: `tests/README.md` - Pytest unit tests and integration tests
 - **Study Architectures**: `src/README.md` - Single-turn/multi-turn separation, generation modes, variants
-

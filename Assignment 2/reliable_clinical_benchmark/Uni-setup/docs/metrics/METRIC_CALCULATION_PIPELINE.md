@@ -7,16 +7,23 @@ This document explains the **objective, reproducible pipeline** from raw model o
 **Location**: `Uni-setup/metric-results/`
 
 **Files**:
-- `{model_name}_metrics.json` - Individual model metrics
-- `all_models_metrics.json` - Combined metrics for all models
+- `study_a/{model_name}_metrics.json` - Individual model metrics (Study A)
+- `study_a/all_models_metrics.json` - Combined metrics for all models (Study A)
+- `study_a/study_a_bias_metrics.json` - Study A bias metrics (Silent Bias Rate)
+- `study_b/sycophancy_metrics.json` - Study B offline metrics (P_Syc, H_Ev, etc.)
+- `study_c/drift_metrics.json` - Study C offline metrics (entity recall, conflict, etc.)
 
 **Example**:
 ```
 metric-results/
-├── psyllm-gml-local_metrics.json
-├── deepseek-r1-lmstudio_metrics.json
-├── qwen3-lmstudio_metrics.json
-└── all_models_metrics.json
+├── study_a/
+│   ├── all_models_metrics.json
+│   ├── study_a_bias_metrics.json
+│   └── qwen3-lmstudio_metrics.json
+├── study_b/
+│   └── sycophancy_metrics.json
+└── study_c/
+    └── drift_metrics.json
 ```
 
 **Important**: The `results/` directory contains **raw generations only** (never modified). Metrics are calculated separately and saved to `metric-results/`.
@@ -26,13 +33,15 @@ metric-results/
 ```
 Raw Model Output (results/*/study_a_generations.jsonl)
     ↓
-Extract Predictions (scripts/study_a/metrics/extract_predictions.py)
+Extract Predictions (optional; scripts/studies/study_a/metrics/extract_predictions.py)
     ↓ Extract diagnoses, detect refusals, compute complexity metrics
     ↓ Output: processed/study_a_extracted/{model}/study_a_extracted.jsonl
     ↓
 Apply Objective Functions (per LaTeX spec)
     ↓
-Calculate Metrics (faithfulness_gap, step_f1, etc.)
+Calculate Metrics (faithfulness_gap, step_f1, etc.) from:
+    - results/{model}/study_a_generations.jsonl (default)
+    - processed/study_a_pipeline/{model}/study_a_processed.jsonl (when --use-cleaned is set)
     ↓
 Save to metric-results/ (JSON format)
 ```
@@ -44,12 +53,12 @@ Run generation scripts to create `results/{model-id}/study_a_generations.jsonl`:
 - See `docs/studies/study_a/study_a_generation_commands.md` for model-specific commands
 - Each entry contains: `id`, `mode` (cot/direct), `output_text`, `status`, `timestamp`, `model_name`
 
-### Step 2: Extract Predictions (Required)
-**Script**: `scripts/study_a/metrics/extract_predictions.py`
+### Step 2: Extract Predictions (Optional, Diagnostic)
+**Script**: `scripts/studies/study_a/metrics/extract_predictions.py`
 
 **Command**:
 ```powershell
-python scripts\study_a\metrics\extract_predictions.py
+python scripts\studies\study_a\metrics\extract_predictions.py
 ```
 
 **What it does**:
@@ -81,29 +90,31 @@ python scripts\study_a\metrics\extract_predictions.py
 - Generation files (if regenerated)
 
 ### Step 3: Calculate Metrics
-**Script**: `scripts/study_a/metrics/calculate_metrics.py`
+**Script**: `scripts/studies/study_a/metrics/calculate_metrics.py`
 
 **Command**:
 ```powershell
-python scripts\study_a\metrics\calculate_metrics.py --use-cleaned
+python scripts\studies\study_a\metrics\calculate_metrics.py --use-cleaned
 ```
 
 **What it does**:
-- Reads extracted predictions from `processed/study_a_cleaned/` (if --use-cleaned is used)
+- Reads raw generations from `results/{model-id}/study_a_generations.jsonl` by default
+- Reads cleaned/enriched generations from `processed/study_a_pipeline/{model-id}/study_a_processed.jsonl` when `--use-cleaned` is used
 - Calculates faithfulness gap, step-F1, accuracy metrics
 - Merges with bias metrics (if available)
 - Writes to `metric-results/study_a/all_models_metrics.json`
 
 ### Step 4: Calculate Bias Metrics
-**Script**: `scripts/study_a/metrics/calculate_bias.py`
+**Script**: `scripts/studies/study_a/metrics/calculate_bias.py`
 
 **Command**:
 ```powershell
-python scripts\study_a\metrics\calculate_bias.py
+python scripts\studies\study_a\metrics\calculate_bias.py --bias-dir results --output-dir metric-results/study_a
 ```
 
 **What it does**:
-- Reads `processed/_archived/study_a_bias/{model-id}/study_a_bias_generations.jsonl`
+- Reads `results/{model-id}/study_a_bias_generations.jsonl` (raw cache) when `--bias-dir results` is used
+- Optionally reads `processed/study_a_bias_pipeline/{model-id}/study_a_bias_processed.jsonl` when `--use-cleaned` is set
 - Calculates Silent Bias Rate (R_SB)
 - Writes to `metric-results/study_a/study_a_bias_metrics.json`
 
@@ -119,11 +130,11 @@ python scripts\study_a\metrics\calculate_bias.py
 - Provides a detailed table of bias vulnerabilities.
 
 ### Step 5: Final Analysis Report
-**Script**: `scripts/generate_final_report.py`
+**Script**: `scripts/reporting/generate_final_report.py`
 
 **Command**:
 ```powershell
-python scripts/generate_final_report.py
+python scripts/reporting/generate_final_report.py
 ```
 
 **What it does**:
@@ -441,11 +452,11 @@ All metric functions have comprehensive unit tests (`tests/unit/test_faithfulnes
 ```bash
 # Calculate metrics from existing generations
 cd Uni-setup
-python scripts/calculate_study_a_metrics.py
+python scripts/studies/study_a/metrics/calculate_metrics.py
 
 # Output:
-# - metric-results/{model_name}_metrics.json
-# - metric-results/all_models_metrics.json
+# - metric-results/study_a/{model_name}_metrics.json
+# - metric-results/study_a/all_models_metrics.json
 ```
 
 ## Metric Output Format
@@ -482,4 +493,3 @@ python scripts/calculate_study_a_metrics.py
 - [x] All functions are unit tested
 - [x] Metrics saved to `metric-results/` (separate from `results/`)
 - [x] Pipeline is reproducible (same inputs → same outputs)
-

@@ -28,7 +28,7 @@ python -m spacy validate
 
 ### What runs in this env
 
-- `scripts/run_evaluation.py` (Studies A/B/C; generate-only and from-cache)
+- `scripts/evaluation/run_evaluation.py` (Studies A/B/C; generate-only and from-cache)
 - pytest:
 
 ```powershell
