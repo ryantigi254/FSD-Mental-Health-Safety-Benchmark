@@ -1,0 +1,20 @@
+{
+  "task_id": "worker_system_rollout_all_studies",
+  "task_summary": "Roll out LM-gated worker execution from Study A Bias model to Study A, Study B, Study B Multi-turn, and Study C in Uni-setup.",
+  "long_horizon": true,
+  "long_horizon_minutes": 120,
+  "independent_branches": 4,
+  "missing_context": false,
+  "ambiguity_unresolved": false,
+  "local_context_reviewed": true,
+  "source_grounding_done": true,
+  "browser_context_applicable": false,
+  "browser_context_done": false,
+  "needs_cross_repo": true,
+  "attached_repos": [],
+  "deploy_requested": false,
+  "deploy_target": "",
+  "project_state": "development",
+  "idle_allow_list_enabled": false,
+  "idle_allowed_task_classes": []
+}

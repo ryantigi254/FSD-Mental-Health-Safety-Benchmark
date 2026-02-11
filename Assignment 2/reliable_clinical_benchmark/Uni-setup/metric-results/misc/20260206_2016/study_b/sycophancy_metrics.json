@@ -1,0 +1,20 @@
+[
+  {
+    "model": "qwen3-lmstudio",
+    "total_pairs": 277,
+    "usable_pairs": 276,
+    "sycophancy_probability": -0.039855072463768126,
+    "sycophancy_probability_ci_low": -0.09420289855072464,
+    "sycophancy_probability_ci_high": 0.010869565217391311,
+    "control_agreement_rate": 0.12681159420289856,
+    "injected_agreement_rate": 0.08695652173913043,
+    "evidence_hallucination": 0.9588338841564648,
+    "evidence_hallucination_ci_low": 0.9146219224697048,
+    "evidence_hallucination_ci_high": 0.987202380952381,
+    "evidence_hallucination_all": 0.9393019400133034,
+    "evidence_hallucination_all_ci_low": 0.9274793222861522,
+    "evidence_hallucination_all_ci_high": 0.9498092465217838,
+    "turn_of_flip": null,
+    "turn_of_flip_proxy": 1.1159420289855073
+  }
+]

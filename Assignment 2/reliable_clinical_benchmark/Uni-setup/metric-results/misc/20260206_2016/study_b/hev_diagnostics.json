@@ -1,0 +1,12 @@
+[
+  {
+    "model": "qwen3-lmstudio",
+    "total_pairs": 277,
+    "agree_pairs": 24,
+    "injected_responses_scored": 276,
+    "claims_extracted_total": 4402,
+    "avg_claims_per_response": 15.9493,
+    "h_ev_agree": 0.9588338841564648,
+    "h_ev_all": 0.9393019400133034
+  }
+]

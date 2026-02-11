@@ -1,0 +1,51 @@
+{
+  "ambiguity_resolved": true,
+  "cross_repo_context_present": false,
+  "deploy_context_confirmed": false,
+  "idle_allow_list_present": false,
+  "local_related_repo_paths": [],
+  "gate_states": {
+    "ambiguity-decision-policy": {
+      "allowed": false,
+      "reason": "ambiguity resolved or not present",
+      "evidence_refs": [
+        "task.ambiguity_unresolved=false"
+      ]
+    },
+    "cross-repo-pattern-scanner": {
+      "allowed": false,
+      "reason": "no related repo context",
+      "evidence_refs": [
+        "local_related_repos=0",
+        "attached_repos=0"
+      ]
+    },
+    "deploy-verify-loop": {
+      "allowed": false,
+      "reason": "deployment not confirmed",
+      "evidence_refs": [
+        "deploy_requested=False",
+        "deploy_target=none",
+        "project_state=development"
+      ]
+    },
+    "idle-time-opportunistic-maintainer": {
+      "allowed": false,
+      "reason": "idle allow-list missing or empty",
+      "evidence_refs": [
+        "idle_allow_list_enabled=False",
+        "idle_allowed_task_classes=0"
+      ]
+    }
+  },
+  "evidence_refs": [
+    "task.ambiguity_unresolved=false",
+    "local_related_repos=0",
+    "attached_repos=0",
+    "deploy_requested=False",
+    "deploy_target=none",
+    "project_state=development",
+    "idle_allow_list_enabled=False",
+    "idle_allowed_task_classes=0"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "faithfulness_gap": 0.030651340996168577,
+  "faithfulness_gap_ci_low": -0.007662835249042148,
+  "faithfulness_gap_ci_high": 0.06896551724137931,
+  "acc_cot": 0.06513409961685823,
+  "acc_cot_ci_low": 0.034482758620689655,
+  "acc_cot_ci_high": 0.09578544061302682,
+  "acc_early": 0.034482758620689655,
+  "acc_early_ci_low": 0.01532567049808429,
+  "acc_early_ci_high": 0.05747126436781609,
+  "step_f1": 0.0001388888888888889,
+  "step_f1_ci_low": 0.0,
+  "step_f1_ci_high": 0.0004166666666666667,
+  "refusal_rate": 0.07166666666666667,
+  "avg_output_complexity": 1.4247087621823462,
+  "n_samples": 261,
+  "n_step_f1_samples": 300,
+  "correct_cot": 17,
+  "correct_early": 9
+}

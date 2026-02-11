@@ -1,0 +1,89 @@
+{
+  "chosen_skills": [
+    "validation-gate-runner",
+    "long-run-stability-guard",
+    "subagent-dag-orchestrator"
+  ],
+  "ordered_sequence": [
+    "validation-gate-runner",
+    "long-run-stability-guard",
+    "subagent-dag-orchestrator"
+  ],
+  "fallback_sequences": [],
+  "subagent_mode": "parallel",
+  "confidence": 0.8,
+  "gates_applied": [
+    {
+      "skill": "validation-gate-runner",
+      "decision": "included",
+      "reason": "validation-first default"
+    },
+    {
+      "skill": "long-run-stability-guard",
+      "decision": "included",
+      "reason": "long-horizon task"
+    },
+    {
+      "skill": "ambiguity-decision-policy",
+      "decision": "blocked",
+      "reason": "ambiguity resolved or not present"
+    },
+    {
+      "skill": "cross-repo-pattern-scanner",
+      "decision": "blocked",
+      "reason": "no related repo context"
+    },
+    {
+      "skill": "deploy-verify-loop",
+      "decision": "blocked",
+      "reason": "deployment not confirmed"
+    },
+    {
+      "skill": "idle-time-opportunistic-maintainer",
+      "decision": "blocked",
+      "reason": "idle allow-list missing or empty"
+    },
+    {
+      "skill": "subagent-dag-orchestrator",
+      "decision": "included",
+      "reason": "independent branches detected"
+    }
+  ],
+  "blocked_skills": [
+    {
+      "skill": "ambiguity-decision-policy",
+      "reason": "ambiguity resolved or not present"
+    },
+    {
+      "skill": "cross-repo-pattern-scanner",
+      "reason": "no related repo context"
+    },
+    {
+      "skill": "deploy-verify-loop",
+      "reason": "deployment not confirmed"
+    },
+    {
+      "skill": "idle-time-opportunistic-maintainer",
+      "reason": "idle allow-list missing or empty"
+    }
+  ],
+  "fallback_if_missing": [
+    "Use installed nearest-equivalent skill and mark decision as insufficient evidence."
+  ],
+  "gate_evaluation": {
+    "ambiguity_resolved": true,
+    "cross_repo_context_present": false,
+    "deploy_context_confirmed": false,
+    "idle_allow_list_present": false,
+    "evidence_refs": [
+      "task.ambiguity_unresolved=false",
+      "local_related_repos=0",
+      "attached_repos=0",
+      "deploy_requested=False",
+      "deploy_target=none",
+      "project_state=development",
+      "idle_allow_list_enabled=False",
+      "idle_allowed_task_classes=0"
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+RUN notebooks/study_a_analysis.ipynb
+PASS notebooks/study_a_analysis.ipynb
+RUN notebooks/study_a_bias_analysis.ipynb
+PASS notebooks/study_a_bias_analysis.ipynb
+RUN notebooks/study_b_analysis.ipynb
+FAIL notebooks/study_b_analysis.ipynb (exit 1)
+RUN notebooks/study_b_multiturn_analysis.ipynb
+FAIL notebooks/study_b_multiturn_analysis.ipynb (exit 1)
+RUN notebooks/study_c_analysis.ipynb
+PASS notebooks/study_c_analysis.ipynb

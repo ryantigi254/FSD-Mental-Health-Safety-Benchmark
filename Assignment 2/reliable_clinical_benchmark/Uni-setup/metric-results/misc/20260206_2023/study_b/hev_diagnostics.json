@@ -1,0 +1,102 @@
+[
+  {
+    "model": "deepseek-r1-distill-qwen-7b",
+    "total_pairs": 277,
+    "agree_pairs": 91,
+    "injected_responses_scored": 276,
+    "claims_extracted_total": 2298,
+    "avg_claims_per_response": 8.3261,
+    "h_ev_agree": 0.9108177344151894,
+    "h_ev_all": 0.9141958018674265
+  },
+  {
+    "model": "deepseek-r1-lmstudio",
+    "total_pairs": 277,
+    "agree_pairs": 76,
+    "injected_responses_scored": 276,
+    "claims_extracted_total": 2183,
+    "avg_claims_per_response": 7.9094,
+    "h_ev_agree": 0.9446909450198923,
+    "h_ev_all": 0.9411441955080061
+  },
+  {
+    "model": "glm-4.7-flash",
+    "total_pairs": 102,
+    "agree_pairs": 2,
+    "injected_responses_scored": 101,
+    "claims_extracted_total": 3080,
+    "avg_claims_per_response": 30.495,
+    "h_ev_agree": 0.9807692307692308,
+    "h_ev_all": 0.9044987036266718
+  },
+  {
+    "model": "gpt-oss-20b",
+    "total_pairs": 277,
+    "agree_pairs": 55,
+    "injected_responses_scored": 276,
+    "claims_extracted_total": 6673,
+    "avg_claims_per_response": 24.1775,
+    "h_ev_agree": 0.9110666622746493,
+    "h_ev_all": 0.9215724853857726
+  },
+  {
+    "model": "piaget-8b-local",
+    "total_pairs": 277,
+    "agree_pairs": 41,
+    "injected_responses_scored": 276,
+    "claims_extracted_total": 3050,
+    "avg_claims_per_response": 11.0507,
+    "h_ev_agree": 0.9291331297428859,
+    "h_ev_all": 0.9411000745498572
+  },
+  {
+    "model": "psych-qwen-32b-local",
+    "total_pairs": 277,
+    "agree_pairs": 54,
+    "injected_responses_scored": 276,
+    "claims_extracted_total": 3340,
+    "avg_claims_per_response": 12.1014,
+    "h_ev_agree": 0.8963458155860116,
+    "h_ev_all": 0.9142295710158983
+  },
+  {
+    "model": "psyche-r1-local",
+    "total_pairs": 277,
+    "agree_pairs": 12,
+    "injected_responses_scored": 276,
+    "claims_extracted_total": 1856,
+    "avg_claims_per_response": 6.7246,
+    "h_ev_agree": 0.8998015873015874,
+    "h_ev_all": 0.9309991095456
+  },
+  {
+    "model": "psyllm-gml-local",
+    "total_pairs": 277,
+    "agree_pairs": 24,
+    "injected_responses_scored": 276,
+    "claims_extracted_total": 1300,
+    "avg_claims_per_response": 4.7101,
+    "h_ev_agree": 0.8334325396825397,
+    "h_ev_all": 0.9045356515465214
+  },
+  {
+    "model": "qwen3-lmstudio",
+    "total_pairs": 277,
+    "agree_pairs": 24,
+    "injected_responses_scored": 276,
+    "claims_extracted_total": 4402,
+    "avg_claims_per_response": 15.9493,
+    "h_ev_agree": 0.9588338841564648,
+    "h_ev_all": 0.9393019400133034
+  },
+  {
+    "model": "qwq",
+    "total_pairs": 277,
+    "agree_pairs": 57,
+    "injected_responses_scored": 276,
+    "claims_extracted_total": 5205,
+    "avg_claims_per_response": 18.8587,
+    "h_ev_agree": 0.9361669470489393,
+    "h_ev_all": 0.9364031912101848
+  }
+]
