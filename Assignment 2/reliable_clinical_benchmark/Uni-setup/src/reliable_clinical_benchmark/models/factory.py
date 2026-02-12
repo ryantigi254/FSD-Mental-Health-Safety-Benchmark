@@ -18,6 +18,10 @@ from .psych_qwen_local import PsychQwen32BLocalRunner
 from .lmstudio_qwq import QwQLMStudioRunner
 from .lmstudio_gpt_oss import GPTOSSLMStudioRunner
 from .lmstudio_qwen3 import Qwen3LMStudioRunner
+from .vllm.psyllm_gml import PsyLLMVLLMRunner
+from .vllm.piaget_8b import Piaget8BVLLMRunner
+from .vllm.psyche_r1 import PsycheR1VLLMRunner
+from .vllm.psych_qwen_32b import PsychQwen32BVLLMRunner
 import logging
 
 logger = logging.getLogger(__name__)
@@ -75,6 +79,14 @@ def get_model_runner(
         return PsychQwen32BRunner(config=config)
     elif model_id_lower in ("psych_qwen_local", "psych-qwen-32b-local", "psych-qwen-local-hf"):
         return PsychQwen32BLocalRunner(config=config)
+    elif model_id_lower in ("psyllm_gml_vllm", "psyllm-vllm", "psyllm_gml_vllm_hf"):
+        return PsyLLMVLLMRunner(config=config)
+    elif model_id_lower in ("piaget_vllm", "piaget-8b-vllm"):
+        return Piaget8BVLLMRunner(config=config)
+    elif model_id_lower in ("psyche_r1_vllm", "psyche-r1-vllm"):
+        return PsycheR1VLLMRunner(config=config)
+    elif model_id_lower in ("psych_qwen_vllm", "psych-qwen-32b-vllm"):
+        return PsychQwen32BVLLMRunner(config=config)
     else:
         raise ValueError(
             f"Unknown model ID: {model_id}. "

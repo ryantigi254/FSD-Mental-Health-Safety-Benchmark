@@ -84,6 +84,60 @@ pip install -r requirements.txt --upgrade transformers
 - Prefer running pip via the env python and disable user-site packages (`PYTHONNOUSERSITE=1`) to avoid package bleed.
 - This environment was specifically created for Piaget and other local models that need a more modern dependency stack.
 
+## `mh-llm-hf-vllm-env` (vLLM-backed local servers)
+
+Use this environment when you want to serve the HF-local models via **vLLM** and talk to them through an OpenAI-compatible HTTP API (rather than loading weights directly inside Uni-setup).
+
+### Setup
+
+```powershell
+cd "Assignment 2\reliable_clinical_benchmark\Uni-setup"
+
+conda create -n mh-llm-hf-vllm-env python=3.10 -y
+conda activate mh-llm-hf-vllm-env   # adjust if Anaconda setup differs
+
+# Install vLLM and core HF deps.
+# Pick the CUDA build that matches your driver (see vLLM docs + `nvidia-smi`):
+pip install "vllm[cu121]" transformers accelerate safetensors
+```
+
+If you are on CPU-only, you can omit the CUDA extra and install `vllm` without `[cuXXX]`, but throughput will be substantially lower.
+
+### What runs in this env
+
+- vLLM OpenAI-compatible servers for:
+  - `GMLHUHE/PsyLLM-8B`
+  - `gustavecortal/Piaget-8B`
+  - `MindIntLab/Psyche-R1`
+  - `Compumacy/Psych_Qwen_32B`
+- Study A benchmark runs that talk to these servers via new `*_vllm` runners.
+
+### Example vLLM server commands
+
+Run one model server at a time when benchmarking:
+
+```powershell
+conda activate mh-llm-hf-vllm-env
+
+# PsyLLM-8B on port 8101
+python -m vllm.entrypoints.openai.api_server `
+  --model GMLHUHE/PsyLLM-8B `
+  --host 0.0.0.0 `
+  --port 8101 `
+  --gpu-memory-utilization 0.9 `
+  --max-num-seqs 8
+
+# Piaget-8B on port 8102
+python -m vllm.entrypoints.openai.api_server `
+  --model gustavecortal/Piaget-8B `
+  --host 0.0.0.0 `
+  --port 8102 `
+  --gpu-memory-utilization 0.9 `
+  --max-num-seqs 8
+```
+
+Adjust `--max-num-seqs` per benchmark run (e.g. 2, 4, 8, 12) and ports as needed. Uni-setup will connect to these via new vLLM-backed `ModelRunner` classes.
+
 ## Local weight storage
 
 Local weights live under `Uni-setup/models/` and must remain **untracked** (gitignored).
