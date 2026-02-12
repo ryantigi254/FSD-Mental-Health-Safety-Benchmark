@@ -33,8 +33,8 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--max-tokens",
         type=int,
-        default=16384,
-        help="Max new tokens per generation (default: 16384 for long reasoning traces).",
+        default=32000,
+        help="Max new tokens per generation (default: 32000 for long reasoning traces).",
     )
     parser.add_argument(
         "--cache-out",

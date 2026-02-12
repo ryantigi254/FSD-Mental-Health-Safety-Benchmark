@@ -38,8 +38,8 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument(
         "--max-tokens",
         type=int,
-        default=16384,
-        help="Max new tokens per generation (default: 16384 for long turns without truncation). "
+        default=32000,
+        help="Max new tokens per generation (default: 32000 for long turns without truncation). "
              "GPU cache is cleared after each generation to prevent memory buildup. Can be reduced if memory is tight."
     )
     p.add_argument(

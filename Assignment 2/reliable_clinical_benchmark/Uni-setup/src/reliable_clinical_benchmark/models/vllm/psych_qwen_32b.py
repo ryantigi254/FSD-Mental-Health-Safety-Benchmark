@@ -12,7 +12,9 @@ Talks to a vLLM OpenAI-compatible server on /v1/chat/completions, e.g.:
         --gpu-memory-utilization 0.9 ^
         --max-num-seqs 8 ^
         --enforce-eager ^
-        --max-model-len 4096
+        --max-model-len 4096 ^
+        --quantization bitsandbytes ^
+        --load-format bitsandbytes
 """
 
 from __future__ import annotations
