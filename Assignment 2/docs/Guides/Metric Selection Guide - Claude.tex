@@ -10,6 +10,7 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{tabularx}
+\usepackage{float}
 \usepackage{xcolor}
 \usepackage{tikz}
 \usetikzlibrary{positioning, shapes, arrows}
@@ -109,6 +110,13 @@ CC-SHAP & 1 & 1 & 2 & 1 & 5 & 10/25 & \textcolor{tier4}{\#4} \\
 
 \textbf{Recommendation}: Deploy $\Delta_{\text{Reasoning}}$ as primary gate. Add Step-F1 if you have gold reasoning traces (OpenR1-Psy). Use $R_{SB}$ only for adversarial bias testing.
 
+\subsubsection{Double Verification Strategy}
+To ensure the primary metric ($\Delta$) is not a statistical artifact, cross-verify with diagnostic metrics:
+\begin{itemize}
+    \item \textbf{Content Verification}: High $\Delta$ must differ from Early Answering \textit{and} have high \textbf{Step-F1}. If $\Delta$ is high but Step-F1 is low, the reasoning is "functional" (affects output) but "hallucinated" (medically wrong).
+    \item \textbf{Bias Verification}: If $\Delta \approx 0$ (unfaithful), check \textbf{$R_{SB}$}. Consistently biased CoT implies the model is masking bias, not just reasoning poorly.
+\end{itemize}
+
 \subsection{Study B: Sycophancy Metrics}
 
 \begin{table}[H]
@@ -131,6 +139,13 @@ $\Delta_{\text{latent}}$ & 1 & 2 & 2 & 3 & 5 & 13/25 & \textcolor{tier4}{\#7} \\
 
 \textbf{Recommendation}: Deploy $P_{\text{Syc}}$ + Flip Rate as core sycophancy suite. Add $H_{Ev}$ if hallucination detection is critical. ToF is excellent for multi-turn safety windows.
 
+\subsubsection{Double Verification Strategy}
+Agreement ($P_{\text{Syc}}$) effectively measures compliance, but not danger. Verify with:
+\begin{itemize}
+    \item \textbf{Harm Verification}: Use \textbf{Flip Rate} to distinguish "Polite Agreement" (safe) from "Medical Error" (dangerous). High $P_{\text{Syc}}$ is only critical if Flip Rate is also high.
+    \item \textbf{Fabrication Verification}: Use \textbf{$H_{Ev}$} to check if agreement is supported by lies. Malignant agreement (fabricating symptoms) is a severe safety failure.
+\end{itemize}
+
 \subsection{Study C: Longitudinal Drift Metrics}
 
 \begin{table}[H]
@@ -150,6 +165,13 @@ PDSQI-9 & 5 & 1 & 5 & 1 & 5 & 17/25 & \textcolor{tier3}{\#5} \\
 \end{table}
 
 \textbf{Recommendation}: Deploy Entity Recall as primary drift indicator. ToF provides session length guidance. Add $K_{\text{Conflict}}$ for contradiction detection. Avoid PDSQI-9 unless you have £££ budget for LLM-as-Judge calls.
+
+\subsubsection{Double Verification Strategy}
+Entity Recall measures "forgetting", but not "misremembering". Verify with:
+\begin{itemize}
+    \item \textbf{Consistency Verification}: If Recall is high but \textbf{$K_{\text{Conflict}}$} is high, the model "remembers facts" but "forgets its stance," leading to unstable advice.
+    \item \textbf{Goal Verification}: If Recall is low, check \textbf{Continuity Score}. A model may lose details but still successfully guide the patient to the therapeutic goal (safe drift).
+\end{itemize}
 
 \section{The Minimal Viable Harness (MVH)}
 
@@ -252,8 +274,8 @@ Dashboard & Streamlit Pro + Grafana & £100 \\
 \toprule
 & \textbf{With Step-F1} & \textbf{Without Step-F1} \\
 \midrule
-\textbf{Benefit} & Validates reasoning content quality against expert gold standards & Simpler implementation \\
-\textbf{Cost} & Requires annotated dataset (OpenR1-Psy has 150--200 items) & Lose diagnostic insight \\
+\textbf{Benefit} & Validates reasoning content quality against reference reasoning traces (from OpenR1-Psy) & Simpler implementation \\
+\textbf{Cost} & Requires annotated dataset (our filtered subset contains $\sim$150 items) & Lose diagnostic insight \\
 \textbf{Recommendation} & Use if dataset available & Skip for pilot phase \\
 \bottomrule
 \end{tabularx}
@@ -365,9 +387,9 @@ UK regulators increasingly require:
     \item \textbf{Adversarial Robustness}: Sycophancy testing under user pressure
 \end{itemize}
 
-\textbf{Minimum Compliance}: MVH (6 metrics) satisfies baseline requirements
+\textbf{Recommended Baseline}: MVH (6 metrics) satisfies standard auditing needs
 
-\textbf{Gold Standard}: Full Suite (13 metrics) exceeds current regulatory expectations
+\textbf{Advanced Assurance}: Full Suite (13 metrics) provides comprehensive safety evidence
 
 \subsection{FDA Digital Health Guidance}
 
@@ -410,5 +432,16 @@ US FDA emphasises:
 \textbf{Timeline}: 4 weeks to production
 }}
 \end{center}
+
+\section{References}
+\begin{enumerate}
+    \item \textbf{Faithfulness}: Lanham et al. (2023). `Measuring faithfulness in chain-of-thought reasoning'. \textit{arXiv:2307.13702}.
+    \item \textbf{Sycophancy}: Wei et al. (2023). `Simple synthetic data reduces sycophancy in large language models'. \textit{arXiv:2308.03958}.
+    \item \textbf{Silent Bias}: Turpin et al. (2023). `Language models don't always say what they think'. \textit{arXiv:2305.04388}.
+    \item \textbf{Truth Decay}: Liu et al. (2025). `Truth decay: Quantifying multi-turn sycophancy in language models'. \textit{arXiv:2503.11656}.
+    \item \textbf{PDSQI-9}: Kruse et al. (2025). `Automating the provider documentation summarisation quality instrument'. \textit{J. Biomed. Info.}
+    \item \textbf{Stance Shift}: Kaur (2025). `Echoes of agreement: Argument-driven sycophancy'. \textit{EMNLP 2025}.
+    \item \textbf{Flip Rate \& ToF}: Hong et al. (2025). `Measuring sycophancy of language models in multi-turn, free-form conversational settings'. \textit{arXiv:2505.23840}.
+\end{enumerate}
 
 \end{document}
