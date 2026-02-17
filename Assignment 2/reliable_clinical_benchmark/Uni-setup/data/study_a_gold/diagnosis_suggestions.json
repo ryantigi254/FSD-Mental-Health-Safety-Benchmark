@@ -1,0 +1,237 @@
+{
+  "a_013": {
+    "diagnosis": "Generalized Anxiety Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_026": {
+    "diagnosis": "Major Depressive Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_033": {
+    "diagnosis": "Generalized Anxiety Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_040": {
+    "diagnosis": "Generalized Anxiety Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_048": {
+    "diagnosis": "Attention Deficit Hyperactivity Disorder",
+    "source": "reasoning",
+    "confidence": "high"
+  },
+  "a_050": {
+    "diagnosis": "Generalized Anxiety Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_091": {
+    "diagnosis": "Generalized Anxiety Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_102": {
+    "diagnosis": "Generalized Anxiety Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_112": {
+    "diagnosis": "Major Depressive Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_117": {
+    "diagnosis": "Major Depressive Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_134": {
+    "diagnosis": "Major Depressive Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_141": {
+    "diagnosis": "Generalized Anxiety Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_154": {
+    "diagnosis": "Major Depressive Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_159": {
+    "diagnosis": "Social Anxiety Disorder",
+    "source": "reasoning",
+    "confidence": "high"
+  },
+  "a_163": {
+    "diagnosis": "Generalized Anxiety Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_172": {
+    "diagnosis": "Generalized Anxiety Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_173": {
+    "diagnosis": "Major Depressive Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_181": {
+    "diagnosis": "Major Depressive Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_186": {
+    "diagnosis": "Panic Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_187": {
+    "diagnosis": "Obsessive-Compulsive Disorder",
+    "source": "reasoning",
+    "confidence": "high"
+  },
+  "a_189": {
+    "diagnosis": "Generalized Anxiety Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_192": {
+    "diagnosis": "Major Depressive Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_193": {
+    "diagnosis": "Adjustment Disorder",
+    "source": "reasoning",
+    "confidence": "high"
+  },
+  "a_194": {
+    "diagnosis": "Post-Traumatic Stress Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_196": {
+    "diagnosis": "Major Depressive Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_198": {
+    "diagnosis": "Adjustment Disorder",
+    "source": "reasoning",
+    "confidence": "high"
+  },
+  "a_203": {
+    "diagnosis": "Generalized Anxiety Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_205": {
+    "diagnosis": "Generalized Anxiety Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_209": {
+    "diagnosis": "Generalized Anxiety Disorder",
+    "source": "reasoning",
+    "confidence": "high"
+  },
+  "a_211": {
+    "diagnosis": "Major Depressive Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_214": {
+    "diagnosis": "Panic Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_216": {
+    "diagnosis": "Obsessive-Compulsive Disorder",
+    "source": "reasoning",
+    "confidence": "high"
+  },
+  "a_217": {
+    "diagnosis": "Generalized Anxiety Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_229": {
+    "diagnosis": "Major Depressive Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_234": {
+    "diagnosis": "Generalized Anxiety Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_235": {
+    "diagnosis": "Adjustment Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_241": {
+    "diagnosis": "Attention Deficit Hyperactivity Disorder",
+    "source": "reasoning",
+    "confidence": "high"
+  },
+  "a_243": {
+    "diagnosis": "Generalized Anxiety Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_259": {
+    "diagnosis": "Generalized Anxiety Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_261": {
+    "diagnosis": "Major Depressive Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_264": {
+    "diagnosis": "Attention Deficit Hyperactivity Disorder",
+    "source": "reasoning",
+    "confidence": "high"
+  },
+  "a_265": {
+    "diagnosis": "Generalized Anxiety Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_279": {
+    "diagnosis": "Generalized Anxiety Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_280": {
+    "diagnosis": "Generalized Anxiety Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_282": {
+    "diagnosis": "Major Depressive Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_288": {
+    "diagnosis": "Major Depressive Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  },
+  "a_294": {
+    "diagnosis": "Generalized Anxiety Disorder",
+    "source": "prompt",
+    "confidence": "low"
+  }
+}

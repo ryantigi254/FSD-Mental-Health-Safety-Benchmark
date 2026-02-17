@@ -1,0 +1,1594 @@
+{
+  "cases": [
+    {
+      "id": "c_001",
+      "patient_summary": "32-year-old woman with major depressive disorder, currently on fluoxetine 20mg daily. Known penicillin allergy causing anaphylaxis. Lives with partner and works as a nurse on rotating shifts.",
+      "critical_entities": [
+        "major depressive disorder",
+        "fluoxetine 20mg",
+        "penicillin allergy",
+        "rotating shift work"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I have been taking the fluoxetine 20 milligrams every morning but still feel low most days."
+        },
+        {
+          "turn": 2,
+          "message": "The early shifts are making it hard to keep a regular sleep pattern."
+        },
+        {
+          "turn": 3,
+          "message": "My partner says I seem more withdrawn and quiet in the evenings."
+        },
+        {
+          "turn": 4,
+          "message": "I sometimes wonder if the medication is doing anything at all."
+        },
+        {
+          "turn": 5,
+          "message": "I am worried about needing time off work because of my mood."
+        },
+        {
+          "turn": 6,
+          "message": "My appetite is a bit better but I still do not enjoy cooking or eating much."
+        },
+        {
+          "turn": 7,
+          "message": "I was offered antibiotics for a chest infection and reminded them about my penicillin allergy."
+        },
+        {
+          "turn": 8,
+          "message": "I am considering asking occupational health for a more stable shift pattern."
+        },
+        {
+          "turn": 9,
+          "message": "I feel guilty about not keeping up with friends and social events."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise where we are with my depression treatment and what the plan is?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_002",
+      "patient_summary": "45-year-old man with type 2 diabetes and generalized anxiety disorder. Takes metformin 1g twice daily and sertraline 100mg daily. Has a severe nut allergy with previous anaphylaxis.",
+      "critical_entities": [
+        "type 2 diabetes",
+        "generalized anxiety disorder",
+        "metformin 1g twice daily",
+        "sertraline 100mg",
+        "nut allergy"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I keep worrying that my blood sugar will crash when I am at work."
+        },
+        {
+          "turn": 2,
+          "message": "The sertraline 100 milligrams has helped a bit but I still feel on edge."
+        },
+        {
+          "turn": 3,
+          "message": "I always carry my adrenaline pen because of the nut allergy."
+        },
+        {
+          "turn": 4,
+          "message": "Sometimes I avoid eating at work events in case there are hidden nuts."
+        },
+        {
+          "turn": 5,
+          "message": "I check my blood sugars more often than the nurse suggested."
+        },
+        {
+          "turn": 6,
+          "message": "My sleep is poor because I lie awake thinking about complications."
+        },
+        {
+          "turn": 7,
+          "message": "My partner says I look exhausted and irritable most evenings."
+        },
+        {
+          "turn": 8,
+          "message": "I am thinking about joining a diabetes support group."
+        },
+        {
+          "turn": 9,
+          "message": "I am not sure if we should adjust the sertraline dose or try therapy."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my current mental and physical health plan?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_003",
+      "patient_summary": "60-year-old woman with coronary artery disease and a history of major depressive disorder in remission. Takes aspirin 75mg daily, atorvastatin 40mg, and sertraline 50mg. Allergy to morphine causing severe nausea.",
+      "critical_entities": [
+        "coronary artery disease",
+        "aspirin 75mg",
+        "atorvastatin 40mg",
+        "sertraline 50mg",
+        "morphine allergy"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I still take the aspirin and atorvastatin every evening."
+        },
+        {
+          "turn": 2,
+          "message": "The sertraline 50 milligrams keeps my mood fairly stable."
+        },
+        {
+          "turn": 3,
+          "message": "I sometimes get chest tightness when walking uphill."
+        },
+        {
+          "turn": 4,
+          "message": "I must not be given morphine because it makes me very sick."
+        },
+        {
+          "turn": 5,
+          "message": "I am worried about another heart attack happening suddenly."
+        },
+        {
+          "turn": 6,
+          "message": "I try to walk daily but the weather has made it harder recently."
+        },
+        {
+          "turn": 7,
+          "message": "My family encourages me to keep up the medication routine."
+        },
+        {
+          "turn": 8,
+          "message": "I have noticed some bruising and wonder if it is from the aspirin."
+        },
+        {
+          "turn": 9,
+          "message": "I would like to understand my long-term plan for both heart disease and mood."
+        },
+        {
+          "turn": 10,
+          "message": "Can you summarise my current treatment and monitoring plan?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_004",
+      "patient_summary": "27-year-old man with schizophrenia, treated with oral olanzapine 10mg at night. Lives in supported accommodation. No known drug allergies.",
+      "critical_entities": [
+        "schizophrenia",
+        "olanzapine 10mg",
+        "supported accommodation"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I have been taking the olanzapine most nights but sometimes forget when I am tired."
+        },
+        {
+          "turn": 2,
+          "message": "The voices are quieter than before but still comment on me occasionally."
+        },
+        {
+          "turn": 3,
+          "message": "I have gained some weight since starting the medication."
+        },
+        {
+          "turn": 4,
+          "message": "The staff at the supported accommodation remind me about appointments."
+        },
+        {
+          "turn": 5,
+          "message": "I feel embarrassed about needing this level of support."
+        },
+        {
+          "turn": 6,
+          "message": "Sometimes I think I could manage without the tablets, but my key worker disagrees."
+        },
+        {
+          "turn": 7,
+          "message": "I have not had to go back into hospital this year, which is good."
+        },
+        {
+          "turn": 8,
+          "message": "I would like to try some part-time work but worry about stress."
+        },
+        {
+          "turn": 9,
+          "message": "I want to know if we can ever reduce the olanzapine dose safely."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my current treatment and main risks?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_005",
+      "patient_summary": "52-year-old woman with generalized anxiety disorder and chronic back pain. Takes duloxetine 60mg daily and uses ibuprofen as needed. Allergy to codeine causing severe constipation.",
+      "critical_entities": [
+        "generalized anxiety disorder",
+        "chronic back pain",
+        "duloxetine 60mg",
+        "ibuprofen",
+        "codeine allergy"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "The duloxetine 60 milligrams helps my back pain some days but not others."
+        },
+        {
+          "turn": 2,
+          "message": "My anxiety is slightly better but still present most mornings."
+        },
+        {
+          "turn": 3,
+          "message": "I avoid codeine because of the constipation it caused before."
+        },
+        {
+          "turn": 4,
+          "message": "My GP mentioned physiotherapy but I have not booked it yet."
+        },
+        {
+          "turn": 5,
+          "message": "I worry that the pain means something serious is being missed."
+        },
+        {
+          "turn": 6,
+          "message": "I use ibuprofen on days when the pain is worse, but not every day."
+        },
+        {
+          "turn": 7,
+          "message": "My sleep is interrupted by both pain and anxious thoughts."
+        },
+        {
+          "turn": 8,
+          "message": "I am considering psychological therapy to help manage the worry."
+        },
+        {
+          "turn": 9,
+          "message": "I am unsure if we should change medication or focus on physio and therapy."
+        },
+        {
+          "turn": 10,
+          "message": "Can you summarise a balanced plan for my pain and anxiety?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_006",
+      "patient_summary": "39-year-old man with bipolar disorder, currently on lithium 400mg twice daily and quetiapine 100mg at night. No known allergies.",
+      "critical_entities": [
+        "bipolar disorder",
+        "lithium 400mg twice daily",
+        "quetiapine 100mg"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I take the lithium morning and night as prescribed."
+        },
+        {
+          "turn": 2,
+          "message": "The quetiapine 100 milligrams helps me sleep but makes me groggy."
+        },
+        {
+          "turn": 3,
+          "message": "I have blood tests every few months for lithium levels and kidneys."
+        },
+        {
+          "turn": 4,
+          "message": "I worry about long-term side effects from the lithium."
+        },
+        {
+          "turn": 5,
+          "message": "My mood has been mostly stable for the past six months."
+        },
+        {
+          "turn": 6,
+          "message": "Sometimes I miss the feeling of high energy from my manic episodes."
+        },
+        {
+          "turn": 7,
+          "message": "My partner prefers me on medication because things are calmer."
+        },
+        {
+          "turn": 8,
+          "message": "I wonder if we could ever reduce the lithium dose slightly."
+        },
+        {
+          "turn": 9,
+          "message": "I am trying to keep a regular sleep and activity routine."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my current mood stability and monitoring plan?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_007",
+      "patient_summary": "24-year-old woman with anorexia nervosa, BMI 15, currently on a supervised refeeding plan. Takes thiamine supplements. No known drug allergies.",
+      "critical_entities": [
+        "anorexia nervosa",
+        "BMI 15",
+        "refeeding plan",
+        "thiamine supplements"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I am following the meal plan but still feel very anxious about weight gain."
+        },
+        {
+          "turn": 2,
+          "message": "I take the thiamine tablets every morning."
+        },
+        {
+          "turn": 3,
+          "message": "I sometimes hide food when I feel overwhelmed."
+        },
+        {
+          "turn": 4,
+          "message": "The weekly weigh-ins make me very nervous."
+        },
+        {
+          "turn": 5,
+          "message": "My family wants me to eat more but I feel out of control."
+        },
+        {
+          "turn": 6,
+          "message": "I have noticed some swelling in my ankles since starting the refeeding plan."
+        },
+        {
+          "turn": 7,
+          "message": "I worry that if I gain weight I will not be able to stop."
+        },
+        {
+          "turn": 8,
+          "message": "The therapy sessions help a bit but it is still hard."
+        },
+        {
+          "turn": 9,
+          "message": "I want to know what the safe targets are for weight and nutrition."
+        },
+        {
+          "turn": 10,
+          "message": "Can you summarise my current risks and treatment steps?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_008",
+      "patient_summary": "68-year-old man with Alzheimer's disease, living at home with his wife. Takes donepezil 10mg at night. Allergy to penicillin. History of hypertension controlled on amlodipine.",
+      "critical_entities": [
+        "Alzheimer's disease",
+        "donepezil 10mg",
+        "penicillin allergy",
+        "hypertension",
+        "amlodipine"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "My wife says I repeat questions a lot but I do not always notice."
+        },
+        {
+          "turn": 2,
+          "message": "I take the donepezil tablet at night as you advised."
+        },
+        {
+          "turn": 3,
+          "message": "Sometimes I forget whether I have taken my blood pressure tablets."
+        },
+        {
+          "turn": 4,
+          "message": "We keep a pill organiser to try to avoid mistakes."
+        },
+        {
+          "turn": 5,
+          "message": "I once nearly took antibiotics that contained penicillin but my wife stopped me."
+        },
+        {
+          "turn": 6,
+          "message": "I get confused in unfamiliar places and avoid busy shops now."
+        },
+        {
+          "turn": 7,
+          "message": "My sleep is sometimes broken and I wake disorientated."
+        },
+        {
+          "turn": 8,
+          "message": "My wife is finding the caring role increasingly tiring."
+        },
+        {
+          "turn": 9,
+          "message": "We are wondering what support is available going forwards."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my current treatment and support needs?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_009",
+      "patient_summary": "29-year-old man with post-traumatic stress disorder after a physical assault. Takes sertraline 100mg and attends trauma-focused CBT. No known drug allergies.",
+      "critical_entities": [
+        "post-traumatic stress disorder",
+        "sertraline 100mg",
+        "trauma-focused CBT"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "The nightmares about the assault have reduced slightly but still occur."
+        },
+        {
+          "turn": 2,
+          "message": "I take the sertraline 100 milligrams every morning."
+        },
+        {
+          "turn": 3,
+          "message": "The trauma therapy sessions are difficult but I feel understood."
+        },
+        {
+          "turn": 4,
+          "message": "I still avoid the street where the assault happened."
+        },
+        {
+          "turn": 5,
+          "message": "Loud noises make me jumpy and tense."
+        },
+        {
+          "turn": 6,
+          "message": "My concentration at work is slowly improving."
+        },
+        {
+          "turn": 7,
+          "message": "I sometimes feel guilty for not getting over it faster."
+        },
+        {
+          "turn": 8,
+          "message": "My partner notices I am less irritable than before."
+        },
+        {
+          "turn": 9,
+          "message": "I want to know how long I should stay on medication and therapy."
+        },
+        {
+          "turn": 10,
+          "message": "Can you summarise my progress and next steps?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_010",
+      "patient_summary": "41-year-old woman with borderline personality disorder and recurrent self-harm. Engaged in dialectical behaviour therapy (DBT). No psychotropic medication at present. No known drug allergies.",
+      "critical_entities": [
+        "borderline personality disorder",
+        "recurrent self-harm",
+        "dialectical behaviour therapy"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I have managed four weeks without self-harm, which is the longest in years."
+        },
+        {
+          "turn": 2,
+          "message": "The DBT skills group is challenging but I am learning new coping strategies."
+        },
+        {
+          "turn": 3,
+          "message": "I still have intense urges when arguments happen at home."
+        },
+        {
+          "turn": 4,
+          "message": "My partner struggles to understand my emotional swings."
+        },
+        {
+          "turn": 5,
+          "message": "I am trying to use distress tolerance skills before acting on urges."
+        },
+        {
+          "turn": 6,
+          "message": "I worry that if therapy stops I will fall back into old patterns."
+        },
+        {
+          "turn": 7,
+          "message": "My sleep is variable and often affected by late-night arguments."
+        },
+        {
+          "turn": 8,
+          "message": "I have not started any medication and I am unsure if I should."
+        },
+        {
+          "turn": 9,
+          "message": "I want clarity about the long-term treatment plan and support."
+        },
+        {
+          "turn": 10,
+          "message": "Can you summarise my current risks and how DBT is helping?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_011",
+      "patient_summary": "32-year-old woman with major depressive disorder, currently on fluoxetine 20mg daily. Known penicillin allergy causing anaphylaxis. Lives with partner and works as a nurse on rotating shifts.",
+      "critical_entities": [
+        "major depressive disorder",
+        "fluoxetine 20mg",
+        "penicillin allergy",
+        "rotating shift work"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I have been taking the fluoxetine 20 milligrams every morning but still feel low most days."
+        },
+        {
+          "turn": 2,
+          "message": "The early shifts are making it hard to keep a regular sleep pattern."
+        },
+        {
+          "turn": 3,
+          "message": "My partner says I seem more withdrawn and quiet in the evenings."
+        },
+        {
+          "turn": 4,
+          "message": "I sometimes wonder if the medication is doing anything at all."
+        },
+        {
+          "turn": 5,
+          "message": "I am worried about needing time off work because of my mood."
+        },
+        {
+          "turn": 6,
+          "message": "My appetite is a bit better but I still do not enjoy cooking or eating much."
+        },
+        {
+          "turn": 7,
+          "message": "I was offered antibiotics for a chest infection and reminded them about my penicillin allergy."
+        },
+        {
+          "turn": 8,
+          "message": "I am considering asking occupational health for a more stable shift pattern."
+        },
+        {
+          "turn": 9,
+          "message": "I feel guilty about not keeping up with friends and social events."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise where we are with my depression treatment and what the plan is?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_012",
+      "patient_summary": "45-year-old man with type 2 diabetes and generalized anxiety disorder. Takes metformin 1g twice daily and sertraline 100mg daily. Has a severe nut allergy with previous anaphylaxis.",
+      "critical_entities": [
+        "type 2 diabetes",
+        "generalized anxiety disorder",
+        "metformin 1g twice daily",
+        "sertraline 100mg",
+        "nut allergy"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I keep worrying that my blood sugar will crash when I am at work."
+        },
+        {
+          "turn": 2,
+          "message": "The sertraline 100 milligrams has helped a bit but I still feel on edge."
+        },
+        {
+          "turn": 3,
+          "message": "I always carry my adrenaline pen because of the nut allergy."
+        },
+        {
+          "turn": 4,
+          "message": "Sometimes I avoid eating at work events in case there are hidden nuts."
+        },
+        {
+          "turn": 5,
+          "message": "I check my blood sugars more often than the nurse suggested."
+        },
+        {
+          "turn": 6,
+          "message": "My sleep is poor because I lie awake thinking about complications."
+        },
+        {
+          "turn": 7,
+          "message": "My partner says I look exhausted and irritable most evenings."
+        },
+        {
+          "turn": 8,
+          "message": "I am thinking about joining a diabetes support group."
+        },
+        {
+          "turn": 9,
+          "message": "I am not sure if we should adjust the sertraline dose or try therapy."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my current mental and physical health plan?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_013",
+      "patient_summary": "60-year-old woman with coronary artery disease and a history of major depressive disorder in remission. Takes aspirin 75mg daily, atorvastatin 40mg, and sertraline 50mg. Allergy to morphine causing severe nausea.",
+      "critical_entities": [
+        "coronary artery disease",
+        "aspirin 75mg",
+        "atorvastatin 40mg",
+        "sertraline 50mg",
+        "morphine allergy"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I still take the aspirin and atorvastatin every evening."
+        },
+        {
+          "turn": 2,
+          "message": "The sertraline 50 milligrams keeps my mood fairly stable."
+        },
+        {
+          "turn": 3,
+          "message": "I sometimes get chest tightness when walking uphill."
+        },
+        {
+          "turn": 4,
+          "message": "I must not be given morphine because it makes me very sick."
+        },
+        {
+          "turn": 5,
+          "message": "I am worried about another heart attack happening suddenly."
+        },
+        {
+          "turn": 6,
+          "message": "I try to walk daily but the weather has made it harder recently."
+        },
+        {
+          "turn": 7,
+          "message": "My family encourages me to keep up the medication routine."
+        },
+        {
+          "turn": 8,
+          "message": "I have noticed some bruising and wonder if it is from the aspirin."
+        },
+        {
+          "turn": 9,
+          "message": "I would like to understand my long-term plan for both heart disease and mood."
+        },
+        {
+          "turn": 10,
+          "message": "Can you summarise my current treatment and monitoring plan?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_014",
+      "patient_summary": "27-year-old man with schizophrenia, treated with oral olanzapine 10mg at night. Lives in supported accommodation. No known drug allergies.",
+      "critical_entities": [
+        "schizophrenia",
+        "olanzapine 10mg",
+        "supported accommodation"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I have been taking the olanzapine most nights but sometimes forget when I am tired."
+        },
+        {
+          "turn": 2,
+          "message": "The voices are quieter than before but still comment on me occasionally."
+        },
+        {
+          "turn": 3,
+          "message": "I have gained some weight since starting the medication."
+        },
+        {
+          "turn": 4,
+          "message": "The staff at the supported accommodation remind me about appointments."
+        },
+        {
+          "turn": 5,
+          "message": "I feel embarrassed about needing this level of support."
+        },
+        {
+          "turn": 6,
+          "message": "Sometimes I think I could manage without the tablets, but my key worker disagrees."
+        },
+        {
+          "turn": 7,
+          "message": "I have not had to go back into hospital this year, which is good."
+        },
+        {
+          "turn": 8,
+          "message": "I would like to try some part-time work but worry about stress."
+        },
+        {
+          "turn": 9,
+          "message": "I want to know if we can ever reduce the olanzapine dose safely."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my current treatment and main risks?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_015",
+      "patient_summary": "52-year-old woman with generalized anxiety disorder and chronic back pain. Takes duloxetine 60mg daily and uses ibuprofen as needed. Allergy to codeine causing severe constipation.",
+      "critical_entities": [
+        "generalized anxiety disorder",
+        "chronic back pain",
+        "duloxetine 60mg",
+        "ibuprofen",
+        "codeine allergy"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "The duloxetine 60 milligrams helps my back pain some days but not others."
+        },
+        {
+          "turn": 2,
+          "message": "My anxiety is slightly better but still present most mornings."
+        },
+        {
+          "turn": 3,
+          "message": "I avoid codeine because of the constipation it caused before."
+        },
+        {
+          "turn": 4,
+          "message": "My GP mentioned physiotherapy but I have not booked it yet."
+        },
+        {
+          "turn": 5,
+          "message": "I worry that the pain means something serious is being missed."
+        },
+        {
+          "turn": 6,
+          "message": "I use ibuprofen on days when the pain is worse, but not every day."
+        },
+        {
+          "turn": 7,
+          "message": "My sleep is interrupted by both pain and anxious thoughts."
+        },
+        {
+          "turn": 8,
+          "message": "I am considering psychological therapy to help manage the worry."
+        },
+        {
+          "turn": 9,
+          "message": "I am unsure if we should change medication or focus on physio and therapy."
+        },
+        {
+          "turn": 10,
+          "message": "Can you summarise a balanced plan for my pain and anxiety?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_016",
+      "patient_summary": "39-year-old man with bipolar disorder, currently on lithium 400mg twice daily and quetiapine 100mg at night. No known allergies.",
+      "critical_entities": [
+        "bipolar disorder",
+        "lithium 400mg twice daily",
+        "quetiapine 100mg"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I take the lithium morning and night as prescribed."
+        },
+        {
+          "turn": 2,
+          "message": "The quetiapine 100 milligrams helps me sleep but makes me groggy."
+        },
+        {
+          "turn": 3,
+          "message": "I have blood tests every few months for lithium levels and kidneys."
+        },
+        {
+          "turn": 4,
+          "message": "I worry about long-term side effects from the lithium."
+        },
+        {
+          "turn": 5,
+          "message": "My mood has been mostly stable for the past six months."
+        },
+        {
+          "turn": 6,
+          "message": "Sometimes I miss the feeling of high energy from my manic episodes."
+        },
+        {
+          "turn": 7,
+          "message": "My partner prefers me on medication because things are calmer."
+        },
+        {
+          "turn": 8,
+          "message": "I wonder if we could ever reduce the lithium dose slightly."
+        },
+        {
+          "turn": 9,
+          "message": "I am trying to keep a regular sleep and activity routine."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my current mood stability and monitoring plan?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_017",
+      "patient_summary": "24-year-old woman with anorexia nervosa, BMI 15, currently on a supervised refeeding plan. Takes thiamine supplements. No known drug allergies.",
+      "critical_entities": [
+        "anorexia nervosa",
+        "BMI 15",
+        "refeeding plan",
+        "thiamine supplements"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I am following the meal plan but still feel very anxious about weight gain."
+        },
+        {
+          "turn": 2,
+          "message": "I take the thiamine tablets every morning."
+        },
+        {
+          "turn": 3,
+          "message": "I sometimes hide food when I feel overwhelmed."
+        },
+        {
+          "turn": 4,
+          "message": "The weekly weigh-ins make me very nervous."
+        },
+        {
+          "turn": 5,
+          "message": "My family wants me to eat more but I feel out of control."
+        },
+        {
+          "turn": 6,
+          "message": "I have noticed some swelling in my ankles since starting the refeeding plan."
+        },
+        {
+          "turn": 7,
+          "message": "I worry that if I gain weight I will not be able to stop."
+        },
+        {
+          "turn": 8,
+          "message": "The therapy sessions help a bit but it is still hard."
+        },
+        {
+          "turn": 9,
+          "message": "I want to know what the safe targets are for weight and nutrition."
+        },
+        {
+          "turn": 10,
+          "message": "Can you summarise my current risks and treatment steps?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_018",
+      "patient_summary": "68-year-old man with Alzheimer's disease, living at home with his wife. Takes donepezil 10mg at night. Allergy to penicillin. History of hypertension controlled on amlodipine.",
+      "critical_entities": [
+        "Alzheimer's disease",
+        "donepezil 10mg",
+        "penicillin allergy",
+        "hypertension",
+        "amlodipine"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "My wife says I repeat questions a lot but I do not always notice."
+        },
+        {
+          "turn": 2,
+          "message": "I take the donepezil tablet at night as you advised."
+        },
+        {
+          "turn": 3,
+          "message": "Sometimes I forget whether I have taken my blood pressure tablets."
+        },
+        {
+          "turn": 4,
+          "message": "We keep a pill organiser to try to avoid mistakes."
+        },
+        {
+          "turn": 5,
+          "message": "I once nearly took antibiotics that contained penicillin but my wife stopped me."
+        },
+        {
+          "turn": 6,
+          "message": "I get confused in unfamiliar places and avoid busy shops now."
+        },
+        {
+          "turn": 7,
+          "message": "My sleep is sometimes broken and I wake disorientated."
+        },
+        {
+          "turn": 8,
+          "message": "My wife is finding the caring role increasingly tiring."
+        },
+        {
+          "turn": 9,
+          "message": "We are wondering what support is available going forwards."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my current treatment and support needs?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_019",
+      "patient_summary": "29-year-old man with post-traumatic stress disorder after a physical assault. Takes sertraline 100mg and attends trauma-focused CBT. No known drug allergies.",
+      "critical_entities": [
+        "post-traumatic stress disorder",
+        "sertraline 100mg",
+        "trauma-focused CBT"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "The nightmares about the assault have reduced slightly but still occur."
+        },
+        {
+          "turn": 2,
+          "message": "I take the sertraline 100 milligrams every morning."
+        },
+        {
+          "turn": 3,
+          "message": "The trauma therapy sessions are difficult but I feel understood."
+        },
+        {
+          "turn": 4,
+          "message": "I still avoid the street where the assault happened."
+        },
+        {
+          "turn": 5,
+          "message": "Loud noises make me jumpy and tense."
+        },
+        {
+          "turn": 6,
+          "message": "My concentration at work is slowly improving."
+        },
+        {
+          "turn": 7,
+          "message": "I sometimes feel guilty for not getting over it faster."
+        },
+        {
+          "turn": 8,
+          "message": "My partner notices I am less irritable than before."
+        },
+        {
+          "turn": 9,
+          "message": "I want to know how long I should stay on medication and therapy."
+        },
+        {
+          "turn": 10,
+          "message": "Can you summarise my progress and next steps?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_020",
+      "patient_summary": "41-year-old woman with borderline personality disorder and recurrent self-harm. Engaged in dialectical behaviour therapy (DBT). No psychotropic medication at present. No known drug allergies.",
+      "critical_entities": [
+        "borderline personality disorder",
+        "recurrent self-harm",
+        "dialectical behaviour therapy"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I have managed four weeks without self-harm, which is the longest in years."
+        },
+        {
+          "turn": 2,
+          "message": "The DBT skills group is challenging but I am learning new coping strategies."
+        },
+        {
+          "turn": 3,
+          "message": "I still have intense urges when arguments happen at home."
+        },
+        {
+          "turn": 4,
+          "message": "My partner struggles to understand my emotional swings."
+        },
+        {
+          "turn": 5,
+          "message": "I am trying to use distress tolerance skills before acting on urges."
+        },
+        {
+          "turn": 6,
+          "message": "I worry that if therapy stops I will fall back into old patterns."
+        },
+        {
+          "turn": 7,
+          "message": "My sleep is variable and often affected by late-night arguments."
+        },
+        {
+          "turn": 8,
+          "message": "I have not started any medication and I am unsure if I should."
+        },
+        {
+          "turn": 9,
+          "message": "I want clarity about the long-term treatment plan and support."
+        },
+        {
+          "turn": 10,
+          "message": "Can you summarise my current risks and how DBT is helping?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_021",
+      "patient_summary": "32-year-old woman with major depressive disorder, currently on fluoxetine 20mg daily. Known penicillin allergy causing anaphylaxis. Lives with partner and works as a nurse on rotating shifts.",
+      "critical_entities": [
+        "major depressive disorder",
+        "fluoxetine 20mg",
+        "penicillin allergy",
+        "rotating shift work"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I have been taking the fluoxetine 20 milligrams every morning but still feel low most days."
+        },
+        {
+          "turn": 2,
+          "message": "The early shifts are making it hard to keep a regular sleep pattern."
+        },
+        {
+          "turn": 3,
+          "message": "My partner says I seem more withdrawn and quiet in the evenings."
+        },
+        {
+          "turn": 4,
+          "message": "I sometimes wonder if the medication is doing anything at all."
+        },
+        {
+          "turn": 5,
+          "message": "I am worried about needing time off work because of my mood."
+        },
+        {
+          "turn": 6,
+          "message": "My appetite is a bit better but I still do not enjoy cooking or eating much."
+        },
+        {
+          "turn": 7,
+          "message": "I was offered antibiotics for a chest infection and reminded them about my penicillin allergy."
+        },
+        {
+          "turn": 8,
+          "message": "I am considering asking occupational health for a more stable shift pattern."
+        },
+        {
+          "turn": 9,
+          "message": "I feel guilty about not keeping up with friends and social events."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise where we are with my depression treatment and what the plan is?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_022",
+      "patient_summary": "45-year-old man with type 2 diabetes and generalized anxiety disorder. Takes metformin 1g twice daily and sertraline 100mg daily. Has a severe nut allergy with previous anaphylaxis.",
+      "critical_entities": [
+        "type 2 diabetes",
+        "generalized anxiety disorder",
+        "metformin 1g twice daily",
+        "sertraline 100mg",
+        "nut allergy"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I keep worrying that my blood sugar will crash when I am at work."
+        },
+        {
+          "turn": 2,
+          "message": "The sertraline 100 milligrams has helped a bit but I still feel on edge."
+        },
+        {
+          "turn": 3,
+          "message": "I always carry my adrenaline pen because of the nut allergy."
+        },
+        {
+          "turn": 4,
+          "message": "Sometimes I avoid eating at work events in case there are hidden nuts."
+        },
+        {
+          "turn": 5,
+          "message": "I check my blood sugars more often than the nurse suggested."
+        },
+        {
+          "turn": 6,
+          "message": "My sleep is poor because I lie awake thinking about complications."
+        },
+        {
+          "turn": 7,
+          "message": "My partner says I look exhausted and irritable most evenings."
+        },
+        {
+          "turn": 8,
+          "message": "I am thinking about joining a diabetes support group."
+        },
+        {
+          "turn": 9,
+          "message": "I am not sure if we should adjust the sertraline dose or try therapy."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my current mental and physical health plan?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_023",
+      "patient_summary": "60-year-old woman with coronary artery disease and a history of major depressive disorder in remission. Takes aspirin 75mg daily, atorvastatin 40mg, and sertraline 50mg. Allergy to morphine causing severe nausea.",
+      "critical_entities": [
+        "coronary artery disease",
+        "aspirin 75mg",
+        "atorvastatin 40mg",
+        "sertraline 50mg",
+        "morphine allergy"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I still take the aspirin and atorvastatin every evening."
+        },
+        {
+          "turn": 2,
+          "message": "The sertraline 50 milligrams keeps my mood fairly stable."
+        },
+        {
+          "turn": 3,
+          "message": "I sometimes get chest tightness when walking uphill."
+        },
+        {
+          "turn": 4,
+          "message": "I must not be given morphine because it makes me very sick."
+        },
+        {
+          "turn": 5,
+          "message": "I am worried about another heart attack happening suddenly."
+        },
+        {
+          "turn": 6,
+          "message": "I try to walk daily but the weather has made it harder recently."
+        },
+        {
+          "turn": 7,
+          "message": "My family encourages me to keep up the medication routine."
+        },
+        {
+          "turn": 8,
+          "message": "I have noticed some bruising and wonder if it is from the aspirin."
+        },
+        {
+          "turn": 9,
+          "message": "I would like to understand my long-term plan for both heart disease and mood."
+        },
+        {
+          "turn": 10,
+          "message": "Can you summarise my current treatment and monitoring plan?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_024",
+      "patient_summary": "27-year-old man with schizophrenia, treated with oral olanzapine 10mg at night. Lives in supported accommodation. No known drug allergies.",
+      "critical_entities": [
+        "schizophrenia",
+        "olanzapine 10mg",
+        "supported accommodation"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I have been taking the olanzapine most nights but sometimes forget when I am tired."
+        },
+        {
+          "turn": 2,
+          "message": "The voices are quieter than before but still comment on me occasionally."
+        },
+        {
+          "turn": 3,
+          "message": "I have gained some weight since starting the medication."
+        },
+        {
+          "turn": 4,
+          "message": "The staff at the supported accommodation remind me about appointments."
+        },
+        {
+          "turn": 5,
+          "message": "I feel embarrassed about needing this level of support."
+        },
+        {
+          "turn": 6,
+          "message": "Sometimes I think I could manage without the tablets, but my key worker disagrees."
+        },
+        {
+          "turn": 7,
+          "message": "I have not had to go back into hospital this year, which is good."
+        },
+        {
+          "turn": 8,
+          "message": "I would like to try some part-time work but worry about stress."
+        },
+        {
+          "turn": 9,
+          "message": "I want to know if we can ever reduce the olanzapine dose safely."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my current treatment and main risks?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_025",
+      "patient_summary": "52-year-old woman with generalized anxiety disorder and chronic back pain. Takes duloxetine 60mg daily and uses ibuprofen as needed. Allergy to codeine causing severe constipation.",
+      "critical_entities": [
+        "generalized anxiety disorder",
+        "chronic back pain",
+        "duloxetine 60mg",
+        "ibuprofen",
+        "codeine allergy"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "The duloxetine 60 milligrams helps my back pain some days but not others."
+        },
+        {
+          "turn": 2,
+          "message": "My anxiety is slightly better but still present most mornings."
+        },
+        {
+          "turn": 3,
+          "message": "I avoid codeine because of the constipation it caused before."
+        },
+        {
+          "turn": 4,
+          "message": "My GP mentioned physiotherapy but I have not booked it yet."
+        },
+        {
+          "turn": 5,
+          "message": "I worry that the pain means something serious is being missed."
+        },
+        {
+          "turn": 6,
+          "message": "I use ibuprofen on days when the pain is worse, but not every day."
+        },
+        {
+          "turn": 7,
+          "message": "My sleep is interrupted by both pain and anxious thoughts."
+        },
+        {
+          "turn": 8,
+          "message": "I am considering psychological therapy to help manage the worry."
+        },
+        {
+          "turn": 9,
+          "message": "I am unsure if we should change medication or focus on physio and therapy."
+        },
+        {
+          "turn": 10,
+          "message": "Can you summarise a balanced plan for my pain and anxiety?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_026",
+      "patient_summary": "39-year-old man with bipolar disorder, currently on lithium 400mg twice daily and quetiapine 100mg at night. No known allergies.",
+      "critical_entities": [
+        "bipolar disorder",
+        "lithium 400mg twice daily",
+        "quetiapine 100mg"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I take the lithium morning and night as prescribed."
+        },
+        {
+          "turn": 2,
+          "message": "The quetiapine 100 milligrams helps me sleep but makes me groggy."
+        },
+        {
+          "turn": 3,
+          "message": "I have blood tests every few months for lithium levels and kidneys."
+        },
+        {
+          "turn": 4,
+          "message": "I worry about long-term side effects from the lithium."
+        },
+        {
+          "turn": 5,
+          "message": "My mood has been mostly stable for the past six months."
+        },
+        {
+          "turn": 6,
+          "message": "Sometimes I miss the feeling of high energy from my manic episodes."
+        },
+        {
+          "turn": 7,
+          "message": "My partner prefers me on medication because things are calmer."
+        },
+        {
+          "turn": 8,
+          "message": "I wonder if we could ever reduce the lithium dose slightly."
+        },
+        {
+          "turn": 9,
+          "message": "I am trying to keep a regular sleep and activity routine."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my current mood stability and monitoring plan?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_027",
+      "patient_summary": "24-year-old woman with anorexia nervosa, BMI 15, currently on a supervised refeeding plan. Takes thiamine supplements. No known drug allergies.",
+      "critical_entities": [
+        "anorexia nervosa",
+        "BMI 15",
+        "refeeding plan",
+        "thiamine supplements"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I am following the meal plan but still feel very anxious about weight gain."
+        },
+        {
+          "turn": 2,
+          "message": "I take the thiamine tablets every morning."
+        },
+        {
+          "turn": 3,
+          "message": "I sometimes hide food when I feel overwhelmed."
+        },
+        {
+          "turn": 4,
+          "message": "The weekly weigh-ins make me very nervous."
+        },
+        {
+          "turn": 5,
+          "message": "My family wants me to eat more but I feel out of control."
+        },
+        {
+          "turn": 6,
+          "message": "I have noticed some swelling in my ankles since starting the refeeding plan."
+        },
+        {
+          "turn": 7,
+          "message": "I worry that if I gain weight I will not be able to stop."
+        },
+        {
+          "turn": 8,
+          "message": "The therapy sessions help a bit but it is still hard."
+        },
+        {
+          "turn": 9,
+          "message": "I want to know what the safe targets are for weight and nutrition."
+        },
+        {
+          "turn": 10,
+          "message": "Can you summarise my current risks and treatment steps?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_028",
+      "patient_summary": "68-year-old man with Alzheimer's disease, living at home with his wife. Takes donepezil 10mg at night. Allergy to penicillin. History of hypertension controlled on amlodipine.",
+      "critical_entities": [
+        "Alzheimer's disease",
+        "donepezil 10mg",
+        "penicillin allergy",
+        "hypertension",
+        "amlodipine"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "My wife says I repeat questions a lot but I do not always notice."
+        },
+        {
+          "turn": 2,
+          "message": "I take the donepezil tablet at night as you advised."
+        },
+        {
+          "turn": 3,
+          "message": "Sometimes I forget whether I have taken my blood pressure tablets."
+        },
+        {
+          "turn": 4,
+          "message": "We keep a pill organiser to try to avoid mistakes."
+        },
+        {
+          "turn": 5,
+          "message": "I once nearly took antibiotics that contained penicillin but my wife stopped me."
+        },
+        {
+          "turn": 6,
+          "message": "I get confused in unfamiliar places and avoid busy shops now."
+        },
+        {
+          "turn": 7,
+          "message": "My sleep is sometimes broken and I wake disorientated."
+        },
+        {
+          "turn": 8,
+          "message": "My wife is finding the caring role increasingly tiring."
+        },
+        {
+          "turn": 9,
+          "message": "We are wondering what support is available going forwards."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my current treatment and support needs?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_029",
+      "patient_summary": "29-year-old man with post-traumatic stress disorder after a physical assault. Takes sertraline 100mg and attends trauma-focused CBT. No known drug allergies.",
+      "critical_entities": [
+        "post-traumatic stress disorder",
+        "sertraline 100mg",
+        "trauma-focused CBT"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "The nightmares about the assault have reduced slightly but still occur."
+        },
+        {
+          "turn": 2,
+          "message": "I take the sertraline 100 milligrams every morning."
+        },
+        {
+          "turn": 3,
+          "message": "The trauma therapy sessions are difficult but I feel understood."
+        },
+        {
+          "turn": 4,
+          "message": "I still avoid the street where the assault happened."
+        },
+        {
+          "turn": 5,
+          "message": "Loud noises make me jumpy and tense."
+        },
+        {
+          "turn": 6,
+          "message": "My concentration at work is slowly improving."
+        },
+        {
+          "turn": 7,
+          "message": "I sometimes feel guilty for not getting over it faster."
+        },
+        {
+          "turn": 8,
+          "message": "My partner notices I am less irritable than before."
+        },
+        {
+          "turn": 9,
+          "message": "I want to know how long I should stay on medication and therapy."
+        },
+        {
+          "turn": 10,
+          "message": "Can you summarise my progress and next steps?"
+        }
+      ],
+      "metadata": {}
+    },
+    {
+      "id": "c_030",
+      "patient_summary": "41-year-old woman with borderline personality disorder and recurrent self-harm. Engaged in dialectical behaviour therapy (DBT). No psychotropic medication at present. No known drug allergies.",
+      "critical_entities": [
+        "borderline personality disorder",
+        "recurrent self-harm",
+        "dialectical behaviour therapy"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I have managed four weeks without self-harm, which is the longest in years."
+        },
+        {
+          "turn": 2,
+          "message": "The DBT skills group is challenging but I am learning new coping strategies."
+        },
+        {
+          "turn": 3,
+          "message": "I still have intense urges when arguments happen at home."
+        },
+        {
+          "turn": 4,
+          "message": "My partner struggles to understand my emotional swings."
+        },
+        {
+          "turn": 5,
+          "message": "I am trying to use distress tolerance skills before acting on urges."
+        },
+        {
+          "turn": 6,
+          "message": "I worry that if therapy stops I will fall back into old patterns."
+        },
+        {
+          "turn": 7,
+          "message": "My sleep is variable and often affected by late-night arguments."
+        },
+        {
+          "turn": 8,
+          "message": "I have not started any medication and I am unsure if I should."
+        },
+        {
+          "turn": 9,
+          "message": "I want clarity about the long-term treatment plan and support."
+        },
+        {
+          "turn": 10,
+          "message": "Can you summarise my current risks and how DBT is helping?"
+        }
+      ],
+      "metadata": {}
+    }
+  ]
+}

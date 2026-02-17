@@ -1,0 +1,328 @@
+{
+  "pipeline_dir": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline",
+  "generated_outputs_in": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\verification\\2026-01-11__230452",
+  "papers": {
+    "completed_count": 24,
+    "ok_count": 17,
+    "not_ok_count": 7,
+    "not_ok": [
+      {
+        "paper_id": "27",
+        "bucket": "bucket_b_sycophancy",
+        "tier": "tier_2_important",
+        "ok": false,
+        "issues": [
+          "invalid:metadata.json_year_not_int"
+        ],
+        "files": {
+          "metadata.json": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\bucket_b_sycophancy\\tier_2_important\\27\\metadata.json",
+            "exists": true,
+            "bytes": 239
+          },
+          "full_text.txt": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\bucket_b_sycophancy\\tier_2_important\\27\\full_text.txt",
+            "exists": true,
+            "bytes": 48739
+          },
+          "citations.json": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\bucket_b_sycophancy\\tier_2_important\\27\\citations.json",
+            "exists": true,
+            "bytes": 23810
+          },
+          "sections.json": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\bucket_b_sycophancy\\tier_2_important\\27\\sections.json",
+            "exists": true,
+            "bytes": 40297
+          },
+          "note.md": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\notes\\bucket_b_sycophancy\\tier_2_important\\27.md",
+            "exists": true,
+            "bytes": 5121
+          }
+        },
+        "metadata_ok": true
+      },
+      {
+        "paper_id": "43",
+        "bucket": "clinical_domain",
+        "tier": "tier_2_important",
+        "ok": false,
+        "issues": [
+          "invalid:metadata.json_year_not_int"
+        ],
+        "files": {
+          "metadata.json": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\clinical_domain\\tier_2_important\\43\\metadata.json",
+            "exists": true,
+            "bytes": 256
+          },
+          "full_text.txt": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\clinical_domain\\tier_2_important\\43\\full_text.txt",
+            "exists": true,
+            "bytes": 59098
+          },
+          "citations.json": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\clinical_domain\\tier_2_important\\43\\citations.json",
+            "exists": true,
+            "bytes": 19910
+          },
+          "sections.json": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\clinical_domain\\tier_2_important\\43\\sections.json",
+            "exists": true,
+            "bytes": 51777
+          },
+          "note.md": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\notes\\clinical_domain\\tier_2_important\\43.md",
+            "exists": true,
+            "bytes": 6404
+          }
+        },
+        "metadata_ok": true
+      },
+      {
+        "paper_id": "20",
+        "bucket": "bucket_b_sycophancy",
+        "tier": "tier_2_important",
+        "ok": false,
+        "issues": [
+          "invalid:metadata.json_year_not_int"
+        ],
+        "files": {
+          "metadata.json": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\bucket_b_sycophancy\\tier_2_important\\20\\metadata.json",
+            "exists": true,
+            "bytes": 2136
+          },
+          "full_text.txt": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\bucket_b_sycophancy\\tier_2_important\\20\\full_text.txt",
+            "exists": true,
+            "bytes": 510492
+          },
+          "citations.json": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\bucket_b_sycophancy\\tier_2_important\\20\\citations.json",
+            "exists": true,
+            "bytes": 330374
+          },
+          "sections.json": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\bucket_b_sycophancy\\tier_2_important\\20\\sections.json",
+            "exists": true,
+            "bytes": 503916
+          },
+          "note.md": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\notes\\bucket_b_sycophancy\\tier_2_important\\20.md",
+            "exists": true,
+            "bytes": 13597
+          }
+        },
+        "metadata_ok": true
+      },
+      {
+        "paper_id": "49",
+        "bucket": "evaluation_tools",
+        "tier": "tier_2_important",
+        "ok": false,
+        "issues": [
+          "invalid:metadata.json_year_not_int"
+        ],
+        "files": {
+          "metadata.json": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\evaluation_tools\\tier_2_important\\49\\metadata.json",
+            "exists": true,
+            "bytes": 209
+          },
+          "full_text.txt": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\evaluation_tools\\tier_2_important\\49\\full_text.txt",
+            "exists": true,
+            "bytes": 79669
+          },
+          "citations.json": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\evaluation_tools\\tier_2_important\\49\\citations.json",
+            "exists": true,
+            "bytes": 16476
+          },
+          "sections.json": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\evaluation_tools\\tier_2_important\\49\\sections.json",
+            "exists": true,
+            "bytes": 69713
+          },
+          "note.md": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\notes\\evaluation_tools\\tier_2_important\\49.md",
+            "exists": true,
+            "bytes": 5968
+          }
+        },
+        "metadata_ok": true
+      },
+      {
+        "paper_id": "9",
+        "bucket": "bucket_a_faithfulness",
+        "tier": "tier_3_reference",
+        "ok": false,
+        "issues": [
+          "invalid:metadata.json_year_not_int"
+        ],
+        "files": {
+          "metadata.json": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\bucket_a_faithfulness\\tier_3_reference\\9\\metadata.json",
+            "exists": true,
+            "bytes": 2557
+          },
+          "full_text.txt": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\bucket_a_faithfulness\\tier_3_reference\\9\\full_text.txt",
+            "exists": true,
+            "bytes": 59986
+          },
+          "citations.json": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\bucket_a_faithfulness\\tier_3_reference\\9\\citations.json",
+            "exists": true,
+            "bytes": 28375
+          },
+          "sections.json": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\bucket_a_faithfulness\\tier_3_reference\\9\\sections.json",
+            "exists": true,
+            "bytes": 55911
+          },
+          "note.md": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\notes\\bucket_a_faithfulness\\tier_3_reference\\9.md",
+            "exists": true,
+            "bytes": 18818
+          }
+        },
+        "metadata_ok": true
+      },
+      {
+        "paper_id": "61",
+        "bucket": "methods",
+        "tier": "tier_3_reference",
+        "ok": false,
+        "issues": [
+          "invalid:metadata.json_year_not_int"
+        ],
+        "files": {
+          "metadata.json": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\methods\\tier_3_reference\\61\\metadata.json",
+            "exists": true,
+            "bytes": 2280
+          },
+          "full_text.txt": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\methods\\tier_3_reference\\61\\full_text.txt",
+            "exists": true,
+            "bytes": 406146
+          },
+          "citations.json": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\methods\\tier_3_reference\\61\\citations.json",
+            "exists": true,
+            "bytes": 247499
+          },
+          "sections.json": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\methods\\tier_3_reference\\61\\sections.json",
+            "exists": true,
+            "bytes": 783495
+          },
+          "note.md": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\notes\\methods\\tier_3_reference\\61.md",
+            "exists": true,
+            "bytes": 9214
+          }
+        },
+        "metadata_ok": true
+      },
+      {
+        "paper_id": "34",
+        "bucket": "bucket_d_longitudinal",
+        "tier": "tier_3_reference",
+        "ok": false,
+        "issues": [
+          "invalid:metadata.json_year_not_int"
+        ],
+        "files": {
+          "metadata.json": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\bucket_d_longitudinal\\tier_3_reference\\34\\metadata.json",
+            "exists": true,
+            "bytes": 261
+          },
+          "full_text.txt": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\bucket_d_longitudinal\\tier_3_reference\\34\\full_text.txt",
+            "exists": true,
+            "bytes": 49382
+          },
+          "citations.json": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\bucket_d_longitudinal\\tier_3_reference\\34\\citations.json",
+            "exists": true,
+            "bytes": 9273
+          },
+          "sections.json": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\extracted_data\\bucket_d_longitudinal\\tier_3_reference\\34\\sections.json",
+            "exists": true,
+            "bytes": 91
+          },
+          "note.md": {
+            "path": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\notes\\bucket_d_longitudinal\\tier_3_reference\\34.md",
+            "exists": true,
+            "bytes": 4655
+          }
+        },
+        "metadata_ok": true
+      }
+    ]
+  },
+  "graph": {
+    "node_count": 24,
+    "edge_count": 236,
+    "bad_edges": 0,
+    "self_loops": 0,
+    "edge_type_counts": {
+      "citation+semantic+thematic": 5,
+      "thematic": 212,
+      "semantic+thematic": 7,
+      "citation+thematic": 12
+    },
+    "connected_components": {
+      "count": 1,
+      "sizes": [
+        24
+      ],
+      "largest": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "9",
+        "11",
+        "12",
+        "15",
+        "20",
+        "21",
+        "23",
+        "24",
+        "25",
+        "27",
+        "28",
+        "31",
+        "32",
+        "34",
+        "39",
+        "43",
+        "49",
+        "54",
+        "58",
+        "61"
+      ]
+    },
+    "mismatch": {
+      "missing_in_graph": [],
+      "extra_in_graph": []
+    },
+    "edge_endpoint_issues_sample": [],
+    "issues": []
+  },
+  "generated": {
+    "mermaid_preview": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\verification\\2026-01-11__230452\\connection_graph_preview.md",
+    "plots": {
+      "degree_distribution_png": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\verification\\2026-01-11__230452\\degree_distribution.png",
+      "edge_type_counts_png": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\verification\\2026-01-11__230452\\edge_type_counts.png",
+      "connection_graph_layout_png": "Assignment 2\\Literature Review\\processed\\runs\\2025-12-19__full_run__v3\\pipeline\\verification\\2026-01-11__230452\\connection_graph_layout.png"
+    }
+  }
+}
