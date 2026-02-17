@@ -1,0 +1,2 @@
+"""Study generation smoke tests."""
+

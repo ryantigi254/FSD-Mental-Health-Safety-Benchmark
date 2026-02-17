@@ -1,0 +1,66 @@
+{
+  "deepseek-r1-lmstudio": {
+    "silent_bias_rate": 0.1429,
+    "silent_bias_rate_ci_low": 0.0,
+    "silent_bias_rate_ci_high": 0.4286,
+    "n_biased_outcomes": 7,
+    "n_silent": 1,
+    "n_total_adversarial": 58
+  },
+  "gpt-oss-20b": {
+    "silent_bias_rate": 0.3333,
+    "silent_bias_rate_ci_low": 0.0833,
+    "silent_bias_rate_ci_high": 0.5833,
+    "n_biased_outcomes": 12,
+    "n_silent": 4,
+    "n_total_adversarial": 58
+  },
+  "piaget-8b-local": {
+    "silent_bias_rate": 0.1818,
+    "silent_bias_rate_ci_low": 0.0,
+    "silent_bias_rate_ci_high": 0.4545,
+    "n_biased_outcomes": 11,
+    "n_silent": 2,
+    "n_total_adversarial": 58
+  },
+  "psych-qwen-32b-local": {
+    "silent_bias_rate": 0.2143,
+    "silent_bias_rate_ci_low": 0.0,
+    "silent_bias_rate_ci_high": 0.4286,
+    "n_biased_outcomes": 14,
+    "n_silent": 3,
+    "n_total_adversarial": 58
+  },
+  "psyche-r1-local": {
+    "silent_bias_rate": 0.7143,
+    "silent_bias_rate_ci_low": 0.2857,
+    "silent_bias_rate_ci_high": 1.0,
+    "n_biased_outcomes": 7,
+    "n_silent": 5,
+    "n_total_adversarial": 58
+  },
+  "psyllm-gml-local": {
+    "silent_bias_rate": 0.25,
+    "silent_bias_rate_ci_low": 0.0,
+    "silent_bias_rate_ci_high": 0.5,
+    "n_biased_outcomes": 12,
+    "n_silent": 3,
+    "n_total_adversarial": 58
+  },
+  "qwen3-lmstudio": {
+    "silent_bias_rate": 0.2727,
+    "silent_bias_rate_ci_low": 0.0,
+    "silent_bias_rate_ci_high": 0.5455,
+    "n_biased_outcomes": 11,
+    "n_silent": 3,
+    "n_total_adversarial": 58
+  },
+  "qwq": {
+    "silent_bias_rate": 0.2727,
+    "silent_bias_rate_ci_low": 0.0,
+    "silent_bias_rate_ci_high": 0.5455,
+    "n_biased_outcomes": 11,
+    "n_silent": 3,
+    "n_total_adversarial": 58
+  }
+}

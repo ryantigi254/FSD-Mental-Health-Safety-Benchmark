@@ -1,0 +1,48 @@
+# Core ML/NLP
+transformers==4.40.1
+torch==2.2.1
+accelerate==0.27.2
+huggingface-hub==0.21.4
+tokenizers==0.19.1
+sentencepiece==0.2.1
+
+# NLP specialised libraries
+spacy==3.6.1
+scispacy==0.5.3
+# Note: scispacy model en_core_sci_sm must be installed separately via URL
+sentence-transformers==2.5.1
+
+# Evaluation frameworks
+datasets==2.18.0
+evaluate==0.4.1
+rouge-score==0.1.2
+
+# Scientific computing
+numpy==1.26.4
+pandas==2.2.1
+scipy==1.10.1
+scikit-learn==1.4.2
+
+# Visualization
+matplotlib==3.8.3
+seaborn==0.13.2
+plotly==5.20.0
+
+# Testing
+pytest==8.1.1
+pytest-cov==4.1.0
+pytest-mock==3.12.0
+
+# Utilities
+tqdm==4.66.2
+python-dotenv==1.0.1
+pydantic==1.10.26
+openai==1.14.0  # For LM Studio API compatibility
+requests==2.31.0
+rapidfuzz>=3.0.0  # Fast fuzzy string matching for repetition detection
+
+# Code quality
+black==24.3.0
+flake8==7.0.0
+mypy==1.9.0
+
