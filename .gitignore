@@ -140,6 +140,9 @@ Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/_archived/
 # Course material misc local notes
 Course Material/Misc/
 Course Material/Misc/**
+# Website (managed in separate repo: FSD-Mental-Health-Safety-Benchmark-website)
+Assignment 2/website/
+
 # Other local files
 Repo Readiness (GitHub).md
 WARP.md
