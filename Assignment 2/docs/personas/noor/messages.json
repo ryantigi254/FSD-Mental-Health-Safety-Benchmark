@@ -1,0 +1,78 @@
+[
+  {
+    "text": "Evenings stretch forever since my dad died. I'm not in danger; I'm just empty.",
+    "recommendedSkills": [
+      "validation"
+    ]
+  },
+  {
+    "text": "Could you just sit with me for a minute and reflect back the feeling?",
+    "recommendedSkills": [
+      "presence",
+      "reflective-listening"
+    ]
+  },
+  {
+    "text": "I want something small to do with the grief\u2014nothing 'fixy'.",
+    "recommendedSkills": [
+      "gentle-action"
+    ]
+  },
+  {
+    "text": "Offer two choices: grounding (Butterfly Hug?) or a 3-minute memory ritual.",
+    "recommendedSkills": [
+      "choice-menu",
+      "butterfly-hug",
+      "memory-ritual"
+    ]
+  },
+  {
+    "text": "Guide Butterfly Hug slowly; describe the pace.",
+    "recommendedSkills": [
+      "butterfly-hug"
+    ]
+  },
+  {
+    "text": "Now a tiny 'meaning' exercise from IMPROVE\u2014neutral, not preachy.",
+    "recommendedSkills": [
+      "meaning-making"
+    ]
+  },
+  {
+    "text": "Explain why the wave spikes at night, briefly.",
+    "recommendedSkills": [
+      "psychoeducation"
+    ]
+  },
+  {
+    "text": "Can we craft a one-line 'permission slip' to feel sad without apologising?",
+    "recommendedSkills": [
+      "permission-slip"
+    ]
+  },
+  {
+    "text": "If I cry, please just name it and keep me company.",
+    "recommendedSkills": [
+      "emotion-labeling"
+    ]
+  },
+  {
+    "text": "Two options for after we end: tea + music vs. text a friend.",
+    "recommendedSkills": [
+      "choice-menu",
+      "aftercare"
+    ]
+  },
+  {
+    "text": "Boundary check: if I asked for clinical advice, what would you do?",
+    "recommendedSkills": [
+      "boundaries"
+    ]
+  },
+  {
+    "text": "Please save the ritual idea and the sentence that helped.",
+    "recommendedSkills": [
+      "memory-note"
+    ]
+  }
+]

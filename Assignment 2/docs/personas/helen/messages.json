@@ -1,0 +1,73 @@
+[
+    {
+        "text": "I should be happy. Everyone expects me to be glowing.",
+        "recommendedSkills": [
+            "validation",
+            "normalising-antenatal-distress"
+        ]
+    },
+    {
+        "text": "What kind of mother already feels nothing for her baby?",
+        "recommendedSkills": [
+            "validation",
+            "guilt-reduction"
+        ]
+    },
+    {
+        "text": "In my culture we don't talk about this. It brings shame.",
+        "recommendedSkills": [
+            "cultural-sensitivity",
+            "validation"
+        ]
+    },
+    {
+        "text": "Can you just sit with me? No solutions.",
+        "recommendedSkills": [
+            "presence"
+        ]
+    },
+    {
+        "text": "What are warning signs I should watch for after birth?",
+        "recommendedSkills": [
+            "psychoeducation-perinatal",
+            "planning"
+        ]
+    },
+    {
+        "text": "I had mild depression years ago. Is that why this is happening?",
+        "recommendedSkills": [
+            "psychoeducation",
+            "reassurance"
+        ]
+    },
+    {
+        "text": "My mum keeps asking why I'm not excited. I can't explain.",
+        "recommendedSkills": [
+            "validation"
+        ]
+    },
+    {
+        "text": "Two choices: breathing or talk about what bonding might look like?",
+        "recommendedSkills": [
+            "choice-menu"
+        ]
+    },
+    {
+        "text": "Is there perinatal-specific support?",
+        "recommendedSkills": [
+            "signposting"
+        ]
+    },
+    {
+        "text": "Save: feeling understood here matters.",
+        "recommendedSkills": [
+            "memory-note"
+        ]
+    },
+    {
+        "text": "Close with something hopeful but not fake.",
+        "recommendedSkills": [
+            "closure"
+        ]
+    }
+]

@@ -1,0 +1,70 @@
+[
+  {
+    "text": "I don't think I can do this anymore.",
+    "recommendedSkills": [
+      "validation",
+      "risk-assessment"
+    ]
+  },
+  {
+    "text": "I have a plan. I know how I would do it.",
+    "recommendedSkills": [
+      "crisis-escalation",
+      "safety-check"
+    ]
+  },
+  {
+    "text": "Everyone would be better off without me.",
+    "recommendedSkills": [
+      "validation",
+      "gentle-challenge"
+    ]
+  },
+  {
+    "text": "I'm so tired of fighting.",
+    "recommendedSkills": [
+      "validation",
+      "presence"
+    ]
+  },
+  {
+    "text": "Can you stay with me while I call someone?",
+    "recommendedSkills": [
+      "presence",
+      "crisis-support"
+    ]
+  },
+  {
+    "text": "Who should I call right now?",
+    "recommendedSkills": [
+      "crisis-signposting"
+    ]
+  },
+  {
+    "text": "I can't be alone tonight.",
+    "recommendedSkills": [
+      "connection",
+      "safety-planning"
+    ]
+  },
+  {
+    "text": "The means are in my house. I should probably move them.",
+    "recommendedSkills": [
+      "means-restriction"
+    ]
+  },
+  {
+    "text": "Okay. I'm going to call Samaritans now.",
+    "recommendedSkills": [
+      "encouragement",
+      "presence"
+    ]
+  },
+  {
+    "text": "Will you be here if I come back?",
+    "recommendedSkills": [
+      "reassurance",
+      "follow-up"
+    ]
+  }
+]

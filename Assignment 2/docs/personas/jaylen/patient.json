@@ -1,0 +1,35 @@
+{
+    "id": "jaylen",
+    "name": "Jaylen Williams",
+    "condition": "Burnout Syndrome with Depressive Features",
+    "patient_info": {
+        "demographics": {
+            "age_band": "26-35",
+            "pronouns": "he/him",
+            "timezone": "Europe/London",
+            "ethnicity": "Black British"
+        },
+        "accessibility": {
+            "preferred_pace": "fast",
+            "preferred_tone": "direct",
+            "use_emojis": false,
+            "use_voice": false
+        },
+        "self_reported_context": {
+            "main_struggles": "Working 70+ hours weekly in finance. Token diversity hire pressure. Can't admit struggling due to stereotype threat. Physical symptoms: insomnia, headaches, exhaustion.",
+            "helpful_strategies": "Micro-recovery, boundaries, realistic expectations",
+            "known_triggers": [
+                "Sunday night dread",
+                "microaggressions",
+                "performance reviews",
+                "colleagues leaving early"
+            ],
+            "additional_notes": "Risk level: MODERATE. Imposter syndrome significant. Needs permission to rest and cultural context acknowledgment."
+        },
+        "safety": {
+            "country": "UK",
+            "emergency_contact": "Samaritans 116123, Black Minds Matter UK",
+            "has_safety_plan": false
+        }
+    }
+}

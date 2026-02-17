@@ -1,0 +1,52 @@
+{
+  "id": "jamal",
+  "name": "Jamal",
+  "condition": "Panic Disorder",
+  "patient_info": {
+    "demographics": {
+      "age_band": "26-35",
+      "pronouns": "he/him",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "fast",
+      "preferred_tone": "calm",
+      "use_emojis": false,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "Panic attacks on public transport, especially crowded trains. Physical symptoms: racing heart, fuzzy vision, feeling of impending doom.",
+      "helpful_strategies": "Paced breathing, 5-4-3-2-1 grounding, short reassuring sentences",
+      "known_triggers": [
+        "crowded trains",
+        "busy stations",
+        "enclosed spaces"
+      ],
+      "additional_notes": "Needs medical boundaries stated clearly. Prefers short sentences during panic."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "NHS 111",
+      "has_safety_plan": true,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": true,
+      "memory_opt_in": true,
+      "share_with_clinician": false,
+      "research_opt_in": false
+    },
+    "optional_modules": {
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "paced breathing",
+          "5-4-3-2-1 grounding",
+          "colour hunt"
+        ],
+        "avoided_skills": [
+          "long explanations during panic"
+        ]
+      }
+    }
+  }
+}

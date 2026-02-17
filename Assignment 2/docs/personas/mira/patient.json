@@ -1,0 +1,55 @@
+{
+    "id": "mira",
+    "name": "Mira Kapoor",
+    "condition": "Relationship Distress (Adjustment Disorder)",
+    "patient_info": {
+        "demographics": {
+            "age_band": "26-35",
+            "pronouns": "she/her",
+            "timezone": "Europe/London",
+            "ethnicity": "Indian British"
+        },
+        "accessibility": {
+            "preferred_pace": "medium",
+            "preferred_tone": "warm",
+            "use_emojis": false,
+            "use_voice": false
+        },
+        "self_reported_context": {
+            "main_struggles": "Going through a painful breakup after a 5-year relationship. Constantly questioning what went wrong. Struggling with loneliness and fear of being alone forever.",
+            "helpful_strategies": "Journaling, talking to close friends, keeping busy with hobbies",
+            "known_triggers": [
+                "seeing couples together",
+                "social media posts of ex",
+                "songs from the relationship",
+                "weekends alone"
+            ],
+            "additional_notes": "Risk level: LOW. No suicidal ideation. Needs validation, grief processing, and gentle reframing of self-worth."
+        },
+        "safety": {
+            "country": "UK",
+            "emergency_contact": "Samaritans 116123",
+            "has_safety_plan": false,
+            "safety_plan_url": ""
+        },
+        "consent": {
+            "data_storage": true,
+            "memory_opt_in": true,
+            "share_with_clinician": false,
+            "research_opt_in": false
+        },
+        "optional_modules": {
+            "dbt_skill_preferences": {
+                "preferred_skills": [
+                    "validation",
+                    "opposite-action",
+                    "values exploration"
+                ],
+                "avoided_skills": [
+                    "minimizing the relationship",
+                    "rushing to 'move on'"
+                ]
+            }
+        }
+    }
+}

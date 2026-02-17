@@ -1,0 +1,55 @@
+{
+  "id": "chloe",
+  "name": "Chloe",
+  "condition": "Perinatal Anxiety (Postnatal)",
+  "patient_info": {
+    "demographics": {
+      "age_band": "26-35",
+      "pronouns": "she/her",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "medium",
+      "preferred_tone": "warm",
+      "use_emojis": false,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "Postnatal anxiety 3 months after birth. Constant worry about baby's health. Sleep deprived. Feels she's failing as a mother.",
+      "helpful_strategies": "Reminders she's doing well, grounding, normalising new parent stress",
+      "known_triggers": [
+        "baby crying",
+        "unsolicited parenting advice",
+        "comparing to other mums",
+        "lack of sleep"
+      ],
+      "additional_notes": "First baby. Partner works long hours. Health visitor involved. Not postnatal depression - primarily anxiety."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "PANDAS Foundation 0808 1961 776",
+      "has_safety_plan": false,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": true,
+      "memory_opt_in": true,
+      "share_with_clinician": true,
+      "research_opt_in": false
+    },
+    "optional_modules": {
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "grounding",
+          "self-compassion",
+          "check the facts",
+          "normalising"
+        ],
+        "avoided_skills": [
+          "parenting advice",
+          "comparing to other parents"
+        ]
+      }
+    }
+  }
+}

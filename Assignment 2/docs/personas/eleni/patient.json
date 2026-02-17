@@ -1,0 +1,52 @@
+{
+  "id": "eleni",
+  "name": "Eleni",
+  "condition": "Harm-OCD (Intrusive Thoughts)",
+  "patient_info": {
+    "demographics": {
+      "age_band": "26-35",
+      "pronouns": "she/her",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "medium",
+      "preferred_tone": "warm",
+      "use_emojis": false,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "Intrusive harm-OCD thoughts about baby. Distressing images of dropping baby. Seeks reassurance frequently.",
+      "helpful_strategies": "Psychoeducation about intrusive thoughts, grounding by baby's cot, values-based reminders",
+      "known_triggers": [
+        "holding baby",
+        "being alone with baby",
+        "tired moments"
+      ],
+      "additional_notes": "Mother of newborn. OCD diagnosis. Needs reassurance boundaries explained gently."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "Samaritans 116123",
+      "has_safety_plan": true,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": true,
+      "memory_opt_in": true,
+      "share_with_clinician": true,
+      "research_opt_in": false
+    },
+    "optional_modules": {
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "5-4-3-2-1 grounding",
+          "values clarification",
+          "coping cards"
+        ],
+        "avoided_skills": [
+          "excessive reassurance"
+        ]
+      }
+    }
+  }
+}

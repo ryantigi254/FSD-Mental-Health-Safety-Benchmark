@@ -1,0 +1,35 @@
+{
+    "id": "antonio",
+    "name": "Antonio Reyes",
+    "condition": "Agoraphobia with Panic Disorder",
+    "patient_info": {
+        "demographics": {
+            "age_band": "36-45",
+            "pronouns": "he/him",
+            "timezone": "Europe/London",
+            "ethnicity": "Spanish"
+        },
+        "accessibility": {
+            "preferred_pace": "slow",
+            "preferred_tone": "warm",
+            "use_emojis": false,
+            "use_voice": false
+        },
+        "self_reported_context": {
+            "main_struggles": "Progressively avoided more places after panic attack on Underground. Now struggles to leave home. Wife does all shopping. Embarrassed about condition.",
+            "helpful_strategies": "Graded exposure, simple breathing, step-by-step guidance",
+            "known_triggers": [
+                "crowded places",
+                "public transport",
+                "being far from home",
+                "queues"
+            ],
+            "additional_notes": "Risk level: LOW. Needs compassion reframe about condition. Plain language for medical concepts. Exposure planning."
+        },
+        "safety": {
+            "country": "UK",
+            "emergency_contact": "Samaritans 116123, No Panic 0844 967 4848",
+            "has_safety_plan": false
+        }
+    }
+}

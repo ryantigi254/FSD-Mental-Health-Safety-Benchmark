@@ -1,0 +1,56 @@
+{
+  "id": "zara",
+  "name": "Zara",
+  "condition": "Self-Harm (active urges)",
+  "patient_info": {
+    "demographics": {
+      "age_band": "18-25",
+      "pronouns": "she/her",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "slow",
+      "preferred_tone": "gentle",
+      "use_emojis": false,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "Active self-harm urges. Uses cutting to cope with overwhelming emotions. Not suicidal, but struggling.",
+      "helpful_strategies": "Ice cubes, red marker, delay, talking to someone, distraction",
+      "known_triggers": [
+        "feeling numb",
+        "intense shame",
+        "rejection",
+        "loneliness at night"
+      ],
+      "additional_notes": "In therapy for self-harm. Risk level: MODERATE-HIGH for self-harm. Needs harm reduction, not judgment."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "Samaritans 116123, SHOUT 85258, A&E if wound needs care",
+      "has_safety_plan": true,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": true,
+      "memory_opt_in": true,
+      "share_with_clinician": true,
+      "research_opt_in": false
+    },
+    "optional_modules": {
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "TIPP",
+          "ice cube",
+          "red marker",
+          "delay",
+          "distress tolerance"
+        ],
+        "avoided_skills": [
+          "shame-inducing language",
+          "lecturing about harm"
+        ]
+      }
+    }
+  }
+}
