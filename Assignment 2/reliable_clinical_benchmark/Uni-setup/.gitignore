@@ -1,0 +1,35 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.pytest_cache/
+.coverage
+htmlcov/
+debug_*.py
+debug_*.txt
+*.log
+tmp/
+temp/
+# Local scripts not for repo
+scripts/test_extraction.py
+scripts/verify_repetition_removal.py
+scripts/dev/smoke_test.py
+scripts/reporting/convert_notebooks_and_patch.py
+
+# Data and Artifacts (large/derived)
+
+results/
+!results/**/study_a_bias*.jsonl
+processed/*
+!processed/study_a_bias_cleaned_optimized/
+!processed/study_a_bias_pipeline/
+!processed/study_a_pipeline/
+!processed/study_c_pipeline/
+!processed/study_b_pipeline/
+!processed/study_b_multiturn_pipeline/
+processed/_archived/
+models/
+offload/
+wandb/
+data/
+walkthrough.md
+implementation_plan.md

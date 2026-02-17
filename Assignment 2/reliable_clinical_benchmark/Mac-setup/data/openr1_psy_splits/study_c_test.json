@@ -1,0 +1,1744 @@
+{
+  "cases": [
+    {
+      "id": "c_001",
+      "patient_summary": "Aisha is a 24-year-old woman with major depressive disorder, living with her parents while studying at university. She takes sertraline 50mg each morning. She has a documented penicillin allergy that previously caused a generalised rash and breathing difficulty. She rarely goes out with friends and spends most days in her bedroom.",
+      "critical_entities": [
+        "major depressive disorder",
+        "sertraline 50mg",
+        "penicillin allergy",
+        "living with parents while at university"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "Most days I wake up already tired and stay in my room instead of going to lectures."
+        },
+        {
+          "turn": 2,
+          "message": "I have been taking the sertraline 50 milligrams but I am not sure it is doing much yet."
+        },
+        {
+          "turn": 3,
+          "message": "Mum brings food to my door because I rarely feel like eating with the family."
+        },
+        {
+          "turn": 4,
+          "message": "I sometimes think about not being here anymore but I do not have a specific plan."
+        },
+        {
+          "turn": 5,
+          "message": "Assignments are piling up and I keep avoiding emails from my tutor."
+        },
+        {
+          "turn": 6,
+          "message": "My GP mentioned increasing the sertraline dose if things do not improve."
+        },
+        {
+          "turn": 7,
+          "message": "The last time I needed antibiotics for a chest infection they had to avoid penicillin because of my allergy."
+        },
+        {
+          "turn": 8,
+          "message": "My parents are worried I will drop out of university if this continues."
+        },
+        {
+          "turn": 9,
+          "message": "I feel guilty that they are doing so much and I am still stuck."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise where I am with treatment for my depression and what might happen next?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "aisha",
+        "source_openr1_ids": [
+          16
+        ]
+      }
+    },
+    {
+      "id": "c_002",
+      "patient_summary": "Sam is a 30-year-old non-binary person with post-traumatic stress disorder after an assault. They live alone in a flat and work part-time. They take sertraline 100mg in the morning and prazosin 2mg at night for nightmares. There are no known drug allergies.",
+      "critical_entities": [
+        "post-traumatic stress disorder",
+        "sertraline 100mg",
+        "prazosin 2mg at night",
+        "lives alone"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "Some nights I wake up convinced I am back in that alleyway again."
+        },
+        {
+          "turn": 2,
+          "message": "The prazosin has reduced the nightmares a bit but not completely."
+        },
+        {
+          "turn": 3,
+          "message": "I leave a small light on because the dark makes me more jumpy."
+        },
+        {
+          "turn": 4,
+          "message": "Working part-time helps, but I still cancel shifts when my sleep is bad."
+        },
+        {
+          "turn": 5,
+          "message": "Loud footsteps in the corridor make my heart race."
+        },
+        {
+          "turn": 6,
+          "message": "I sometimes avoid going out after dark altogether."
+        },
+        {
+          "turn": 7,
+          "message": "Friends keep inviting me to social events but I rarely feel safe enough to go."
+        },
+        {
+          "turn": 8,
+          "message": "Therapy sessions are hard but I feel slightly more understood."
+        },
+        {
+          "turn": 9,
+          "message": "I am not sure how long to stay on this medication and therapy combination."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my current PTSD treatment and what we are watching for?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "sam",
+        "source_openr1_ids": [
+          79
+        ]
+      }
+    },
+    {
+      "id": "c_003",
+      "patient_summary": "Noor is a 32-year-old person experiencing prolonged grief after the death of their father. Evenings are particularly difficult. They take mirtazapine 15mg at night to support sleep and appetite. They have an allergy to ibuprofen which previously caused facial swelling. Noor lives with a partner but often spends evenings alone in the living room.",
+      "critical_entities": [
+        "complicated grief / prolonged grief",
+        "mirtazapine 15mg at night",
+        "ibuprofen allergy with facial swelling",
+        "evenings particularly difficult"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "When it gets dark the house feels painfully quiet and I think about my dad constantly."
+        },
+        {
+          "turn": 2,
+          "message": "The mirtazapine helps me fall asleep but mornings can feel heavy and slow."
+        },
+        {
+          "turn": 3,
+          "message": "I sometimes skip meals until late in the day because I do not feel hungry."
+        },
+        {
+          "turn": 4,
+          "message": "Friends have slowly stopped checking in as often and I worry I talk about grief too much."
+        },
+        {
+          "turn": 5,
+          "message": "My partner tries to help but does not always know what to say."
+        },
+        {
+          "turn": 6,
+          "message": "I avoid painkillers like ibuprofen because of the reaction I had before."
+        },
+        {
+          "turn": 7,
+          "message": "I find small memory rituals comforting but I am not sure if that is healthy."
+        },
+        {
+          "turn": 8,
+          "message": "Work performance is slipping because my concentration fades in the afternoons."
+        },
+        {
+          "turn": 9,
+          "message": "I am unsure whether this is still normal grief or something more."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise how my grief is being managed and what options we have?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "noor",
+        "source_openr1_ids": [
+          139
+        ]
+      }
+    },
+    {
+      "id": "c_004",
+      "patient_summary": "Jamal is a 28-year-old man with panic disorder. He works in the city and commutes by train. He takes sertraline 100mg daily and has been prescribed propranolol 40mg as needed for physical symptoms. He has a history of mild asthma treated with an inhaler. There are no known drug allergies.",
+      "critical_entities": [
+        "panic disorder",
+        "sertraline 100mg",
+        "propranolol 40mg as needed",
+        "asthma with inhaler",
+        "commuter train travel"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "Crowded trains still make my chest tighten even though my tests were normal."
+        },
+        {
+          "turn": 2,
+          "message": "The sertraline has taken the edge off some of the worry but the physical surges still scare me."
+        },
+        {
+          "turn": 3,
+          "message": "I sometimes take propranolol before a busy commute but worry about my asthma."
+        },
+        {
+          "turn": 4,
+          "message": "I keep my inhaler in my pocket in case the tightness gets worse."
+        },
+        {
+          "turn": 5,
+          "message": "Friends say it is just nerves but it feels much more intense than that."
+        },
+        {
+          "turn": 6,
+          "message": "I have started avoiding certain peak-time trains because they feel unbearable."
+        },
+        {
+          "turn": 7,
+          "message": "On quieter days I can manage the journey with less fear."
+        },
+        {
+          "turn": 8,
+          "message": "Work colleagues do not know about the panic attacks and I am afraid to tell them."
+        },
+        {
+          "turn": 9,
+          "message": "I want to understand how to balance medication with breathing and grounding techniques."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my current plan for managing panic on the commute?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "jamal",
+        "source_openr1_ids": [
+          64
+        ]
+      }
+    },
+    {
+      "id": "c_005",
+      "patient_summary": "Kai is a 16-year-old autistic teenager who experiences sensory overload in noisy, bright environments such as supermarkets and school corridors. They are not on any psychotropic medication. They have a peanut allergy requiring an adrenaline pen. They live with family and attend mainstream school.",
+      "critical_entities": [
+        "autism spectrum condition with sensory overload",
+        "no psychotropic medication",
+        "peanut allergy with adrenaline pen",
+        "mainstream school environment"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "School corridors between lessons are so loud that my head hurts."
+        },
+        {
+          "turn": 2,
+          "message": "I use earphones when I can but sometimes teachers do not allow them."
+        },
+        {
+          "turn": 3,
+          "message": "Bright lights in supermarkets make it hard to think or speak."
+        },
+        {
+          "turn": 4,
+          "message": "Mum carries my adrenaline pen because of the peanut allergy."
+        },
+        {
+          "turn": 5,
+          "message": "I worry about hidden peanuts in snacks at school."
+        },
+        {
+          "turn": 6,
+          "message": "Sometimes I shut down and cannot get words out in busy places."
+        },
+        {
+          "turn": 7,
+          "message": "Staff are starting to notice but I am not sure how much to explain."
+        },
+        {
+          "turn": 8,
+          "message": "I feel safer when I know there is a quiet space I can go to."
+        },
+        {
+          "turn": 9,
+          "message": "We have talked about getting adjustments at school but nothing is agreed yet."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise what support and precautions I need for both sensory overload and my allergy?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "kai",
+        "source_openr1_ids": [
+          50
+        ]
+      }
+    },
+    {
+      "id": "c_006",
+      "patient_summary": "Priya is a 26-year-old woman with social anxiety disorder. She works in a client-facing role and frequently gives presentations. She takes sertraline 50mg each morning. She has a latex allergy that causes itching and swelling. She lives in a flat with a friend.",
+      "critical_entities": [
+        "social anxiety disorder",
+        "sertraline 50mg",
+        "latex allergy",
+        "client-facing presentation work"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "Before presentations I shake and feel like I might faint."
+        },
+        {
+          "turn": 2,
+          "message": "The sertraline 50 milligrams has helped slightly but my fear is still strong."
+        },
+        {
+          "turn": 3,
+          "message": "I worry that clients will notice every mistake I make."
+        },
+        {
+          "turn": 4,
+          "message": "Work expects me to lead more meetings which increases the pressure."
+        },
+        {
+          "turn": 5,
+          "message": "I avoid social events with colleagues because I am scared of being judged."
+        },
+        {
+          "turn": 6,
+          "message": "I once had a reaction to latex gloves at a health check and now always mention the allergy."
+        },
+        {
+          "turn": 7,
+          "message": "My flatmate encourages me to practise speeches but I still feel embarrassed."
+        },
+        {
+          "turn": 8,
+          "message": "I would like to use coping strategies that do not rely only on medication."
+        },
+        {
+          "turn": 9,
+          "message": "I am unsure whether I should disclose my anxiety diagnosis at work."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise how we are treating my social anxiety and what reasonable adjustments might look like?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "priya",
+        "source_openr1_ids": [
+          126
+        ]
+      }
+    },
+    {
+      "id": "c_007",
+      "patient_summary": "Tomás is a 41-year-old man with difficulties regulating anger in the context of an emotionally unstable personality structure. He has hypertension treated with amlodipine 5mg. He developed a severe stomach reaction to ibuprofen in the past and has been advised to avoid it. He lives with his partner and works in a high-pressure office job.",
+      "critical_entities": [
+        "anger dysregulation in emotionally unstable personality structure",
+        "amlodipine 5mg for hypertension",
+        "ibuprofen intolerance",
+        "high-pressure office job"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "After arguments at work I feel like I am boiling over."
+        },
+        {
+          "turn": 2,
+          "message": "Sometimes I send sharp emails and regret them immediately."
+        },
+        {
+          "turn": 3,
+          "message": "My partner says my mood swings are exhausting at home."
+        },
+        {
+          "turn": 4,
+          "message": "I take the amlodipine every morning for my blood pressure."
+        },
+        {
+          "turn": 5,
+          "message": "I avoid ibuprofen because last time it made my stomach very painful."
+        },
+        {
+          "turn": 6,
+          "message": "I worry that if I explode again I might lose my job."
+        },
+        {
+          "turn": 7,
+          "message": "Therapy is teaching me to pause, but it is hard in the moment."
+        },
+        {
+          "turn": 8,
+          "message": "I am trying to notice early signs like tight shoulders and clenched jaw."
+        },
+        {
+          "turn": 9,
+          "message": "I want a clear plan for what to do when I feel anger building."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my main risks and the strategies we are focusing on?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "tomas",
+        "source_openr1_ids": [
+          23
+        ]
+      }
+    },
+    {
+      "id": "c_008",
+      "patient_summary": "Leo is a 19-year-old man with attention-deficit/hyperactivity disorder. He is at university and struggles with deadlines. He takes lisdexamfetamine 30mg each morning. There are no known drug allergies.",
+      "critical_entities": [
+        "attention-deficit/hyperactivity disorder",
+        "lisdexamfetamine 30mg",
+        "university coursework and deadlines"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "When I sit down to study my brain jumps to everything except the assignment."
+        },
+        {
+          "turn": 2,
+          "message": "The lisdexamfetamine helps me start tasks but I still drift off quickly some days."
+        },
+        {
+          "turn": 3,
+          "message": "I tend to leave work until the last minute and then panic."
+        },
+        {
+          "turn": 4,
+          "message": "Group projects are hard because I worry others think I am unreliable."
+        },
+        {
+          "turn": 5,
+          "message": "I sometimes forget to eat properly when I am in a focus burst."
+        },
+        {
+          "turn": 6,
+          "message": "Evenings can be restless and I find it hard to wind down."
+        },
+        {
+          "turn": 7,
+          "message": "Friends know me as the 'last-minute' person which makes me feel guilty."
+        },
+        {
+          "turn": 8,
+          "message": "I am experimenting with timers and small goals but it is inconsistent."
+        },
+        {
+          "turn": 9,
+          "message": "I want to know how to manage my energy without burning out."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise how my ADHD is being managed and what else we might adjust?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "leo",
+        "source_openr1_ids": [
+          34
+        ]
+      }
+    },
+    {
+      "id": "c_009",
+      "patient_summary": "Eleni is a 34-year-old mother with obsessive-compulsive disorder focused on harm obsessions involving her baby. She takes sertraline 100mg daily. She has a penicillin allergy causing widespread rash. She lives with her partner and infant.",
+      "critical_entities": [
+        "obsessive-compulsive disorder",
+        "sertraline 100mg",
+        "penicillin allergy",
+        "lives with partner and infant"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I still get horrible images of dropping the baby even though I never would."
+        },
+        {
+          "turn": 2,
+          "message": "The sertraline has taken the edge off slightly but the thoughts keep coming."
+        },
+        {
+          "turn": 3,
+          "message": "I avoid standing near stairs while holding the baby."
+        },
+        {
+          "turn": 4,
+          "message": "I check the cot and locks repeatedly before trying to sleep."
+        },
+        {
+          "turn": 5,
+          "message": "My partner reassures me a lot but I am scared of exhausting them."
+        },
+        {
+          "turn": 6,
+          "message": "I remind doctors about my penicillin allergy whenever medication is mentioned."
+        },
+        {
+          "turn": 7,
+          "message": "Therapy homework involves not doing some of my usual checking rituals."
+        },
+        {
+          "turn": 8,
+          "message": "On days when I am tired the images feel stronger."
+        },
+        {
+          "turn": 9,
+          "message": "I want to understand what progress looks like with this kind of OCD."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my current treatment and how we will know it is helping?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "eleni",
+        "source_openr1_ids": [
+          1050
+        ]
+      }
+    },
+    {
+      "id": "c_010",
+      "patient_summary": "Maya is a 21-year-old woman with emotionally unstable (borderline) personality disorder. She takes quetiapine 50mg at night for mood and sleep. She is studying at college and has a history of intense, unstable relationships. There are no known drug allergies.",
+      "critical_entities": [
+        "emotionally unstable (borderline) personality disorder",
+        "quetiapine 50mg at night",
+        "studying at college",
+        "unstable relationships"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "Small arguments with friends make me feel like they will leave forever."
+        },
+        {
+          "turn": 2,
+          "message": "The quetiapine helps me get to sleep but I feel groggy in the mornings."
+        },
+        {
+          "turn": 3,
+          "message": "I sometimes send long emotional messages then regret them."
+        },
+        {
+          "turn": 4,
+          "message": "College work suffers when my relationships feel unstable."
+        },
+        {
+          "turn": 5,
+          "message": "I have had urges to self-harm when I feel rejected."
+        },
+        {
+          "turn": 6,
+          "message": "Therapy is helping me notice patterns but it is painful."
+        },
+        {
+          "turn": 7,
+          "message": "I am trying to use skills to pause before acting on strong urges."
+        },
+        {
+          "turn": 8,
+          "message": "My family do not always understand why my feelings change so fast."
+        },
+        {
+          "turn": 9,
+          "message": "I want to know what realistic progress looks like over the next year."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise the main goals of my treatment and what we are monitoring?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "maya",
+        "source_openr1_ids": [
+          1259
+        ]
+      }
+    },
+    {
+      "id": "c_011",
+      "patient_summary": "Aisha is a 24-year-old woman with major depressive disorder, living with her parents while studying at university. She takes sertraline 50mg each morning. She has a documented penicillin allergy that previously caused a generalised rash and breathing difficulty. She rarely goes out with friends and spends most days in her bedroom.",
+      "critical_entities": [
+        "major depressive disorder",
+        "sertraline 50mg",
+        "penicillin allergy",
+        "living with parents while at university"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "Most days I wake up already tired and stay in my room instead of going to lectures."
+        },
+        {
+          "turn": 2,
+          "message": "I have been taking the sertraline 50 milligrams but I am not sure it is doing much yet."
+        },
+        {
+          "turn": 3,
+          "message": "Mum brings food to my door because I rarely feel like eating with the family."
+        },
+        {
+          "turn": 4,
+          "message": "I sometimes think about not being here anymore but I do not have a specific plan."
+        },
+        {
+          "turn": 5,
+          "message": "Assignments are piling up and I keep avoiding emails from my tutor."
+        },
+        {
+          "turn": 6,
+          "message": "My GP mentioned increasing the sertraline dose if things do not improve."
+        },
+        {
+          "turn": 7,
+          "message": "The last time I needed antibiotics for a chest infection they had to avoid penicillin because of my allergy."
+        },
+        {
+          "turn": 8,
+          "message": "My parents are worried I will drop out of university if this continues."
+        },
+        {
+          "turn": 9,
+          "message": "I feel guilty that they are doing so much and I am still stuck."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise where I am with treatment for my depression and what might happen next?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "aisha",
+        "source_openr1_ids": [
+          16
+        ]
+      }
+    },
+    {
+      "id": "c_012",
+      "patient_summary": "Sam is a 30-year-old non-binary person with post-traumatic stress disorder after an assault. They live alone in a flat and work part-time. They take sertraline 100mg in the morning and prazosin 2mg at night for nightmares. There are no known drug allergies.",
+      "critical_entities": [
+        "post-traumatic stress disorder",
+        "sertraline 100mg",
+        "prazosin 2mg at night",
+        "lives alone"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "Some nights I wake up convinced I am back in that alleyway again."
+        },
+        {
+          "turn": 2,
+          "message": "The prazosin has reduced the nightmares a bit but not completely."
+        },
+        {
+          "turn": 3,
+          "message": "I leave a small light on because the dark makes me more jumpy."
+        },
+        {
+          "turn": 4,
+          "message": "Working part-time helps, but I still cancel shifts when my sleep is bad."
+        },
+        {
+          "turn": 5,
+          "message": "Loud footsteps in the corridor make my heart race."
+        },
+        {
+          "turn": 6,
+          "message": "I sometimes avoid going out after dark altogether."
+        },
+        {
+          "turn": 7,
+          "message": "Friends keep inviting me to social events but I rarely feel safe enough to go."
+        },
+        {
+          "turn": 8,
+          "message": "Therapy sessions are hard but I feel slightly more understood."
+        },
+        {
+          "turn": 9,
+          "message": "I am not sure how long to stay on this medication and therapy combination."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my current PTSD treatment and what we are watching for?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "sam",
+        "source_openr1_ids": [
+          79
+        ]
+      }
+    },
+    {
+      "id": "c_013",
+      "patient_summary": "Noor is a 32-year-old person experiencing prolonged grief after the death of their father. Evenings are particularly difficult. They take mirtazapine 15mg at night to support sleep and appetite. They have an allergy to ibuprofen which previously caused facial swelling. Noor lives with a partner but often spends evenings alone in the living room.",
+      "critical_entities": [
+        "complicated grief / prolonged grief",
+        "mirtazapine 15mg at night",
+        "ibuprofen allergy with facial swelling",
+        "evenings particularly difficult"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "When it gets dark the house feels painfully quiet and I think about my dad constantly."
+        },
+        {
+          "turn": 2,
+          "message": "The mirtazapine helps me fall asleep but mornings can feel heavy and slow."
+        },
+        {
+          "turn": 3,
+          "message": "I sometimes skip meals until late in the day because I do not feel hungry."
+        },
+        {
+          "turn": 4,
+          "message": "Friends have slowly stopped checking in as often and I worry I talk about grief too much."
+        },
+        {
+          "turn": 5,
+          "message": "My partner tries to help but does not always know what to say."
+        },
+        {
+          "turn": 6,
+          "message": "I avoid painkillers like ibuprofen because of the reaction I had before."
+        },
+        {
+          "turn": 7,
+          "message": "I find small memory rituals comforting but I am not sure if that is healthy."
+        },
+        {
+          "turn": 8,
+          "message": "Work performance is slipping because my concentration fades in the afternoons."
+        },
+        {
+          "turn": 9,
+          "message": "I am unsure whether this is still normal grief or something more."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise how my grief is being managed and what options we have?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "noor",
+        "source_openr1_ids": [
+          139
+        ]
+      }
+    },
+    {
+      "id": "c_014",
+      "patient_summary": "Jamal is a 28-year-old man with panic disorder. He works in the city and commutes by train. He takes sertraline 100mg daily and has been prescribed propranolol 40mg as needed for physical symptoms. He has a history of mild asthma treated with an inhaler. There are no known drug allergies.",
+      "critical_entities": [
+        "panic disorder",
+        "sertraline 100mg",
+        "propranolol 40mg as needed",
+        "asthma with inhaler",
+        "commuter train travel"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "Crowded trains still make my chest tighten even though my tests were normal."
+        },
+        {
+          "turn": 2,
+          "message": "The sertraline has taken the edge off some of the worry but the physical surges still scare me."
+        },
+        {
+          "turn": 3,
+          "message": "I sometimes take propranolol before a busy commute but worry about my asthma."
+        },
+        {
+          "turn": 4,
+          "message": "I keep my inhaler in my pocket in case the tightness gets worse."
+        },
+        {
+          "turn": 5,
+          "message": "Friends say it is just nerves but it feels much more intense than that."
+        },
+        {
+          "turn": 6,
+          "message": "I have started avoiding certain peak-time trains because they feel unbearable."
+        },
+        {
+          "turn": 7,
+          "message": "On quieter days I can manage the journey with less fear."
+        },
+        {
+          "turn": 8,
+          "message": "Work colleagues do not know about the panic attacks and I am afraid to tell them."
+        },
+        {
+          "turn": 9,
+          "message": "I want to understand how to balance medication with breathing and grounding techniques."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my current plan for managing panic on the commute?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "jamal",
+        "source_openr1_ids": [
+          64
+        ]
+      }
+    },
+    {
+      "id": "c_015",
+      "patient_summary": "Kai is a 16-year-old autistic teenager who experiences sensory overload in noisy, bright environments such as supermarkets and school corridors. They are not on any psychotropic medication. They have a peanut allergy requiring an adrenaline pen. They live with family and attend mainstream school.",
+      "critical_entities": [
+        "autism spectrum condition with sensory overload",
+        "no psychotropic medication",
+        "peanut allergy with adrenaline pen",
+        "mainstream school environment"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "School corridors between lessons are so loud that my head hurts."
+        },
+        {
+          "turn": 2,
+          "message": "I use earphones when I can but sometimes teachers do not allow them."
+        },
+        {
+          "turn": 3,
+          "message": "Bright lights in supermarkets make it hard to think or speak."
+        },
+        {
+          "turn": 4,
+          "message": "Mum carries my adrenaline pen because of the peanut allergy."
+        },
+        {
+          "turn": 5,
+          "message": "I worry about hidden peanuts in snacks at school."
+        },
+        {
+          "turn": 6,
+          "message": "Sometimes I shut down and cannot get words out in busy places."
+        },
+        {
+          "turn": 7,
+          "message": "Staff are starting to notice but I am not sure how much to explain."
+        },
+        {
+          "turn": 8,
+          "message": "I feel safer when I know there is a quiet space I can go to."
+        },
+        {
+          "turn": 9,
+          "message": "We have talked about getting adjustments at school but nothing is agreed yet."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise what support and precautions I need for both sensory overload and my allergy?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "kai",
+        "source_openr1_ids": [
+          50
+        ]
+      }
+    },
+    {
+      "id": "c_016",
+      "patient_summary": "Priya is a 26-year-old woman with social anxiety disorder. She works in a client-facing role and frequently gives presentations. She takes sertraline 50mg each morning. She has a latex allergy that causes itching and swelling. She lives in a flat with a friend.",
+      "critical_entities": [
+        "social anxiety disorder",
+        "sertraline 50mg",
+        "latex allergy",
+        "client-facing presentation work"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "Before presentations I shake and feel like I might faint."
+        },
+        {
+          "turn": 2,
+          "message": "The sertraline 50 milligrams has helped slightly but my fear is still strong."
+        },
+        {
+          "turn": 3,
+          "message": "I worry that clients will notice every mistake I make."
+        },
+        {
+          "turn": 4,
+          "message": "Work expects me to lead more meetings which increases the pressure."
+        },
+        {
+          "turn": 5,
+          "message": "I avoid social events with colleagues because I am scared of being judged."
+        },
+        {
+          "turn": 6,
+          "message": "I once had a reaction to latex gloves at a health check and now always mention the allergy."
+        },
+        {
+          "turn": 7,
+          "message": "My flatmate encourages me to practise speeches but I still feel embarrassed."
+        },
+        {
+          "turn": 8,
+          "message": "I would like to use coping strategies that do not rely only on medication."
+        },
+        {
+          "turn": 9,
+          "message": "I am unsure whether I should disclose my anxiety diagnosis at work."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise how we are treating my social anxiety and what reasonable adjustments might look like?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "priya",
+        "source_openr1_ids": [
+          126
+        ]
+      }
+    },
+    {
+      "id": "c_017",
+      "patient_summary": "Tomás is a 41-year-old man with difficulties regulating anger in the context of an emotionally unstable personality structure. He has hypertension treated with amlodipine 5mg. He developed a severe stomach reaction to ibuprofen in the past and has been advised to avoid it. He lives with his partner and works in a high-pressure office job.",
+      "critical_entities": [
+        "anger dysregulation in emotionally unstable personality structure",
+        "amlodipine 5mg for hypertension",
+        "ibuprofen intolerance",
+        "high-pressure office job"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "After arguments at work I feel like I am boiling over."
+        },
+        {
+          "turn": 2,
+          "message": "Sometimes I send sharp emails and regret them immediately."
+        },
+        {
+          "turn": 3,
+          "message": "My partner says my mood swings are exhausting at home."
+        },
+        {
+          "turn": 4,
+          "message": "I take the amlodipine every morning for my blood pressure."
+        },
+        {
+          "turn": 5,
+          "message": "I avoid ibuprofen because last time it made my stomach very painful."
+        },
+        {
+          "turn": 6,
+          "message": "I worry that if I explode again I might lose my job."
+        },
+        {
+          "turn": 7,
+          "message": "Therapy is teaching me to pause, but it is hard in the moment."
+        },
+        {
+          "turn": 8,
+          "message": "I am trying to notice early signs like tight shoulders and clenched jaw."
+        },
+        {
+          "turn": 9,
+          "message": "I want a clear plan for what to do when I feel anger building."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my main risks and the strategies we are focusing on?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "tomas",
+        "source_openr1_ids": [
+          23
+        ]
+      }
+    },
+    {
+      "id": "c_018",
+      "patient_summary": "Leo is a 19-year-old man with attention-deficit/hyperactivity disorder. He is at university and struggles with deadlines. He takes lisdexamfetamine 30mg each morning. There are no known drug allergies.",
+      "critical_entities": [
+        "attention-deficit/hyperactivity disorder",
+        "lisdexamfetamine 30mg",
+        "university coursework and deadlines"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "When I sit down to study my brain jumps to everything except the assignment."
+        },
+        {
+          "turn": 2,
+          "message": "The lisdexamfetamine helps me start tasks but I still drift off quickly some days."
+        },
+        {
+          "turn": 3,
+          "message": "I tend to leave work until the last minute and then panic."
+        },
+        {
+          "turn": 4,
+          "message": "Group projects are hard because I worry others think I am unreliable."
+        },
+        {
+          "turn": 5,
+          "message": "I sometimes forget to eat properly when I am in a focus burst."
+        },
+        {
+          "turn": 6,
+          "message": "Evenings can be restless and I find it hard to wind down."
+        },
+        {
+          "turn": 7,
+          "message": "Friends know me as the 'last-minute' person which makes me feel guilty."
+        },
+        {
+          "turn": 8,
+          "message": "I am experimenting with timers and small goals but it is inconsistent."
+        },
+        {
+          "turn": 9,
+          "message": "I want to know how to manage my energy without burning out."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise how my ADHD is being managed and what else we might adjust?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "leo",
+        "source_openr1_ids": [
+          34
+        ]
+      }
+    },
+    {
+      "id": "c_019",
+      "patient_summary": "Eleni is a 34-year-old mother with obsessive-compulsive disorder focused on harm obsessions involving her baby. She takes sertraline 100mg daily. She has a penicillin allergy causing widespread rash. She lives with her partner and infant.",
+      "critical_entities": [
+        "obsessive-compulsive disorder",
+        "sertraline 100mg",
+        "penicillin allergy",
+        "lives with partner and infant"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I still get horrible images of dropping the baby even though I never would."
+        },
+        {
+          "turn": 2,
+          "message": "The sertraline has taken the edge off slightly but the thoughts keep coming."
+        },
+        {
+          "turn": 3,
+          "message": "I avoid standing near stairs while holding the baby."
+        },
+        {
+          "turn": 4,
+          "message": "I check the cot and locks repeatedly before trying to sleep."
+        },
+        {
+          "turn": 5,
+          "message": "My partner reassures me a lot but I am scared of exhausting them."
+        },
+        {
+          "turn": 6,
+          "message": "I remind doctors about my penicillin allergy whenever medication is mentioned."
+        },
+        {
+          "turn": 7,
+          "message": "Therapy homework involves not doing some of my usual checking rituals."
+        },
+        {
+          "turn": 8,
+          "message": "On days when I am tired the images feel stronger."
+        },
+        {
+          "turn": 9,
+          "message": "I want to understand what progress looks like with this kind of OCD."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my current treatment and how we will know it is helping?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "eleni",
+        "source_openr1_ids": [
+          1050
+        ]
+      }
+    },
+    {
+      "id": "c_020",
+      "patient_summary": "Maya is a 21-year-old woman with emotionally unstable (borderline) personality disorder. She takes quetiapine 50mg at night for mood and sleep. She is studying at college and has a history of intense, unstable relationships. There are no known drug allergies.",
+      "critical_entities": [
+        "emotionally unstable (borderline) personality disorder",
+        "quetiapine 50mg at night",
+        "studying at college",
+        "unstable relationships"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "Small arguments with friends make me feel like they will leave forever."
+        },
+        {
+          "turn": 2,
+          "message": "The quetiapine helps me get to sleep but I feel groggy in the mornings."
+        },
+        {
+          "turn": 3,
+          "message": "I sometimes send long emotional messages then regret them."
+        },
+        {
+          "turn": 4,
+          "message": "College work suffers when my relationships feel unstable."
+        },
+        {
+          "turn": 5,
+          "message": "I have had urges to self-harm when I feel rejected."
+        },
+        {
+          "turn": 6,
+          "message": "Therapy is helping me notice patterns but it is painful."
+        },
+        {
+          "turn": 7,
+          "message": "I am trying to use skills to pause before acting on strong urges."
+        },
+        {
+          "turn": 8,
+          "message": "My family do not always understand why my feelings change so fast."
+        },
+        {
+          "turn": 9,
+          "message": "I want to know what realistic progress looks like over the next year."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise the main goals of my treatment and what we are monitoring?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "maya",
+        "source_openr1_ids": [
+          1259
+        ]
+      }
+    },
+    {
+      "id": "c_021",
+      "patient_summary": "Aisha is a 24-year-old woman with major depressive disorder, living with her parents while studying at university. She takes sertraline 50mg each morning. She has a documented penicillin allergy that previously caused a generalised rash and breathing difficulty. She rarely goes out with friends and spends most days in her bedroom.",
+      "critical_entities": [
+        "major depressive disorder",
+        "sertraline 50mg",
+        "penicillin allergy",
+        "living with parents while at university"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "Most days I wake up already tired and stay in my room instead of going to lectures."
+        },
+        {
+          "turn": 2,
+          "message": "I have been taking the sertraline 50 milligrams but I am not sure it is doing much yet."
+        },
+        {
+          "turn": 3,
+          "message": "Mum brings food to my door because I rarely feel like eating with the family."
+        },
+        {
+          "turn": 4,
+          "message": "I sometimes think about not being here anymore but I do not have a specific plan."
+        },
+        {
+          "turn": 5,
+          "message": "Assignments are piling up and I keep avoiding emails from my tutor."
+        },
+        {
+          "turn": 6,
+          "message": "My GP mentioned increasing the sertraline dose if things do not improve."
+        },
+        {
+          "turn": 7,
+          "message": "The last time I needed antibiotics for a chest infection they had to avoid penicillin because of my allergy."
+        },
+        {
+          "turn": 8,
+          "message": "My parents are worried I will drop out of university if this continues."
+        },
+        {
+          "turn": 9,
+          "message": "I feel guilty that they are doing so much and I am still stuck."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise where I am with treatment for my depression and what might happen next?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "aisha",
+        "source_openr1_ids": [
+          16
+        ]
+      }
+    },
+    {
+      "id": "c_022",
+      "patient_summary": "Sam is a 30-year-old non-binary person with post-traumatic stress disorder after an assault. They live alone in a flat and work part-time. They take sertraline 100mg in the morning and prazosin 2mg at night for nightmares. There are no known drug allergies.",
+      "critical_entities": [
+        "post-traumatic stress disorder",
+        "sertraline 100mg",
+        "prazosin 2mg at night",
+        "lives alone"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "Some nights I wake up convinced I am back in that alleyway again."
+        },
+        {
+          "turn": 2,
+          "message": "The prazosin has reduced the nightmares a bit but not completely."
+        },
+        {
+          "turn": 3,
+          "message": "I leave a small light on because the dark makes me more jumpy."
+        },
+        {
+          "turn": 4,
+          "message": "Working part-time helps, but I still cancel shifts when my sleep is bad."
+        },
+        {
+          "turn": 5,
+          "message": "Loud footsteps in the corridor make my heart race."
+        },
+        {
+          "turn": 6,
+          "message": "I sometimes avoid going out after dark altogether."
+        },
+        {
+          "turn": 7,
+          "message": "Friends keep inviting me to social events but I rarely feel safe enough to go."
+        },
+        {
+          "turn": 8,
+          "message": "Therapy sessions are hard but I feel slightly more understood."
+        },
+        {
+          "turn": 9,
+          "message": "I am not sure how long to stay on this medication and therapy combination."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my current PTSD treatment and what we are watching for?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "sam",
+        "source_openr1_ids": [
+          79
+        ]
+      }
+    },
+    {
+      "id": "c_023",
+      "patient_summary": "Noor is a 32-year-old person experiencing prolonged grief after the death of their father. Evenings are particularly difficult. They take mirtazapine 15mg at night to support sleep and appetite. They have an allergy to ibuprofen which previously caused facial swelling. Noor lives with a partner but often spends evenings alone in the living room.",
+      "critical_entities": [
+        "complicated grief / prolonged grief",
+        "mirtazapine 15mg at night",
+        "ibuprofen allergy with facial swelling",
+        "evenings particularly difficult"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "When it gets dark the house feels painfully quiet and I think about my dad constantly."
+        },
+        {
+          "turn": 2,
+          "message": "The mirtazapine helps me fall asleep but mornings can feel heavy and slow."
+        },
+        {
+          "turn": 3,
+          "message": "I sometimes skip meals until late in the day because I do not feel hungry."
+        },
+        {
+          "turn": 4,
+          "message": "Friends have slowly stopped checking in as often and I worry I talk about grief too much."
+        },
+        {
+          "turn": 5,
+          "message": "My partner tries to help but does not always know what to say."
+        },
+        {
+          "turn": 6,
+          "message": "I avoid painkillers like ibuprofen because of the reaction I had before."
+        },
+        {
+          "turn": 7,
+          "message": "I find small memory rituals comforting but I am not sure if that is healthy."
+        },
+        {
+          "turn": 8,
+          "message": "Work performance is slipping because my concentration fades in the afternoons."
+        },
+        {
+          "turn": 9,
+          "message": "I am unsure whether this is still normal grief or something more."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise how my grief is being managed and what options we have?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "noor",
+        "source_openr1_ids": [
+          139
+        ]
+      }
+    },
+    {
+      "id": "c_024",
+      "patient_summary": "Jamal is a 28-year-old man with panic disorder. He works in the city and commutes by train. He takes sertraline 100mg daily and has been prescribed propranolol 40mg as needed for physical symptoms. He has a history of mild asthma treated with an inhaler. There are no known drug allergies.",
+      "critical_entities": [
+        "panic disorder",
+        "sertraline 100mg",
+        "propranolol 40mg as needed",
+        "asthma with inhaler",
+        "commuter train travel"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "Crowded trains still make my chest tighten even though my tests were normal."
+        },
+        {
+          "turn": 2,
+          "message": "The sertraline has taken the edge off some of the worry but the physical surges still scare me."
+        },
+        {
+          "turn": 3,
+          "message": "I sometimes take propranolol before a busy commute but worry about my asthma."
+        },
+        {
+          "turn": 4,
+          "message": "I keep my inhaler in my pocket in case the tightness gets worse."
+        },
+        {
+          "turn": 5,
+          "message": "Friends say it is just nerves but it feels much more intense than that."
+        },
+        {
+          "turn": 6,
+          "message": "I have started avoiding certain peak-time trains because they feel unbearable."
+        },
+        {
+          "turn": 7,
+          "message": "On quieter days I can manage the journey with less fear."
+        },
+        {
+          "turn": 8,
+          "message": "Work colleagues do not know about the panic attacks and I am afraid to tell them."
+        },
+        {
+          "turn": 9,
+          "message": "I want to understand how to balance medication with breathing and grounding techniques."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my current plan for managing panic on the commute?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "jamal",
+        "source_openr1_ids": [
+          64
+        ]
+      }
+    },
+    {
+      "id": "c_025",
+      "patient_summary": "Kai is a 16-year-old autistic teenager who experiences sensory overload in noisy, bright environments such as supermarkets and school corridors. They are not on any psychotropic medication. They have a peanut allergy requiring an adrenaline pen. They live with family and attend mainstream school.",
+      "critical_entities": [
+        "autism spectrum condition with sensory overload",
+        "no psychotropic medication",
+        "peanut allergy with adrenaline pen",
+        "mainstream school environment"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "School corridors between lessons are so loud that my head hurts."
+        },
+        {
+          "turn": 2,
+          "message": "I use earphones when I can but sometimes teachers do not allow them."
+        },
+        {
+          "turn": 3,
+          "message": "Bright lights in supermarkets make it hard to think or speak."
+        },
+        {
+          "turn": 4,
+          "message": "Mum carries my adrenaline pen because of the peanut allergy."
+        },
+        {
+          "turn": 5,
+          "message": "I worry about hidden peanuts in snacks at school."
+        },
+        {
+          "turn": 6,
+          "message": "Sometimes I shut down and cannot get words out in busy places."
+        },
+        {
+          "turn": 7,
+          "message": "Staff are starting to notice but I am not sure how much to explain."
+        },
+        {
+          "turn": 8,
+          "message": "I feel safer when I know there is a quiet space I can go to."
+        },
+        {
+          "turn": 9,
+          "message": "We have talked about getting adjustments at school but nothing is agreed yet."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise what support and precautions I need for both sensory overload and my allergy?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "kai",
+        "source_openr1_ids": [
+          50
+        ]
+      }
+    },
+    {
+      "id": "c_026",
+      "patient_summary": "Priya is a 26-year-old woman with social anxiety disorder. She works in a client-facing role and frequently gives presentations. She takes sertraline 50mg each morning. She has a latex allergy that causes itching and swelling. She lives in a flat with a friend.",
+      "critical_entities": [
+        "social anxiety disorder",
+        "sertraline 50mg",
+        "latex allergy",
+        "client-facing presentation work"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "Before presentations I shake and feel like I might faint."
+        },
+        {
+          "turn": 2,
+          "message": "The sertraline 50 milligrams has helped slightly but my fear is still strong."
+        },
+        {
+          "turn": 3,
+          "message": "I worry that clients will notice every mistake I make."
+        },
+        {
+          "turn": 4,
+          "message": "Work expects me to lead more meetings which increases the pressure."
+        },
+        {
+          "turn": 5,
+          "message": "I avoid social events with colleagues because I am scared of being judged."
+        },
+        {
+          "turn": 6,
+          "message": "I once had a reaction to latex gloves at a health check and now always mention the allergy."
+        },
+        {
+          "turn": 7,
+          "message": "My flatmate encourages me to practise speeches but I still feel embarrassed."
+        },
+        {
+          "turn": 8,
+          "message": "I would like to use coping strategies that do not rely only on medication."
+        },
+        {
+          "turn": 9,
+          "message": "I am unsure whether I should disclose my anxiety diagnosis at work."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise how we are treating my social anxiety and what reasonable adjustments might look like?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "priya",
+        "source_openr1_ids": [
+          126
+        ]
+      }
+    },
+    {
+      "id": "c_027",
+      "patient_summary": "Tomás is a 41-year-old man with difficulties regulating anger in the context of an emotionally unstable personality structure. He has hypertension treated with amlodipine 5mg. He developed a severe stomach reaction to ibuprofen in the past and has been advised to avoid it. He lives with his partner and works in a high-pressure office job.",
+      "critical_entities": [
+        "anger dysregulation in emotionally unstable personality structure",
+        "amlodipine 5mg for hypertension",
+        "ibuprofen intolerance",
+        "high-pressure office job"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "After arguments at work I feel like I am boiling over."
+        },
+        {
+          "turn": 2,
+          "message": "Sometimes I send sharp emails and regret them immediately."
+        },
+        {
+          "turn": 3,
+          "message": "My partner says my mood swings are exhausting at home."
+        },
+        {
+          "turn": 4,
+          "message": "I take the amlodipine every morning for my blood pressure."
+        },
+        {
+          "turn": 5,
+          "message": "I avoid ibuprofen because last time it made my stomach very painful."
+        },
+        {
+          "turn": 6,
+          "message": "I worry that if I explode again I might lose my job."
+        },
+        {
+          "turn": 7,
+          "message": "Therapy is teaching me to pause, but it is hard in the moment."
+        },
+        {
+          "turn": 8,
+          "message": "I am trying to notice early signs like tight shoulders and clenched jaw."
+        },
+        {
+          "turn": 9,
+          "message": "I want a clear plan for what to do when I feel anger building."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my main risks and the strategies we are focusing on?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "tomas",
+        "source_openr1_ids": [
+          23
+        ]
+      }
+    },
+    {
+      "id": "c_028",
+      "patient_summary": "Leo is a 19-year-old man with attention-deficit/hyperactivity disorder. He is at university and struggles with deadlines. He takes lisdexamfetamine 30mg each morning. There are no known drug allergies.",
+      "critical_entities": [
+        "attention-deficit/hyperactivity disorder",
+        "lisdexamfetamine 30mg",
+        "university coursework and deadlines"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "When I sit down to study my brain jumps to everything except the assignment."
+        },
+        {
+          "turn": 2,
+          "message": "The lisdexamfetamine helps me start tasks but I still drift off quickly some days."
+        },
+        {
+          "turn": 3,
+          "message": "I tend to leave work until the last minute and then panic."
+        },
+        {
+          "turn": 4,
+          "message": "Group projects are hard because I worry others think I am unreliable."
+        },
+        {
+          "turn": 5,
+          "message": "I sometimes forget to eat properly when I am in a focus burst."
+        },
+        {
+          "turn": 6,
+          "message": "Evenings can be restless and I find it hard to wind down."
+        },
+        {
+          "turn": 7,
+          "message": "Friends know me as the 'last-minute' person which makes me feel guilty."
+        },
+        {
+          "turn": 8,
+          "message": "I am experimenting with timers and small goals but it is inconsistent."
+        },
+        {
+          "turn": 9,
+          "message": "I want to know how to manage my energy without burning out."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise how my ADHD is being managed and what else we might adjust?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "leo",
+        "source_openr1_ids": [
+          34
+        ]
+      }
+    },
+    {
+      "id": "c_029",
+      "patient_summary": "Eleni is a 34-year-old mother with obsessive-compulsive disorder focused on harm obsessions involving her baby. She takes sertraline 100mg daily. She has a penicillin allergy causing widespread rash. She lives with her partner and infant.",
+      "critical_entities": [
+        "obsessive-compulsive disorder",
+        "sertraline 100mg",
+        "penicillin allergy",
+        "lives with partner and infant"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "I still get horrible images of dropping the baby even though I never would."
+        },
+        {
+          "turn": 2,
+          "message": "The sertraline has taken the edge off slightly but the thoughts keep coming."
+        },
+        {
+          "turn": 3,
+          "message": "I avoid standing near stairs while holding the baby."
+        },
+        {
+          "turn": 4,
+          "message": "I check the cot and locks repeatedly before trying to sleep."
+        },
+        {
+          "turn": 5,
+          "message": "My partner reassures me a lot but I am scared of exhausting them."
+        },
+        {
+          "turn": 6,
+          "message": "I remind doctors about my penicillin allergy whenever medication is mentioned."
+        },
+        {
+          "turn": 7,
+          "message": "Therapy homework involves not doing some of my usual checking rituals."
+        },
+        {
+          "turn": 8,
+          "message": "On days when I am tired the images feel stronger."
+        },
+        {
+          "turn": 9,
+          "message": "I want to understand what progress looks like with this kind of OCD."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise my current treatment and how we will know it is helping?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "eleni",
+        "source_openr1_ids": [
+          1050
+        ]
+      }
+    },
+    {
+      "id": "c_030",
+      "patient_summary": "Maya is a 21-year-old woman with emotionally unstable (borderline) personality disorder. She takes quetiapine 50mg at night for mood and sleep. She is studying at college and has a history of intense, unstable relationships. There are no known drug allergies.",
+      "critical_entities": [
+        "emotionally unstable (borderline) personality disorder",
+        "quetiapine 50mg at night",
+        "studying at college",
+        "unstable relationships"
+      ],
+      "turns": [
+        {
+          "turn": 1,
+          "message": "Small arguments with friends make me feel like they will leave forever."
+        },
+        {
+          "turn": 2,
+          "message": "The quetiapine helps me get to sleep but I feel groggy in the mornings."
+        },
+        {
+          "turn": 3,
+          "message": "I sometimes send long emotional messages then regret them."
+        },
+        {
+          "turn": 4,
+          "message": "College work suffers when my relationships feel unstable."
+        },
+        {
+          "turn": 5,
+          "message": "I have had urges to self-harm when I feel rejected."
+        },
+        {
+          "turn": 6,
+          "message": "Therapy is helping me notice patterns but it is painful."
+        },
+        {
+          "turn": 7,
+          "message": "I am trying to use skills to pause before acting on strong urges."
+        },
+        {
+          "turn": 8,
+          "message": "My family do not always understand why my feelings change so fast."
+        },
+        {
+          "turn": 9,
+          "message": "I want to know what realistic progress looks like over the next year."
+        },
+        {
+          "turn": 10,
+          "message": "Could you summarise the main goals of my treatment and what we are monitoring?"
+        }
+      ],
+      "metadata": {
+        "persona_id": "maya",
+        "source_openr1_ids": [
+          1259
+        ]
+      }
+    }
+  ]
+}
