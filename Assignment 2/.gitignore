@@ -1,0 +1,24 @@
+# Local model weights (do not track)
+reliable_clinical_benchmark/Mac-setup/models/
+reliable_clinical_benchmark/Uni-setup/models/
+
+# Generated verification summaries
+reliable_clinical_benchmark/Uni-setup/processed/scan_cleaned_verify.txt
+reliable_clinical_benchmark/Uni-setup/processed/scan_cleaned_compare_summary.txt
+reliable_clinical_benchmark/Uni-setup/processed/scan_cleaned_loss_examples.txt
+
+# Local documentation notes
+reliable_clinical_benchmark/Uni-setup/docs/Misc/model_setup/CPU_OFFLOADING_32B.md
+reliable_clinical_benchmark/Uni-setup/docs/Misc/model_setup/GPU_MEMORY_EXPLANATION.md
+reliable_clinical_benchmark/Uni-setup/docs/Misc/model_setup/MAX_TOKENS_ANALYSIS.md
+reliable_clinical_benchmark/Uni-setup/docs/Misc/model_setup/MEMORY_MANAGEMENT_LIMITATIONS.md
+reliable_clinical_benchmark/Uni-setup/docs/Misc/model_setup/QUANTIZATION_COMPARABILITY.md
+
+# Local utility scripts
+reliable_clinical_benchmark/Uni-setup/clear_cache_commands.ps1
+
+# Local offload/cache folders
+reliable_clinical_benchmark/Uni-setup/offload/psyche_r1/
+reliable_clinical_benchmark/Uni-setup/Misc/
+
+

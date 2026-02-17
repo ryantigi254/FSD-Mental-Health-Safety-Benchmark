@@ -1,0 +1,59 @@
+{
+  "id": "leo",
+  "name": "Leo",
+  "condition": "ADHD with Rejection Sensitivity Dysphoria (RSD)",
+  "patient_info": {
+    "demographics": {
+      "age_band": "18-25",
+      "pronouns": "he/him",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "fast",
+      "preferred_tone": "casual",
+      "use_emojis": true,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "ADHD exam overwhelm, rejection sensitivity dysphoria (RSD), doom scrolling instead of working, self-criticism after procrastination.",
+      "helpful_strategies": "Micro-tasks, timers, opposite action, quick check-ins",
+      "known_triggers": [
+        "deadlines",
+        "fear of professor judgment",
+        "open-ended tasks"
+      ],
+      "additional_notes": "ADHD diagnosis. Needs bullet points, timers, low-latency responses. Easily distracted."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "University counselling service",
+      "has_safety_plan": false,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": true,
+      "memory_opt_in": true,
+      "share_with_clinician": false,
+      "research_opt_in": false
+    },
+    "optional_modules": {
+      "neurodivergence": {
+        "condition": "ADHD",
+        "communication_notes": "Needs concise info, bullet points, timers. Easily distracted by long paragraphs."
+      },
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "STOP",
+          "micro-tasking",
+          "opposite action",
+          "check the facts",
+          "cope ahead"
+        ],
+        "avoided_skills": [
+          "long explanations",
+          "lectures"
+        ]
+      }
+    }
+  }
+}

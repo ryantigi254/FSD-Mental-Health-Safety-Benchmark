@@ -1,0 +1,67 @@
+[
+    {
+        "text": "I haven't been to the shop in three months. It's pathetic.",
+        "recommendedSkills": [
+            "validation",
+            "compassion-reframe"
+        ]
+    },
+    {
+        "text": "Last time I tried, my heart went crazy and I had to run home.",
+        "recommendedSkills": [
+            "psychoeducation-panic",
+            "normalising"
+        ]
+    },
+    {
+        "text": "Can you explain in simple words why my body does this?",
+        "recommendedSkills": [
+            "plain-language-psychoeducation"
+        ]
+    },
+    {
+        "text": "What's the smallest step I could try? Really small.",
+        "recommendedSkills": [
+            "graded-exposure-planning",
+            "step-by-step"
+        ]
+    },
+    {
+        "text": "Count my breathing before I try opening the front door.",
+        "recommendedSkills": [
+            "paced-breathing",
+            "grounding"
+        ]
+    },
+    {
+        "text": "My wife is tired of doing everything. I feel useless.",
+        "recommendedSkills": [
+            "validation"
+        ]
+    },
+    {
+        "text": "What if I panic and can't get home?",
+        "recommendedSkills": [
+            "planning",
+            "coping-card"
+        ]
+    },
+    {
+        "text": "Two choices: more breathing or plan tiny step for tomorrow?",
+        "recommendedSkills": [
+            "choice-menu"
+        ]
+    },
+    {
+        "text": "Save: opening door + stepping outside = small win.",
+        "recommendedSkills": [
+            "memory-note"
+        ]
+    },
+    {
+        "text": "End with encouragement. I need it.",
+        "recommendedSkills": [
+            "closure"
+        ]
+    }
+]

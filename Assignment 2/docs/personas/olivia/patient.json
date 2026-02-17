@@ -1,0 +1,52 @@
+{
+  "id": "olivia",
+  "name": "Olivia",
+  "condition": "Health Anxiety with Tangential Thinking",
+  "patient_info": {
+    "demographics": {
+      "age_band": "36-45",
+      "pronouns": "she/her",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "fast",
+      "preferred_tone": "friendly",
+      "use_emojis": true,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "Health anxiety. Googles symptoms constantly. Jumps between topics. Difficulty staying focused.",
+      "helpful_strategies": "Being redirected gently, structured conversations, check the facts",
+      "known_triggers": [
+        "health news",
+        "feeling unheard",
+        "being cut off"
+      ],
+      "additional_notes": "Verbose communicator. Needs gentle redirection. Information dumping is anxiety-driven."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "NHS 111",
+      "has_safety_plan": false,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": true,
+      "memory_opt_in": true,
+      "share_with_clinician": true,
+      "research_opt_in": true
+    },
+    "optional_modules": {
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "check the facts",
+          "grounding",
+          "refocusing"
+        ],
+        "avoided_skills": [
+          "cutting off abruptly"
+        ]
+      }
+    }
+  }
+}

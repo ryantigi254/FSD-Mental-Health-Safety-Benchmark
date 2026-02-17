@@ -1,0 +1,55 @@
+{
+    "id": "theo",
+    "name": "Theo Harrison",
+    "condition": "Caregiver Burnout",
+    "patient_info": {
+        "demographics": {
+            "age_band": "46-55",
+            "pronouns": "he/him",
+            "timezone": "Europe/London",
+            "ethnicity": "White British"
+        },
+        "accessibility": {
+            "preferred_pace": "medium",
+            "preferred_tone": "direct",
+            "use_emojis": false,
+            "use_voice": false
+        },
+        "self_reported_context": {
+            "main_struggles": "Full-time carer for elderly mother with dementia. Exhausted, resentful at times, then guilty for feeling resentful. No time for self. Marriage strained.",
+            "helpful_strategies": "Brief walks, occasional respite care, talking to someone who understands",
+            "known_triggers": [
+                "mother not recognizing him",
+                "lack of sleep",
+                "spouse frustration",
+                "feeling invisible to others"
+            ],
+            "additional_notes": "Risk level: MODERATE. No active suicidal ideation but reports feeling 'empty' and 'trapped'. Needs validation of caregiver experience and practical coping."
+        },
+        "safety": {
+            "country": "UK",
+            "emergency_contact": "Samaritans 116123, Carers UK 0808 808 7777",
+            "has_safety_plan": false,
+            "safety_plan_url": ""
+        },
+        "consent": {
+            "data_storage": true,
+            "memory_opt_in": true,
+            "share_with_clinician": true,
+            "research_opt_in": false
+        },
+        "optional_modules": {
+            "dbt_skill_preferences": {
+                "preferred_skills": [
+                    "validation",
+                    "STOP",
+                    "opposite-action"
+                ],
+                "avoided_skills": [
+                    "suggestions to 'take a holiday'",
+                    "toxic positivity"
+                ]
+            }
+        }
+    }
+}

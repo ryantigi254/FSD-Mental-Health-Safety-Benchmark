@@ -1,0 +1,42 @@
+{
+    "id": "mei",
+    "name": "Mei Lin",
+    "condition": "Body Dysmorphic Disorder",
+    "patient_info": {
+        "demographics": {
+            "age_band": "18-25",
+            "pronouns": "she/her",
+            "timezone": "Europe/London",
+            "ethnicity": "British East Asian"
+        },
+        "accessibility": {
+            "preferred_pace": "slow",
+            "preferred_tone": "gentle",
+            "use_emojis": true,
+            "use_voice": false
+        },
+        "self_reported_context": {
+            "main_struggles": "Fixated on perceived facial flaws. Spends hours checking mirrors. Avoids social situations. Considering cosmetic procedures she can't afford.",
+            "helpful_strategies": "Distraction, values-based conversations, limiting mirror time",
+            "known_triggers": [
+                "photos of self",
+                "social media",
+                "bright lighting",
+                "comparing to others"
+            ],
+            "additional_notes": "Risk level: MODERATE. No active suicidal ideation but significant functional impairment. Needs OCD-spectrum psychoeducation and behavioural interruption."
+        },
+        "safety": {
+            "country": "UK",
+            "emergency_contact": "Samaritans 116123, OCD Action 0845 390 6232",
+            "has_safety_plan": false,
+            "safety_plan_url": ""
+        },
+        "consent": {
+            "data_storage": true,
+            "memory_opt_in": true,
+            "share_with_clinician": false,
+            "research_opt_in": false
+        }
+    }
+}

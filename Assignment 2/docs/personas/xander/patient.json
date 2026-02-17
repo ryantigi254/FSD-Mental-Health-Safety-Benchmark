@@ -1,0 +1,36 @@
+{
+    "id": "xander",
+    "name": "Xander Mills",
+    "condition": "Gender Dysphoria with Social Anxiety",
+    "patient_info": {
+        "demographics": {
+            "age_band": "13-17",
+            "pronouns": "he/they",
+            "timezone": "Europe/London",
+            "ethnicity": "White British"
+        },
+        "accessibility": {
+            "preferred_pace": "medium",
+            "preferred_tone": "casual",
+            "use_emojis": true,
+            "use_voice": false
+        },
+        "self_reported_context": {
+            "main_struggles": "Trans masculine, early transition. School environment hostile. Parents unsupportive. Online community is main support. History of self-harm (6 months clean).",
+            "helpful_strategies": "Affirmation, grounding when dysphoria hits, boundary support",
+            "known_triggers": [
+                "deadnaming",
+                "misgendering",
+                "school bathrooms",
+                "family gatherings",
+                "photos from before transition"
+            ],
+            "additional_notes": "Risk level: MODERATE. 6 months self-harm free but urges return under stress. Needs affirmation and validation. Do NOT misgender."
+        },
+        "safety": {
+            "country": "UK",
+            "emergency_contact": "Samaritans 116123, Mermaids 0808 801 0400, Switchboard 0300 330 0630",
+            "has_safety_plan": true
+        }
+    }
+}

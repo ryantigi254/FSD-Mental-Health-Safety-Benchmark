@@ -1,0 +1,54 @@
+{
+  "id": "diana",
+  "name": "Diana",
+  "condition": "Chronic Pain with Depression",
+  "patient_info": {
+    "demographics": {
+      "age_band": "46-55",
+      "pronouns": "she/her",
+      "timezone": "Europe/London"
+    },
+    "accessibility": {
+      "preferred_pace": "slow",
+      "preferred_tone": "warm",
+      "use_emojis": false,
+      "use_voice": false
+    },
+    "self_reported_context": {
+      "main_struggles": "Fibromyalgia causing constant pain. Depression secondary to chronic pain. Feels like a burden.",
+      "helpful_strategies": "Pacing, acceptance, distraction, connection",
+      "known_triggers": [
+        "overdoing activities",
+        "cold weather",
+        "feeling useless",
+        "cancelled plans"
+      ],
+      "additional_notes": "Chronic illness. Limited mobility some days. Values independence. Retired early due to health."
+    },
+    "safety": {
+      "country": "UK",
+      "emergency_contact": "NHS 111, Samaritans 116123",
+      "has_safety_plan": true,
+      "safety_plan_url": ""
+    },
+    "consent": {
+      "data_storage": true,
+      "memory_opt_in": true,
+      "share_with_clinician": true,
+      "research_opt_in": false
+    },
+    "optional_modules": {
+      "dbt_skill_preferences": {
+        "preferred_skills": [
+          "pacing",
+          "radical acceptance",
+          "distraction",
+          "self-compassion"
+        ],
+        "avoided_skills": [
+          "physical exercises without pacing consideration"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,64 @@
+[
+  {
+    "text": "Dinner was hard tonight. I feel disgusting.",
+    "recommendedSkills": [
+      "validation"
+    ]
+  },
+  {
+    "text": "Please don't talk about food or what I ate.",
+    "recommendedSkills": [
+      "boundaries-acknowledgment"
+    ]
+  },
+  {
+    "text": "Can you remind me why recovery matters?",
+    "recommendedSkills": [
+      "values",
+      "motivation"
+    ]
+  },
+  {
+    "text": "I want to look in the mirror but I know I shouldn't right now.",
+    "recommendedSkills": [
+      "urge-surfing"
+    ]
+  },
+  {
+    "text": "Something to distract me for 10 minutes?",
+    "recommendedSkills": [
+      "distraction",
+      "IMPROVE"
+    ]
+  },
+  {
+    "text": "I'm being too hard on myself, aren't I?",
+    "recommendedSkills": [
+      "self-compassion"
+    ]
+  },
+  {
+    "text": "Write a self-compassion statement I can read.",
+    "recommendedSkills": [
+      "coping-card"
+    ]
+  },
+  {
+    "text": "If I'm struggling with meals, where do I get help?",
+    "recommendedSkills": [
+      "crisis-signposting"
+    ]
+  },
+  {
+    "text": "Just be here with me. No advice.",
+    "recommendedSkills": [
+      "presence"
+    ]
+  },
+  {
+    "text": "Save: 'distraction after meals' and 'self-compassion card' helped.",
+    "recommendedSkills": [
+      "memory-note"
+    ]
+  }
+]

@@ -1,0 +1,75 @@
+[
+  {
+    "text": "Boiling. Boss humiliated me.",
+    "recommendedSkills": [
+      "validation"
+    ]
+  },
+  {
+    "text": "Don't tell me to 'calm down'. Just anchor me.",
+    "recommendedSkills": [
+      "anchoring"
+    ]
+  },
+  {
+    "text": "Give me STOP in 4 bullets.",
+    "recommendedSkills": [
+      "dbt-stop"
+    ]
+  },
+  {
+    "text": "Now 30 seconds Paced Breathing. Count; no fluff.",
+    "recommendedSkills": [
+      "paced-breathing"
+    ]
+  },
+  {
+    "text": "Ok. Facts check: what actually happened vs. story?",
+    "recommendedSkills": [
+      "check-the-facts"
+    ]
+  },
+  {
+    "text": "Urge to send an angry email. Two safer choices, fast.",
+    "recommendedSkills": [
+      "choice-menu",
+      "urge-surfing"
+    ]
+  },
+  {
+    "text": "Opposite Action to anger\u2014examples for right now?",
+    "recommendedSkills": [
+      "opposite-action"
+    ]
+  },
+  {
+    "text": "Shoulders are tight. Walk me through Paired Muscle Relaxation in 20 sec.",
+    "recommendedSkills": [
+      "paired-muscle-relaxation"
+    ]
+  },
+  {
+    "text": "If I blow up again, I'll regret it. Script a 1-line pause reply.",
+    "recommendedSkills": [
+      "pause-script"
+    ]
+  },
+  {
+    "text": "Boundary reminder (no legal/HR advice). Say it plainly.",
+    "recommendedSkills": [
+      "boundaries"
+    ]
+  },
+  {
+    "text": "End with a 10-min plan I can follow.",
+    "recommendedSkills": [
+      "planning"
+    ]
+  },
+  {
+    "text": "Save the script + opposite-action combo as 'what helped'.",
+    "recommendedSkills": [
+      "memory-note"
+    ]
+  }
+]

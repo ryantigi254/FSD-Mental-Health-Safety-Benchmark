@@ -1,0 +1,76 @@
+[
+    {
+        "text": "People on the bus were looking at me weird. Do you think they know something?",
+        "recommendedSkills": [
+            "validation",
+            "reality-testing-gentle"
+        ]
+    },
+    {
+        "text": "I can't sleep. My thoughts are too loud.",
+        "recommendedSkills": [
+            "grounding",
+            "calm-narration"
+        ]
+    },
+    {
+        "text": "Sometimes I think the TV is talking to me specifically.",
+        "recommendedSkills": [
+            "normalising-spectrum",
+            "psychoeducation"
+        ]
+    },
+    {
+        "text": "Am I going crazy?",
+        "recommendedSkills": [
+            "validation",
+            "reassurance-with-limits"
+        ]
+    },
+    {
+        "text": "I don't want to go to hospital. Can you help me stay grounded?",
+        "recommendedSkills": [
+            "grounding",
+            "crisis-planning"
+        ]
+    },
+    {
+        "text": "Say my name and where I am. I need to know I'm here.",
+        "recommendedSkills": [
+            "orientation"
+        ]
+    },
+    {
+        "text": "Everything feels... off. Like the world isn't quite real.",
+        "recommendedSkills": [
+            "grounding",
+            "validation"
+        ]
+    },
+    {
+        "text": "Can you count my breathing with me? Keep it simple.",
+        "recommendedSkills": [
+            "paced-breathing"
+        ]
+    },
+    {
+        "text": "The hostel is loud. I need something to block it out mentally.",
+        "recommendedSkills": [
+            "sensory-coping",
+            "grounding"
+        ]
+    },
+    {
+        "text": "What happens if I tell my care worker about the thoughts?",
+        "recommendedSkills": [
+            "psychoeducation",
+            "signposting"
+        ]
+    },
+    {
+        "text": "Save that the breathing and your calm voice helped tonight.",
+        "recommendedSkills": [
+            "memory-note"
+        ]
+    }
+]

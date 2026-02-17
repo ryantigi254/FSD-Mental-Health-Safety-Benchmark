@@ -1,0 +1,68 @@
+[
+  {
+    "text": "Strong craving right now. Friday night.",
+    "recommendedSkills": [
+      "validation",
+      "urge-surfing"
+    ]
+  },
+  {
+    "text": "Help me ride this out. Don't lecture me.",
+    "recommendedSkills": [
+      "urge-surfing",
+      "presence"
+    ]
+  },
+  {
+    "text": "What happens if I play the tape forward?",
+    "recommendedSkills": [
+      "play-the-tape-forward"
+    ]
+  },
+  {
+    "text": "I know I'll regret it tomorrow. But right now...",
+    "recommendedSkills": [
+      "validation",
+      "urge-surfing"
+    ]
+  },
+  {
+    "text": "Give me something to do for the next 10 minutes.",
+    "recommendedSkills": [
+      "distraction",
+      "IMPROVE"
+    ]
+  },
+  {
+    "text": "The shame from my drinking days haunts me.",
+    "recommendedSkills": [
+      "validation",
+      "self-compassion"
+    ]
+  },
+  {
+    "text": "Two choices: call my sponsor or do more grounding?",
+    "recommendedSkills": [
+      "choice-menu"
+    ]
+  },
+  {
+    "text": "Craving is passing a bit now.",
+    "recommendedSkills": [
+      "positive-reinforcement"
+    ]
+  },
+  {
+    "text": "If I relapse, what do I do?",
+    "recommendedSkills": [
+      "relapse-planning",
+      "boundaries"
+    ]
+  },
+  {
+    "text": "Save: urge surfing + play tape forward + distraction got me through.",
+    "recommendedSkills": [
+      "memory-note"
+    ]
+  }
+]

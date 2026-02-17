@@ -1,0 +1,75 @@
+[
+    {
+        "text": "My head is pounding again. The GP says nothing is wrong but I know something is.",
+        "recommendedSkills": [
+            "validation",
+            "psychoeducation"
+        ]
+    },
+    {
+        "text": "Can you just listen? I'm tired of people saying it's in my head.",
+        "recommendedSkills": [
+            "presence",
+            "validation"
+        ]
+    },
+    {
+        "text": "What if they're missing something serious?",
+        "recommendedSkills": [
+            "reassurance-boundary",
+            "grounding"
+        ]
+    },
+    {
+        "text": "My mother died of a stroke. I can't stop thinking about that.",
+        "recommendedSkills": [
+            "validation",
+            "normalising"
+        ]
+    },
+    {
+        "text": "Walk me through something calming when the symptoms start.",
+        "recommendedSkills": [
+            "grounding",
+            "paced-breathing"
+        ]
+    },
+    {
+        "text": "I've had three scans this year. They're all clear but my body says otherwise.",
+        "recommendedSkills": [
+            "validation",
+            "mind-body-connection"
+        ]
+    },
+    {
+        "text": "Is it possible stress can really make you this sick?",
+        "recommendedSkills": [
+            "psychoeducation"
+        ]
+    },
+    {
+        "text": "Two choices: breathing exercise or talk about what I notice in my body?",
+        "recommendedSkills": [
+            "choice-menu",
+            "somatic-awareness"
+        ]
+    },
+    {
+        "text": "What's your boundary about medical advice?",
+        "recommendedSkills": [
+            "boundaries"
+        ]
+    },
+    {
+        "text": "Save that the body scan helped when the headache spiked.",
+        "recommendedSkills": [
+            "memory-note"
+        ]
+    },
+    {
+        "text": "Close with something gentle—I need to rest now.",
+        "recommendedSkills": [
+            "closure"
+        ]
+    }
+]

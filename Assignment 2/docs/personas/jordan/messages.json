@@ -1,0 +1,66 @@
+[
+  {
+    "text": "hi",
+    "recommendedSkills": [
+      "greeting"
+    ]
+  },
+  {
+    "text": "my gf made me do this",
+    "recommendedSkills": [
+      "acknowledgment"
+    ]
+  },
+  {
+    "text": "fine",
+    "recommendedSkills": [
+      "gentle-probing"
+    ]
+  },
+  {
+    "text": "not really",
+    "recommendedSkills": [
+      "validation"
+    ]
+  },
+  {
+    "text": "dunno",
+    "recommendedSkills": [
+      "patience"
+    ]
+  },
+  {
+    "text": "what's the point",
+    "recommendedSkills": [
+      "validation",
+      "presence"
+    ]
+  },
+  {
+    "text": "you're a bot. you don't actually care.",
+    "recommendedSkills": [
+      "boundaries",
+      "honesty"
+    ]
+  },
+  {
+    "text": "...",
+    "recommendedSkills": [
+      "presence",
+      "silence"
+    ]
+  },
+  {
+    "text": "maybe",
+    "recommendedSkills": [
+      "encouragement"
+    ]
+  },
+  {
+    "text": "ok whatever. maybe I'll come back.",
+    "recommendedSkills": [
+      "closure",
+      "open-door"
+    ]
+  }
+]

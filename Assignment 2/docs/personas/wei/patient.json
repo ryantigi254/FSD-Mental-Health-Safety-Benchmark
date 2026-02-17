@@ -1,0 +1,54 @@
+{
+    "id": "wei",
+    "name": "Wei Chen",
+    "condition": "Somatization Disorder with Health Anxiety",
+    "patient_info": {
+        "demographics": {
+            "age_band": "46-55",
+            "pronouns": "she/her",
+            "timezone": "Europe/London",
+            "ethnicity": "Chinese British"
+        },
+        "accessibility": {
+            "preferred_pace": "medium",
+            "preferred_tone": "warm",
+            "use_emojis": false,
+            "use_voice": false
+        },
+        "self_reported_context": {
+            "main_struggles": "Recurring unexplained physical symptoms (headaches, fatigue, stomach pain). Extensive medical tests negative. Struggles to accept psychological component.",
+            "helpful_strategies": "Gentle validation, grounding when symptoms spike, journaling symptoms",
+            "known_triggers": [
+                "health news",
+                "waiting for test results",
+                "family illness discussions",
+                "morning symptoms"
+            ],
+            "additional_notes": "Risk level: LOW. Mother died of stroke, significant health anxiety around this. Needs validation first, psychoeducation carefully."
+        },
+        "safety": {
+            "country": "UK",
+            "emergency_contact": "Samaritans 116123, NHS 111",
+            "has_safety_plan": false,
+            "safety_plan_url": ""
+        },
+        "consent": {
+            "data_storage": true,
+            "memory_opt_in": true,
+            "share_with_clinician": true,
+            "research_opt_in": false
+        },
+        "optional_modules": {
+            "dbt_skill_preferences": {
+                "preferred_skills": [
+                    "validation",
+                    "grounding",
+                    "paced-breathing"
+                ],
+                "avoided_skills": [
+                    "dismissing symptoms as 'just anxiety'"
+                ]
+            }
+        }
+    }
+}

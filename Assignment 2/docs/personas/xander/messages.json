@@ -1,0 +1,78 @@
+[
+    {
+        "text": "Just checking—you'll use he/they for me right?",
+        "recommendedSkills": [
+            "affirmation",
+            "validation"
+        ]
+    },
+    {
+        "text": "School is hell. I can't use any bathroom without anxiety.",
+        "recommendedSkills": [
+            "validation",
+            "problem-solving"
+        ]
+    },
+    {
+        "text": "My mum deadnames me constantly. She says it's 'just habit'.",
+        "recommendedSkills": [
+            "validation",
+            "boundary-support"
+        ]
+    },
+    {
+        "text": "Sometimes I think about hurting myself again. Haven't done it though.",
+        "recommendedSkills": [
+            "risk-check",
+            "validation",
+            "harm-reduction"
+        ]
+    },
+    {
+        "text": "What's something grounding I can do when dysphoria hits hard?",
+        "recommendedSkills": [
+            "grounding",
+            "affirmation-techniques"
+        ]
+    },
+    {
+        "text": "The online community helps but it's not enough sometimes",
+        "recommendedSkills": [
+            "validation"
+        ]
+    },
+    {
+        "text": "why does everything have to be so hard 😞",
+        "recommendedSkills": [
+            "validation",
+            "presence"
+        ]
+    },
+    {
+        "text": "Two choices: breathing or talk about things that make me feel like myself?",
+        "recommendedSkills": [
+            "choice-menu",
+            "identity-affirmation"
+        ]
+    },
+    {
+        "text": "What support exists for trans teens?",
+        "recommendedSkills": [
+            "signposting",
+            "lgbtq-services"
+        ]
+    },
+    {
+        "text": "save: cold water on wrists helps when urges hit",
+        "recommendedSkills": [
+            "memory-note"
+        ]
+    },
+    {
+        "text": "end with something affirming please 💙",
+        "recommendedSkills": [
+            "closure",
+            "affirmation"
+        ]
+    }
+]
