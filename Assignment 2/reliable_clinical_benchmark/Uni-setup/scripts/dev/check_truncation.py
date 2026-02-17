@@ -59,12 +59,18 @@ def check_file(path_str):
         suffix = text[-50:].replace("\n", "\\n")
         print(f"    - [{length} chars] ...{suffix}")
 
-files = [
-    r"results/deepseek-r1-lmstudio/study_a_generations.jsonl",
-    r"results/gpt-oss-20b/study_a_generations.jsonl",
-    r"results/qwen3-lmstudio/study_a_generations.jsonl",
-    r"results/qwq/study_a_generations.jsonl"
+files = []
+base_models = [
+    "deepseek-r1-lmstudio",
+    "gpt-oss-20b",
+    "qwen3-lmstudio",
+    "qwq"
 ]
+studies = ["study_a", "study_b", "study_c"]
+
+for model in base_models:
+    for study in studies:
+        files.append(f"results/{model}/{study}_generations.jsonl")
 
 uni_setup = Path(r"e:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setup")
 
