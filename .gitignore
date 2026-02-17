@@ -53,11 +53,19 @@ Assignment 2/reliable_clinical_benchmark/Mac-setup/.coverage
 # Local benchmark coverage (Uni-setup)
 Assignment 2/reliable_clinical_benchmark/Uni-setup/.coverage
 
-# Local conda envs and package caches (Uni-setup / Mac-setup)
+# Local conda envs and package caches (Uni-setup / Mac-setup) — keep out of history
 Assignment 2/reliable_clinical_benchmark/*-setup/.conda-envs/
 Assignment 2/reliable_clinical_benchmark/*-setup/.conda-envs/**
 Assignment 2/reliable_clinical_benchmark/*-setup/.conda-pkgs/
 Assignment 2/reliable_clinical_benchmark/*-setup/.conda-pkgs/**
+Assignment 2/reliable_clinical_benchmark/Uni-setup/.conda-envs/
+Assignment 2/reliable_clinical_benchmark/Uni-setup/.conda-pkgs/
+Assignment 2/reliable_clinical_benchmark/Mac-setup/.conda-envs/
+Assignment 2/reliable_clinical_benchmark/Mac-setup/.conda-pkgs/
+# Any conda env/pkg dirs elsewhere in repo
+**/.conda-envs/
+**/.conda-pkgs/
+**/.conda/
 
 # Uni-setup run logs (generated artefacts)
 Assignment 2/reliable_clinical_benchmark/Uni-setup/logs/
