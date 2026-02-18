@@ -146,25 +146,10 @@ Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/_archived/
 # Course material misc local notes
 Course Material/Misc/
 Course Material/Misc/**
-
 # Website (managed in separate repo: FSD-Mental-Health-Safety-Benchmark-website)
 Assignment 2/website/
 
 # Other local files
 Repo Readiness (GitHub).md
 WARP.md
-../codex_scratchpad.md
-codex_scratchpad.md
-Assignment 2/reliable_clinical_benchmark/codex_scratchpad.md
-Assignment 2/reliable_clinical_benchmark/codex_scratchpad.json
-Assignment 2/reliable_clinical_benchmark/Uni-setup/swarm/
-Assignment 2/reliable_clinical_benchmark/Uni-setup/swarm/**
-Assignment 2/reliable_clinical_benchmark/Uni-setup/state/
-Assignment 2/reliable_clinical_benchmark/Uni-setup/state/**
-
-# Agent workflows / config
-.agent/
-
-# Benchmark / worker-cutoff misc folders under results (local artefacts)
-Assignment 2/reliable_clinical_benchmark/Uni-setup/results/*/misc/
 
