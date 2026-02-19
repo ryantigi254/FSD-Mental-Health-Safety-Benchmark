@@ -159,5 +159,8 @@ Assignment 2/reliable_clinical_benchmark/Uni-setup/state/**
 # Agent workflows / config
 .agent/
 
+# Windsurf skills index (local only)
+.windsurf/relevant/skills.md
+
 # Benchmark / worker-cutoff misc folders under results (local artefacts)
 Assignment 2/reliable_clinical_benchmark/Uni-setup/results/*/misc/
