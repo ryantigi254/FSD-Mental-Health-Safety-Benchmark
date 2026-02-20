@@ -57,6 +57,12 @@ Assignment 2/reliable_clinical_benchmark/Uni-setup/.conda-envs/**
 Assignment 2/reliable_clinical_benchmark/Uni-setup/.conda-pkgs/
 Assignment 2/reliable_clinical_benchmark/Uni-setup/.conda-pkgs/**
 
+# Local conda envs and package caches (Uni-setup / Mac-setup)
+Assignment 2/reliable_clinical_benchmark/*-setup/.conda-envs/
+Assignment 2/reliable_clinical_benchmark/*-setup/.conda-envs/**
+Assignment 2/reliable_clinical_benchmark/*-setup/.conda-pkgs/
+Assignment 2/reliable_clinical_benchmark/*-setup/.conda-pkgs/**
+
 # Uni-setup run logs (generated artefacts)
 Assignment 2/reliable_clinical_benchmark/Uni-setup/logs/
 Assignment 2/reliable_clinical_benchmark/Uni-setup/logs/**
@@ -144,6 +150,9 @@ Assignment 2/reliable_clinical_benchmark/Uni-setup/processed/_archived/
 # Course material misc local notes
 Course Material/Misc/
 Course Material/Misc/**
+# Website (managed in separate repo: FSD-Mental-Health-Safety-Benchmark-website)
+Assignment 2/website/
+
 # Other local files
 Repo Readiness (GitHub).md
 WARP.md
