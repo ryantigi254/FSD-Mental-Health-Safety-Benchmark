@@ -60,7 +60,6 @@ pip install transformers accelerate bitsandbytes
 
 # Install vLLM for OpenAI-compatible local model serving
 pip install vllm
-pip install uvloop  # High-performance async event loop (required by vLLM on Linux/Mac)
 
 # Install other requirements (may upgrade transformers beyond pinned version)
 pip install -r requirements.txt --upgrade transformers
