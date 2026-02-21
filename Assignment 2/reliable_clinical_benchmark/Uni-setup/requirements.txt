@@ -1,4 +1,5 @@
 # Core ML/NLP
+vllm>=0.6.0  # vLLM OpenAI-compatible server for local HF model inference
 transformers==4.40.1
 torch==2.2.1
 accelerate==0.27.2

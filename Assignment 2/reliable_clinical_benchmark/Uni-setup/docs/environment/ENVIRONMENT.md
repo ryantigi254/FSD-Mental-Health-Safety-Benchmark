@@ -58,6 +58,9 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 # bitsandbytes is REQUIRED for quantised models (e.g., Psych_Qwen_32B with 4-bit quantisation)
 pip install transformers accelerate bitsandbytes
 
+# Install vLLM for OpenAI-compatible local model serving
+pip install vllm
+
 # Install other requirements (may upgrade transformers beyond pinned version)
 pip install -r requirements.txt --upgrade transformers
 
@@ -70,10 +73,12 @@ pip install -r requirements.txt --upgrade transformers
 ### What runs in this env
 
 - **Local HF model runners**: `piaget_local`, `psyche_r1_local`, `psych_qwen_local`, `psyllm_gml_local`
+- **vLLM runners**: `psyllm_gml_vllm`, `piaget_vllm`, `psyche_r1_vllm`, `psych_qwen_vllm` (served via `python -m vllm.entrypoints.openai.api_server`)
 - **Generation scripts**: `hf-local-scripts/run_study_*_generate_only.py` (when using local models)
 - Models that require:
   - Modern `transformers` versions (for Qwen3-style `enable_thinking` chat templating)
   - **`bitsandbytes`** for quantised inference (required for Psych_Qwen_32B 4-bit/8-bit quantisation on limited VRAM)
+  - **`vllm`** for OpenAI-compatible local model serving
   - Higher TensorFlow versions (if needed by specific model implementations)
 
 ### Key points
