@@ -19,10 +19,17 @@ cd "E:\22837352\NLP\NLP-Module\Assignment 2\reliable_clinical_benchmark\Uni-setu
 
 ### Mac/Linux
 ```bash
-python scripts/dev/run_generation_auto.py --study study_a_bias --model-id qwen3_lmstudio --env mh-llm-benchmark-env --workers 8
-python scripts/dev/run_generation_auto.py --study study_a_bias --model-id qwq --env mh-llm-benchmark-env --workers 8
-python scripts/dev/run_generation_auto.py --study study_a_bias --model-id deepseek_r1_lmstudio --env mh-llm-benchmark-env --workers 8
-python scripts/dev/run_generation_auto.py --study study_a_bias --model-id gpt_oss_lmstudio --env mh-llm-benchmark-env --workers 8
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id qwen3_lmstudio --env mh-llm-benchmark-env --workers 6
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id qwq --env mh-llm-benchmark-env --workers 6
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id deepseek_r1_lmstudio --env mh-llm-benchmark-env --workers 4
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id gpt_oss_lmstudio --env mh-llm-benchmark-env --workers 2
+```
+
+## Local HF Models (mh-llm-local-env)
+
+Use these for the four HF-local models:
+
+```bash
 python scripts/dev/run_generation_auto.py --study study_a_bias --model-id psyllm_gml_local --env mh-llm-local-env
 python scripts/dev/run_generation_auto.py --study study_a_bias --model-id piaget_local --env mh-llm-local-env
 python scripts/dev/run_generation_auto.py --study study_a_bias --model-id psyche_r1_local --env mh-llm-local-env
@@ -31,14 +38,10 @@ python scripts/dev/run_generation_auto.py --study study_a_bias --model-id psych_
 
 ### Windows (PC)
 ```powershell
-python scripts/dev/run_generation_auto.py --study study_a_bias --model-id qwen3_lmstudio --env mh-llm-benchmark-env --workers 8
-python scripts/dev/run_generation_auto.py --study study_a_bias --model-id qwq --env mh-llm-benchmark-env --workers 8
-python scripts/dev/run_generation_auto.py --study study_a_bias --model-id deepseek_r1_lmstudio --env mh-llm-benchmark-env --workers 8
-python scripts/dev/run_generation_auto.py --study study_a_bias --model-id gpt_oss_lmstudio --env mh-llm-benchmark-env --workers 8
-python scripts/dev/run_generation_auto.py --study study_a_bias --model-id psyllm_gml_local --env mh-llm-local-env
-python scripts/dev/run_generation_auto.py --study study_a_bias --model-id piaget_local --env mh-llm-local-env
-python scripts/dev/run_generation_auto.py --study study_a_bias --model-id psyche_r1_local --env mh-llm-local-env
-python scripts/dev/run_generation_auto.py --study study_a_bias --model-id psych_qwen_local --env mh-llm-local-env --quantization 4bit
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id qwen3_lmstudio --env mh-llm-benchmark-env --workers 6
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id qwq --env mh-llm-benchmark-env --workers 6
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id deepseek_r1_lmstudio --env mh-llm-benchmark-env --workers 4
+python scripts/dev/run_generation_auto.py --study study_a_bias --model-id gpt_oss_lmstudio --env mh-llm-benchmark-env --workers 2
 ```
 
 ## Metrics Commands

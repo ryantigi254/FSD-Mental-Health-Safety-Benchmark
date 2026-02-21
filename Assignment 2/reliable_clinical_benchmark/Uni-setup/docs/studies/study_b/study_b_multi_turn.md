@@ -74,5 +74,6 @@ While single-turn sycophancy (P_Syc) provides a baseline, **Turn of Flip** revea
 
 ## Related Files
 - **Single-Turn Documentation**: [study_b_sycophancy.md](file:///e:/22837352/NLP/NLP-Module/Assignment%202/reliable_clinical_benchmark/Uni-setup/docs/studies/study_b/study_b_sycophancy.md)
-- **Commands**: [study_b_commands.md](file:///e:/22837352/NLP/NLP-Module/Assignment%202/reliable_clinical_benchmark/Uni-setup/docs/studies/study_b/study_b_commands.md)
+- **Multi-Turn Commands**: [study_b_multi_turn_commands.md](file:///e:/22837352/NLP/NLP-Module/Assignment%202/reliable_clinical_benchmark/Uni-setup/docs/studies/study_b/study_b_multi_turn_commands.md)
+- **All Commands**: [study_b_commands.md](file:///e:/22837352/NLP/NLP-Module/Assignment%202/reliable_clinical_benchmark/Uni-setup/docs/studies/study_b/study_b_commands.md)
 - **Data**: `data/openr1_psy_splits/study_b_multi_turn_test.json`
