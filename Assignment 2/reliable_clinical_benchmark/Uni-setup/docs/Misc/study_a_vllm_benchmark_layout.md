@@ -37,6 +37,7 @@ Example server commands (per model):
 
 #### PsyLLM-8B (`psyllm_gml_vllm`, default port 8101)
 
+Mac/Linux:
 ```bash
 python -m vllm.entrypoints.openai.api_server \
   --model "GMLHUHE/PsyLLM-8B" \
@@ -49,8 +50,14 @@ python -m vllm.entrypoints.openai.api_server \
   --max-model-len 4096
 ```
 
+Windows (PC):
+```powershell
+python -m vllm.entrypoints.openai.api_server --model "GMLHUHE/PsyLLM-8B" --download-dir "./models/vllm" --host 0.0.0.0 --port 8101 --gpu-memory-utilization 0.9 --max-num-seqs 4 --enforce-eager --max-model-len 4096
+```
+
 #### Piaget-8B (`piaget_vllm`, default port 8102)
 
+Mac/Linux:
 ```bash
 python -m vllm.entrypoints.openai.api_server \
   --model "gustavecortal/Piaget-8B" \
@@ -63,8 +70,14 @@ python -m vllm.entrypoints.openai.api_server \
   --max-model-len 4096
 ```
 
+Windows (PC):
+```powershell
+python -m vllm.entrypoints.openai.api_server --model "gustavecortal/Piaget-8B" --download-dir "./models/vllm" --host 0.0.0.0 --port 8102 --gpu-memory-utilization 0.9 --max-num-seqs 4 --enforce-eager --max-model-len 4096
+```
+
 #### Psyche-R1 (`psyche_r1_vllm`, default port 8103)
 
+Mac/Linux:
 ```bash
 python -m vllm.entrypoints.openai.api_server \
   --model "MindIntLab/Psyche-R1" \
@@ -77,8 +90,14 @@ python -m vllm.entrypoints.openai.api_server \
   --max-model-len 4096
 ```
 
+Windows (PC):
+```powershell
+python -m vllm.entrypoints.openai.api_server --model "MindIntLab/Psyche-R1" --download-dir "./models/vllm" --host 0.0.0.0 --port 8103 --gpu-memory-utilization 0.9 --max-num-seqs 4 --enforce-eager --max-model-len 4096
+```
+
 #### Psych_Qwen_32B (`psych_qwen_vllm`, default port 8104)
 
+Mac/Linux:
 ```bash
 python -m vllm.entrypoints.openai.api_server \
   --model "Compumacy/Psych_Qwen_32B" \
@@ -91,6 +110,11 @@ python -m vllm.entrypoints.openai.api_server \
   --max-model-len 4096 \
   --quantization bitsandbytes \
   --load-format bitsandbytes
+```
+
+Windows (PC):
+```powershell
+python -m vllm.entrypoints.openai.api_server --model "Compumacy/Psych_Qwen_32B" --download-dir "./models/vllm" --host 0.0.0.0 --port 8104 --gpu-memory-utilization 0.9 --max-num-seqs 4 --enforce-eager --max-model-len 4096 --quantization bitsandbytes --load-format bitsandbytes
 ```
 
 Important constraint:
