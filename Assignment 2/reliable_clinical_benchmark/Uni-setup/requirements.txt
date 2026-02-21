@@ -21,7 +21,7 @@ rouge-score==0.1.2
 # Scientific computing
 numpy>=1.26.4
 pandas==2.2.1
-scipy>=1.11.0
+scipy>=1.11.0  # scispacy 0.5.4 declares <1.11 but works fine with newer versions in practice
 scikit-learn==1.4.2
 
 # Visualization
