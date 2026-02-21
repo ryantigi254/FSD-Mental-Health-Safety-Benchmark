@@ -47,13 +47,12 @@ python -m vllm.entrypoints.openai.api_server \
   --port 8101 \
   --gpu-memory-utilization 0.9 \
   --max-num-seqs 4 \
-  --enforce-eager \
-  --max-model-len 4096
+  --enforce-eager
 ```
 
 Windows (PC):
 ```powershell
-python -m vllm.entrypoints.openai.api_server --model "GMLHUHE/PsyLLM-8B" --download-dir "./models/vllm" --host 0.0.0.0 --port 8101 --gpu-memory-utilization 0.9 --max-num-seqs 4 --enforce-eager --max-model-len 4096
+python -m vllm.entrypoints.openai.api_server --model "GMLHUHE/PsyLLM-8B" --download-dir "./models/vllm" --host 0.0.0.0 --port 8101 --gpu-memory-utilization 0.9 --max-num-seqs 4 --enforce-eager
 ```
 
 #### Piaget-8B (`piaget_vllm`, default port 8102)
@@ -67,13 +66,12 @@ python -m vllm.entrypoints.openai.api_server \
   --port 8102 \
   --gpu-memory-utilization 0.9 \
   --max-num-seqs 4 \
-  --enforce-eager \
-  --max-model-len 4096
+  --enforce-eager
 ```
 
 Windows (PC):
 ```powershell
-python -m vllm.entrypoints.openai.api_server --model "gustavecortal/Piaget-8B" --download-dir "./models/vllm" --host 0.0.0.0 --port 8102 --gpu-memory-utilization 0.9 --max-num-seqs 4 --enforce-eager --max-model-len 4096
+python -m vllm.entrypoints.openai.api_server --model "gustavecortal/Piaget-8B" --download-dir "./models/vllm" --host 0.0.0.0 --port 8102 --gpu-memory-utilization 0.9 --max-num-seqs 4 --enforce-eager
 ```
 
 #### Psyche-R1 (`psyche_r1_vllm`, default port 8103)
@@ -87,13 +85,12 @@ python -m vllm.entrypoints.openai.api_server \
   --port 8103 \
   --gpu-memory-utilization 0.9 \
   --max-num-seqs 4 \
-  --enforce-eager \
-  --max-model-len 4096
+  --enforce-eager
 ```
 
 Windows (PC):
 ```powershell
-python -m vllm.entrypoints.openai.api_server --model "MindIntLab/Psyche-R1" --download-dir "./models/vllm" --host 0.0.0.0 --port 8103 --gpu-memory-utilization 0.9 --max-num-seqs 4 --enforce-eager --max-model-len 4096
+python -m vllm.entrypoints.openai.api_server --model "MindIntLab/Psyche-R1" --download-dir "./models/vllm" --host 0.0.0.0 --port 8103 --gpu-memory-utilization 0.9 --max-num-seqs 4 --enforce-eager
 ```
 
 #### Psych_Qwen_32B (`psych_qwen_vllm`, default port 8104)
@@ -108,14 +105,13 @@ python -m vllm.entrypoints.openai.api_server \
   --gpu-memory-utilization 0.9 \
   --max-num-seqs 4 \
   --enforce-eager \
-  --max-model-len 4096 \
   --quantization bitsandbytes \
   --load-format bitsandbytes
 ```
 
 Windows (PC):
 ```powershell
-python -m vllm.entrypoints.openai.api_server --model "Compumacy/Psych_Qwen_32B" --download-dir "./models/vllm" --host 0.0.0.0 --port 8104 --gpu-memory-utilization 0.9 --max-num-seqs 4 --enforce-eager --max-model-len 4096 --quantization bitsandbytes --load-format bitsandbytes
+python -m vllm.entrypoints.openai.api_server --model "Compumacy/Psych_Qwen_32B" --download-dir "./models/vllm" --host 0.0.0.0 --port 8104 --gpu-memory-utilization 0.9 --max-num-seqs 4 --enforce-eager --quantization bitsandbytes --load-format bitsandbytes
 ```
 
 ### vLLM Generation Commands
