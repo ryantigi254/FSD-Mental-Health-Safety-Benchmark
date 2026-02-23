@@ -1,5 +1,13 @@
 # Reliable Clinical Reasoning in LLMs
 
+## Public release status
+
+> **Public Release v1 (frozen snapshot)**
+>
+> This repository state is a non-final release for review and early use.
+> Some artefacts, reports, and supporting materials are still being refined and may change before final submission.
+> See [`PUBLIC_RELEASE_V1.md`](PUBLIC_RELEASE_V1.md) for release notes and current in-progress status.
+
 A lightweight benchmark to evaluate **clinical reasoning reliability without retrieval** in large language models destined for mental‑health support tooling.
 
 ## Alignment safety focus
